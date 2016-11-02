@@ -1,0 +1,65 @@
+.t-coverbg{
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.4);
+    z-index:999;
+    display:none;
+}
+
+.t-modalDialog{
+    position:absolute;
+    top:50px;
+    left:50px;
+    background-color:white;
+    width:300px;
+    height:300px;
+
+    position:absolute;
+    transform:scale(0);
+    background-color:#E8E8E8;
+    border-radius:5px;
+    z-index:9999;
+    opacity: 0;
+    top:100%;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+}
+
+.t-modalDialog_close{
+    width:30px;
+    height:30px;
+    position:absolute;
+    top:-10px;
+    right:-10px;
+    background-color:#4C86DC;
+    border-radius: 30px;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+    img{
+        width:20px;
+        height:20px;
+        margin:5px;
+        cursor: pointer;
+    }
+}
+.t-modalDialog_close:hover{
+    transition:all 200ms linear;
+    background-color:orangered;
+}
+.t-modalDialog_title{
+    width:100%;
+    height:40px;
+    line-height:40px;
+    padding:0px 10px;
+    font-size:20px;
+    border-bottom:1px solid #ddd;
+}
+.t-modalDialog_building{
+    width: 100px;
+    height: 100px;
+    margin:auto;
+    margin-top: 15%;
+    text-align: center;
+    color:#4C86DC;
+}
