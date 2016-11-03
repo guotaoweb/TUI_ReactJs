@@ -97,10 +97,10 @@ export function clearPageInfo(data){
 }
 
 //更新DIALOG提示内容
-export function updateDialog(data){
+export function updateDialog(txt){
     return {
         type:"UPDATE_DIALOG",
-        data
+        txt
     } 
 }
 
@@ -120,13 +120,32 @@ export function updateRefreshPageStatus(data){
     } 
 }
 
-//分页有用到的,数据加载中
-export function loading(){
+export function pushTip(data){
     return {
-        type:"UPDATE_LOAING_STATUS",
-        status:0
+        type:"PUSH_TIP",
+        data
     } 
 }
 
+export function deleteTip(data){
+    return {
+        type:"DELETE_TIP",
+        data
+    } 
+}
+
+export function addTip(data){
+    return {
+        type:"ADD_TIP",
+        data
+    } 
+}
+
+export function clearTip(data){
+    return {
+        type:"CLEAR_TIP",
+        data
+    } 
+}
 
 

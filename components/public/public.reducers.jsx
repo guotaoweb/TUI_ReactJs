@@ -6,12 +6,14 @@ const initState = {
         size: 5,//每页的数量
         sum: 1,//总数
         url: ""//当前接口地址
-        
+
     },
     sidePageInfo: {
         status: "",//状态表示
         width: "",//展开宽度
-        gateWay:""//原始页面到sidePage页面的通道,传值用
+        gateWay: "",//原始页面到sidePage页面的通道,传值用
+        type: "", //sidepage类型
+        id: ""//多任务的时候,sidePage的唯一ID
     },
     msgInfo: {
         txt: "",
@@ -23,18 +25,16 @@ const initState = {
         name: "",//用户名
         photo: ""//用户图像
     },
-    dialogInfo: {
-        txt: "",//弹窗文字
-        type: 0, //0 纯文本提示 1 confirm 2 prompt 3 list
-        value:"" //type==2的时候,用户填写的值
+    dialogInfo: "",//弹窗文字
+    loadStatus: 1, //0 加载中 1加载完成
+    pageLoadStatus: 1, //0 加载中 1加载完成
+    searchInfo: {
+        key: "",
+        name: "",
+        info: ""
     },
-    loadStatus:1, //0 加载中 1加载完成
-    searchInfo:{
-        key:"",
-        name:"",
-        info:""
-    },
-    isRefreshPage:true //是否在回退的时候,刷新页面
+    tips: [],//标签集合
+    isRefreshPage: false //是否在回退的时候,刷新页面
 }
 
 export default function manageReducers(state = initState, action) {
@@ -45,7 +45,9 @@ export default function manageReducers(state = initState, action) {
                 sidePageInfo: {
                     status: action.data.status,
                     width: action.data.width,
-                    gateWay:action.data.gateWay
+                    gateWay: action.data.gateWay,
+                    type: action.data.type,
+                    id: action.data.id
                 }
             })
         case "AlERT_MESSAGE":
@@ -87,13 +89,7 @@ export default function manageReducers(state = initState, action) {
         case "UPDATE_SIDE_STATUS":
             return Object.assign({}, state, { sideStatus: state.sideStatus == 0 ? 1 : 0 })
         case "UPDATE_DIALOG":
-            return Object.assign({}, state, {
-                dialogInfo: {
-                    txt: action.data.txt != undefined ? action.data.txt : state.dialogInfo.txt,
-                    type: action.data.type != undefined ? action.data.type : state.dialogInfo.type,
-                    value: action.data.value != undefined ? action.data.value : state.dialogInfo.value
-                }
-            })
+            return Object.assign({}, state, { dialogInfo: action.txt })
         case "UPDATE_PAGEINFO":
             return Object.assign({}, state, {
                 pageInfo: {
@@ -114,7 +110,7 @@ export default function manageReducers(state = initState, action) {
         case "CLEAR_PAGEINFO":
             return Object.assign({}, state, {
                 pageInfo: {
-                    index:1,
+                    index: 1,
                     size: 5,
                     sum: 1,
                     url: ""
@@ -123,15 +119,43 @@ export default function manageReducers(state = initState, action) {
         case "UPDATE_SEARCH_INFO":
             return Object.assign({}, state, {
                 searchInfo: {
-                    key:action.data.key?action.data.key:state.searchInfo.key,
-                    name:action.data.name?action.data.name:state.searchInfo.name,
-                    info:action.data.info?action.data.info:state.searchInfo.info,
+                    key: action.data.key ? action.data.key : state.searchInfo.key,
+                    name: action.data.name ? action.data.name : state.searchInfo.name,
+                    info: action.data.info ? action.data.info : state.searchInfo.info,
                 }
             })
         case "UPDATE_REFRESH_PAGE_STATUS":
             return Object.assign({}, state, {
                 isRefreshPage: !state.isRefreshPage
             })
+        case "ADD_TIP":
+            return Object.assign({}, state, { tips: action.data })
+        case "PUSH_TIP":
+            let _tip = eval(JSON.stringify(state.tips))
+            if (action.data && typeof action.data == "object") {
+                for (let i = 0; i < action.data.length; i++) {
+                    let $d = action.data[i];
+                    _tip.push($d)
+                }
+            }
+            return Object.assign({}, state, {
+                tips: _tip
+            })
+        case "DELETE_TIP":
+            let _tip_d = eval(JSON.stringify(state.tips))
+            if (action.data) {
+                for (let i = 0; i < _tip_d.length; i++) {
+                    let $d = _tip_d[i];
+                    if ($d.id == action.data) {
+                        _tip_d.splice(i, 1)
+                    }
+                }
+            }
+            return Object.assign({}, state, {
+                tips: _tip_d
+            })
+        case "CLEAR_TIP":
+            return Object.assign({}, state, { tips: [] })
         default: return state
     }
 }

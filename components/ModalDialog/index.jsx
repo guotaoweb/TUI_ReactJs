@@ -2,8 +2,8 @@ import '!style!css!postcss!sass!./style.scss'
 import React, { Component} from 'react'
 import ReactDOM from 'react-dom'
 
-import TUI from '../../utils'
-import Actions from "../../actions/index"
+import TUI from 'utils'
+import Actions from "actions"
 
 import close from "!url!./img/close.png"
 import building from "!url!./img/building.png"

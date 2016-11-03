@@ -1,8 +1,8 @@
 import '!style!css!postcss!sass!./style.scss'
 import React, { Component } from 'react'
 
-import TUI from '../../utils'
-import Actions from "../../actions/index"
+import TUI from 'utils'
+import Actions from "actions"
 
 import add from "!url!./img/add.png"
 import cancel from "!url!./img/cancel.png"

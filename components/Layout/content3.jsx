@@ -2,7 +2,7 @@ import '!style!css!postcss!sass!./style.scss'
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 
-import Btn from "../../components/Btn/index"
+import Btn from "Btn"
 
 class Content extends Component {
   render() {

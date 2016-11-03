@@ -7,8 +7,8 @@ import next from "!url!./img/next.png"
 import first from "!url!./img/first.png"
 import last from "!url!./img/last.png"
 
-import TUI from '../../utils'
-import Actions from "../../actions/index"
+import TUI from 'utils'
+import Actions from "actions"
 
 //Math.ceil 向上舍入
 //Math.floor 向下舍入
@@ -16,7 +16,7 @@ import loading from "!url!./img/loading.png"
 
 class Pager extends Component {
     render() {
-        const {pageInfo,loadStatus} = this.props
+        const {pageInfo,pageLoadStatus} = this.props
 
         let pageCIndex = pageInfo.index
         let pageSize = pageInfo.size
@@ -56,7 +56,7 @@ class Pager extends Component {
         }
 
         let loadStatusImg
-        if(loadStatus==0)
+        if(pageLoadStatus==0)
         {
             loadStatusImg = <div className="pager-loading"><img src={loading} /></div>
         }
@@ -76,7 +76,7 @@ class Pager extends Component {
     }
 
     clickpage(e) {
-        const {fn, updatePageInfo, pageInfo,loading,loadComplete} = this.props
+        const {fn, updatePageInfo, pageInfo,pageLoading,pageLoadComplete} = this.props
 
         let obj = e.currentTarget
         if (obj.innerText == pageInfo.index) {
@@ -90,48 +90,48 @@ class Pager extends Component {
         updatePageInfo({
             index: parseInt(obj.innerText)
         })
-        fn(parseInt(obj.innerText),loadComplete)
-        loading()
+        fn(parseInt(obj.innerText),pageLoadComplete)
+        pageLoading()
     }
     clickPrev(e) {
-        const {pageInfo, fn, updatePageInfo,loading,loadComplete} = this.props
+        const {pageInfo, fn, updatePageInfo,pageLoading,pageLoadComplete} = this.props
         if (pageInfo.index == 1) { return false }
         updatePageInfo({
             index: pageInfo.index - 1
         })
-        fn(pageInfo.index - 1,loadComplete)
-        loading()
+        fn(pageInfo.index - 1,pageLoadComplete)
+        pageLoading()
     }
     clickNext(e) {
-        const {pageInfo, fn, updatePageInfo,loading,loadComplete} = this.props
+        const {pageInfo, fn, updatePageInfo,pageLoading,pageLoadComplete} = this.props
         if (pageInfo.index == Math.ceil(pageInfo.sum / pageInfo.size)) { return false }
         updatePageInfo({
             index: pageInfo.index + 1
         })
-        fn(pageInfo.index + 1,loadComplete)
-        loading()
+        fn(pageInfo.index + 1,pageLoadComplete)
+        pageLoading()
     }
     clickFirst(e) {
-        const {fn, updatePageInfo,loading,loadComplete} = this.props
+        const {fn, updatePageInfo,pageLoading,pageLoadComplete} = this.props
         updatePageInfo({
             index: 1
         })
-        fn(1,loadComplete)
-        loading()
+        fn(1,pageLoadComplete)
+        pageLoading()
     }
     clickLast(e) {
-        const {pageInfo, fn, updatePageInfo,loading,loadComplete} = this.props
+        const {pageInfo, fn, updatePageInfo,pageLoading,pageLoadComplete} = this.props
         updatePageInfo({
             index: Math.ceil(pageInfo.sum / pageInfo.size)
         })
 
-        fn(Math.ceil(pageInfo.sum / pageInfo.size),loadComplete)
-        loading()
+        fn(Math.ceil(pageInfo.sum / pageInfo.size),pageLoadComplete)
+        pageLoading()
     }
 }
 
 export default TUI._connect({
     pageInfo: "publicInfo.pageInfo",
-    loadStatus: "publicInfo.loadStatus"
+    pageLoadStatus: "publicInfo.pageLoadStatus"
 }, Pager)
 

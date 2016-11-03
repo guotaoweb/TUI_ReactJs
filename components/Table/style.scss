@@ -12,6 +12,9 @@
         td{
             padding-left:10px;
             border-right:1px solid #ebebeb;
+            white-space: nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
         }
         td:last-child{
             border:none;
@@ -25,6 +28,9 @@
             padding-left:10px;
             border-right:1px solid #ebebeb;
             border-bottom:1px solid #ebebeb;
+            white-space: nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
         }
         td:last-child{
             border-right:none;

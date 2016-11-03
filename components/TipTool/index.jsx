@@ -1,10 +1,8 @@
 import '!style!css!postcss!sass!./style.scss'
 import React, { Component, PropTypes } from 'react'
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
 
-import TUI from '../../utils'
-import Actions from "../../actions/index"
+import TUI from 'utils'
+import Actions from "actions"
 
 class TipTool extends Component {
   componentDidUpdate() {

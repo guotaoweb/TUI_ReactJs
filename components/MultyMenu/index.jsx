@@ -1,7 +1,5 @@
 import '!style!css!postcss!sass!./style.scss'
 import React, { Component, PropTypes } from 'react'
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
 import { Link } from 'react-router'
 import ReactDOM from 'react-dom'
 
@@ -161,7 +159,7 @@ class MultyMenu extends Component {
 }
 export default MultyMenu
 
-class TreeNode extends Component {
+class TreeNode extends React.Component {
   render() {
     const {sId,btns, isHadSub, data, color, deep, id, type, lastdeep, mid, mname, mtype, ext1, addMenu, editMenu, delMenu, clickMenu, openSubMenu} = this.props
     let subTree = null

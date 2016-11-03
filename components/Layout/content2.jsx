@@ -1,14 +1,11 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 
-import TUI from '../../utils'
-
-
-class Content extends Component {
+class Content2 extends React.Component {
   render() {
     const {tabs} = this.props
     let tabsArry = []
+
+
     if (this.props.tabs) {
       for (var index = 0; index < tabs.length; index++) {
         var $li = tabs[index]
@@ -21,8 +18,6 @@ class Content extends Component {
       }
     }
 
-
-
     let isValid = true
     let children = this.props.children
     for (var index = 0; index < children.length; index++) {
@@ -30,15 +25,17 @@ class Content extends Component {
         isValid = false
       }
     }
+   
     if (isValid) {
-      if (children.length == tabs.length) {
-        children = this.props.children.map((o, i) => {
-          let id = tabs[i].id
-          return React.cloneElement(o, { style: { display: i > 0 ? "none" : "block" }, key: id, className: id })
-        })
-      }
-      else {
-        children = <div>此布局用法不正确, children的内容和tabs个数不对应</div>
+      if (this.props.children.length != null) {
+        children = []
+        for (let i = 0; i < this.props.children.length; i++) {
+          let $c = this.props.children[i]
+          let id = tabs[i] ? tabs[i].id : "none_children_" + i
+          children.push(React.cloneElement($c, { style: { display: i > 0 ? "none" : "block" }, key: id, className: id + " t_contemt_c" }))
+        }
+        setTimeout(function(){bindEvent()},500)
+        
       }
     }
     else {
@@ -78,27 +75,53 @@ class Content extends Component {
       }
     }
     setTimeout(didMount, 0)
-
-    //为tabs绑定事件
-    let contentTabs = document.getElementsByClassName("t-content2_tab")
-    for (var i = 0; i < contentTabs.length; i++) {
-      var $t = contentTabs[i]
-      $t.addEventListener("click", function () {
-        let _this = this
-        let tabId = this.getAttribute("data-bind")
-        let nodes = TUI.fn.siblingsElem(tabId)
-        document.querySelector(".t-contetn2_tab--active").className = "t-content2_tab"
-        _this.className = _this.className+" "+"t-contetn2_tab--active"
-        for (var index = 0; index < nodes.length; index++) {
-          var $n = nodes[index];
-          $n.style.display = "none"
-        }
-        
-        document.querySelector("." + tabId).style.display = "block"
-      })
-    }
-
   }
 };
 
-export default Content;
+export default Content2
+
+export function bindEvent() {
+  //为tabs绑定事件
+  let contentTabs = document.getElementsByClassName("t-content2_tab")  
+  for (var i = 0; i < contentTabs.length; i++) {
+    var $t = contentTabs[i]
+    $t.addEventListener("click", function () {
+      let _this = this
+      let tabId = this.getAttribute("data-bind")
+      let nodes = TUI.fn.siblingsElem(tabId)
+      document.querySelector(".t-contetn2_tab--active").className = "t-content2_tab"
+      _this.className = _this.className + " " + "t-contetn2_tab--active"
+      for (var index = 0; index < nodes.length; index++) {
+        var $n = nodes[index];
+        $n.style.display = "none"
+      }
+
+      document.querySelector("." + tabId).style.display = "block"
+    })
+  }
+}
+
+export function getContentIndex(index) {
+
+  let $tabs = document.getElementsByClassName("t-content2_tab")
+  for (let i = 0; i < $tabs.length; i++) {
+    let $t = $tabs[i]
+    if (i == index) {
+      $t.className = $t.className + " " + "t-contetn2_tab--active"
+    }
+    else {
+      $t.className = "t-content2_tab"
+    }
+  }
+  let $tabsContent = document.getElementsByClassName("t_contemt_c")
+  for (let j = 0; j < $tabsContent.length; j++) {
+    let $c = $tabsContent[j]
+    if (j == index) {
+      $c.style.display = "block"
+    }
+    else {
+      $c.style.display = "none"
+    }
+  }
+
+}

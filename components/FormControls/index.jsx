@@ -7,7 +7,7 @@ import unCheckbox from "!url!./img/uncheckbox.png"
 import isCheckbox from "!url!./img/checkbox.png"
 import cha from "!url!./img/chacha.png"
 
-import Btn from "../../components/Btn/index"
+import Btn from "Btn"
 
 class FormControls extends Component {
   render() {
@@ -23,14 +23,14 @@ class FormControls extends Component {
       bindElem = <CTRL_SELECT label={label} labelWidth={labelWidth} txt={txt} options={this.props.options} onChange={this.props.onChange} style={this.props.style} required={this.props.required} />
     }
     else if (ctrl == "radio") {
-      bindElem = <CTRL_RADIO label={label} labelWidth={labelWidth} txt={txt} options={this.props.options} onChange={this.props.onChange} style={this.props.style} disabled={this.props.disabled} groupName={this.props.groupName} selected={this.props.selected} value={this.props.value} />
+      bindElem = <CTRL_RADIO label={label} labelWidth={labelWidth} txt={txt} style={this.props.style} disabled={this.props.disabled} groupName={this.props.groupName} selected={this.props.selected} value={this.props.value} />
     }
     else if (ctrl == "checkbox") {
-      bindElem = <CTRL_CHECKBOX label={label} labelWidth={labelWidth} txt={txt} options={this.props.options} onChange={this.props.onChange} style={this.props.style} disabled={this.props.disabled} selected={this.props.selected} value={this.props.value} />
+      bindElem = <CTRL_CHECKBOX label={label} labelWidth={labelWidth} txt={txt} style={this.props.style} disabled={this.props.disabled} selected={this.props.selected} value={this.props.value} fn={this.props.fn} id={this.props.id} />
     }
     else if (ctrl == "tip") {
-      bindElem = <CTRL_TIP label={label} labelWidth={labelWidth} txt={txt}  deleteFn={this.props.deleteFn} addFn={this.props.addFn} style={this.props.style} />
-    }
+      bindElem = <CTRL_TIP label={label} labelWidth={labelWidth} txt={txt} deleteFn={this.props.deleteFn} addFn={this.props.addFn} style={this.props.style} />
+    } 
 
     return (
       <div>
@@ -184,7 +184,7 @@ class CTRL_CHECKBOX extends Component {
     return (
       <div className="t-formControls">
         {label}
-        <div className="t-c_checkbox" onClick={this.checkboxClick.bind(this)} data-status={this.props.selected == "yes" ? "selected" : "unselect"} data-value={this.props.value}>
+        <div className="t-c_checkbox" onClick={this.checkboxClick.bind(this)} data-id={this.props.id} data-status={this.props.selected == "yes" ? "selected" : "unselect"} data-value={this.props.value}>
           <img src={this.props.selected == "yes" ? isCheckbox : unCheckbox} />
           <span>{txt}</span>
         </div>
@@ -193,19 +193,35 @@ class CTRL_CHECKBOX extends Component {
   }
 
   checkboxClick(e) {
+    e.stopPropagation()
     if (this.props.disabled == "disabled") { return false }
 
     let $elem = e.target,
       status
 
+
+    if($elem.className=="t-c_checkbox"){return false}
     if ($elem.parentNode.getAttribute("data-status") == "selected") {
       $elem.parentNode.setAttribute("data-status", "unselect")
       $elem.setAttribute("src", unCheckbox)
+      if (this.props.fn) {
+        this.props.fn("close",{
+          name:this.props.txt,
+          id:$elem.parentNode.getAttribute("data-id")
+        })
+      }
     }
     else {
       $elem.parentNode.setAttribute("data-status", "selected")
       $elem.setAttribute("src", isCheckbox)
+      if (this.props.fn) {
+        this.props.fn("open",{
+          name:this.props.txt,
+          id:$elem.parentNode.getAttribute("data-id")
+        })
+      }
     }
+    
   }
 }
 
@@ -223,8 +239,9 @@ class CTRL_TIP extends Component {
     }
     const {txt, addFn} = this.props
     let _txt = []
+
     for (var i = 0; i < txt.length; i++) {
-      var $d = txt[i];
+      var $d = txt[i]
       _txt.push(<span key={"tip_" + $d.id}>{$d.name}<b onClick={this.deleteFn.bind(this)} data-id={$d.id}><img src={cha} /></b></span>)
     }
     return (
@@ -234,19 +251,18 @@ class CTRL_TIP extends Component {
           {_txt}
           <Btn txt="添加" href={addFn.bind(this)} />
         </div>
+        <br className="claer" />
       </div>
     )
   }
 
   addTip(e) {
     let $elem = e.target
-    console.info($elem.getAttribute("data-id"))
-
   }
 
   deleteFn(e) {
     let $elem = e.target,
-    id = $elem.parentNode.getAttribute("data-id")
+      id = $elem.parentNode.getAttribute("data-id")
     this.props.deleteFn(id)
   }
 }

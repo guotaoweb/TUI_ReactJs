@@ -1,10 +1,10 @@
 import '!style!css!postcss!sass!./style.scss'
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { Link } from 'react-router'
 
-import TUI from '../../utils'
-import Actions from "../../actions/index"
+
+import TUI from 'utils'
+import Actions from "actions"
 
 class Dialog extends Component {
   render() {
@@ -69,8 +69,8 @@ class Dialog extends Component {
   }
 
   closeDialog() {
-    let $dialog = document.querySelector(".t-dialog")
-    let $coverbg = document.querySelector(".t-coverbg")
+    let $dialog = document.querySelector(".t-dialog"),
+      $coverbg = document.querySelector(".t-coverbg")
     $dialog.style.top = "100%"
     $dialog.style["transition"] = "transform 200ms ease"
     $dialog.style.opacity = "0"
@@ -85,14 +85,16 @@ class Dialog extends Component {
   }
 }
 
-
-
+let _EVENT_FN
+export function _event() {
+  
+  if (_EVENT_FN) { _EVENT_FN() }
+  let d = new Dialog()
+  d.closeDialog()
+}
 
 export function openDialog(_this, txt, fn) {
   let type = 0
-  // if (typeof txt == "string" && !fn) {
-  //   type == 0
-  // }
 
   if (typeof txt == "string" && typeof fn == "function") {
     type = 1
@@ -107,9 +109,12 @@ export function openDialog(_this, txt, fn) {
     txt: txt,
     type: type
   })
+
   setTimeout(function () {
-    let $dialog = document.querySelector(".t-dialog")
-    let $coverbg = document.querySelector(".t-coverbg")
+    let $dialog = document.querySelector(".t-dialog"),
+      $coverbg = document.querySelector(".t-coverbg"),
+      $dialogOk = document.querySelector(".t-dialog_ok")
+
 
     let allWidth = document.documentElement.clientWidth
     let allHeight = document.documentElement.clientHeight
@@ -123,12 +128,17 @@ export function openDialog(_this, txt, fn) {
     $dialog.style.opacity = "1"
     $coverbg.style.display = "block"
     $dialog.style["transform"] = "scale(1)"
-    if (document.querySelector(".t-dialog_ok")) {
-      document.querySelector(".t-dialog_ok").addEventListener("click", function () {
-        if (fn) { fn() }
-        let d = new Dialog()
-        d.closeDialog()
-      })
+    // let _event = function () {
+    //   console.info(Math.random())
+    //   //if (fn) { fn() }
+    //   let d = new Dialog()
+    //   d.closeDialog()
+    // }
+
+    if ($dialogOk) {
+      _EVENT_FN = fn
+      $dialogOk.removeEventListener("click",_event)
+      $dialogOk.addEventListener("click",_event)
     }
   }, 120)
 }
