@@ -1,0 +1,12 @@
+.t-container{
+    width:100%;
+    padding-left:60px;
+    background-color:#F6F7F9;
+    transition: padding-left 200ms ease;
+}
+.t-container--close{
+    transition: padding-left 200ms ease;
+    padding-left:160px;
+}
+
+

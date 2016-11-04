@@ -47,7 +47,6 @@ table {
 
 body{
   background-color:white;
-  font-family: "微软雅黑";
   color:#333;
   height: 100%;
   overflow:hidden;
@@ -55,4 +54,8 @@ body{
   *{
     box-sizing: border-box;
   }
+}
+
+body,body *{
+    font-family: "Microsoft YaHei"
 }

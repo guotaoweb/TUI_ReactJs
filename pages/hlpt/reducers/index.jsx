@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import { routerReducer } from 'react-router-redux'
 
 
-import publicInfo from '../components/public/public.reducers'
+import publicInfo from '../../../components/Public/public.reducers.jsx'
 import manages from './manage.reducers'
 import vteamList from './vteamList.reducers'
 import orgnizations from './orgnization.reducers'

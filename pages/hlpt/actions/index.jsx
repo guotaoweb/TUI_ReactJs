@@ -1,4 +1,4 @@
-import * as publicActions from '../components/public/public.actions' //public 不能用,貌似是关键字
+import * as publicActions from '../../../components/Public/public.actions' //public 不能用,貌似是关键字
 import * as vteamEdit from './vteamEdit.actions'
 import * as vteamList from './vteamList.actions'
 import * as vteamManage from './vteamManage.actions'
