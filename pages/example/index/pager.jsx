@@ -1,13 +1,15 @@
 import Content from "Content"
 import Btn from "Btn"
 import Pager from "Pager"
-import SidePage, { closeSidePage,openSidePage } from 'SidePage'
+import SidePage, { closeSidePage, openSidePage } from 'SidePage'
 
 
-import React,{Component} from 'react'
+import React, { Component } from 'react'
 
 class _Pager extends Component {
     render() {
+        console.info("==")
+        console.info(this.props.pageInfo)
         return (
             <div>
                 <Content txt="Pager">
@@ -25,7 +27,7 @@ class _Pager extends Component {
                             type="add"
                             txt="关闭OpenSidePage"
                             href={closeSidePage}
-                            style={{ marginTop: "20px",marginLeft:"10px" }} />
+                            style={{ marginTop: "20px", marginLeft: "10px" }} />
                     </div>
                 </SidePage>
             </div>
@@ -42,23 +44,24 @@ class _Pager extends Component {
         })
     }
     componentDidMount() {
+
         this.props.updatePageInfo({
             index: 1,
             size: 5,
             sum: 10,
-            url: ""
+            url: "#"
         })
+
         this.props.updatePageInfo({
-            id:"pagerTwo",
+            id: "pagerTwo",
             index: 1,
             size: 5,
             sum: 20,
-            url: ""
+            url: "#"
         })
-        
     }
 }
 
 export default TUI._connect({
-
+    pageInfo: "publicInfo.pageInfo"
 }, _Pager)

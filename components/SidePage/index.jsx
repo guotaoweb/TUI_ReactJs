@@ -73,7 +73,7 @@ class SidePage extends React.Component {
           $sidePage.style.width = (allWidth - sidePageWidth) + "px"
         }
         else{
-          $sidePage.style.width =width?width: (allWidth - sideWidth) + "px"
+          $sidePage.style.width = sidePageInfo.width?sidePageInfo.width: (allWidth - sideWidth) + "px"
         }
       }
     }

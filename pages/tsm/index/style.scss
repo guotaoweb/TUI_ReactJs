@@ -1,0 +1,79 @@
+body,body *{
+    font-family: "Microsoft YaHei"
+}
+
+.t-container{
+    width:100%;
+    padding-left:60px;
+    background-color:#F6F7F9;
+    transition: padding-left 200ms ease;
+}
+.t-container--close{
+    transition: padding-left 200ms ease;
+    padding-left:160px;
+}
+
+
+
+.pushAnimate-enter {
+    width:100%;
+    height:100%;
+    opacity: 1;
+    transform:translateX(100%);
+}
+
+.pushAnimate-enter.pushAnimate-enter-active {
+  opacity: 0;
+  //transform:translateX(0px);
+  transition: opacity 700ms linear;
+}
+
+.pushAnimate-leave {
+    position:absolute;
+    top:50px;
+    left:60px;
+    width:100%;
+    height:100%;
+    //transform:translateX(0px) translateZ(0);
+    z-index:1;
+    opacity:0;
+}
+
+.pushAnimate-leave.pushAnimate-leave-active {
+    //transform:translateX(0px) translateZ(0);
+    transition: opacity 500ms linear;
+    opacity:1;
+}
+
+
+//问卷工具
+.survy_tool{
+    p{
+        width:100%;
+        height:30px;
+        line-height:30px;
+        color:white;
+        cursor: pointer;
+        padding-left:10px;
+    }
+    p:hover{
+        background-color:rgba(250, 250, 250, 0.5);
+        border-radius: 3px;
+    }
+}
+
+.optionbtns{
+    float:left;
+    margin-left:5px;
+    margin-top:5px;
+    li{
+        float:left;
+        cursor:pointer;
+    }
+    img{
+        width:20px;
+        height:20px;
+        vertical-align: middle;
+        margin-right:5px;
+    }
+}

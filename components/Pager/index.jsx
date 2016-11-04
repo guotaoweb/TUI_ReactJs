@@ -11,50 +11,63 @@ import loading from "!url!./img/loading.png"
 
 class Pager extends React.Component {
     render() {
-        const {pageInfo, pageLoadStatus} = this.props
+        const {_papeInfo, pageLoadStatus, id} = this.props
 
-        let pageCIndex = pageInfo.index
-        let pageSize = pageInfo.size
-        let pageSum = pageInfo.sum
-
+        let _id = id ? id : "index"
         let pagerLi = []
         let pagerLength //默认分页按钮的数量
-        let _pageSum = Math.ceil(pageSum / pageSize)//总页数
-        let _pageSize = parseInt(5) //每页的数量
-
-        if (_pageSum > Math.ceil(pageCIndex / _pageSize) * _pageSize) {
-            pagerLength = Math.ceil(pageCIndex / _pageSize) * _pageSize
-        }
-        else {
-            pagerLength = _pageSum
-        }
-
-        if (_pageSum > _pageSize) {
-            pagerLi.push(<li key="pageli_prev" className='prev' onClick={this.clickPrev.bind(this)}><a href='javascript:void(0);'><img src={prev} /></a></li>)
-        }
-
-        //默认显示的分页按钮数量
-        let initPage
-        if (Math.floor(pageCIndex / _pageSize) * _pageSize < pageCIndex / _pageSize * _pageSize) {
-            initPage = Math.floor(pageCIndex / _pageSize) * _pageSize
-        }
-        else {
-            initPage = (Math.floor(pageCIndex / _pageSize) - 1) * _pageSize
-        }
-
-        for (var index = initPage; index < pagerLength; index++) {
-            pagerLi.push(<li key={"pagerli" + index} style={{ backgroundColor: pageCIndex - 1 == index ? "#ebebeb" : "white" }} className='pagerli' onClick={this.clickpage.bind(this)}><a href='javascript:void(0);'>{index + 1}</a></li>)
-        }
-
-        if (_pageSum > _pageSize) {
-            pagerLi.push(<li key="pageli_next" className='next' onClick={this.clickNext.bind(this)}><a href='javascript:void(0);'><img src={next} /></a></li>)
-        }
-
+        let pageCIndex = 0
+        let pageSize = 0
+        let pageSum = 0
         let loadStatusImg
         if (pageLoadStatus == 0) {
             loadStatusImg = <div className="pager-loading"><img src={loading} /></div>
         }
+        if (_papeInfo[_id]) {
+            let pageInfo = _papeInfo[_id]
+            pageCIndex = pageInfo.index
+            pageSize = pageInfo.size
+            pageSum = pageInfo.sum
 
+
+            let _pageSum = Math.ceil(pageSum / pageSize)//总页数
+            let _pageSize = parseInt(5) //每页的数量
+
+            if (_pageSum > Math.ceil(pageCIndex / _pageSize) * _pageSize) {
+                pagerLength = Math.ceil(pageCIndex / _pageSize) * _pageSize
+            }
+            else {
+                pagerLength = _pageSum
+            }
+
+            if (_pageSum > _pageSize) {
+                pagerLi.push(<li key="pageli_prev" className='prev' onClick={this.clickPrev.bind(this)}><a href='javascript:void(0);'><img src={prev} /></a></li>)
+            }
+
+            //默认显示的分页按钮数量
+            let initPage
+            if (Math.floor(pageCIndex / _pageSize) * _pageSize < pageCIndex / _pageSize * _pageSize) {
+                initPage = Math.floor(pageCIndex / _pageSize) * _pageSize
+            }
+            else {
+                initPage = (Math.floor(pageCIndex / _pageSize) - 1) * _pageSize
+            }
+
+            for (var index = initPage; index < pagerLength; index++) {
+                pagerLi.push(<li key={"pagerli" + index} style={{ backgroundColor: pageCIndex - 1 == index ? "#ebebeb" : "white" }} className='pagerli' onClick={this.clickpage.bind(this)}><a href='javascript:void(0);'>{index + 1}</a></li>)
+            }
+
+            if (_pageSum > _pageSize) {
+                pagerLi.push(<li key="pageli_next" className='next' onClick={this.clickNext.bind(this)}><a href='javascript:void(0);'><img src={next} /></a></li>)
+            }
+
+
+        }
+        else {
+            pageCIndex = 1
+            pageSize = 5
+            pageSum = 1
+        }
         return (
             <div style={{ display: (pagerLength == 1 ? "none" : "block") }}>
                 <div className="t-pager" style={this.props.style}>
@@ -67,6 +80,7 @@ class Pager extends React.Component {
                 </div>
             </div>
         )
+
     }
 
     clickpage(e) {
@@ -125,7 +139,7 @@ class Pager extends React.Component {
 }
 
 export default TUI._connect({
-    pageInfo: "publicInfo.pageInfo",
+    _papeInfo: "publicInfo.pageInfo",
     pageLoadStatus: "publicInfo.pageLoadStatus"
 }, Pager)
 

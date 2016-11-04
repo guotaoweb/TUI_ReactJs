@@ -12,7 +12,8 @@ const initState = {
         status: "",//状态表示
         width: "",//展开宽度
         gateWay: "",//原始页面到sidePage页面的通道,传值用
-        type: "" //sidepage类型
+        type: "", //sidepage类型
+        id: ""//多任务的时候,sidePage的唯一ID
     },
     msgInfo: {
         txt: "",
@@ -26,6 +27,7 @@ const initState = {
     },
     dialogInfo: "",//弹窗文字
     loadStatus: 1, //0 加载中 1加载完成
+    pageLoadStatus: 1, //0 加载中 1加载完成
     searchInfo: {
         key: "",
         name: "",
@@ -44,7 +46,8 @@ export default function manageReducers(state = initState, action) {
                     status: action.data.status,
                     width: action.data.width,
                     gateWay: action.data.gateWay,
-                    type: action.data.type
+                    type: action.data.type,
+                    id: action.data.id
                 }
             })
         case "AlERT_MESSAGE":
@@ -125,6 +128,8 @@ export default function manageReducers(state = initState, action) {
             return Object.assign({}, state, {
                 isRefreshPage: !state.isRefreshPage
             })
+        case "ADD_TIP":
+            return Object.assign({}, state, { tips: action.data })
         case "PUSH_TIP":
             let _tip = eval(JSON.stringify(state.tips))
             if (action.data && typeof action.data == "object") {
@@ -141,14 +146,16 @@ export default function manageReducers(state = initState, action) {
             if (action.data) {
                 for (let i = 0; i < _tip_d.length; i++) {
                     let $d = _tip_d[i];
-                    if ($d.id == action.data){
-                        _tip_d.splice(i,1)
+                    if ($d.id == action.data) {
+                        _tip_d.splice(i, 1)
                     }
                 }
             }
             return Object.assign({}, state, {
                 tips: _tip_d
             })
+        case "CLEAR_TIP":
+            return Object.assign({}, state, { tips: [] })
         default: return state
     }
 }

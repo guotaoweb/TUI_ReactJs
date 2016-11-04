@@ -2,11 +2,12 @@ import 'babel-polyfill'
 
 const initState = {
     pageInfo: {
-        index: 1,//页数
-        size: 5,//每页的数量
-        sum: 1,//总数
-        url: ""//当前接口地址
-
+        index: {
+            index: 1,//页数
+            size: 5,//每页的数量
+            sum: 1,//总数
+            url: ""//当前接口地址
+        }
     },
     sidePageInfo: {
         status: "",//状态表示
@@ -91,14 +92,37 @@ export default function manageReducers(state = initState, action) {
         case "UPDATE_DIALOG":
             return Object.assign({}, state, { dialogInfo: action.txt })
         case "UPDATE_PAGEINFO":
-            return Object.assign({}, state, {
-                pageInfo: {
-                    index: action.data.index ? action.data.index : state.pageInfo.index,
-                    size: action.data.size ? action.data.size : state.pageInfo.size,
-                    sum: action.data.sum ? action.data.sum : state.pageInfo.sum,
-                    url: action.data.url ? action.data.url : state.pageInfo.url,
+            let _pageInfo = { pageInfo: {} }
+            if (action.data.id) {
+                let _id = action.data.id
+                state.pageInfo[_id] = {
+                    index: action.data.index ? action.data.index : state.pageInfo[_id].index,
+                    size: action.data.size ? action.data.size : state.pageInfo[_id].size,
+                    sum: action.data.sum ? action.data.sum : state.pageInfo[_id].sum,
+                    url: action.data.url ? action.data.url : state.pageInfo[_id].url
                 }
-            })
+                return Object.assign({}, state, {
+                    pageInfo: state.pageInfo
+                })
+            }
+            else {
+                // state.pageInfo["index"] = {
+                //     index: action.data.index ? action.data.index : state.pageInfo["index"].index,
+                //     size: action.data.size ? action.data.size : state.pageInfo["index"].size,
+                //     sum: action.data.sum ? action.data.sum : state.pageInfo["index"].sum,
+                //     url: action.data.url ? action.data.url : state.pageInfo["index"].url
+                // }
+                return Object.assign({}, state, {
+                    pageInfo: {
+                        index: {
+                            index: action.data.index ? action.data.index : state.pageInfo["index"].index,
+                            size: action.data.size ? action.data.size : state.pageInfo["index"].size,
+                            sum: action.data.sum ? action.data.sum : state.pageInfo["index"].sum,
+                            url: action.data.url ? action.data.url : state.pageInfo["index"].url
+                        }
+                    }
+                })
+            }
         case "UPDATE_LOAING_STATUS":
             return Object.assign({}, state, {
                 loadStatus: action.status
@@ -110,10 +134,12 @@ export default function manageReducers(state = initState, action) {
         case "CLEAR_PAGEINFO":
             return Object.assign({}, state, {
                 pageInfo: {
-                    index: 1,
-                    size: 5,
-                    sum: 1,
-                    url: ""
+                    index: {
+                        index: 1,
+                        size: 5,
+                        sum: 1,
+                        url: ""
+                    }
                 }
             })
         case "UPDATE_SEARCH_INFO":
