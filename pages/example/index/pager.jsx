@@ -3,7 +3,10 @@ import Btn from "Btn"
 import Pager from "Pager"
 import SidePage, { closeSidePage,openSidePage } from 'SidePage'
 
-class _Pager extends React.Component {
+
+import React,{Component} from 'react'
+
+class _Pager extends Component {
     render() {
         return (
             <div>

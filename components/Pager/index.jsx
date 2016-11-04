@@ -11,7 +11,7 @@ import loading from "!url!./img/loading.png"
 
 class Pager extends React.Component {
     render() {
-        const {pageInfo,pageLoadStatus} = this.props
+        const {pageInfo, pageLoadStatus} = this.props
 
         let pageCIndex = pageInfo.index
         let pageSize = pageInfo.size
@@ -30,7 +30,7 @@ class Pager extends React.Component {
         }
 
         if (_pageSum > _pageSize) {
-            pagerLi.push(<li key="pageli_prev" className='prev' onClick={this.clickPrev.bind(this) }><a href='javascript:void(0);'><img src={prev}/></a></li>)
+            pagerLi.push(<li key="pageli_prev" className='prev' onClick={this.clickPrev.bind(this)}><a href='javascript:void(0);'><img src={prev} /></a></li>)
         }
 
         //默认显示的分页按钮数量
@@ -43,16 +43,15 @@ class Pager extends React.Component {
         }
 
         for (var index = initPage; index < pagerLength; index++) {
-            pagerLi.push(<li key={"pagerli" + index} style={{ backgroundColor: pageCIndex - 1 == index ? "#ebebeb" : "white" }} className='pagerli' onClick={this.clickpage.bind(this) }><a href='javascript:void(0);'>{index + 1}</a></li>)
+            pagerLi.push(<li key={"pagerli" + index} style={{ backgroundColor: pageCIndex - 1 == index ? "#ebebeb" : "white" }} className='pagerli' onClick={this.clickpage.bind(this)}><a href='javascript:void(0);'>{index + 1}</a></li>)
         }
 
         if (_pageSum > _pageSize) {
-            pagerLi.push(<li key="pageli_next" className='next' onClick={this.clickNext.bind(this) }><a href='javascript:void(0);'><img src={next}/></a></li>)
+            pagerLi.push(<li key="pageli_next" className='next' onClick={this.clickNext.bind(this)}><a href='javascript:void(0);'><img src={next} /></a></li>)
         }
 
         let loadStatusImg
-        if(pageLoadStatus==0)
-        {
+        if (pageLoadStatus == 0) {
             loadStatusImg = <div className="pager-loading"><img src={loading} /></div>
         }
 
@@ -61,9 +60,9 @@ class Pager extends React.Component {
                 <div className="t-pager" style={this.props.style}>
                     <span>总条数: {pageSum} </span>{loadStatusImg}
                     <ul>
-                        <li className='first' onClick={this.clickFirst.bind(this) }><a href='javascript:void(0);'><img src={first}/></a></li>
+                        <li className='first' onClick={this.clickFirst.bind(this)}><a href='javascript:void(0);'><img src={first} /></a></li>
                         {pagerLi}
-                        <li className='last' onClick={this.clickLast.bind(this) }><a href='javascript:void(0);'><img src={last}/></a></li>
+                        <li className='last' onClick={this.clickLast.bind(this)}><a href='javascript:void(0);'><img src={last} /></a></li>
                     </ul>
                 </div>
             </div>
@@ -71,7 +70,7 @@ class Pager extends React.Component {
     }
 
     clickpage(e) {
-        const {fn, updatePageInfo, pageInfo,pageLoading,pageLoadComplete} = this.props
+        const {fn, updatePageInfo, pageInfo, pageLoading, pageLoadComplete} = this.props
 
         let obj = e.currentTarget
         if (obj.innerText == pageInfo.index) {
@@ -85,42 +84,42 @@ class Pager extends React.Component {
         updatePageInfo({
             index: parseInt(obj.innerText)
         })
-        fn(parseInt(obj.innerText),pageLoadComplete)
+        fn(parseInt(obj.innerText), pageLoadComplete)
         pageLoading()
     }
     clickPrev(e) {
-        const {pageInfo, fn, updatePageInfo,pageLoading,pageLoadComplete} = this.props
+        const {pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete} = this.props
         if (pageInfo.index == 1) { return false }
         updatePageInfo({
             index: pageInfo.index - 1
         })
-        fn(pageInfo.index - 1,pageLoadComplete)
+        fn(pageInfo.index - 1, pageLoadComplete)
         pageLoading()
     }
     clickNext(e) {
-        const {pageInfo, fn, updatePageInfo,pageLoading,pageLoadComplete} = this.props
+        const {pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete} = this.props
         if (pageInfo.index == Math.ceil(pageInfo.sum / pageInfo.size)) { return false }
         updatePageInfo({
             index: pageInfo.index + 1
         })
-        fn(pageInfo.index + 1,pageLoadComplete)
+        fn(pageInfo.index + 1, pageLoadComplete)
         pageLoading()
     }
     clickFirst(e) {
-        const {fn, updatePageInfo,pageLoading,pageLoadComplete} = this.props
+        const {fn, updatePageInfo, pageLoading, pageLoadComplete} = this.props
         updatePageInfo({
             index: 1
         })
-        fn(1,pageLoadComplete)
+        fn(1, pageLoadComplete)
         pageLoading()
     }
     clickLast(e) {
-        const {pageInfo, fn, updatePageInfo,pageLoading,pageLoadComplete} = this.props
+        const {pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete} = this.props
         updatePageInfo({
             index: Math.ceil(pageInfo.sum / pageInfo.size)
         })
 
-        fn(Math.ceil(pageInfo.sum / pageInfo.size),pageLoadComplete)
+        fn(Math.ceil(pageInfo.sum / pageInfo.size), pageLoadComplete)
         pageLoading()
     }
 }

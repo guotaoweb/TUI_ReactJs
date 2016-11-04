@@ -1,6 +1,4 @@
-import React, { Component } from 'react'
 import { Router, Route, IndexRoute } from 'react-router' // 路由
-
 import * as config from 'config'
 
 import Index from './index/index'
@@ -21,7 +19,6 @@ import _TipTool from './index/tipTool'
 import _Pager from './index/pager'
 import _Loading from './index/loading'
 import _ModelDialog from './index/modelDialog'
-
 
 
 class Routers extends React.Component {

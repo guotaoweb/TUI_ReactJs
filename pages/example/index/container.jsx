@@ -1,6 +1,5 @@
 //组件
 import Search from "./search"
-
 class Container extends React.Component {
   render() {
     const {sideStatus} = this.props

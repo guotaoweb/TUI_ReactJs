@@ -1,5 +1,4 @@
 import '!style!css!postcss!sass!./style.scss'
-
 import unRadio from "!url!./img/unradio.png"
 import isRadio from "!url!./img/radio.png"
 import unCheckbox from "!url!./img/uncheckbox.png"
@@ -39,7 +38,7 @@ class FormControls extends React.Component {
   }
 }
 
-class CTRL_INPUT extends Component {
+class CTRL_INPUT extends React.Component {
   render() {
     let label
     if (this.props.label) {
@@ -63,7 +62,7 @@ class CTRL_INPUT extends Component {
   }
 }
 
-class CTRL_TEXTAREA extends Component {
+class CTRL_TEXTAREA extends React.Component {
   render() {
     let label
     if (this.props.label) {
@@ -88,7 +87,7 @@ class CTRL_TEXTAREA extends Component {
   }
 }
 
-class CTRL_SELECT extends Component {
+class CTRL_SELECT extends React.Component {
   render() {
     let label
     if (this.props.label) {
@@ -126,7 +125,7 @@ class CTRL_SELECT extends Component {
   }
 }
 
-class CTRL_RADIO extends Component {
+class CTRL_RADIO extends React.Component {
   render() {
     let label
     if (this.props.label) {
@@ -168,7 +167,7 @@ class CTRL_RADIO extends Component {
   }
 }
 
-class CTRL_CHECKBOX extends Component {
+class CTRL_CHECKBOX extends React.Component {
   render() {
     let label
     if (this.props.label) {
@@ -225,7 +224,7 @@ class CTRL_CHECKBOX extends Component {
 }
 
 
-class CTRL_TIP extends Component {
+class CTRL_TIP extends React.Component {
   render() {
     let label
     if (this.props.label) {
