@@ -1,13 +1,8 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component, PropTypes } from 'react'
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
 
-import TUI from 'utils'
-import Actions from "actions"
 import loading from "!url!./img/loading.png"
 
-class Loading extends Component {
+class Loading extends React.Component {
   render() {
     return (
       <div className="t-loading">

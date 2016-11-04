@@ -17,7 +17,7 @@ class _Pager extends React.Component {
                 </Content>
                 <SidePage id="pager-sidePage">
                     <div>
-                        <Pager fn={this.theFn.bind(this)} />
+                        <Pager id="pagerTwo" fn={this.theFn.bind(this)} />
                         <Btn
                             type="add"
                             txt="关闭OpenSidePage"
@@ -45,6 +45,14 @@ class _Pager extends React.Component {
             sum: 10,
             url: ""
         })
+        this.props.updatePageInfo({
+            id:"pagerTwo",
+            index: 1,
+            size: 5,
+            sum: 20,
+            url: ""
+        })
+        
     }
 }
 

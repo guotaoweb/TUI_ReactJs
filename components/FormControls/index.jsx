@@ -1,5 +1,4 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component } from 'react'
 
 import unRadio from "!url!./img/unradio.png"
 import isRadio from "!url!./img/radio.png"
@@ -9,7 +8,7 @@ import cha from "!url!./img/chacha.png"
 
 import Btn from "Btn"
 
-class FormControls extends Component {
+class FormControls extends React.Component {
   render() {
     const {ctrl, label, type, txt, labelWidth} = this.props
     let bindElem

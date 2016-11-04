@@ -1,8 +1,4 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component } from 'react'
-
-import TUI from 'utils'
-import Actions from "actions"
 
 import add from "!url!./img/add.png"
 import cancel from "!url!./img/cancel.png"
@@ -10,7 +6,7 @@ import edit from "!url!./img/edit.png"
 import check from "!url!./img/check.png"
 import back from "!url!./img/back.png"
 
-class Btn extends Component {
+class Btn extends React.Component {
   render() {
     const {type, width, href, txt, style} = this.props
     let icon

@@ -1,11 +1,6 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component, PropTypes } from 'react'
-import ReactDOM from 'react-dom'
 
-import TUI from 'utils'
-import Actions from "actions"
-
-class SidePage extends Component {
+class SidePage extends React.Component {
   render() {
     return (
       <div>

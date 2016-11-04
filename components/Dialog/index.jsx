@@ -1,12 +1,6 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 
-
-import TUI from 'utils'
-import Actions from "actions"
-
-class Dialog extends Component {
+class Dialog extends React.Component {
   render() {
     const {txt, type} = this.props
     let btns = [],

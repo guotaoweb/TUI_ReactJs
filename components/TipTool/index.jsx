@@ -1,10 +1,6 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component, PropTypes } from 'react'
 
-import TUI from 'utils'
-import Actions from "actions"
-
-class TipTool extends Component {
+class TipTool extends React.Component {
   componentDidUpdate() {
     const {alertMsg, msgInfo} = this.props
     let _color = null

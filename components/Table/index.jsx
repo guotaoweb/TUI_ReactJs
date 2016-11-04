@@ -1,7 +1,6 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component, PropTypes } from 'react'
 
-class Table extends Component {
+class Table extends React.Component {
   render() {
     const {tblContent, width} = this.props
     let tbl_thead = [],

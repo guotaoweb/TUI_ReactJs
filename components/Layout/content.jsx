@@ -1,12 +1,10 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import { Link } from 'react-router'
 
 import Btn from "Btn"
 import back from "!url!./img/singleLeft.png"
 
-class Content extends Component {
+class Content extends React.Component {
   render() {
     const {addHref, txt, children,editHref,addTxt,editTxt,backHref} = this.props
     let addBtn,

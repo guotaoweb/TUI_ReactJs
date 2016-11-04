@@ -1,20 +1,15 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component, PropTypes } from 'react'
-import ReactDOM from 'react-dom'
 
 import prev from "!url!./img/prev.png"
 import next from "!url!./img/next.png"
 import first from "!url!./img/first.png"
 import last from "!url!./img/last.png"
 
-import TUI from 'utils'
-import Actions from "actions"
-
 //Math.ceil 向上舍入
 //Math.floor 向下舍入
 import loading from "!url!./img/loading.png"
 
-class Pager extends Component {
+class Pager extends React.Component {
     render() {
         const {pageInfo,pageLoadStatus} = this.props
 

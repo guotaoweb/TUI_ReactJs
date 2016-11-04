@@ -1,10 +1,8 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 
 import Btn from "Btn"
 
-class Content extends Component {
+class Content extends React.Component {
   render() {
     const {tabs, side} = this.props
     let tabsArry = []

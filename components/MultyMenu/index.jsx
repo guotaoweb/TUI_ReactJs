@@ -1,7 +1,7 @@
 import '!style!css!postcss!sass!./style.scss'
-import React, { Component, PropTypes } from 'react'
+
 import { Link } from 'react-router'
-import ReactDOM from 'react-dom'
+
 
 //图片
 import add from "!url!./img/add.png"
@@ -24,7 +24,7 @@ let init = null
 let selectedInit = null
 let COLOR = null
 
-class MultyMenu extends Component {
+class MultyMenu extends React.Component {
   render() {
     const {data, color, type, lastdeep, sdata, addMenu, editMenu, delMenu, clickMenu, openSubMenu} = this.props
     init = data
