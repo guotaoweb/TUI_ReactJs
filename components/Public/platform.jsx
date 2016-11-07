@@ -3,52 +3,40 @@ import {connect} from 'react-redux'
 
 import 'whatwg-fetch'
 
-import {openLoading, closeLoading} from "Loading" 
+import TUI from '../utils'
+import Actions from "../actions/index"
+import {openLoading, closeLoading} from "../components/Loading/index"
 
 export const platform = {
     //url 接口地址
     //_callback 回调方法
     //loadComplate:true 表示此方法完成网络请求后,取消加载状态
     //this 对象
-    get: function (url, _callback, loadComplate, _this) {
+    get: function (url, _callback, isRefreshPage) {
         let _interface = TUI.INTERFACE1
-        if (window.location.href.indexOf("?uId") > -1 || window.location.href.indexOf("manage") > -1) {
+        if (url.indexOf("workgroup/userinfo")>-1 || window.location.href.indexOf("vteam") > -1 || window.location.href.indexOf("manage") > -1) {
             _interface = TUI.INTERFACE
         }
 
-        openLoading()
 
-        let _isRefreshPage = false
-
-        if (_this.props.isRefreshPage) {
-            //更新刷新页面的状态
-            if (_this && loadComplate) {
-                _this.props.updateRefreshPageStatus()
+        fetch(_interface + url, {
+            method: "get",
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        }).then(function (res) {
+            if (res.ok) {
+                res.json().then(function (obj) {
+                    _callback(obj)
+                })
             }
-            _isRefreshPage = true
-        }
+        })
 
-        if (_isRefreshPage) {
-            fetch(_interface + url, {
-                method: "get",
-                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-            }).then(function (res) {
-                if (res.ok) {
-                    res.json().then(function (obj) {
-                        if (loadComplate) {
-                            closeLoading()
-                        }
-                        _callback(obj)
-                    })
-                }
-            })
-        }
     },
     post: function (url, params, _callback) {
         let _interface = TUI.INTERFACE1
-        if (window.location.href.indexOf("?uId") > -1 || window.location.href.indexOf("manage") > -1) {
+        if (window.location.href.indexOf("vteam") > -1 || window.location.href.indexOf("manage") > -1) {
             _interface = TUI.INTERFACE
         }
+
         fetch(_interface + url, {
             method: "post",
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json;charset=UTF-8' },
@@ -63,7 +51,7 @@ export const platform = {
     },
     patch: function (url, _callback) {
         let _interface = TUI.INTERFACE1
-        if (window.location.href.indexOf("?uId") > -1 || window.location.href.indexOf("manage") > -1) {
+        if (window.location.href.indexOf("vteam") > -1 || window.location.href.indexOf("manage") > -1) {
             _interface = TUI.INTERFACE
         }
         fetch(_interface + url, {
@@ -79,7 +67,7 @@ export const platform = {
     },
     delete: function (url, _callback) {
         let _interface = TUI.INTERFACE1
-        if (window.location.href.indexOf("?uId") > -1 || window.location.href.indexOf("manage") > -1) {
+        if (window.location.href.indexOf("vteam") > -1 || window.location.href.indexOf("manage") > -1) {
             _interface = TUI.INTERFACE
         }
         fetch(_interface + url, {
@@ -95,7 +83,7 @@ export const platform = {
     },
     put: function (url, params, _callback) {
         let _interface = TUI.INTERFACE1
-        if (window.location.href.indexOf("?uId") > -1 || window.location.href.indexOf("manage") > -1) {
+        if (window.location.href.indexOf("vteam") > -1 || window.location.href.indexOf("manage") > -1) {
             _interface = TUI.INTERFACE
         }
         fetch(_interface + url, {
