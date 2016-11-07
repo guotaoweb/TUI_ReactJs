@@ -11,9 +11,10 @@ import downImg from "!url!./img/down.png"
 class EditSurvy extends React.Component {
     render() {
         const {
-            editInfo,
-            odata
+            odata,
+            formControl
         } = this.props
+
         let tabs = [{ name: "创建空白问卷", id: "tabs1" }, { name: "问卷内容", id: "tabs2" }, { name: "预览", id: "tabs3" }]
 
         let _survys = []
@@ -91,8 +92,9 @@ class EditSurvy extends React.Component {
         return (
             <Content2 tabs={tabs}>
                 <div>
-                    <FormControls label="问卷名称" ctrl="input" required="required" txt={editInfo.name} style={{ marginRight: "5px" }} onChange={this.onChangeBySurvyName.bind(this)} />
-                    <FormControls label="问卷说明" ctrl="textarea" txt={editInfo.name} style={{ marginRight: "5px" }} onChange={this.onChangeBySurvyDesp.bind(this)} />
+                    <FormControls label="问卷名称" ctrl="input" required="required" value="editInfo.name" style={{ marginRight: "5px" }} />
+                    <FormControls label="问卷说明" ctrl="textarea" value="editInfo.despInfo" style={{ marginRight: "5px" }} />
+                    <Btn type="add" txt="保证" href={this.textbtn.bind(this)} />
                 </div>
                 <div>
                     {_survys}
@@ -105,12 +107,11 @@ class EditSurvy extends React.Component {
     onChangeBySurvy() {
 
     }
-    onChangeBySurvyName() {
 
+    textbtn() {
+        console.info(this.props.formControl)
     }
-    onChangeBySurvyDesp() {
 
-    }
     componentDidMount() {
         this.props.updateSurvyOptions([{
             txt: "这是第一道题",
@@ -448,6 +449,6 @@ class EditSurvy extends React.Component {
 }
 
 export default TUI._connect({
-    editInfo: "survyList.editInfo",
+    formControl: "formControlInfo.data",
     odata: "survyList.odata"
 }, EditSurvy)

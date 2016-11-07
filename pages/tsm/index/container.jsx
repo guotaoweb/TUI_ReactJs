@@ -1,7 +1,7 @@
 import React, { Component} from 'react'
 import ReactDOM from 'react-dom'
 
-import Header from 'header'
+import Search from './search'
 
 
 class Container extends React.Component {
@@ -9,7 +9,7 @@ class Container extends React.Component {
     const {sideStatus} = this.props
     return (
       <div className={"t-container " + (sideStatus == "0" ? "t-container--close" : "") } ref="tContainter">
-        <Header/>
+        <Search/>
         {this.props.children}
       </div>
     )

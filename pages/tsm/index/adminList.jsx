@@ -9,22 +9,17 @@ import MultyMenu, {clearCheckBox, updateCheckBoxStatus} from "MultyMenu"
 import SidePage, {openSidePage, closeSidePage} from "SidePage"
 import {openDialog, closeDialog} from "Dialog"
 import EditAdmin from "./adminList.edit"
-import VTeamListUserMenu from "./vTeamList.userMenu"
 import Pager, {pageLoadCompelte} from "Pager"
 
 class AdminList extends React.Component {
     render() {
         const {
-            vteamList,
             errorMsg,
             updateSidePageInfo,
-            userId, history,
+            userId, 
             updateDialog,
             sidePageInfo,
-            updateVTeamId,
-            updateVTeamInfo,
             pageInfo,
-            delTeamList,
             addOSData
         } = this.props
 

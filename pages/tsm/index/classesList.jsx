@@ -2,7 +2,7 @@
 import singleLeft from "!url!./img/singleLeft.png"
 
 //组件
-import Content2 from "Ccontent2"
+import Content2 from "Content2"
 import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, {clearCheckBox, updateCheckBoxStatus} from "MultyMenu"

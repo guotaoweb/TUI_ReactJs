@@ -3,7 +3,7 @@ import FormControls from "FormControls"
 import Btn from "Btn"
 import {closeSidePage} from "SidePage"
 
-class SurvyTool extends Component {
+class SurvyTool extends React.Component {
     render() {
         const {editInfo} = this.props
         
