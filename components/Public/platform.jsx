@@ -3,9 +3,8 @@ import {connect} from 'react-redux'
 
 import 'whatwg-fetch'
 
-import TUI from '../utils'
-import Actions from "../actions/index"
-import {openLoading, closeLoading} from "../components/Loading/index"
+import {openLoading, closeLoading} from "Loading"
+import * as config from 'config'
 
 export const platform = {
     //url 接口地址
@@ -13,11 +12,10 @@ export const platform = {
     //loadComplate:true 表示此方法完成网络请求后,取消加载状态
     //this 对象
     get: function (url, _callback, isRefreshPage) {
-        let _interface = TUI.INTERFACE1
+        let _interface = config.INTERFACE1
         if (url.indexOf("workgroup/userinfo")>-1 || window.location.href.indexOf("vteam") > -1 || window.location.href.indexOf("manage") > -1) {
-            _interface = TUI.INTERFACE
+            _interface = config.INTERFACE
         }
-
 
         fetch(_interface + url, {
             method: "get",
@@ -32,9 +30,9 @@ export const platform = {
 
     },
     post: function (url, params, _callback) {
-        let _interface = TUI.INTERFACE1
+        let _interface = config.INTERFACE1
         if (window.location.href.indexOf("vteam") > -1 || window.location.href.indexOf("manage") > -1) {
-            _interface = TUI.INTERFACE
+            _interface = config.INTERFACE
         }
 
         fetch(_interface + url, {
@@ -50,9 +48,9 @@ export const platform = {
         })
     },
     patch: function (url, _callback) {
-        let _interface = TUI.INTERFACE1
+        let _interface = config.INTERFACE1
         if (window.location.href.indexOf("vteam") > -1 || window.location.href.indexOf("manage") > -1) {
-            _interface = TUI.INTERFACE
+            _interface = config.INTERFACE
         }
         fetch(_interface + url, {
             method: "PATCH",
@@ -66,9 +64,9 @@ export const platform = {
         })
     },
     delete: function (url, _callback) {
-        let _interface = TUI.INTERFACE1
+        let _interface = config.INTERFACE1
         if (window.location.href.indexOf("vteam") > -1 || window.location.href.indexOf("manage") > -1) {
-            _interface = TUI.INTERFACE
+            _interface = config.INTERFACE
         }
         fetch(_interface + url, {
             method: "DELETE",
@@ -82,9 +80,9 @@ export const platform = {
         })
     },
     put: function (url, params, _callback) {
-        let _interface = TUI.INTERFACE1
+        let _interface = config.INTERFACE1
         if (window.location.href.indexOf("vteam") > -1 || window.location.href.indexOf("manage") > -1) {
-            _interface = TUI.INTERFACE
+            _interface = config.INTERFACE
         }
         fetch(_interface + url, {
             method: "PUT",

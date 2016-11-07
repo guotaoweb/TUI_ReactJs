@@ -2,7 +2,7 @@ import ReactIScroll from 'react-iscroll'
 import iScroll from 'iscroll'
 
 //图片
-import minus from "!url!../../components/MultyMenu/img/minus.png"
+import minus from "!url!../../../components/MultyMenu/img/minus.png"
 
 //组件
 import Content2 from "Content2"
@@ -19,7 +19,7 @@ import JobFamilyEdit from "./positionGroup.jobFamily"
 import { openLoading, closeLoading } from "Loading"
 
 
-class PositionGroup extends Component {
+class PositionGroup extends React.Component {
   render() {
     const { type, errorMsg, msg, updateSidePageInfo, sidePageInfo, data, pageInfo, updateDialog, updatePageInfo,hasVerticalScroll} = this.props
 

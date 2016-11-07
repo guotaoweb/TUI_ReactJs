@@ -1,7 +1,7 @@
 import Table from "Table"
 import Content2 from "Content2"
 import FormControls from "FormControls"
-import Btn from "../../components/Btn/index"
+import Btn from "Btn"   
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 
 import singleLeft from "!url!./img/singleLeft.png"

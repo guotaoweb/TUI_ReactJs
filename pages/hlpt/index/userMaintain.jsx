@@ -3,11 +3,11 @@ import ReactIScroll from 'react-iscroll'
 import iScroll from 'iscroll'
 
 //图片
-import minus from "!url!../../components/MultyMenu/img/minus.png"
+import minus from "!url!../../../components/MultyMenu/img/minus.png"
 import singleLeft from "!url!./img/singleLeft.png"
 //组件
 import UserMaintainEdit from "./userMaintain.edit"
-import FormControls from "../../components/FormControls/index"
+import FormControls from "FormControls"
 import Content3 from "Content3"
 import Btn from "Btn"
 import Table from "Table"

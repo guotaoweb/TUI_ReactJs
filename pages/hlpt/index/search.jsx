@@ -3,7 +3,7 @@ import {openDialog} from 'Dialog'
 import {openModalDialog} from 'ModalDialog'
 import * as config from 'config'
 
-class Header extends React.Component {
+class _Header extends React.Component {
   render() {
     const {userInfo, sideStatus, searchInfo} = this.props
     let _this = this,
@@ -40,7 +40,7 @@ class Header extends React.Component {
       }
     })
 
-    let $search = ReactDOM.findDOMNode(this.refs.search)
+    let $search = document.getElementById("t-header-search-i")
     let keypressFn = function (e) {
       if (e.keyCode == 13) {
 
@@ -296,4 +296,4 @@ export default TUI._connect({
   sideStatus: "publicInfo.sideStatus",
   userInfo: "publicInfo.userInfo",
   searchInfo: "publicInfo.searchInfo"
-}, Header)
+}, _Header)

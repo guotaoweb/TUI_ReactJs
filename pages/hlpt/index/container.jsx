@@ -1,5 +1,5 @@
 //组件
-import Search from "Search"
+import Search from "./search"
 
 class Container extends React.Component {
   render() {

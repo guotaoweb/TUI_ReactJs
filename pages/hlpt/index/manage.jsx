@@ -1,5 +1,5 @@
 //图片
-import minus from "!url!../../components/MultyMenu/img/minus.png"
+import minus from "!url!../../../components/MultyMenu/img/minus.png"
 
 //组件
 import Content2 from "Content2"
@@ -10,6 +10,7 @@ import MultyMenu, { editFn } from "MultyMenu"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import Pager from "Pager"
 import { openDialog, closeDialog } from "Pager"
+
 import ManageEditVTeam from "./manage.editVTeam"
 import ManageEditUser from "./manage.editUser"
 import ManageUserMenu from "./manage.userMenu"

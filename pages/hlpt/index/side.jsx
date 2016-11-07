@@ -13,7 +13,7 @@ import rotes from "!url!./img/rote-s.png"
 import yhwf from "!url!./img/yhwf.png"
 import yhwfs from "!url!./img/yhwf-s.png"
 
-class _Side extends Component {
+class _Side extends React.Component {
   render() {
     const {sideStatus, userId} = this.props
 
@@ -50,7 +50,7 @@ class _Side extends Component {
     }]
 
     return (
-      <Side list={list} />
+      <Side list={list} title="" />
     )
   }
 

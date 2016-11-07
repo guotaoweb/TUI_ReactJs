@@ -30,107 +30,110 @@ class MultyMenu extends React.Component {
     init = data
     COLOR = color
     let initData = []
-    for (let index = 0; index < init.length; index++) {
-      let d = init[index];
-      if (d.id == "9901" || d.id == "98" || d.id == "133B467977CB44352AE728CD9F22CC4C" || d.id == "6A34B21B10D8487D992594B571E4A1A7") {
-        continue
-      }
 
-      let isHadSub
-      if (d.isHadSub == "0") {
-        isHadSub = <img key={"img1_" + d.id} src={color == "dark" ? addDark : add} data-id={d.id}  onClick={openMenu.bind(this) } data-status="hide" />
-      }
-
-      //加号+复选框+加载
-      let _more = []
-      _more.push(
-        <div key="menu-icons" style={{ display: "inline-block", width: "16px", height: "16px", marginRight: "7px" }}>
-          <div className="menu-loading"><img src={color == "dark" ? loading : loadingw}/></div>
-          {isHadSub}
-        </div>
-      )
-      if (type == "allcheck") {
-        _more.push(<img className="menu_checkbox" key={"img2_" + d.id} src={uncheck} data-status="uncheck" data-id={d.id}  data-mid={d.id} data-mtype={d.type} data-ext1={d.ext1} data-sid={d.sId}  onClick={isCheck.bind(this) } />)
-      }
-
-      //更多
-      let _moreBtn = []
-      if (type == "edit") {
-        let btns = d.btns
-        if (!btns) {
-          btns = ["A", "E", "D"]
-        }
-        else{
-          btns = d.btns.split("/")
-        }
-        let btnList = []
-        for (var i = 0; i < btns.length; i++) {
-          var $btn = btns[i]
-          if ($btn == "A") {
-            btnList.push(
-              <li key="multy_menu_add_btn" onClick={addFn.bind(this, {
-                deep: d.id,
-                id: d.id,
-                type: d.type,
-                ext1: d.ext1
-              }) }>新增</li>)
-          }
-          else if ($btn == "E") {
-            btnList.push(
-              <li key="multy_menu_edit_btn" onClick={editFn.bind(this, {
-                deep: d.id,
-                id: d.id,
-                type: d.type,
-                ext1: d.ext1
-              }) }>编辑</li>)
-          }
-          else if ($btn == "D") {
-            btnList.push(
-              <li key="multy_menu_del_btn" onClick={delFn.bind(this, {
-                deep: d.id,
-                id: d.id,
-                type: d.type,
-                ext1: d.ext1
-              }) }>删除</li>)
-          }
+    if (init) {
+      for (let index = 0; index < init.length; index++) {
+        let d = init[index];
+        if (d.id == "9901" || d.id == "98" || d.id == "133B467977CB44352AE728CD9F22CC4C" || d.id == "6A34B21B10D8487D992594B571E4A1A7") {
+          continue
         }
 
-        _moreBtn.push(
-          <div className="t-multyMenu_list_more" key={"morebtn_" + d.id}>
-            <img src={sortdown} onClick={showMore.bind(this) }  data-status="hide" />
-            <ul className="t-multyMenu_list_more_list">
-              {btnList}
-            </ul>
+        let isHadSub
+        if (d.isHadSub == "0") {
+          isHadSub = <img key={"img1_" + d.id} src={color == "dark" ? addDark : add} data-id={d.id} onClick={openMenu.bind(this)} data-status="hide" />
+        }
+
+        //加号+复选框+加载
+        let _more = []
+        _more.push(
+          <div key="menu-icons" style={{ display: "inline-block", width: "16px", height: "16px", marginRight: "7px" }}>
+            <div className="menu-loading"><img src={color == "dark" ? loading : loadingw} /></div>
+            {isHadSub}
           </div>
         )
-      }
+        if (type == "allcheck") {
+          _more.push(<img className="menu_checkbox" key={"img2_" + d.id} src={uncheck} data-status="uncheck" data-id={d.id} data-mid={d.id} data-mtype={d.type} data-ext1={d.ext1} data-sid={d.sId} onClick={isCheck.bind(this)} />)
+        }
 
-      let num = ""
-      if (d.num) {
-        num = "(" + d.num + ")"
-      }
-
-      initData.push(
-        <li key={d.id} className="t-multyMenu_list_li">
-          <div className="clickmenu t-multyMenu_list_main" data-num={d.num}  data-name={d.name} data-id={d.id} data-type={d.type} ref="mains1"  onClick={clickFn.bind(this) } style={{ color: color == "dark" ? "black" : "white" }}>
-            <a href="javascript:void(0);" title={d.name + num} style={{ color: color == "dark" ? "black" : "white" }}>{_more}{d.name}{num}{_moreBtn}</a>
-          </div>
-          <ul className="sub">
-            {
-              d.children ? d.children.map(child => (
-                <TreeNode type={type} lastdeep={lastdeep} key={child.id} data={child} deep={d.deep} mid={child.id} mname={child.name} ext1={child.ext1} mtype={child.type} id={d.id + "-" + child.id}  color={color} editMenu={editMenu} addMenu={addMenu} delMenu={delMenu} clickMenu={clickMenu} openSubMenu={openSubMenu} isHadSub={child.isHadSub} btns={child.btns} sId={child.sId} />
-              )) : null
+        //更多
+        let _moreBtn = []
+        if (type == "edit") {
+          let btns = d.btns
+          if (!btns) {
+            btns = ["A", "E", "D"]
+          }
+          else {
+            btns = d.btns.split("/")
+          }
+          let btnList = []
+          for (var i = 0; i < btns.length; i++) {
+            var $btn = btns[i]
+            if ($btn == "A") {
+              btnList.push(
+                <li key="multy_menu_add_btn" onClick={addFn.bind(this, {
+                  deep: d.id,
+                  id: d.id,
+                  type: d.type,
+                  ext1: d.ext1
+                })}>新增</li>)
             }
-          </ul>
-        </li>
-      )
-      //如果sodata为空,则删除已选中的复选框
-    }
+            else if ($btn == "E") {
+              btnList.push(
+                <li key="multy_menu_edit_btn" onClick={editFn.bind(this, {
+                  deep: d.id,
+                  id: d.id,
+                  type: d.type,
+                  ext1: d.ext1
+                })}>编辑</li>)
+            }
+            else if ($btn == "D") {
+              btnList.push(
+                <li key="multy_menu_del_btn" onClick={delFn.bind(this, {
+                  deep: d.id,
+                  id: d.id,
+                  type: d.type,
+                  ext1: d.ext1
+                })}>删除</li>)
+            }
+          }
 
+          _moreBtn.push(
+            <div className="t-multyMenu_list_more" key={"morebtn_" + d.id}>
+              <img src={sortdown} onClick={showMore.bind(this)} data-status="hide" />
+              <ul className="t-multyMenu_list_more_list">
+                {btnList}
+              </ul>
+            </div>
+          )
+        }
+
+        let num = ""
+        if (d.num) {
+          num = "(" + d.num + ")"
+        }
+
+        initData.push(
+          <li key={d.id} className="t-multyMenu_list_li">
+            <div className="clickmenu t-multyMenu_list_main" data-num={d.num} data-name={d.name} data-id={d.id} data-type={d.type} ref="mains1" onClick={clickFn.bind(this)} style={{ color: color == "dark" ? "black" : "white" }}>
+              <a href="javascript:void(0);" title={d.name + num} style={{ color: color == "dark" ? "black" : "white" }}>{_more}{d.name}{num}{_moreBtn}</a>
+            </div>
+            <ul className="sub">
+              {
+                d.children ? d.children.map(child => (
+                  <TreeNode type={type} lastdeep={lastdeep} key={child.id} data={child} deep={d.deep} mid={child.id} mname={child.name} ext1={child.ext1} mtype={child.type} id={d.id + "-" + child.id} color={color} editMenu={editMenu} addMenu={addMenu} delMenu={delMenu} clickMenu={clickMenu} openSubMenu={openSubMenu} isHadSub={child.isHadSub} btns={child.btns} sId={child.sId} />
+                )) : null
+              }
+            </ul>
+          </li>
+        )
+        //如果sodata为空,则删除已选中的复选框
+      }
+    }
+    
     let initHtml = []
     if (initData.length > 0) {
       initHtml.push(
-        <ul key="menu_list"  className="t-multyMenu_list">
+        <ul key="menu_list" className="t-multyMenu_list">
           {initData}
         </ul>)
     }
@@ -161,7 +164,7 @@ export default MultyMenu
 
 class TreeNode extends React.Component {
   render() {
-    const {sId,btns, isHadSub, data, color, deep, id, type, lastdeep, mid, mname, mtype, ext1, addMenu, editMenu, delMenu, clickMenu, openSubMenu} = this.props
+    const {sId, btns, isHadSub, data, color, deep, id, type, lastdeep, mid, mname, mtype, ext1, addMenu, editMenu, delMenu, clickMenu, openSubMenu} = this.props
     let subTree = null
     if (data.children) {
       subTree = data.children.map(child =>
@@ -171,7 +174,7 @@ class TreeNode extends React.Component {
 
     let _isHadSub
     if (isHadSub == "0") {
-      _isHadSub = <img key={"img1_" + id} src={color == "dark" ? addDark : add} data-deep={deep} data-status="hide" data-id={id}  onClick={openMenu.bind(this) } />
+      _isHadSub = <img key={"img1_" + id} src={color == "dark" ? addDark : add} data-deep={deep} data-status="hide" data-id={id} onClick={openMenu.bind(this)} />
     }
 
     //if (subTree) {
@@ -179,17 +182,17 @@ class TreeNode extends React.Component {
     if (deep < lastdeep) {
       more.push(
         <div key="menu-subicons" style={{ display: "inline-block", width: "16px", height: "16px", marginRight: "7px" }}>
-          <div className="menu-loading"><img src={color == "dark" ? loading : loadingw}/></div>
+          <div className="menu-loading"><img src={color == "dark" ? loading : loadingw} /></div>
           {_isHadSub}
         </div>
       )
       if (type == "allcheck") {
-        more.push(<img className="menu_checkbox" key={"img2_" + id} src={uncheck} data-deep={deep} data-status="uncheck" data-mid={mid} data-id={id}  data-mtype={mtype} data-ext1={ext1} data-sid={sId}  onClick={isCheck.bind(this) } />)
+        more.push(<img className="menu_checkbox" key={"img2_" + id} src={uncheck} data-deep={deep} data-status="uncheck" data-mid={mid} data-id={id} data-mtype={mtype} data-ext1={ext1} data-sid={sId} onClick={isCheck.bind(this)} />)
       }
     }
     else {
       if (type == "allcheck" || type == "lastcheck") {
-        more.push(<img className="menu_checkbox"  key={"img2_" + id} src={uncheck} data-deep={deep} data-status="uncheck" data-mid={mid} data-mtype={mtype} data-id={id} data-ext1={ext1} data-sid={sId}  onClick={isCheck.bind(this) } />)
+        more.push(<img className="menu_checkbox" key={"img2_" + id} src={uncheck} data-deep={deep} data-status="uncheck" data-mid={mid} data-mtype={mtype} data-id={id} data-ext1={ext1} data-sid={sId} onClick={isCheck.bind(this)} />)
       }
     }
 
@@ -199,7 +202,7 @@ class TreeNode extends React.Component {
       if (!_btns) {
         _btns = ["A", "E", "D"]
       }
-      else{
+      else {
         _btns = btns.split("/")
       }
       let btnList = []
@@ -212,7 +215,7 @@ class TreeNode extends React.Component {
               id: mid,
               type: mtype,
               ext1: ext1
-            }) }>新增</li>)
+            })}>新增</li>)
         }
         else if ($btn == "E") {
           btnList.push(
@@ -221,7 +224,7 @@ class TreeNode extends React.Component {
               id: mid,
               type: mtype,
               ext1: ext1
-            }) }>编辑</li>)
+            })}>编辑</li>)
         }
         else if ($btn == "D") {
           btnList.push(
@@ -230,14 +233,14 @@ class TreeNode extends React.Component {
               id: mid,
               type: mtype,
               ext1: ext1
-            }) }>删除</li>)
+            })}>删除</li>)
         }
       }
 
 
       _moreBtn.push(
         <div className="t-multyMenu_list_more" key={"morebtn_" + id}>
-          <img src={sortdown} onClick={showMore.bind(this) }  data-status="hide" />
+          <img src={sortdown} onClick={showMore.bind(this)} data-status="hide" />
           <ul className="t-multyMenu_list_more_list">
             {btnList}
           </ul>
@@ -252,7 +255,7 @@ class TreeNode extends React.Component {
 
     return (
       <li key={data.id}>
-        <div className={"clickmenu t-multyMenu_list_sub sub" + deep} data-num={data.num}  data-id={data.id}  data-name={data.name} data-type={data.type} data-deep={id}  onClick={clickFn.bind(this) }  style={{ color: color == "dark" ? "black" : "white" }}>
+        <div className={"clickmenu t-multyMenu_list_sub sub" + deep} data-num={data.num} data-id={data.id} data-name={data.name} data-type={data.type} data-deep={id} onClick={clickFn.bind(this)} style={{ color: color == "dark" ? "black" : "white" }}>
           <a href="javascript:void(0);" title={data.name + num} style={{ color: color == "dark" ? "black" : "white" }}>{more}{data.name}{num}{_moreBtn}</a>
         </div>
         <ul className="sub">
@@ -317,13 +320,13 @@ export function isCheck(e) {
   let obj = e.currentTarget
   let status = obj.getAttribute("data-status")
   if (status == "uncheck") {
-    
+
     obj.setAttribute("src", check)
     obj.setAttribute("data-status", "check")
-    if(obj.getAttribute("data-sid")){
+    if (obj.getAttribute("data-sid")) {
       isCheckNodes(obj, "check")
     }
-    else{
+    else {
       unCheckParents(obj, "uncheck")
       unCheckNodes(obj, "uncheck")
     }
@@ -331,8 +334,8 @@ export function isCheck(e) {
   else {
     obj.setAttribute("src", uncheck)
     obj.setAttribute("data-status", "uncheck")
-    if(obj.getAttribute("data-sid")){
-        unCheckNodes(obj, "uncheck")
+    if (obj.getAttribute("data-sid")) {
+      unCheckNodes(obj, "uncheck")
     }
   }
 }
@@ -433,7 +436,7 @@ export function updateCheckBoxStatus(sdata) {
       var s = sdata[i];
       for (var j = 0; j < $checkbox.length; j++) {
         var $c = $checkbox[j]
-        let _s = $c.getAttribute("data-sid")?$c.getAttribute("data-sid"):$c.getAttribute("data-mid")
+        let _s = $c.getAttribute("data-sid") ? $c.getAttribute("data-sid") : $c.getAttribute("data-mid")
         if (s == _s) {
           $c.setAttribute("src", check)
           $c.setAttribute("data-status", "check")

@@ -7,7 +7,7 @@ import { closeSidePage } from "SidePage"
 
 //图片
 import singleLeft from "!url!./img/singleLeft.png"
-import MultyMenu from "../../components/MultyMenu/index"
+import MultyMenu from "../../../components/MultyMenu/index"
 
 
 class VTeamListUserMenu extends React.Component {

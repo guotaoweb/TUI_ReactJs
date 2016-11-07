@@ -167,7 +167,7 @@ class CTRL_SELECT extends React.Component {
     return (
       <div className="t-formControls">
         {label}
-        <select className={this.props.required} style={this.props.style} onChange={this_onChange.bind(this)}  >
+        <select className={this.props.required} style={this.props.style} onChange={this._onChange.bind(this)}  >
           {options}
         </select>
       </div>

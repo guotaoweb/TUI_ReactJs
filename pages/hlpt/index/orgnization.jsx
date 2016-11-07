@@ -2,7 +2,7 @@ import ReactIScroll from 'react-iscroll'
 import iScroll from 'iscroll'
 
 //图片
-import minus from "!url!../../components/MultyMenu/img/minus.png"
+import minus from "!url!../../../components/MultyMenu/img/minus.png"
 import singleLeft from "!url!./img/singleLeft.png"
 //组件
 
@@ -13,7 +13,7 @@ import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, {editFn} from "MultyMenu"
 import SidePage, {openSidePage, closeSidePage} from "MultyMenu"
-import Pager from "../../components/Pager/index"
+import Pager from "Pager"
 import {openDialog, closeDialog} from "MultyMenu"
 import {openLoading,closeLoading} from "Loading"
 
@@ -22,6 +22,7 @@ class Orgnization extends React.Component {
   render() {
     const {odata, pageInfo, sidePageStatus, hasVerticalScroll, subList} = this.props
     let _this = this
+    console.info(odata)
     let tblContent = {
       "thead": { "name1": "序号", "name2": "组织编码", "name3": "名称", "name4": "排序号", "name5": "上级组织", "name6": "状态", "name7": "操作" },
       "tbody": []
@@ -108,7 +109,7 @@ class Orgnization extends React.Component {
 
   componentDidMount() {
     let _this = this;
-
+console.info(TUI)
     const {addData, errorMsg, addUnitBizTypes, addPositionTypes, addStatus, addCity, addSubList, updatePageInfo, addUnitKind} = this.props
     openLoading()
     //获取组织根节点,且默认展开第一个父节点

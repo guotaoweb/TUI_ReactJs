@@ -2,7 +2,7 @@ import ReactIScroll from 'react-iscroll'
 import iScroll from 'iscroll'
 
 //图片
-import minus from "!url!../../components/MultyMenu/img/minus.png"
+import minus from "!url!../../../components/MultyMenu/img/minus.png"
 import singleLeft from "!url!./img/singleLeft.png"
 //组件
 import PersonMatchPostEdit from "./personMatchPost.edit"
@@ -19,7 +19,7 @@ import Pager from "Pager"
 import { openDialog, closeDialog } from "Dialog"
 import { openLoading, closeLoading } from "Loading"
 
-class PersonMatchPost extends Component {
+class PersonMatchPost extends React.Component {
 
     render() {
         const {odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo, addPersonMatchPostRole,updateSearchInfo} = this.props

@@ -1,9 +1,9 @@
 import * as publicActions from '../../../components/Public/public.actions' //public 不能用,貌似是关键字
+import * as fromControl from '../../../components/Public/public.formControl.actions' //public 不能用,貌似是关键字
 import * as vteamEdit from './vteamEdit.actions'
 import * as vteamList from './vteamList.actions'
 import * as vteamManage from './vteamManage.actions'
 import * as vteamUsers from './vteamUsers.actions'
-import * as utils from '../utils/index'
 import * as orgnization from './orgnization.actions'
 import * as orgnizationManage from './orgnizationManage.actions'
 import * as positionGroup from './positionGroup.actions'
@@ -17,7 +17,6 @@ export default {
     ...vteamList,
     ...vteamManage,
     ...vteamUsers,
-    ...utils,
     ...orgnization,
     ...publicActions,
     ...orgnizationManage,
@@ -25,5 +24,6 @@ export default {
     ...positionMaintain,
     ...userMaintain,
     ...dataPrivileges,
-    ...personMatchPost
+    ...personMatchPost,
+    ...fromControl
 }

@@ -6,7 +6,7 @@ import * as config from "config"
 
 class Side extends React.Component {
   render() {
-    const {sideStatus, userId, list} = this.props
+    const {sideStatus, userId, list,title} = this.props
 
     let _list = []
     for (let i = 0; i < list.length; i++) {
@@ -31,7 +31,7 @@ class Side extends React.Component {
 
     return (
       <div className={"t-side " + (sideStatus == "0" ? "t-side--open" : "t-side--close")} ref="tSide">
-        <div className="t-side_header">TUI</div>
+        <div className="t-side_header">{title}</div>
         <ul className="t-side_list" ref="tSideList">
           {_list}
         </ul>

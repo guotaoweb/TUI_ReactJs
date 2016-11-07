@@ -3,7 +3,7 @@ import iScroll from 'iscroll'
 
 
 //图片
-import minus from "!url!../../components/MultyMenu/img/minus.png"
+import minus from "!url!../../../components/MultyMenu/img/minus.png"
 import singleLeft from "!url!./img/singleLeft.png"
 //组件
 import PositionMaintainEdit from "./positionMaintain.edit"
@@ -15,7 +15,7 @@ import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, { editFn } from "MultyMenu"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
-import Pager from "../../components/Pager/index"
+import Pager from "Pager"
 import { openDialog, closeDialog } from "Dialog"
 import { openLoading, closeLoading } from "Loading"
 

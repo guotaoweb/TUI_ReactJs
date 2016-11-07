@@ -1,6 +1,6 @@
 import Side from "./side"
 import Container from "./container"
-import TipTool from ".TipTool"
+import TipTool from "TipTool"
 import Dialog from "Dialog"
 import ModalDialog from "ModalDialog"
 import Loading from "Loading"
