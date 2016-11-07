@@ -22,7 +22,6 @@ class Orgnization extends React.Component {
   render() {
     const {odata, pageInfo, sidePageStatus, hasVerticalScroll, subList} = this.props
     let _this = this
-    console.info(odata)
     let tblContent = {
       "thead": { "name1": "序号", "name2": "组织编码", "name3": "名称", "name4": "排序号", "name5": "上级组织", "name6": "状态", "name7": "操作" },
       "tbody": []
@@ -30,7 +29,7 @@ class Orgnization extends React.Component {
     for (var i = 0; i < subList.length; i++) {
       let _d = subList[i]
       tblContent.tbody.push({
-        "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
+        "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
         "value2": _d.unitCode,
         "value3": _d.unitName,
         "value4": _d.sort,
@@ -109,7 +108,7 @@ class Orgnization extends React.Component {
 
   componentDidMount() {
     let _this = this;
-console.info(TUI)
+
     const {addData, errorMsg, addUnitBizTypes, addPositionTypes, addStatus, addCity, addSubList, updatePageInfo, addUnitKind} = this.props
     openLoading()
     //获取组织根节点,且默认展开第一个父节点
@@ -496,7 +495,7 @@ console.info(TUI)
 
   pageFn(index, loadComplete) {
     const {pageInfo, addSubList, updatePageInfo} = this.props
-    TUI.platform.get(pageInfo.url.replace("{0}", pageInfo.size * (index - 1)), function (result) {
+    TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
       if (result.code == 0) {
         addSubList(result.data)
         updatePageInfo({

@@ -11,7 +11,7 @@ import loading from "!url!./img/loading.png"
 
 class Pager extends React.Component {
     render() {
-        const {_papeInfo, pageLoadStatus, id} = this.props
+        const {_pageInfo, pageLoadStatus, id} = this.props
 
         let _id = id ? id : "index"
         let pagerLi = []
@@ -23,8 +23,8 @@ class Pager extends React.Component {
         if (pageLoadStatus == 0) {
             loadStatusImg = <div className="pager-loading"><img src={loading} /></div>
         }
-        if (_papeInfo[_id]) {
-            let pageInfo = _papeInfo[_id]
+        if (_pageInfo[_id]) {
+            let pageInfo = _pageInfo[_id]
             pageCIndex = pageInfo.index
             pageSize = pageInfo.size
             pageSum = pageInfo.sum
@@ -84,8 +84,10 @@ class Pager extends React.Component {
     }
 
     clickpage(e) {
-        const {fn, updatePageInfo, pageInfo, pageLoading, pageLoadComplete} = this.props
+        const {fn, updatePageInfo, _pageInfo, pageLoading, pageLoadComplete,id} = this.props
+        let _id = id ? id : "index"
 
+        let pageInfo = _pageInfo[_id]
         let obj = e.currentTarget
         if (obj.innerText == pageInfo.index) {
             return false
@@ -100,6 +102,7 @@ class Pager extends React.Component {
         })
         fn(parseInt(obj.innerText), pageLoadComplete)
         pageLoading()
+     
     }
     clickPrev(e) {
         const {pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete} = this.props
@@ -139,7 +142,7 @@ class Pager extends React.Component {
 }
 
 export default TUI._connect({
-    _papeInfo: "publicInfo.pageInfo",
+    _pageInfo: "publicInfo.pageInfo",
     pageLoadStatus: "publicInfo.pageLoadStatus"
 }, Pager)
 

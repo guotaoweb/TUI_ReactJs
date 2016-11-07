@@ -9,7 +9,7 @@ import PositionGroup from './index/positionGroup'
 import PositionMaintain from './index/positionMaintain'
 import UserMaintain from './index/userMaintain'
 import DataPrivileges from './index/dataPrivileges'
-import PostMatchPost from './index/personMatchPost'
+import PersonMatchPost from './index/personMatchPost'
 import * as config  from 'config'
 
 class Routers extends React.Component {
@@ -30,7 +30,7 @@ class Routers extends React.Component {
                     <Route path={config.ROOTPATH + "positionMaintain"} component={PositionMaintain} />
                     <Route path={config.ROOTPATH + "userMaintain"} component={UserMaintain} />
                     <Route path={config.ROOTPATH + "dataPrivileges"} component={DataPrivileges} />
-                    <Route path={config.ROOTPATH + "personMatchPost"} component={PostMatchPost} />
+                    <Route path={config.ROOTPATH + "personMatchPost"} component={PersonMatchPost} />
                 </Route>
         }
         const {history} = this.props

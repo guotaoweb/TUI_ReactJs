@@ -1,3 +1,5 @@
+import '!style!css!postcss!sass!./style.scss'
+
 import Side from "./side"
 import Container from "./container"
 import TipTool from "TipTool"

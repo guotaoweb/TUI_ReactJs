@@ -32,7 +32,7 @@ class Manage extends React.Component {
     for (var i = 0; i < users.length; i++) {
       let _d = users[i]
       tblContent.tbody.push({
-        "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
+        "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
         "value2": _d.user_id,
         "value3": _d.user_name,
         "value4": _d.user_type == "1" ? "是" : "否",
@@ -137,7 +137,7 @@ class Manage extends React.Component {
             <span>虚拟组织人员列表</span>
             <Btn type="add" txt="新增" style={{ float: "right" }} href={this.addUserList.bind(this)} />
           </div>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} />
+          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="80,0,0,150,150,150" />
           <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
         </Content3>
         <SidePage>
@@ -155,7 +155,7 @@ class Manage extends React.Component {
 
     const {pageInfo, addUserInVTeam, updatePageInfo} = this.props
 
-    TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
+    TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
       if (result.code == 0) {
         addUserInVTeam(result.datas)
         updatePageInfo({

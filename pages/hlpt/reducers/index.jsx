@@ -3,7 +3,7 @@ import { routerReducer } from 'react-router-redux'
 
 
 import publicInfo from '../../../components/public/public.reducers'
-import fromControlInfo from '../../../components/Public/public.formControl.reducer' //public 不能用,貌似是关键字
+import formControlInfo from '../../../components/Public/public.formControl.reducer' //public 不能用,貌似是关键字
 import manages from './manage.reducers'
 import vteamList from './vteamList.reducers'
 import orgnizations from './orgnization.reducers'
@@ -28,7 +28,7 @@ const rootReducer = combineReducers({
 	userMaintain,
 	dataPrivileges,
 	personMatchPost,
-	fromControlInfo,
+	formControlInfo,
   	routing: routerReducer //整合路由 
 })
 

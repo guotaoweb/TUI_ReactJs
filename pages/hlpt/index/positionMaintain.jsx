@@ -31,7 +31,7 @@ class PositionMaintain extends React.Component {
     for (var i = 0; i < data.length; i++) {
       let _d = data[i]
       tblContent.tbody.push({
-        "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
+        "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
         "value2": _d.postId,
         "value3": _d.positionName,
         "value4": _d.kindName,
@@ -433,7 +433,7 @@ class PositionMaintain extends React.Component {
 
   pageFn(index, loadComplete) {
     const {pageInfo, addPositionMaintain, updatePageInfo} = this.props
-    TUI.platform.get(pageInfo.url.replace("{0}", pageInfo.size * (index - 1)), function (result) {
+    TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
       if (result.code == 0) {
         addPositionMaintain(result.data)
         updatePageInfo({

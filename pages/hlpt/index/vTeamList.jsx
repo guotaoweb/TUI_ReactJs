@@ -12,6 +12,7 @@ import Pager, { pageLoadCompelte } from "Pager"
 import { openLoading, closeLoading } from "Loading"
 import VTeamListEdit from "./vTeamList.edit"
 import VTeamListUserMenu from "./vTeamList.userMenu"
+import * as config from 'config'
 
 class Manage extends React.Component {
   render() {
@@ -22,7 +23,7 @@ class Manage extends React.Component {
       router,
       sidePageInfo,
       updateVTeamId,
-      updateVTeamInfo,
+      updateEditInfo,
       pageInfo,
       delTeamList,
       addOSData
@@ -50,7 +51,7 @@ class Manage extends React.Component {
         _admins.push(_d.admins[j].username)
       }
       tblContent.tbody.push({
-        "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
+        "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
         "value2": _d.team_name,
         "value3": _d.team_note,
         "value4": _admins.join(","),
@@ -60,7 +61,9 @@ class Manage extends React.Component {
             TUI.platform.get("/projectteam/team/" + _d.team_id, function (result) {
               if (result.code == 0) {
                 var _d = result.datas[0]
-                updateVTeamInfo({
+
+                updateEditInfo({
+                  infoName:"VTeamInfo",
                   id: _d.team_id,
                   code: _d.team_code,
                   name: _d.team_name,
@@ -80,7 +83,7 @@ class Manage extends React.Component {
         }, {
           "name": "管理",
           "fn": function () {
-            router.push(TUI.ROOTPATH + "manage/" + _d.team_id)
+            router.push(config.ROOTPATH + "manage/" + _d.team_id)
           }
         }, {
           "name": "权限",
@@ -150,7 +153,7 @@ class Manage extends React.Component {
     // this.props.addXNUserData(obj1.datas)
     //openDialog()
     const {pageInfo, updateVTeamData, updatePageInfo} = this.props
-    TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
+    TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
       if (result.code == 0) {
         updateVTeamData(result.datas)
         updatePageInfo({
@@ -246,5 +249,6 @@ export default TUI._connect({
   userId: "publicInfo.userInfo.userId",
   sidePageInfo: "publicInfo.sidePageInfo",
   pageInfo: "publicInfo.pageInfo",
-  isRefreshPage: "publicInfo.isRefreshPage"
+  isRefreshPage: "publicInfo.isRefreshPage",
+  editInfo:"formControlInfo.data"
 }, Manage)

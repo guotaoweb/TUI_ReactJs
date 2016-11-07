@@ -53,7 +53,8 @@ class CTRL_INPUT extends React.Component {
       addFn,
       style,
       disabled,
-      value
+      value,
+      data
     } = this.props
 
     let _label
@@ -69,10 +70,19 @@ class CTRL_INPUT extends React.Component {
       }
     }
 
+    let _value=data[value.split(".")[0]][value.split(".")[1]]
+    // console.info(value)
+    // console.info(data[value.split(".")[0]])
+    // if(value && data[value.split(".")[0]]){
+    //   console.info("===>")
+    //     _value = data[value.split(".")[0]][value.split(".")[1]]
+    // }
+    
+
     return (
       <div className="t-formControls">
         {_label}
-        <input className={required} type={type ? type : "text"} onBlur={onBlur} onChange={this._onChange.bind(this)} value={value ? this.props.data[value.split(".")[1]] : ""} style={style} disabled={disabled} data-addFn={addFn} />
+        <input className={required} type={type ? type : "text"} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value} style={style} disabled={disabled} data-addFn={addFn} />
       </div>
     )
   }
@@ -99,7 +109,8 @@ class CTRL_TEXTAREA extends React.Component {
       labelWidth,
       addFn,
       style,
-      value
+      value,
+      data
     } = this.props
 
     let _label
@@ -116,10 +127,18 @@ class CTRL_TEXTAREA extends React.Component {
         _label = <label style={_style}><b style={{ color: "red" }}>&nbsp;&nbsp;</b>{label}: </label>
       }
     }
+
+    let _value=""
+
+    if(value && data[value.split(".")[0]]){
+        _value = data[value.split(".")[0]][value.split(".")[1]]
+    }
+
+
     return (
       <div className="t-formControls">
         {_label}
-        <textarea className={required} value={value ? this.props.data[value.split(".")[1]] : ""} onChange={this._onChange.bind(this)} style={style} ></textarea>
+        <textarea className={required} value={_value} onChange={this._onChange.bind(this)} style={style} ></textarea>
       </div>
     )
   }

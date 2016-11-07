@@ -6,16 +6,6 @@ const initState = {
 
 export default function manageReducers(state = initState, action) {
     switch (action.type) {
-        case "UPDATE_FORMCONTROL":
-            return Object.assign({}, state, {
-                sidePageInfo: {
-                    status: action.data.status,
-                    width: action.data.width,
-                    gateWay: action.data.gateWay,
-                    type: action.data.type,
-                    id: action.data.id
-                }
-            })
         case "ADD_FORMCONTROL":
             let _infoName = action.data.infoName,
                 initObject = {}
@@ -35,9 +25,49 @@ export default function manageReducers(state = initState, action) {
                     }
                 }
             }
-
+console.info(initObject)
             return Object.assign({}, state, {
                 data: initObject
+            })
+        case "UPDATE_FORMCONTROL":
+            let _infoName1 = action.data.infoName,
+                initObject1 = {}
+            if (_infoName1) {
+                if (!state.data[_infoName1]) {
+                    initObject1[_infoName1] = {}
+                }
+                else {
+                    initObject1 = state.data
+                }
+                for (let key in action.data) {
+                    if (state.data[_infoName1]) {
+                        initObject1[_infoName1][key] = action.data[key] != undefined ? action.data[key] : state.data[_infoName1][key]
+                    }
+                    else {
+                        initObject1[_infoName1][key] = action.data[key]
+                    }
+                }
+            }
+
+            return Object.assign({}, state, {
+                data: initObject1
+            })
+
+        case "CLEAR_FORMCONTROL":
+            let _infoName2 = action.data.infoName,
+                initObject2 = {}
+            if (_infoName2) {
+                if (!state.data[_infoName2]) {
+                    initObject2[_infoName2] = {}
+                }
+                else {
+                    initObject2 = state.data
+                }
+                initObject2={}
+            }
+
+            return Object.assign({}, state, {
+                data: initObject2
             })
         default: return state
     }
