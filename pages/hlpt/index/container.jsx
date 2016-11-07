@@ -1,5 +1,13 @@
+<<<<<<< HEAD:pages/hlpt/index/container.jsx
 //组件
 import Search from "Search"
+=======
+import React, { Component} from 'react'
+import ReactDOM from 'react-dom'
+
+import Search from './search'
+
+>>>>>>> e0279552c83a386623c95e499d6dc2b497584398:pages/tsm/index/container.jsx
 
 class Container extends React.Component {
   render() {

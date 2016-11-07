@@ -7,18 +7,22 @@ import cha from "!url!./img/chacha.png"
 
 import Btn from "Btn"
 
+
 class FormControls extends React.Component {
   render() {
-    const {ctrl, label, type, txt, labelWidth} = this.props
+    const {ctrl, label, type, txt, labelWidth, data, value} = this.props
     let bindElem
+
     if (ctrl == "input") {
-      bindElem = <CTRL_INPUT label={label} labelWidth={labelWidth} type={type} txt={txt} onBlur={this.props.onBlur} onChange={this.props.onChange} style={this.props.style} disabled={this.props.disabled} required={this.props.required} />
+      bindElem = <CTRL_INPUT label={label} labelWidth={labelWidth} type={type} value={value} onBlur={this.props.onBlur} style={this.props.style} disabled={this.props.disabled} addFn={this.props.addFormControl
+      } required={this.props.required} data={data} />
     }
     else if (ctrl == "textarea") {
-      bindElem = <CTRL_TEXTAREA label={label} labelWidth={labelWidth} txt={txt} onChange={this.props.onChange} style={this.props.style} required={this.props.required} />
+      bindElem = <CTRL_TEXTAREA label={label} labelWidth={labelWidth} value={value} tyle={this.props.style} required={this.props.required} addFn={this.props.addFormControl
+      } required={this.props.required} data={data} />
     }
     else if (ctrl == "select") {
-      bindElem = <CTRL_SELECT label={label} labelWidth={labelWidth} txt={txt} options={this.props.options} onChange={this.props.onChange} style={this.props.style} required={this.props.required} />
+      bindElem = <CTRL_SELECT label={label} labelWidth={labelWidth} value={value} options={this.props.options} style={this.props.style} required={this.props.required} />
     }
     else if (ctrl == "radio") {
       bindElem = <CTRL_RADIO label={label} labelWidth={labelWidth} txt={txt} style={this.props.style} disabled={this.props.disabled} groupName={this.props.groupName} selected={this.props.selected} value={this.props.value} />
@@ -28,7 +32,7 @@ class FormControls extends React.Component {
     }
     else if (ctrl == "tip") {
       bindElem = <CTRL_TIP label={label} labelWidth={labelWidth} txt={txt} deleteFn={this.props.deleteFn} addFn={this.props.addFn} style={this.props.style} />
-    } 
+    }
 
     return (
       <div>
@@ -40,50 +44,96 @@ class FormControls extends React.Component {
 
 class CTRL_INPUT extends React.Component {
   render() {
-    let label
-    if (this.props.label) {
+    const {
+      label,
+      required,
+      labelWidth,
+      type,
+      onBlur,
+      addFn,
+      style,
+      disabled,
+      value
+    } = this.props
+
+    let _label
+    if (label) {
       let _style = {
-        width: this.props.labelWidth + "px"
+        width: labelWidth + "px"
       }
-      if (this.props.required == "required") {
-        label = <label style={_style}><b style={{ color: "red" }}>*</b>{this.props.label}: </label>
+      if (required == "required") {
+        _label = <label style={_style}><b style={{ color: "red" }}>*</b>{label}: </label>
       }
       else {
-        label = <label style={_style}><b style={{ color: "red" }}>&nbsp;&nbsp;</b>{this.props.label}: </label>
+        _label = <label style={_style}><b style={{ color: "red" }}>&nbsp;&nbsp;</b>{label}: </label>
       }
     }
 
     return (
       <div className="t-formControls">
-        {label}
-        <input className={this.props.required} type={this.props.type ? this.props.type : "text"} onBlur={this.props.onBlur} onChange={this.props.onChange} value={this.props.txt} style={this.props.style} disabled={this.props.disabled} />
+        {_label}
+        <input className={required} type={type ? type : "text"} onBlur={onBlur} onChange={this._onChange.bind(this)} value={value ? this.props.data[value.split(".")[1]] : ""} style={style} disabled={disabled} data-addFn={addFn} />
       </div>
     )
+  }
+
+  _onChange(e) {
+    const {value, addFn, data} = this.props
+
+    let _object = value.split(".")
+    let _info = {
+      infoName: _object[0]
+    }
+
+    _info[_object[1]] = e.currentTarget.value
+
+    addFn(_info)
   }
 }
 
 class CTRL_TEXTAREA extends React.Component {
   render() {
-    let label
-    if (this.props.label) {
+    const {
+      label,
+      required,
+      labelWidth,
+      addFn,
+      style,
+      value
+    } = this.props
+
+    let _label
+    if (label) {
       let _style = {
-        width: this.props.labelWidth + "px",
+        width: labelWidth + "px",
         verticalAlign: "top"
       }
 
-      if (this.props.required == "required") {
-        label = <label style={_style}><b style={{ color: "red" }}>*</b>{this.props.label}: </label>
+      if (required == "required") {
+        _label = <label style={_style}><b style={{ color: "red" }}>*</b>{label}: </label>
       }
       else {
-        label = <label style={_style}><b style={{ color: "red" }}>&nbsp;&nbsp;</b>{this.props.label}: </label>
+        _label = <label style={_style}><b style={{ color: "red" }}>&nbsp;&nbsp;</b>{label}: </label>
       }
     }
     return (
       <div className="t-formControls">
-        {label}
-        <textarea className={this.props.required} value={this.props.txt} onChange={this.props.onChange} style={this.props.style} ></textarea>
+        {_label}
+        <textarea className={required} value={value ? this.props.data[value.split(".")[1]] : ""} onChange={this._onChange.bind(this)} style={style} ></textarea>
       </div>
     )
+  }
+
+  _onChange(e) {
+    const {value, addFn, data} = this.props
+    let _object = value.split(".")
+    let _info = {
+      infoName: _object[0]
+    }
+
+    _info[_object[1]] = e.currentTarget.value
+
+    addFn(_info)
   }
 }
 
@@ -106,7 +156,7 @@ class CTRL_SELECT extends React.Component {
     if (this.props.options) {
       for (var index = 0; index < this.props.options.length; index++) {
         var $o = this.props.options[index];
-        if ($o.id == this.props.txt) {
+        if ($o.id == this.props.value) {
           options.push(<option key={"o_" + index} value={$o.id} selected="selected">{$o.name}</option>)
         }
         else {
@@ -117,11 +167,22 @@ class CTRL_SELECT extends React.Component {
     return (
       <div className="t-formControls">
         {label}
-        <select className={this.props.required} style={this.props.style} onChange={this.props.onChange}  >
+        <select className={this.props.required} style={this.props.style} onChange={this_onChange.bind(this)}  >
           {options}
         </select>
       </div>
     )
+  }
+  _onChange(e) {
+    const {value, addFn, data} = this.props
+    let _object = value.split(".")
+    let _info = {
+      infoName: _object[0]
+    }
+
+    _info[_object[1]] = e.currentTarget.value
+
+    addFn(_info)
   }
 }
 
@@ -198,14 +259,14 @@ class CTRL_CHECKBOX extends React.Component {
       status
 
 
-    if($elem.className=="t-c_checkbox"){return false}
+    if ($elem.className == "t-c_checkbox") { return false }
     if ($elem.parentNode.getAttribute("data-status") == "selected") {
       $elem.parentNode.setAttribute("data-status", "unselect")
       $elem.setAttribute("src", unCheckbox)
       if (this.props.fn) {
-        this.props.fn("close",{
-          name:this.props.txt,
-          id:$elem.parentNode.getAttribute("data-id")
+        this.props.fn("close", {
+          name: this.props.txt,
+          id: $elem.parentNode.getAttribute("data-id")
         })
       }
     }
@@ -213,13 +274,13 @@ class CTRL_CHECKBOX extends React.Component {
       $elem.parentNode.setAttribute("data-status", "selected")
       $elem.setAttribute("src", isCheckbox)
       if (this.props.fn) {
-        this.props.fn("open",{
-          name:this.props.txt,
-          id:$elem.parentNode.getAttribute("data-id")
+        this.props.fn("open", {
+          name: this.props.txt,
+          id: $elem.parentNode.getAttribute("data-id")
         })
       }
     }
-    
+
   }
 }
 
@@ -266,4 +327,7 @@ class CTRL_TIP extends React.Component {
 }
 
 
-export default FormControls
+
+export default TUI._connect({
+  data: "formControlInfo.data"
+}, FormControls)
