@@ -1,4 +1,4 @@
-import Content2,{getContentIndex} from "Content2"
+import Content2, { getContentIndex } from "Content2"
 import FormControls from "FormControls"
 import Btn from "Btn"
 import { closeSidePage } from "SidePage"
@@ -10,12 +10,12 @@ import PositionMaintainRoleEdit from "./positionMaintain.role.edit"
 
 class PositionMaintainEdit extends React.Component {
     render() {
-        const {sidePageInfo, baseInfo, positionFamilys, jobFamilys, jobStatus, roleStatus} = this.props
+        const {sidePageInfo, positionFamilys, jobFamilys, editInfo} = this.props
 
         let tabs = null,
             _this = this
         if (sidePageInfo.status == "addPositionMaintain") {
-            tabs = [{ name: "添加职位信息",id:"baseInfo" }]
+            tabs = [{ name: "添加职位信息", id: "baseInfo" }]
         }
         else {
             tabs = [{ name: "编辑职位信息", id: "baseInfo" }, { name: "工作职责", id: "positionmaintain", fn: function () { _this.getPositionMaintainJobs() } }, { name: "角色设置", id: "roleset", fn: function () { _this.getPositionMaintainRoles() } }]
@@ -23,36 +23,48 @@ class PositionMaintainEdit extends React.Component {
 
         let _PositionMaintainJob = [],
             _PositionMaintainRole = []
-        if (jobStatus == "edit" || jobStatus == "add") {
-            _PositionMaintainJob.push(<PositionMaintainJobEdit key="PositionMaintainJobEdit" />)
+     
+        if (editInfo.jobsInfo) {
+            if (editInfo.jobsInfo.status == "edit" || editInfo.jobsInfo.status == "add") {
+                _PositionMaintainJob.push(<PositionMaintainJobEdit key="PositionMaintainJobEdit" />)
+            }
+            else {
+                _PositionMaintainJob.push(<PositionMaintainJob key="PositionMaintainJob" />)
+            }
         }
-        else {
+        else{
             _PositionMaintainJob.push(<PositionMaintainJob key="PositionMaintainJob" />)
         }
 
-        if (roleStatus == "edit" || roleStatus == "add") {
-            _PositionMaintainRole.push(<PositionMaintainRoleEdit key="PositionMaintainRoleEdit" />)
+        if (editInfo.rolesInfo) {
+            if (editInfo.rolesInfo.status == "edit" || editInfo.rolesInfo.status == "add") {
+                _PositionMaintainRole.push(<PositionMaintainRoleEdit key="PositionMaintainRoleEdit" />)
+            }
+            else {
+                _PositionMaintainRole.push(<PositionMaintainRole key="PositionMaintainRole" />)
+            }
         }
-        else {
+        else{
             _PositionMaintainRole.push(<PositionMaintainRole key="PositionMaintainRole" />)
         }
+
 
         return (
             <Content2 tabs={tabs} key="content2_userEdit">
                 <div>
-                    <FormControls label="职位ID" ctrl="input" txt={baseInfo.id} disabled="disabled" onChange={this.onChangeById.bind(this)} labelWidth="100" />
+                    <FormControls label="职位ID" ctrl="input" value="positionMaintainInfo.id" disabled="disabled" />
 
-                    <FormControls label="职位名称" ctrl="input" txt={baseInfo.name} onChange={this.onChangeByName.bind(this)} required="required" labelWidth="100" />
-                    <FormControls label="职位编制" ctrl="input" txt={baseInfo.staffing} onChange={this.onChangeByStaffing.bind(this)} labelWidth="100" />
+                    <FormControls label="职位名称" ctrl="input" value="positionMaintainInfo.name" required="required" />
+                    <FormControls label="职位编制" ctrl="input" value="positionMaintainInfo.staffing" />
 
-                    <FormControls label="职位族" ctrl="select" options={positionFamilys} txt={baseInfo.positionFamily} onChange={this.onChangeByPositionFamily.bind(this)} labelWidth="100" />
-                    <FormControls label="职位序列" ctrl="select" options={jobFamilys} txt={baseInfo.jobFamily} onChange={this.onChangeByJobFamily.bind(this)} labelWidth="100" />
+                    <FormControls label="职位族" ctrl="select" options={positionFamilys} value="positionMaintainInfo.positionFamily" />
+                    <FormControls label="职位序列" ctrl="select" options={jobFamilys} value="positionMaintainInfo.jobFamily" />
 
-                    <FormControls label="备注" ctrl="textarea" txt={baseInfo.remark} onChange={this.onChangeByRemark.bind(this)} labelWidth="100" />
+                    <FormControls label="备注" ctrl="textarea" value="positionMaintainInfo.remark" />
 
-                    <div style={{ marginLeft: "100px", paddingTop: "5px" }}>
-                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} style={{ float: "left", marginRight: "10px" }} />
-                        <Btn type="submit" txt="确定" href={this.editPositionMaintain.bind(this)} style={{ float: "left" }} />
+                    <div className="formControl-btn">
+                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
+                        <Btn type="submit" txt="确定" href={this.editPositionMaintain.bind(this)} />
                     </div>
                     <br /><br /><br />
                 </div>
@@ -75,7 +87,7 @@ class PositionMaintainEdit extends React.Component {
                     url: "/jobs?positionId=" + sidePageInfo.gateWay.positionId + "&from={0}&limit=10"
                 })
             }
-            else{
+            else {
                 addPositionMaintainJobs([])
             }
         })
@@ -93,7 +105,7 @@ class PositionMaintainEdit extends React.Component {
                     url: "/roles?positionId=" + sidePageInfo.gateWay.positionId + "&from={0}&limit=10"
                 })
             }
-            else{
+            else {
                 addPositionMaintainRoles([])
             }
         })
@@ -124,7 +136,7 @@ class PositionMaintainEdit extends React.Component {
                     pushPositionMaintain(result.data)
                 }
                 else {
-                    _this.props.errorMsg(TUI.ERROR_INFO[result.code])
+                    _this.props.errorMsg(Config.ERROR_INFO[result.code])
                 }
             })
         }
@@ -137,7 +149,7 @@ class PositionMaintainEdit extends React.Component {
                     updatePositionMaintain(postJson)
                 }
                 else {
-                    _this.props.errorMsg(TUI.ERROR_INFO[result.code]);
+                    _this.props.errorMsg(Config.ERROR_INFO[result.code]);
                 }
             })
         }
@@ -195,41 +207,7 @@ class PositionMaintainEdit extends React.Component {
         closeSidePage()
     }
 
-    onChangeById(e) {
-        this.props.updatePositionMaintainInfo({
-            id: e.currentTarget.value
-        })
-    }
-    onChangeByName(e) {
-        this.props.updatePositionMaintainInfo({
-            name: e.currentTarget.value
-        })
-    }
-    onChangeByStaffing(e) {
-        this.props.updatePositionMaintainInfo({
-            staffing: e.currentTarget.value
-        })
-    }
-    onChangeByPositionFamily(e) {
-        let familyId = e.currentTarget.value,
-            _this = this
-        this.props.updatePositionMaintainInfo({
-            positionFamily: familyId
-        })
-        this.loadJobFamilys(familyId) 
-    }
-    onChangeByJobFamily(e) {
-        this.props.updatePositionMaintainInfo({
-            jobFamily: e.currentTarget.value
-        })
-    }
-    onChangeByRemark(e) {
-        this.props.updatePositionMaintainInfo({
-            remark: e.currentTarget.value
-        })
-    }
-
-    loadJobFamilys(familyId) { 
+    loadJobFamilys(familyId) {
         if (familyId) {
             let _this = this
             TUI.platform.get("/jobfamilys/" + familyId, function (result) {
@@ -261,7 +239,6 @@ export default TUI._connect({
     positionFamilys: "positionMaintain.positionFamilys",
     jobFamilys: "positionMaintain.jobFamilys",
     editId: "positionMaintain.editId",
-    jobStatus: "positionMaintain.jobsInfo.status",
-    roleStatus: "positionMaintain.rolesInfo.status",
     jobsData: "positionMaintain.jobsData",
+    editInfo: "formControlInfo.data"
 }, PositionMaintainEdit)

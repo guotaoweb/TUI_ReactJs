@@ -21,7 +21,7 @@ import { openLoading, closeLoading } from "Loading"
 
 class PositionGroup extends React.Component {
   render() {
-    const { type, errorMsg, msg, updateSidePageInfo, sidePageInfo, data, pageInfo, updateDialog, updatePageInfo,hasVerticalScroll} = this.props
+    const { type, errorMsg, msg, updateSidePageInfo, sidePageInfo, data, pageInfo, updateDialog, updatePageInfo, hasVerticalScroll} = this.props
 
     let _this = this
     let editContent
@@ -90,7 +90,7 @@ class PositionGroup extends React.Component {
         addPositionGroup(main)
       }
       else {
-        errorMsg(TUI.ERROR_INFO[obj.code]);
+        errorMsg(Config.ERROR_INFO[obj.code]);
       }
     })
 
@@ -114,11 +114,12 @@ class PositionGroup extends React.Component {
       let id = $sub.getAttribute("data-id")
       TUI.platform.get("/positionType/" + id, function (result) {
         if (result.code == 0) {
-
-          _this.props.updatePositionTypeInfo(result.data)
+          let _editInfo = result.data
+          _editInfo["infoName"] = "positionTypeInfo"
+          _this.props.addEditInfo(_editInfo)
         }
         else {
-          _this.props.errorMsg(TUI.ERROR_INFO[result.code]);
+          _this.props.errorMsg(Config.ERROR_INFO[result.code]);
         }
       })
     }
@@ -146,17 +147,24 @@ class PositionGroup extends React.Component {
     TUI.platform.get(url, function (result) {
       if (result.code == 0) {
         if (type == "0") {
-          _this.props.addPositionTypeInfo(result.data)
+          let _editInfo = result.data
+          _editInfo["infoName"] = "positionTypeInfo"
+          _this.props.addEditInfo(_editInfo)
         }
         else if (type == "1") {
-          _this.props.addPositionFamilyInfo(result.data)
+          let _editInfo = result.data
+          _editInfo["infoName"] = "positionFamilyInfo"
+          _this.props.addEditInfo(_editInfo)
+
         }
         else {
-          _this.props.addJobFamilyInfo(result.data)
+          let _editInfo = result.data
+          _editInfo["infoName"] = "jobFamilyInfo"
+          _this.props.addEditInfo(_editInfo)
         }
       }
       else {
-        _this.props.errorMsg(TUI.ERROR_INFO[result.code]);
+        _this.props.errorMsg(Config.ERROR_INFO[result.code]);
       }
     })
   }
@@ -243,7 +251,7 @@ class PositionGroup extends React.Component {
             _this.props.successMsg(name + "删除成功")
           }
           else {
-            _this.props.errorMsg(TUI.ERROR_INFO[result.code]);
+            _this.props.errorMsg(Config.ERROR_INFO[result.code]);
           }
         })
       }
@@ -256,7 +264,7 @@ class PositionGroup extends React.Component {
             _this.props.successMsg(name + "删除成功")
           }
           else {
-            _this.props.errorMsg(TUI.ERROR_INFO[result.code]);
+            _this.props.errorMsg(Config.ERROR_INFO[result.code]);
           }
         })
       }
@@ -266,17 +274,23 @@ class PositionGroup extends React.Component {
   }
 
   addMenu(params) {
-    const {clearPositionFamilyInfo, clearPositionTypeInfo, clearJobFamilyInfo, updatePositionType} = this.props
+    const {clearEditInfo,updatePositionType} = this.props
     let _type = parseInt(params.type) + 1
 
     if (_type == 0) {
-      clearPositionTypeInfo()
+      clearEditInfo({
+        infoName:"positionTypeInfo"
+      })
     }
     else if (_type == 1) {
-      clearPositionFamilyInfo()
+      clearEditInfo({
+        infoName:"positionFamilyInfo"
+      })
     }
     else {
-      clearJobFamilyInfo()
+      clearEditInfo({
+        infoName:"jobFamilyInfo"
+      })
     }
     setTimeout(function () { updatePositionType(_type) }, 200)
   }
@@ -312,5 +326,6 @@ export default TUI._connect({
   sidePageInfo: "publicInfo.sidePageInfo",
   data: "positionGroup.data",
   type: "positionGroup.type",
-  hasVerticalScroll: "orgnizationManage.hasVerticalScroll"
+  hasVerticalScroll: "orgnizationManage.hasVerticalScroll",
+  editInfo:"formControlInfo.data"
 }, PositionGroup)

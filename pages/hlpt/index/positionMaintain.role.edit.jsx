@@ -5,13 +5,13 @@ import SidePage, { openSidePage, closeSidePage } from "SidePage"
 
 class PositionMaintainRoleEdit extends React.Component {
     render() {
-        const {rolesInfo, tips} = this.props
+        const {tips} = this.props
 
         return (
             <div>
-                <FormControls label="角色名称" ctrl="input" txt={rolesInfo.name} onChange={this.onChangeByName.bind(this)} required="required" labelWidth="100" />
-                <FormControls label="关联职责" ctrl="tip" txt={tips} addFn={this.addFn.bind(this)} deleteFn={this.deleteFn.bind(this)} labelWidth="100" /><br className="clear" />
-                <FormControls label="备注" ctrl="textarea" txt={rolesInfo.remark} onChange={this.onChangeByRemark.bind(this)} labelWidth="100" />
+                <FormControls label="角色名称" ctrl="input" value="rolesInfo.name" required="required"/>
+                <FormControls label="关联职责" ctrl="tip" txt={tips} addFn={this.addFn.bind(this)} deleteFn={this.deleteFn.bind(this)} /><br className="clear" />
+                <FormControls label="备注" ctrl="textarea" value="rolesInfo.remark" />
 
                 <div style={{ marginLeft: "100px", paddingTop: "5px" }}>
                     <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} style={{ float: "left", marginRight: "10px" }} />
@@ -37,7 +37,7 @@ class PositionMaintainRoleEdit extends React.Component {
     }
 
     editPositionMaintainRole() {
-        const {tips, sidePageInfo, errorMsg, successMsg, rolesInfo, pushPositionMaintainRoles, updatePositionMaintainRoles, jobsSelectedData} = this.props
+        const {tips, sidePageInfo, errorMsg, successMsg, editInfo, pushPositionMaintainRoles,jobsSelectedData} = this.props
 
         let _positionId = [],
             _this = this
@@ -48,13 +48,13 @@ class PositionMaintainRoleEdit extends React.Component {
 
         let jsonParam = {
             positionId: sidePageInfo.gateWay.positionId,
-            roleName: rolesInfo.name,
-            remark: rolesInfo.remark,
+            roleName: editInfo.rolesInfo.name,
+            remark: editInfo.rolesInfo.remark,
             jobIds: _positionId.join(",")
         }
 
 
-        if (rolesInfo.status == "add") {
+        if (editInfo.rolesInfo.status == "add") {
             TUI.platform.post("/role/role-jobs", jsonParam, function (result) {
                 if (result.code == 0) {
                     _this.goBack()
@@ -62,12 +62,12 @@ class PositionMaintainRoleEdit extends React.Component {
                     pushPositionMaintainRoles(result.data)
                 }
                 else {
-                    errorMsg(TUI.ERROR_INFO[result.code])
+                    errorMsg(Config.ERROR_INFO[result.code])
                 }
             })
         }
         else {
-            jsonParam.roleId = rolesInfo.id
+            jsonParam.roleId = editInfo.rolesInfo.id
             TUI.platform.put("/role/role-jobs", jsonParam, function (result) {
                 if (result.code == 0) {
                     _this.goBack()
@@ -81,7 +81,7 @@ class PositionMaintainRoleEdit extends React.Component {
                     updatePositionMaintainRoles(jsonParam)
                 }
                 else {
-                    errorMsg(TUI.ERROR_INFO[result.code]);
+                    errorMsg(Config.ERROR_INFO[result.code]);
                 }
             })
         }
@@ -135,10 +135,13 @@ class PositionMaintainRoleEdit extends React.Component {
     }
 
     goBack() {
-        this.props.updatePositionMaintainRolesInfo({
+        this.props.updateEditInfo({
+            infoName:"rolesInfo",
             status: "list"
         })
-        this.props.clearPositionMaintainRolesInfo()
+        this.props.clearEditInfo({
+            infoName:"rolesInfo"
+        })
         this.props.clearTip()
         closeSidePage({
             id:"PositionMaintainRoleEdit"
@@ -147,20 +150,10 @@ class PositionMaintainRoleEdit extends React.Component {
 
     goClose() {
         closeSidePage()
-        this.props.clearPositionMaintainRolesInfo()
+        this.props.clearEditInfo({
+            infoName:"rolesInfo"
+        })
         this.props.clearTip()
-    }
-
-    onChangeByName(e) {
-        this.props.updatePositionMaintainRolesInfo({
-            name: e.currentTarget.value
-        })
-    }
-
-    onChangeByRemark(e) {
-        this.props.updatePositionMaintainRolesInfo({
-            remark: e.currentTarget.value
-        })
     }
 }
 

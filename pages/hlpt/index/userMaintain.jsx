@@ -20,7 +20,7 @@ import { openLoading, closeLoading } from "Loading"
 class UserMaintain extends React.Component {
 
   render() {
-    const {odata, pageInfo, sidePageStatus, hasVerticalScroll, data} = this.props
+    const {odata, pageInfo, sidePageStatus, hasVerticalScroll, data,addEditInfo} = this.props
     let _this = this
     let tblContent = {
       "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "默认组织", "name5": "职位", "name6": "手机", "name7": "排序号", "name9": "操作" },
@@ -49,7 +49,8 @@ class UserMaintain extends React.Component {
               if (result.code == 0) {
                 let _data = result.data
 
-                _this.props.updateUserMaintainInfo({
+                addEditInfo({
+                  infoName:"userMaintainInfo",
                   uId: _data.staffId,//用户ID
                   user: _data.loginUid,//用户名
                   name: _data.cnName,//中文名
@@ -212,7 +213,9 @@ class UserMaintain extends React.Component {
     let code = $m.getAttribute("data-type")
     _this.props.updateUserMaintainOrgnizationId(code)
 
-    this.props.clearUserMaintainInfo()
+    this.props.clearEditInfo({
+      infoName:"userMaintainInfo"
+    })
     this.loadUser(id)
     closeSidePage()
   }
@@ -220,10 +223,11 @@ class UserMaintain extends React.Component {
   addPositionMaintainBtn() {
     openSidePage(this, {
       status: "addUserMaintain",
-
     })
 
-    this.props.clearUserMaintainInfo()
+    this.props.clearEditInfo({
+      infoName:"userMaintainInfo"
+    })
   }
 
   loadUser(id) {

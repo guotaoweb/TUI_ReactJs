@@ -8,16 +8,14 @@ import PositionMaintainRole from "./positionMaintain.role"
 
 class PositionMaintainEdit extends React.Component {
     render() {
-        const {jobsInfo} = this.props
-
         return (
             <div>
-                <FormControls label="职责名称" ctrl="input" txt={jobsInfo.name} onChange={this.onChangeByName.bind(this)} required="required" labelWidth="100" />
-                <FormControls label="职责描述" ctrl="textarea" txt={jobsInfo.remark} onChange={this.onChangeByRemark.bind(this)} labelWidth="100" />
-                <FormControls label="考核标准" ctrl="textarea" txt={jobsInfo.standard} onChange={this.onChangeByStandard.bind(this)} labelWidth="100" />
-                <div style={{ marginLeft: "100px", paddingTop: "5px" }}>
-                    <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} style={{ float: "left", marginRight: "10px" }} />
-                    <Btn type="submit" txt="确定" href={this.editPositionMaintainJob.bind(this)} style={{ float: "left" }} />
+                <FormControls label="职责名称" ctrl="input" value="jobsInfo.name" required="required"/>
+                <FormControls label="职责描述" ctrl="textarea" value="jobsInfo.remark"/>
+                <FormControls label="考核标准" ctrl="textarea" value="jobsInfo.standard" />
+                <div className="formControl-btn">
+                    <Btn type="cancel" txt="取消" href={this.goBack.bind(this)}/>
+                    <Btn type="submit" txt="确定" href={this.editPositionMaintainJob.bind(this)}/>
                 </div>
                 <br /><br /><br />
             </div>
@@ -26,16 +24,16 @@ class PositionMaintainEdit extends React.Component {
 
 
     editPositionMaintainJob() {
-        const {errorMsg, jobsInfo, pushPositionMaintainJobs, updatePositionMaintainJobs,positionId,sidePageInfo} = this.props
+        const {errorMsg, editInfo, pushPositionMaintainJobs, updatePositionMaintainJobs,positionId,sidePageInfo} = this.props
 
         let _this = this,
             postJson = {
-                "jobName": jobsInfo.name,
-                "remark": jobsInfo.remark,
-                "standard": jobsInfo.standard
+                "jobName": editInfo.jobsInfo.name,
+                "remark": editInfo.jobsInfo.remark,
+                "standard": editInfo.jobsInfo.standard
             }
 
-        if (jobsInfo.status == "add") {
+        if (editInfo.jobsInfo.status == "add") {
 
             postJson.positionId = sidePageInfo.positionId
             TUI.platform.post("/job", postJson, function (result) {
@@ -45,12 +43,12 @@ class PositionMaintainEdit extends React.Component {
                     pushPositionMaintainJobs(result.data)
                 }
                 else {
-                    _this.props.errorMsg(TUI.ERROR_INFO[result.code])
+                    _this.props.errorMsg(Config.ERROR_INFO[result.code])
                 }
             })
         }
         else {
-            postJson["jobId"] = jobsInfo.id,
+            postJson["jobId"] = editInfo.jobsInfo.id,
                 TUI.platform.put("/job", postJson, function (result) {
                     if (result.code == 0) {
                         _this.goBack()
@@ -58,7 +56,7 @@ class PositionMaintainEdit extends React.Component {
                         updatePositionMaintainJob(postJson)
                     }
                     else {
-                        _this.props.errorMsg(TUI.ERROR_INFO[result.code]);
+                        _this.props.errorMsg(Config.ERROR_INFO[result.code]);
                     }
                 })
         }
@@ -112,31 +110,20 @@ class PositionMaintainEdit extends React.Component {
     }
 
     goBack() {
-        this.props.updatePositionMaintainJobsInfo({
+        this.props.updateEditInfo({
+            infoName:"jobsInfo",
             status: "list"
         })
-        this.props.clearPositionMaintainJobsInfo()
+        this.props.clearEditInfo({
+            infoName:"jobsInfo"
+        })
 
     }
 
     goClose() {
         closeSidePage()
-        this.props.clearPositionMaintainJobsInfo()
-    }
-
-    onChangeByName(e) {
-        this.props.updatePositionMaintainJobsInfo({
-            name: e.currentTarget.value
-        })
-    }
-    onChangeByRemark(e) {
-        this.props.updatePositionMaintainJobsInfo({
-            remark: e.currentTarget.value
-        })
-    }
-    onChangeByStandard(e) {
-        this.props.updatePositionMaintainJobsInfo({
-            standard: e.currentTarget.value
+        this.props.clearEditInfo({
+            infoName:"jobsInfo"
         })
     }
 }
@@ -145,5 +132,6 @@ class PositionMaintainEdit extends React.Component {
 export default TUI._connect({
     jobsInfo: "positionMaintain.jobsInfo",
     sidePageInfo: "publicInfo.sidePageInfo.gateWay",
-    positionId:"positionMaintain.editId"
+    positionId:"positionMaintain.editId",
+    editInfo:"formControlInfo.data"
 }, PositionMaintainEdit)

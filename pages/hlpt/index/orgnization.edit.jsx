@@ -16,24 +16,24 @@ class OrgnizationEdit extends React.Component {
         return (
             <Content2 tabs={tabs} key="content2_userEdit">
                 <div>
-                    <FormControls label="组织编码" ctrl="input" txt={detail.code} disabled="disabled" onChange={this.onChangeByCode.bind(this)} labelWidth="100" />
+                    <FormControls label="组织编码" ctrl="input" value="orgnizationInfo.code" disabled="disabled"/>
 
-                    <FormControls label="上级组织" ctrl="input" txt={detail.upper} disabled="disabled" onChange={this.onChangeByUpper.bind(this)} labelWidth="100" />
-                    <FormControls label="级别" ctrl="input" txt={detail.level} disabled="disabled" onChange={this.onChangeByLevel.bind(this)} labelWidth="100" />
-                    <FormControls label="全称" ctrl="input" txt={detail.unitName} onChange={this.onChangeByFullName.bind(this)} labelWidth="100" required="required" />
-                    <FormControls label="短名称" ctrl="input" txt={detail.ext2} onChange={this.onChangeByShortName.bind(this)} labelWidth="100" required="required" />
+                    <FormControls label="上级组织" ctrl="input" value="orgnizationInfo.upper" disabled="disabled" />
+                    <FormControls label="级别" ctrl="input" value="orgnizationInfo.level" disabled="disabled"/>
+                    <FormControls label="全称" ctrl="input" value="orgnizationInfo.unitName" required="required" />
+                    <FormControls label="短名称" ctrl="input" value="orgnizationInfo.ext2" required="required" />
 
-                    <FormControls label="组织机构" ctrl="select" options={unitKind} txt={detail.kind} onChange={this.onChangeByOrginaztion.bind(this)} labelWidth="100" />
-                    <FormControls label="状态" ctrl="select" options={status} txt={detail.status} onChange={this.onChangeByStatus.bind(this)} labelWidth="100" />
+                    <FormControls label="组织机构" ctrl="select" options={unitKind} value="orgnizationInfo.kind"/>
+                    <FormControls label="状态" ctrl="select" options={status} value="orgnizationInfo.status" />
 
+                    <FormControls label="序号" ctrl="input" type="number" value="orgnizationInfo.sort" required="required" />
+                    <FormControls label="编制" ctrl="input" type="number" value="orgnizationInfo.staffing"  />
+                    <FormControls label="人资编码" ctrl="input" value="orgnizationInfo.globalCode" />
+                    <FormControls label="备注" ctrl="textarea" value="orgnizationInfo.remark" />
 
-                    <FormControls label="序号" ctrl="input" type="number" txt={detail.sort} onChange={this.onChangeByNo.bind(this)} labelWidth="100" required="required" />
-                    <FormControls label="编制" ctrl="input" txt={detail.staffing} onChange={this.onChangeByStaffing.bind(this)} labelWidth="100" />
-                    <FormControls label="备注" ctrl="textarea" txt={detail.remark} onChange={this.onChangeByComment.bind(this)} labelWidth="100" />
-
-                    <div style={{ marginLeft: "100px", paddingTop: "5px" }}>
-                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} style={{ float: "left", marginRight: "10px" }} />
-                        <Btn type="check" txt="确定" href={this.editOrgization.bind(this)} style={{ float: "left" }} />
+                    <div className="formControl-btn">
+                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)}/>
+                        <Btn type="check" txt="确定" href={this.editOrgization.bind(this)}/>
                     </div>
                     <br /><br /><br />
                 </div>
@@ -42,32 +42,33 @@ class OrgnizationEdit extends React.Component {
     }
 
     editOrgization() {
-        const {errorMsg, data, detail, sidePageInfo, unitBizTypes, unitKind, status, city, preventSubmit, updateSubList, relateId, unitCode, pushSubList} = this.props
+        const {errorMsg, data, editInfo, sidePageInfo, unitBizTypes, unitKind, status, city, updateSubList, relateId, unitCode, pushSubList} = this.props
 
         let _this = this,
             postJson
 
         if (sidePageInfo.status == "addOrgnization") {
-            detail["ownerUnitid"] = ""
+            editInfo.orgnizationInfo["ownerUnitid"] = ""
 
-            detail["bizType"] = detail.bizType ? detail.bizType : unitBizTypes[0].id
-            detail["kind"] = detail.kind ? detail.kind : unitKind[0].id
-            detail["status"] = detail.status ? detail.status : status[0].id
-            detail["areaCode"] = detail.areaCode ? detail.areaCode : city[0].id
+            editInfo.orgnizationInfo["bizType"] = editInfo.orgnizationInfo.bizType ? editInfo.orgnizationInfo.bizType : unitBizTypes[0].id
+            editInfo.orgnizationInfo["kind"] = editInfo.orgnizationInfo.kind ? editInfo.orgnizationInfo.kind : unitKind[0].id
+            editInfo.orgnizationInfo["status"] = editInfo.orgnizationInfo.status ? editInfo.orgnizationInfo.status : status[0].id
+            editInfo.orgnizationInfo["areaCode"] = editInfo.orgnizationInfo.areaCode ? editInfo.orgnizationInfo.areaCode : city[0].id
 
             postJson = {
-                "unitName": detail.unitName,
-                "ext2": detail.ext2,
-                "bizType": detail.bizType,
-                "kind": detail.kind,
-                "status": detail.status,
-                "areaCode": detail.areaCode,
-                "email": detail.email,
-                "remark": detail.remark,
-                "sort": detail.sort,
-                "staffing": detail.staffing,
+                "unitName": editInfo.orgnizationInfo.unitName,
+                "ext2": editInfo.orgnizationInfo.ext2,
+                "bizType": editInfo.orgnizationInfo.bizType,
+                "kind": editInfo.orgnizationInfo.kind,
+                "status": editInfo.orgnizationInfo.status,
+                "areaCode": editInfo.orgnizationInfo.areaCode,
+                "email": editInfo.orgnizationInfo.email,
+                "remark": editInfo.orgnizationInfo.remark,
+                "sort": editInfo.orgnizationInfo.sort,
+                "staffing": editInfo.orgnizationInfo.staffing,
                 "superUnitid1": unitCode ? unitCode : sidePageInfo.gateWay.type,
-                "unitLevel": relateId ? relateId.split("-").length + 1 : sidePageInfo.gateWay.ext1
+                "unitLevel": relateId ? relateId.split("-").length + 1 : sidePageInfo.gateWay.ext1,
+                "globalCode":editInfo.orgnizationInfo.globalCode
             }
 
             TUI.platform.post("/unit", postJson, function (result) {
@@ -87,23 +88,24 @@ class OrgnizationEdit extends React.Component {
                     })
                 }
                 else {
-                    _this.props.errorMsg(TUI.ERROR_INFO[result.code])
+                    errorMsg(Config.ERROR_INFO[result.code])
                 }
             })
         }
         else {
             postJson = {
                 "unitId": sidePageInfo.gateWay.id,
-                "unitName": detail.unitName,
-                "ext2": detail.ext2,
-                "bizType": detail.bizType,
-                "kind": detail.kind,
-                "status": detail.status,
-                "areaCode": detail.areaCode,
-                "email": detail.email,
-                "sort": detail.sort,
-                "staffing": detail.staffing,
-                "remark": detail.remark
+                "unitName": editInfo.orgnizationInfo.unitName,
+                "ext2": editInfo.orgnizationInfo.ext2,
+                "bizType": editInfo.orgnizationInfo.bizType,
+                "kind": editInfo.orgnizationInfo.kind,
+                "status": editInfo.orgnizationInfo.status,
+                "areaCode": editInfo.orgnizationInfo.areaCode,
+                "email": editInfo.orgnizationInfo.email,
+                "sort": editInfo.orgnizationInfo.sort,
+                "staffing": editInfo.orgnizationInfo.staffing,
+                "remark": editInfo.orgnizationInfo.remark,
+                "globalCode":editInfo.orgnizationInfo.globalCode
             }
 
 
@@ -120,7 +122,7 @@ class OrgnizationEdit extends React.Component {
                     })
                 }
                 else {
-                    _this.props.errorMsg(TUI.ERROR_INFO[result.code]);
+                    errorMsg(config.ERROR_INFO[result.code]);
                 }
             })
         }
@@ -176,85 +178,6 @@ class OrgnizationEdit extends React.Component {
     goBack() {
         closeSidePage()
     }
-    onChangeByCode(e) {
-        const {detail} = this.props
-    }
-    onChangeByWho(e) {
-        const {detail} = this.props
-    }
-    onChangeByUpper(e) {
-        const {detail} = this.props
-    }
-    onChangeByLevel(e) {
-        const {detail} = this.props
-    }
-    onChangeByFullName(e) {
-        const {detail} = this.props
-        this.props.updateOrgnizationInfo({
-            unitName: e.currentTarget.value
-        })
-    }
-    onChangeByShortName(e) {
-        const {detail} = this.props
-        this.props.updateOrgnizationInfo({
-            ext2: e.currentTarget.value
-        })
-    }
-    onChangeByType(e) {
-        const {detail} = this.props
-        this.props.updateOrgnizationInfo({
-            bizType: e.currentTarget.value
-        })
-    }
-    onChangeByOrginaztion(e) {
-        const {detail} = this.props
-        this.props.updateOrgnizationInfo({
-            kind: e.currentTarget.value
-        })
-    }
-    onChangeByStatus(e) {
-        const {detail} = this.props
-        this.props.updateOrgnizationInfo({
-            status: e.currentTarget.value
-        })
-    }
-    onChangeByArea(e) {
-        const {detail} = this.props
-        this.props.updateOrgnizationInfo({
-            areaCode: e.currentTarget.value
-        })
-    }
-    onChangeByEmail(e) {
-        const {detail} = this.props
-        this.props.updateOrgnizationInfo({
-            email: e.currentTarget.value
-        })
-    }
-    onChangeByNo(e) {
-        const {detail} = this.props
-        this.props.updateOrgnizationInfo({
-            sort: e.currentTarget.value
-        })
-    }
-    onChangeByComment(e) {
-        const {detail} = this.props
-        this.props.updateOrgnizationInfo({
-            remark: e.currentTarget.value
-        })
-    }
-    onChangeByPermission(e) {
-        const {detail} = this.props
-        this.props.updateOrgnizationInfo({
-            permission: e.currentTarget.value
-        })
-    }
-
-    onChangeByStaffing(e) {
-        const {detail} = this.props
-        this.props.updateOrgnizationInfo({
-            staffing: e.currentTarget.value
-        })
-    }
 }
 
 
@@ -267,5 +190,6 @@ export default TUI._connect({
     status: "orgnizationManage.status",
     city: "orgnizationManage.city",
     relateId: "orgnizationManage.relateId",
-    unitCode: "orgnizationManage.type"
+    unitCode: "orgnizationManage.type",
+    editInfo:"formControlInfo.data"
 }, OrgnizationEdit)

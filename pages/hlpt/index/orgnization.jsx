@@ -11,14 +11,13 @@ import FormControls from "FormControls"
 import Content3 from "Content3"
 import Btn from "Btn"
 import Table from "Table"
-import MultyMenu, {editFn} from "MultyMenu"
-import SidePage, {openSidePage, closeSidePage} from "MultyMenu"
+import MultyMenu, { editFn } from "MultyMenu"
+import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import Pager from "Pager"
-import {openDialog, closeDialog} from "MultyMenu"
-import {openLoading,closeLoading} from "Loading"
+import { openDialog, closeDialog } from "Dialog"
+import { openLoading, closeLoading } from "Loading"
 
 class Orgnization extends React.Component {
-
   render() {
     const {odata, pageInfo, sidePageStatus, hasVerticalScroll, subList} = this.props
     let _this = this
@@ -41,29 +40,29 @@ class Orgnization extends React.Component {
             _this.editMenu({ id: _d.unitId, deep: "0-" + _d.unitId })
           }
         }, {
-            "name": "删除",
-            "fn": function () {
-              let delFetch = function () {
-                TUI.platform.patch("/unit/" + _d.unitId, function (result) {
-                  if (result.code == 0) {
-                    _this.props.successMsg("组织删除成功")
-                    _this.props.delSubList({
-                      unitId: _d.unitId
-                    })
-                    //_this.deleteData(_this.props.odata,params.deep.split("-"))
-                  }
-                })
-              }
-
-              openDialog(_this, "是否确定删除【" + _d.unitName + "】", delFetch)
+          "name": "删除",
+          "fn": function () {
+            let delFetch = function () {
+              TUI.platform.patch("/unit/" + _d.unitId, function (result) {
+                if (result.code == 0) {
+                  _this.props.successMsg("组织删除成功")
+                  _this.props.delSubList({
+                    unitId: _d.unitId
+                  })
+                  //_this.deleteData(_this.props.odata,params.deep.split("-"))
+                }
+              })
             }
-          }]
+
+            openDialog(_this, "是否确定删除【" + _d.unitName + "】", delFetch)
+          }
+        }]
       })
     }
 
     let addBtn
     if (this.props.relateId) {
-      addBtn = <Btn type="add" txt="新增" href={this.addMenuBtn.bind(this) } style={{ float: "right" }} />
+      addBtn = <Btn type="add" txt="新增" href={this.addMenuBtn.bind(this)} style={{ float: "right" }} />
     }
 
     return (
@@ -72,10 +71,10 @@ class Orgnization extends React.Component {
           <ReactIScroll iScroll={iScroll} options={{
             mouseWheel: true,
             scrollbars: hasVerticalScroll
-          }} onRefresh={this.onScrollRefresh.bind(this) }>
+          }} onRefresh={this.onScrollRefresh.bind(this)}>
             <div>
-              <MultyMenu data={odata} type="edit" lastdeep="6" color="white" addMenu={this.addMenu.bind(this) } editMenu={this.editMenu.bind(this) } delMenu={this.delMenu.bind(this) } clickMenu={this.clickMenu.bind(this) } openSubMenu={this.openSubMenu.bind(this) } style={{ marginTop: "20px" }}/>
-              <br/>
+              <MultyMenu data={odata} type="edit" lastdeep="6" color="white" addMenu={this.addMenu.bind(this)} editMenu={this.editMenu.bind(this)} delMenu={this.delMenu.bind(this)} clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
+              <br />
             </div>
           </ReactIScroll>
 
@@ -85,10 +84,10 @@ class Orgnization extends React.Component {
             {addBtn}
           </div>
           <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,140,0,80,0,80,80" />
-          <Pager fn={this.pageFn.bind(this) }  style={{ float: "right", marginRight: "5px" }}/>
+          <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
         </Content3>
         <SidePage>
-          <OrgnizationEdit  key="orgnization_edit"/>
+          <OrgnizationEdit key="orgnization_edit" />
         </SidePage>
       </div >
     )
@@ -241,33 +240,39 @@ class Orgnization extends React.Component {
   }
 
   addMenuBtn() {
-    const {clearOrgnizationInfo, sidePageInfo} = this.props
+    const {clearEditInfo, sidePageInfo} = this.props
     let _this = this
     closeSidePage()
-    clearOrgnizationInfo()
-    setTimeout(function () { 
-      openSidePage(_this,{
-      status: "addOrgnization",
-      gateWay: sidePageInfo.gateWay
-    }) 
+    clearEditInfo({
+      infoName:"orgnizationInfo"
+    })
+    setTimeout(function () {
+      openSidePage(_this, {
+        status: "addOrgnization",
+        gateWay: sidePageInfo.gateWay
+      })
     }, 300)
   }
 
   editMenu(params) {
-    const {updateTeamInfo, updateOrgnizationInfo} = this.props
     let _this = this
+    const {addEditInfo} = _this.props
+
     closeSidePage()
-    setTimeout(function () { 
-      openSidePage(_this,{
-      status: "editOrgnization",
-      gateWay: params
-    }) 
+
+    setTimeout(function () {
+      openSidePage(_this, {
+        status: "editOrgnization",
+        gateWay: params
+      })
     }, 300)
+
     let ids = params.deep.split("-")
     TUI.platform.get("/unit/" + ids[ids.length - 1], function (result) {
       if (result.code == 0) {
         var _d = result.data
-        updateOrgnizationInfo({
+        addEditInfo({
+          infoName:"orgnizationInfo",
           id: _d.unitId,
           code: _d.unitCode,
           who: _d.unitName,
@@ -283,10 +288,9 @@ class Orgnization extends React.Component {
           sort: _d.sort,
           remark: _d.remark,
           permission: _d.unitCode,
+          globalCode:_d.globalCode,
+          staffing:_d.staffing
         })
-      }
-      else {
-        updateOrgnizationInfo([])
       }
     })
   }
@@ -519,5 +523,6 @@ export default TUI._connect({
   hasVerticalScroll: "orgnizationManage.hasVerticalScroll",
   detail: "orgnizationManage.detail",
   searchInfo: "publicInfo.searchInfo",
-  relateId: "orgnizationManage.relateId"
+  relateId: "orgnizationManage.relateId",
+  editInfo:"formControlInfo.data"
 }, Orgnization)

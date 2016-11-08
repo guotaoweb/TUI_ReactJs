@@ -64,11 +64,18 @@ class Table extends React.Component {
       </table>
     )
   }
-  componentDidMount() {
+  componentDidUpdate() {
     const {width} = this.props
-    let tblWidth = document.getElementsByClassName("t-tbl")[0].offsetWidth,
-      $autoTblWidth = document.getElementsByClassName("autoTblWidth"),
+
+    let $tlb = document.getElementsByClassName("t-tbl")[0]
+    let tblWidth = $tlb.offsetWidth,
+      $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
       autoLength = 0
+
+    if (document.getElementsByClassName("tblContent").length > 0) {
+      tblWidth = document.getElementsByClassName("tblContent")[0].offsetWidth
+    }
+
     let _width = width.split(",")
     for (let i = 0; i < _width.length; i++) {
       let $w = _width[i]
@@ -79,7 +86,6 @@ class Table extends React.Component {
     }
 
 
-
     for (let j = 0; j < $autoTblWidth.length; j++) {
       let $a = $autoTblWidth[j]
       $a.style.width = tblWidth / autoLength + "px"
@@ -88,7 +94,9 @@ class Table extends React.Component {
       $a.style.whiteSpace = "nowrap"
       $a.style.textOverflow = "ellipsis"
     }
+
   }
+
 }
 
 

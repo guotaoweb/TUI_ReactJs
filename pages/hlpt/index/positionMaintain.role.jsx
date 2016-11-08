@@ -9,7 +9,7 @@ import back from "!url!./img/singleLeft.png"
 
 class PositionMaintainRole extends React.Component {
     render() {
-        const {sidePageInfo, baseInfo, rolesData, pageInfo, selectedPositionMaintainJobs} = this.props
+        const {sidePageInfo,rolesData, pageInfo} = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "角色名", "name3": "职责", "name4": "操作" },
@@ -25,10 +25,10 @@ class PositionMaintainRole extends React.Component {
                     "fns": [{
                         "name": "编辑",
                         "fn": function () {
-                            _this.props.updatePositionMaintainRolesInfo({
-                                status: "edit",
-                                id: _d.roleId
-                            })
+                            // _this.props.updatePositionMaintainRolesInfo({
+                            //     status: "edit",
+                            //     id: _d.roleId
+                            // })
 
                             TUI.platform.get("/role/" + _d.roleId, function (result) {
                                 if (result.code == 0) {
@@ -50,17 +50,19 @@ class PositionMaintainRole extends React.Component {
                                         }
                                         _this.props.addTip(eval(JSON.stringify(_tips)))
                                     }
-
-                                    _this.props.updatePositionMaintainRolesInfo({
+                               
+                                    let _editInfo = {
+                                        infoName: "rolesInfo",
                                         id: _d.roleId,
                                         name: _data.roleName,
                                         position: _tips,
                                         remark: _data.remark
-                                    })
+                                    }
+                                    _this.props.addEditInfo(_editInfo)
 
                                 }
-                                else{
-                                    _this.props.updatePositionMaintainRolesInfo([])
+                                else {
+                                    //_this.props.updatePositionMaintainRolesInfo([])
                                 }
                             })
 
@@ -99,13 +101,16 @@ class PositionMaintainRole extends React.Component {
     }
 
     addPositionMaintainRole() {
-        this.props.updatePositionMaintainRolesInfo({
+        this.props.updateEditInfo({
+            infoName:"rolesInfo",
             status: "add"
         })
     }
 
     goBack() {
-        this.props.clearPositionMaintainInfo()
+        this.props.cleareEditInfo({
+            infoName:"rolesInfo",
+        })
         closeSidePage()
     }
 }
@@ -114,5 +119,6 @@ class PositionMaintainRole extends React.Component {
 export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo.gateWay",
     pageInfo: "publicInfo.pageInfo",
-    rolesData: "positionMaintain.rolesData"
+    rolesData: "positionMaintain.rolesData",
+    editInfo:"formControlInfo.data"
 }, PositionMaintainRole)

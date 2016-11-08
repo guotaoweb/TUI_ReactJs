@@ -2,21 +2,16 @@ import Content2 from "Content2"
 import Btn from "Btn"
 import FormControls from "FormControls"
 
-
-
 class PositionFamilyEdit extends React.Component {
     render() {
-        const {positionFamily} = this.props
-
         return (
             <div style={{ marginTop: "10px", padding: "0px 10px" }}>
                 <div>
-                    <FormControls label="族代码" ctrl="input" txt={positionFamily.familyCode} onChange={this.onChangeByFamilyCode.bind(this) }  disabled="disabled"/>
-                    <FormControls label="族名称" ctrl="input" txt={positionFamily.familyName} onChange={this.onChangeByFamilyName.bind(this) } required="required"/>
-                    <FormControls label="族简介" ctrl="textarea" txt={positionFamily.remark} onChange={this.onChangeByFamilyRemark.bind(this) }/>
-                    <div style={{ marginLeft: "70px", paddingTop: "5px" }}>
-
-                        <Btn type="check" txt="确定" href={this.editPositionFamilyInfo.bind(this) } style={{ float: "left" }}  />
+                    <FormControls label="族代码" ctrl="input" value="positionFamilyInfo.familyCode" disabled="disabled"/>
+                    <FormControls label="族名称" ctrl="input" value="positionFamilyInfo.familyName" required="required"/>
+                    <FormControls label="族简介" ctrl="textarea" value="positionFamilyInfo.remark" />
+                    <div className="formControl-btn">
+                        <Btn type="submit" txt="确定" href={this.editPositionFamilyInfo.bind(this) }/>
                     </div>
                 </div>
             </div>
@@ -25,35 +20,15 @@ class PositionFamilyEdit extends React.Component {
 
 
     editPositionFamilyInfo() {
-        const {editDeep, data, type, positionFamily, successMsg, errorMsg, preventSubmit, waiteMsg, pushPositionGroupData} = this.props
+        const {editDeep, data, type, editInfo, successMsg, errorMsg, preventSubmit, waiteMsg, pushPositionGroupData} = this.props
 
-        if (preventSubmit) {
-            return false
-        }
-
-        let isRequired = false
-        let $requiredInput = document.getElementsByClassName("required")
-        for (let i = 0; i < $requiredInput.length; i++) {
-            if (!$requiredInput[i].value) {
-                isRequired = true
-                break
-            }
-        }
-
-        if (isRequired) {
-            errorMsg("标星字段为必填项")
-            isRequired = false
-            return false
-        }
-
-        waiteMsg("数据提交中,请稍后...")
         let _this = this
-        if (positionFamily.familyCode) {
+        if (editInfo.positionFamilyInfo.familyCode) {
             let params = {
-                "familyCode": positionFamily.familyCode,
-                "familyName": positionFamily.familyName,
-                "typeCode": positionFamily.typeCode,
-                "remark": positionFamily.remark
+                "familyCode": editInfo.positionFamilyInfo.familyCode,
+                "familyName": editInfo.positionFamilyInfo.familyName,
+                "typeCode": editInfo.positionFamilyInfo.typeCode,
+                "remark": editInfo.positionFamilyInfo.remark
             }
             TUI.platform.put("/positionFamily", params, function (result) {
                 if (result.code == 0) {
@@ -61,22 +36,22 @@ class PositionFamilyEdit extends React.Component {
                     _this.updateData(data, editDeep.split("-"), params)
                 }
                 else {
-                    errorMsg(TUI.config.ERROR_INFO[result.code]);
+                    errorMsg(Config.ERROR_INFO[result.code]);
                 }
             })
         }
         else {
             let editDeeps = editDeep.split("-")
             TUI.platform.post("/positionFamily", {
-                "familyName": positionFamily.familyName,
-                "typeCode": editDeeps.length > 1 ? editDeeps[editDeeps.length - 1] : editDeeps[0],
-                "remark": positionFamily.remark
+                "familyName": editInfo.positionFamilyInfo.familyName,
+                "typeCode": editInfo.positionFamilyInfo.length > 1 ? editDeeps[editDeeps.length - 1] : editDeeps[0],
+                "remark": editInfo.positionFamilyInfo.remark
             }, function (result) {
                 if (result.code == 0) {
                     setTimeout(function () { successMsg("新增职位族成功") }, 800)
                     let _addData = {
                         id: result.data.familyCode,
-                        name: positionFamily.familyName,
+                        name: editInfo.positionFamilyInfo.familyName,
                         type: "1",
                         isHadSub: "0",
                         deep: 1,
@@ -85,29 +60,10 @@ class PositionFamilyEdit extends React.Component {
                     _this.addData(data, editDeep.split("-"), _addData)
                 }
                 else {
-                    errorMsg(TUI.config.ERROR_INFO[result.code]);
+                    errorMsg(Config.ERROR_INFO[result.code]);
                 }
             })
         }
-    }
-
-    onChangeByFamilyCode(e) {
-        const {updatePositionFamilyInfo} = this.props
-        updatePositionFamilyInfo({
-            familyCode: e.currentTarget.value
-        })
-    }
-    onChangeByFamilyName(e) {
-        const {updatePositionFamilyInfo} = this.props
-        updatePositionFamilyInfo({
-            familyName: e.currentTarget.value
-        })
-    }
-    onChangeByFamilyRemark(e) {
-        const {updatePositionFamilyInfo} = this.props
-        updatePositionFamilyInfo({
-            remark: e.currentTarget.value
-        })
     }
 
     addData(_data, deep, newData) {
@@ -161,5 +117,6 @@ export default TUI._connect({
     positionFamily: "positionGroup.positionFamily",
     preventSubmit: "publicInfo.msgInfo.txt",
     type: "positionGroup.type",
-    editDeep: "positionGroup.editDeep"
+    editDeep: "positionGroup.editDeep",
+    editInfo:"formControlInfo.data"
 }, PositionFamilyEdit)

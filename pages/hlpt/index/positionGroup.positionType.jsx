@@ -2,20 +2,16 @@ import Content2 from "Content2"
 import Btn from "Btn"
 import FormControls from "FormControls"
 
-
-
 class PositionTypeEdit extends React.Component {
     render() {
-        const {positionType} = this.props
-
         return (
             <div style={{ marginTop: "10px", padding: "0px 10px" }}>
                 <div>
-                    <FormControls label="类别代码" ctrl="input" txt={positionType.typeCode} onChange={this.onChangeByTypeCode.bind(this) } disabled="disabled"/>
-                    <FormControls label="类别名称" ctrl="input" txt={positionType.typeName} onChange={this.onChangeByTypeName.bind(this) } required="required"/>
-                    <FormControls label="类别简介" ctrl="textarea" txt={positionType.remark} onChange={this.onChangeByTypeRemark.bind(this) }/>
-                    <div style={{ marginLeft: "70px", paddingTop: "5px" }}>
-                        <Btn type="check" txt="确定" href={this.editPositionTypeInfo.bind(this) } style={{ float: "left" }}  />
+                    <FormControls label="类别代码" ctrl="input" value="positionTypeInfo.typeCode" disabled="disabled"/>
+                    <FormControls label="类别名称" ctrl="input" value="positionTypeInfo.typeName" required="required"/>
+                    <FormControls label="类别简介" ctrl="textarea" value="positionTypeInfo.remark" />
+                    <div className="formControl-btn">
+                        <Btn type="submit" txt="确定" href={this.editPositionTypeInfo.bind(this) } />
                     </div>
                 </div>
             </div>
@@ -24,34 +20,14 @@ class PositionTypeEdit extends React.Component {
 
 
     editPositionTypeInfo() {
-        const {editDeep, data, type, positionType, successMsg, errorMsg, preventSubmit, waiteMsg, pushPositionGroupData} = this.props
+        const {editDeep, data, type, editInfo, successMsg, errorMsg, preventSubmit, waiteMsg, pushPositionGroupData} = this.props
 
-        if (preventSubmit) {
-            return false
-        }
-
-        let isRequired = false
-        let $requiredInput = document.getElementsByClassName("required")
-        for (let i = 0; i < $requiredInput.length; i++) {
-            if (!$requiredInput[i].value) {
-                isRequired = true
-                break
-            }
-        }
-
-        if (isRequired) {
-            errorMsg("标星字段为必填项")
-            isRequired = false
-            return false
-        }
-
-        waiteMsg("数据提交中,请稍后...")
         let _this = this
-        if (positionType.typeCode) {
+        if (editInfo.positionTypeInfo.typeCode) {
             let params = {
-                "typeCode": positionType.typeCode,
-                "typeName": positionType.typeName,
-                "remark": positionType.remark
+                "typeCode": editInfo.positionTypeInfo.typeCode,
+                "typeName": editInfo.positionTypeInfo.typeName,
+                "remark": editInfo.positionTypeInfo.remark
             }
             TUI.platform.put("/positionType", params, function (result) {
                 if (result.code == 0) {
@@ -59,20 +35,20 @@ class PositionTypeEdit extends React.Component {
                     _this.updateData(data, editDeep.split("-"), params)
                 }
                 else {
-                    errorMsg(TUI.config.ERROR_INFO[result.code]);
+                    errorMsg(Config.config.ERROR_INFO[result.code]);
                 }
             })
         }
         else {
             TUI.platform.post("/positionType", {
-                "typeName": positionType.typeName,
-                "remark": positionType.remark
+                "typeName": editInfo.positionTypeInfo.typeName,
+                "remark": editInfo.positionTypeInfo.remark
             }, function (result) {
                 if (result.code == 0) {
                     setTimeout(function () { successMsg("新增职位序列成功") }, 800)
                     let _addData = {
                         id: result.data,
-                        name: positionType.seqName,
+                        name: editInfo.positionTypeInfo.seqName,
                         type: "2",
                         isHadSub: "0",
                         deep: 3
@@ -80,30 +56,12 @@ class PositionTypeEdit extends React.Component {
                     _this.addData(data, editDeep.split("-"), _addData)
                 }
                 else {
-                    errorMsg(TUI.config.ERROR_INFO[result.code]);
+                    errorMsg(Config.ERROR_INFO[result.code]);
                 }
             })
         }
     }
 
-    onChangeByTypeCode(e) {
-        const {updatePositionTypeInfo} = this.props
-        updatePositionTypeInfo({
-            typeCode: e.currentTarget.value,
-        })
-    }
-    onChangeByTypeName(e) {
-        const {updatePositionTypeInfo} = this.props
-        updatePositionTypeInfo({
-            typeName: e.currentTarget.value
-        })
-    }
-    onChangeByTypeRemark(e) {
-        const {updatePositionTypeInfo} = this.props
-        updatePositionTypeInfo({
-            remark: e.currentTarget.value
-        })
-    }
     addData(_data, deep, newData) {
         if (deep.length == 1) {
             for (let index = 0; index < _data.length; index++) {
@@ -155,5 +113,6 @@ export default TUI._connect({
     positionType: "positionGroup.positionType",
     preventSubmit: "publicInfo.msgInfo.txt",
     type: "positionGroup.type",
-    editDeep: "positionGroup.editDeep"
+    editDeep: "positionGroup.editDeep",
+    editInfo:"formControlInfo.data"
 }, PositionTypeEdit)

@@ -2,8 +2,7 @@ import Content2 from "Content2"
 import FormControls from "FormControls"
 import Btn from "Btn"
 import { closeSidePage } from "SidePage"
-//  <FormControls label="默认组织" ctrl="input" txt={baseInfo.orgnization} onChange={this.onChangeByOrgnization.bind(this)} labelWidth="100" />
-// <FormControls label="微信号" ctrl="input" txt={baseInfo.wx} onChange={this.onChangeByWX.bind(this)} labelWidth="100" />
+
 class PositionMaintainEdit extends React.Component {
     render() {
         const {sidePageInfo, baseInfo, positionFamilys, jobFamilys} = this.props
@@ -12,11 +11,11 @@ class PositionMaintainEdit extends React.Component {
             userEditStatus = []
         if (sidePageInfo.status == "addUserMaintain") {
             tabs = [{ name: "添加用户信息", id: "userMaintain_add" }]
-            userEditStatus = <FormControls label="用户名" ctrl="input" txt={baseInfo.user} onBlur={this.onBlurByUser.bind(this)} onChange={this.onChangeByUser.bind(this)} labelWidth="100" />
+            userEditStatus = <FormControls label="用户名" ctrl="input" value="userMaintainInfo.user" onBlur={this.onBlurByUser.bind(this)}/>
         }
         else {
             tabs = [{ name: "编辑用户信息", id: "userMaintain_edit" }]
-            userEditStatus = <FormControls label="用户名" ctrl="input" txt={baseInfo.user} onBlur={this.onBlurByUser.bind(this)} onChange={this.onChangeByUser.bind(this)} labelWidth="100" disabled="disabled" />
+            userEditStatus = <FormControls label="用户名" ctrl="input" value="userMaintainInfo.user" onBlur={this.onBlurByUser.bind(this)} disabled="disabled" />
         }
 
         let userStatus = [{ id: "1", name: "启用" }, { id: "0", name: "禁用" }]
@@ -25,22 +24,20 @@ class PositionMaintainEdit extends React.Component {
             <Content2 tabs={tabs} key="content2_userEdit">
                 <div>
                     {userEditStatus}
-                    <FormControls label="中文名" ctrl="input" txt={baseInfo.name} onChange={this.onChangeByName.bind(this)} required="required" labelWidth="100" />
-                    <FormControls label="账户状态" ctrl="select" options={userStatus} txt={baseInfo.status} onChange={this.onChangeByStatus.bind(this)} labelWidth="100" />
-                    <FormControls label="常用手机" ctrl="input" txt={baseInfo.mobile} onChange={this.onChangeByMobile.bind(this)} labelWidth="100" required="required" />
-                    <FormControls label="短号码" ctrl="input" txt={baseInfo.shortNumber} onChange={this.onChangeByShortNumber.bind(this)} labelWidth="100" />
-                    <FormControls label="传真" ctrl="input" txt={baseInfo.fax} onChange={this.onChangeByFax.bind(this)} labelWidth="100" />
-                    <FormControls label="办公电话" ctrl="input" txt={baseInfo.companyPhone} onChange={this.onChangeCompanyPhone.bind(this)} labelWidth="100" />
-                    <FormControls label="办公地址" ctrl="input" txt={baseInfo.companyAddress} onChange={this.onChangeByCompanyAddress.bind(this)} labelWidth="100" />
-                    <FormControls label="身份证" ctrl="input" txt={baseInfo.idCard} onChange={this.onChangeByIdCard.bind(this)} labelWidth="100" />
+                    <FormControls label="中文名" ctrl="input" value="userMaintainInfo.name" required="required"/>
+                    <FormControls label="账户状态" ctrl="select" options={userStatus} value="userMaintainInfo.status"/>
+                    <FormControls label="常用手机" ctrl="input" value="userMaintainInfo.mobile"/>
+                    <FormControls label="短号码" ctrl="input" value="userMaintainInfo.shortNumber"/>
+                    <FormControls label="传真" ctrl="input" value="userMaintainInfo.fax"/>
+                    <FormControls label="办公电话" ctrl="input" value="userMaintainInfo.companyPhone"/>
+                    <FormControls label="办公地址" ctrl="input" value="userMaintainInfo.companyAddress"/>
+                    <FormControls label="身份证" ctrl="input" value="userMaintainInfo.idCard"/>
+                    <FormControls label="排序号" ctrl="input" value="userMaintainInfo.sort"/>
+                    <FormControls label="是否显示" ctrl="select" options={isShow} value="userMaintainInfo.isShow"/>
 
-
-                    <FormControls label="排序号" ctrl="input" txt={baseInfo.sort} onChange={this.onChangeBySort.bind(this)} labelWidth="100" />
-                    <FormControls label="是否显示" ctrl="select" options={isShow} txt={baseInfo.isShow} onChange={this.onChangeByisShow.bind(this)} labelWidth="100" />
-
-                    <div style={{ marginLeft: "100px", paddingTop: "5px" }}>
-                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} style={{ float: "left", marginRight: "10px" }} />
-                        <Btn type="submit" txt="确定" href={this.editUserMaintain.bind(this)} style={{ float: "left" }} />
+                    <div className="formControl-btn">
+                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)}/>
+                        <Btn type="submit" txt="确定" href={this.editUserMaintain.bind(this)}/>
                     </div>
                     <br /><br /><br />
                 </div>
@@ -50,22 +47,22 @@ class PositionMaintainEdit extends React.Component {
 
 
     editUserMaintain() {
-        const {errorMsg, data, baseInfo, sidePageInfo, orgnizationId, pushUserMaintain, updateUserMaintain} = this.props
+        const {errorMsg, data, editInfo, sidePageInfo, orgnizationId, pushUserMaintain, updateUserMaintain} = this.props
 
         let _this = this,
             postJson = {
-                loginUid: baseInfo.user,//用户名
-                cnName: baseInfo.name,//中文名
-                status: baseInfo.status,//账户状态
-                mobilePhone: baseInfo.mobile,//常用手机
-                shortPhone: baseInfo.shortNumber,//短号码
-                fax: baseInfo.fax,//传真
-                telephone: baseInfo.companyPhone,//办公电话
-                officeAddress: baseInfo.companyAddress,//办公地址
-                userNumber: baseInfo.idCard,//身份证
+                loginUid: editInfo.userMaintainInfo.user,//用户名
+                cnName: editInfo.userMaintainInfo.name,//中文名
+                status: editInfo.userMaintainInfo.status,//账户状态
+                mobilePhone: editInfo.userMaintainInfo.mobile,//常用手机
+                shortPhone: editInfo.userMaintainInfo.shortNumber,//短号码
+                fax: editInfo.userMaintainInfo.fax,//传真
+                telephone: editInfo.userMaintainInfo.companyPhone,//办公电话
+                officeAddress: editInfo.userMaintainInfo.companyAddress,//办公地址
+                userNumber: editInfo.userMaintainInfo.idCard,//身份证
                 unitId: orgnizationId,//默认组织
-                sort: baseInfo.sort ? baseInfo.sort : "9999",//排序号
-                ext2: baseInfo.isShow//是否显示
+                sort: editInfo.userMaintainInfo.sort ? editInfo.userMaintainInfo.sort : "9999",//排序号
+                ext2: editInfo.userMaintainInfo.isShow//是否显示
             }
 
 
@@ -78,12 +75,12 @@ class PositionMaintainEdit extends React.Component {
                     pushUserMaintain(result.data)
                 }
                 else {
-                    _this.props.errorMsg(TUI.ERROR_INFO[result.code])
+                    _this.props.errorMsg(Config.ERROR_INFO[result.code])
                 }
             })
         }
         else {
-            postJson.staffId = baseInfo.uId
+            postJson.staffId = editInfo.userMaintainInfo.uId
             postJson.delFlag = "n"
             TUI.platform.put("/staff", postJson, function (result) {
                 if (result.code == 0) {
@@ -92,7 +89,7 @@ class PositionMaintainEdit extends React.Component {
                     updateUserMaintain(postJson)
                 }
                 else {
-                    _this.props.errorMsg(TUI.ERROR_INFO[result.code]);
+                    _this.props.errorMsg(Config.ERROR_INFO[result.code]);
                 }
             })
         }
@@ -153,7 +150,7 @@ class PositionMaintainEdit extends React.Component {
                     _this.props.errorMsg("用户已存在");
                 }
                 else {
-                    _this.props.errorMsg(TUI.ERROR_INFO[result.code]);
+                    _this.props.errorMsg(Config.ERROR_INFO[result.code]);
                 }
             })
         }
@@ -162,77 +159,12 @@ class PositionMaintainEdit extends React.Component {
         this.props.clearUserMaintainInfo()
         closeSidePage()
     }
-
-    onChangeByUser(e) {
-        this.props.updateUserMaintainInfo({
-            user: e.currentTarget.value
-        })
-    }
-    onChangeByName(e) {
-        this.props.updateUserMaintainInfo({
-            name: e.currentTarget.value
-        })
-    }
-    onChangeByStatus(e) {
-        this.props.updateUserMaintainInfo({
-            status: e.currentTarget.value
-        })
-    }
-    onChangeByMobile(e) {
-        this.props.updateUserMaintainInfo({
-            mobile: e.currentTarget.value
-        })
-    }
-    onChangeByShortNumber(e) {
-        this.props.updateUserMaintainInfo({
-            shortNumber: e.currentTarget.value
-        })
-    }
-    onChangeByFax(e) {
-        this.props.updateUserMaintainInfo({
-            fax: e.currentTarget.value
-        })
-    }
-    onChangeCompanyPhone(e) {
-        this.props.updateUserMaintainInfo({
-            companyPhone: e.currentTarget.value
-        })
-    }
-    onChangeByCompanyAddress(e) {
-        this.props.updateUserMaintainInfo({
-            companyAddress: e.currentTarget.value
-        })
-    }
-    onChangeByIdCard(e) {
-        this.props.updateUserMaintainInfo({
-            idCard: e.currentTarget.value
-        })
-    }
-    onChangeByOrgnization(e) {
-        this.props.updateUserMaintainInfo({
-            orgnization: e.currentTarget.value
-        })
-    }
-    onChangeByWX(e) {
-        this.props.updateUserMaintainInfo({
-            wx: e.currentTarget.value
-        })
-    }
-    onChangeBySort(e) {
-        this.props.updateUserMaintainInfo({
-            sort: e.currentTarget.value
-        })
-    }
-    onChangeByisShow(e) {
-        this.props.updateUserMaintainInfo({
-            isShow: e.currentTarget.value
-        })
-    }
 }
 
 
 export default TUI._connect({
     baseInfo: "userMaintain.baseInfo",
     sidePageInfo: "publicInfo.sidePageInfo",
-    orgnizationId: "userMaintain.orgnizationId"
+    orgnizationId: "userMaintain.orgnizationId",
+    editInfo:"formControlInfo.data"
 }, PositionMaintainEdit)

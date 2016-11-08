@@ -35,10 +35,25 @@ class _Side extends React.Component {
       icon: position,
       sicon: positions,
       sub: [{
+        name: "职位族维护",
+        url: config.ROOTPATH + "positionGroup"
+      },{
+        name: "职位维护",
+        url: config.ROOTPATH + "positionMaintain"
+      },{
+        name: "人职匹配",
+        url: config.ROOTPATH + "personMatchPost"
+      }]
+    },  {
+      name: "权限管理",
+      url: "#",
+      icon: rote,
+      sicon: rotes,
+      sub: [{
         name: "数据权限管理",
         url: config.ROOTPATH + "dataPrivileges"
       }]
-    }, {
+    },{
       name: "其它",
       url: "#",
       icon: other,

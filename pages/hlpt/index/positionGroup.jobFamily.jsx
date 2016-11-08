@@ -4,16 +4,14 @@ import FormControls from "FormControls"
 
 class JobFamilyEdit extends React.Component {
     render() {
-        const {jobFamily} = this.props
-
         return (
             <div style={{ marginTop: "10px", padding: "0px 10px" }}>
                 <div>
-                    <FormControls label="序列ID" ctrl="input" txt={jobFamily.seqId} onChange={this.onChangeBySeqId.bind(this) }  required="required" />
-                    <FormControls label="序列名称" ctrl="input" txt={jobFamily.seqName} onChange={this.onChangeBySeqName.bind(this) } required="required"/>
-                    <FormControls label="基础级别" ctrl="input" txt={jobFamily.baseLevel} onChange={this.onChangeByBaseLevel.bind(this) } required="required"/>
-                    <FormControls label="通道级别" ctrl="input" txt={jobFamily.channelLevel} onChange={this.onChangeByChannelLevel.bind(this) } required="required"/>
-                    <FormControls label="序列描叙" ctrl="textarea" txt={jobFamily.remark} onChange={this.onChangeByJobRemark.bind(this) }/>
+                    <FormControls label="序列ID" ctrl="input" value="jobFamilyInfo.seqId" required="required" />
+                    <FormControls label="序列名称" ctrl="input" value="jobFamilyInfo.seqName"  required="required"/>
+                    <FormControls label="基础级别" ctrl="input" value="jobFamilyInfo.baseLevel"  required="required"/>
+                    <FormControls label="通道级别" ctrl="input" value="jobFamilyInfo.channelLevel"  required="required"/>
+                    <FormControls label="序列描叙" ctrl="textarea" value="jobFamilyInfo.remark"/>
                     <div style={{ marginLeft: "70px", paddingTop: "5px" }}>
                         <Btn type="check" txt="确定" href={this.editJobFamilyInfo.bind(this) } style={{ float: "left" }}  />
                     </div>
@@ -29,38 +27,18 @@ class JobFamilyEdit extends React.Component {
     }
 
     editJobFamilyInfo() {
-        const {editDeep, data, type, jobFamily, successMsg, errorMsg, preventSubmit, waiteMsg, pushPositionGroupData} = this.props
+        const {editDeep, data, type, editInfo, successMsg, errorMsg, preventSubmit, waiteMsg, pushPositionGroupData} = this.props
 
-        if (preventSubmit) {
-            return false
-        }
-
-        let isRequired = false
-        let $requiredInput = document.getElementsByClassName("required")
-        for (let i = 0; i < $requiredInput.length; i++) {
-            if (!$requiredInput[i].value) {
-                isRequired = true
-                break
-            }
-        }
-
-        if (isRequired) {
-            errorMsg("标星字段为必填项")
-            isRequired = false
-            return false
-        }
-
-        waiteMsg("数据提交中,请稍后...")
         let _this = this
-        if (jobFamily.poId) {
+        if (editInfo.jobFamilyInfo.poId) {
             let params = {
-                "poid": jobFamily.poId,
-                "familyId": jobFamily.familyId,
-                "seqId": jobFamily.seqId,
-                "seqName": jobFamily.seqName,
-                "baseLevel": jobFamily.baseLevel,
-                "channelLevel": jobFamily.channelLevel,
-                "remark": jobFamily.remark
+                "poid": editInfo.jobFamilyInfo.poId,
+                "familyId": editInfo.jobFamilyInfo.familyId,
+                "seqId": editInfo.jobFamilyInfo.seqId,
+                "seqName": editInfo.jobFamilyInfo.seqName,
+                "baseLevel": editInfo.jobFamilyInfo.baseLevel,
+                "channelLevel": editInfo.jobFamilyInfo.channelLevel,
+                "remark": editInfo.jobFamilyInfo.remark
             }
             TUI.platform.put("/jobfamily", params, function (result) {
                 if (result.code == 0) {
@@ -68,7 +46,7 @@ class JobFamilyEdit extends React.Component {
                     _this.updateData(data, editDeep.split("-"), params)
                 }
                 else {
-                    errorMsg(TUI.config.ERROR_INFO[result.code]);
+                    errorMsg(Config.ERROR_INFO[result.code]);
                 }
             })
         }
@@ -76,17 +54,17 @@ class JobFamilyEdit extends React.Component {
             let editDeeps = editDeep.split("-")
             TUI.platform.post("/jobfamily", {
                 "familyId": editDeeps.length > 1 ? editDeeps[editDeeps.length - 1] : editDeeps[0],
-                "seqId": jobFamily.seqId,
-                "seqName": jobFamily.seqName,
-                "baseLevel": jobFamily.baseLevel,
-                "channelLevel": jobFamily.channelLevel,
-                "remark": jobFamily.remark
+                "seqId": editInfo.jobFamilyInfo.seqId,
+                "seqName": editInfo.jobFamilyInfo.seqName,
+                "baseLevel": editInfo.jobFamilyInfo.baseLevel,
+                "channelLevel": editInfo.jobFamilyInfo.channelLevel,
+                "remark": editInfo.jobFamilyInfo.remark
             }, function (result) {
                 if (result.code == 0) {
                     setTimeout(function () { successMsg("新增职位序列成功") }, 800)
                     let _addData = {
                         id: result.data.poid,
-                        name: jobFamily.seqName,
+                        name: editInfo.jobFamilyInfo.seqName,
                         type: "2",
                         isHadSub: "0",
                         deep: 2,
@@ -95,43 +73,13 @@ class JobFamilyEdit extends React.Component {
                     _this.addData(data, editDeep.split("-"), _addData)
                 }
                 else {
-                    errorMsg(TUI.config.ERROR_INFO[result.code]);
+                    errorMsg(Config.ERROR_INFO[result.code]);
                 }
             })
         }
 
     }
-    onChangeBySeqId(e) {
-        const {updateJobFamilyInfo} = this.props
-        updateJobFamilyInfo({
-            seqId: e.currentTarget.value,
-        })
-    }
-    onChangeBySeqName(e) {
-        const {updateJobFamilyInfo} = this.props
-        updateJobFamilyInfo({
-            seqName: e.currentTarget.value,
-        })
-    }
-    onChangeByBaseLevel(e) {
-        const {updateJobFamilyInfo} = this.props
-        updateJobFamilyInfo({
-            baseLevel: e.currentTarget.value
-        })
-    }
-    onChangeByChannelLevel(e) {
-        const {updateJobFamilyInfo} = this.props
-        updateJobFamilyInfo({
-            channelLevel: e.currentTarget.value
-        })
-    }
-    onChangeByJobRemark(e) {
-        const {updateJobFamilyInfo} = this.props
-        updateJobFamilyInfo({
-            remark: e.currentTarget.value
-        })
-    }
-
+    
     addData(_data, deep, newData) {
         if (deep.length == 1) {
             for (let index = 0; index < _data.length; index++) {
@@ -184,5 +132,6 @@ export default TUI._connect({
     jobFamily: "positionGroup.jobFamily",
     preventSubmit: "publicInfo.msgInfo.txt",
     type: "positionGroup.type",
-    editDeep: "positionGroup.editDeep"
+    editDeep: "positionGroup.editDeep",
+    editInfo:"formControlInfo.data"
 }, JobFamilyEdit)

@@ -1,4 +1,4 @@
-export function addFormControl(data){
+export function addEditInfo(data){
     return {
         type:"ADD_FORMCONTROL",
         data

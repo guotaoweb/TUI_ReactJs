@@ -52,7 +52,8 @@ class PositionMaintain extends React.Component {
               if (result.code == 0) {
                 let _data = result.data
 
-                _this.props.updatePositionMaintainInfo({
+                _this.props.addEditInfo({
+                  infoName:"positionMaintainInfo",
                   name: _data.positionName,//职位名称
                   id: _data.positionId,//职位ID
                   staffing: _data.staffing,//职位编制
@@ -227,7 +228,7 @@ class PositionMaintain extends React.Component {
         })
       }
       else {
-        errorMsg(TUI.ERROR_INFO[result.code]);
+        errorMsg(Config.ERROR_INFO[result.code]);
       }
     })
 
@@ -457,5 +458,6 @@ export default TUI._connect({
   pageInfo: "publicInfo.pageInfo",
   hasVerticalScroll: "orgnizationManage.hasVerticalScroll",
   searchInfo: "publicInfo.searchInfo",
-  eidtId: "positionMaintain.editId"
+  eidtId: "positionMaintain.editId",
+  eidtInfo:"formControlInfo.data"
 }, PositionMaintain)
