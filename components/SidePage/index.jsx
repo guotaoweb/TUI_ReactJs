@@ -30,71 +30,85 @@ class SidePage extends React.Component {
 
   componentDidUpdate() {
     const {sidePageInfo, sideStatus} = this.props
-    //文档高度
-    let allHeight = document.documentElement.clientHeight
-    //header高度
-    let headerHeight = document.querySelector(".t-header") ? document.querySelector(".t-header").offsetHeight : 0
-    //文档宽度
-    let allWidth = document.documentElement.clientWidth
-    //side的宽度
-    let sideWidth = document.querySelector(".t-side") ? document.querySelector(".t-side").offsetWidth : 0
-    //content3布局中的side宽度
-    let contentSideWidth = document.querySelector(".t-content3_side") ? document.querySelector(".t-content3_side").offsetWidth : 0
-    //主SidePage
-    let $sidePage = document.querySelector(".t-sidepage")
-    //辅SidePage
-    let $sidePageMin = document.querySelector(".t-sidepage_min")
+    // //文档高度
+    // let allHeight = document.documentElement.clientHeight
+    // //header高度
+    // let headerHeight = document.querySelector(".t-header") ? document.querySelector(".t-header").offsetHeight : 0
+    // //文档宽度
+    // let allWidth = document.documentElement.clientWidth
+    // //side的宽度
+    // let sideWidth = document.querySelector(".t-side") ? document.querySelector(".t-side").offsetWidth : 0
+    // //content3布局中的side宽度
+    // let contentSideWidth = document.querySelector(".t-content3_side") ? document.querySelector(".t-content3_side").offsetWidth : 0
+    // //主SidePage
+    // let $sidePage = document.querySelector(".t-sidepage")
+    // //辅SidePage
+    // let $sidePageMin = document.querySelector(".t-sidepage_min")
+
+    let $obj = {
+      allHeight: document.documentElement.clientHeight,//文档高度
+      headerHeight: document.querySelector(".t-header") ? document.querySelector(".t-header").offsetHeight : 0,//header高度
+      allWidth: document.documentElement.clientWidth,//文档宽度
+      sideWidth: document.querySelector(".t-side") ? document.querySelector(".t-side").offsetWidth : 0,//side的宽度
+      contentSideWidth: document.querySelector(".t-content3_side") ? document.querySelector(".t-content3_side").offsetWidth : 0,//content3布局中的side宽度
+      $sidePage: document.querySelector(".t-sidepage"),//主SidePage
+      $sidePageMin: document.querySelector(".t-sidepage_min"),//辅SidePage
+      sideStatus: sideStatus,
+      sidePageInfo: sidePageInfo,
+      content3SideWidth:document.querySelector(".t-content3_side")?document.querySelector(".t-content3_side").offsetWidth:0
+    }
+
     if (sidePageInfo.id) {
-      $sidePage = document.getElementById(sidePageInfo.id)
+      $obj.$sidePage = document.getElementById(sidePageInfo.id)
     }
     if (sidePageInfo.id) {
-      $sidePageMin = document.getElementById(sidePageInfo.id + "_min")
+      $obj.$sidePageMin = document.getElementById(sidePageInfo.id + "_min")
     }
     //type:1 显示辅助SidePage
     //type:0 只显示主SidePage
-    let sidePageWidth = sidePageInfo.width ? parseInt(sidePageInfo.width) : (allWidth - sideWidth - contentSideWidth)
-    if ($sidePage) {
-      $sidePage.style.width = sidePageWidth + "px"
-      $sidePage.style.height = (allHeight - headerHeight) + "px"
-      $sidePage.style.top = headerHeight + "px"
+    $obj.sidePageWidth = sidePageInfo.width ? parseInt(sidePageInfo.width) : ($obj.allWidth - $obj.sideWidth - $obj.contentSideWidth)
+    if ($obj.$sidePage) {
+      $obj.$sidePage.style.width = $obj.sidePageWidth + "px"
+      $obj.$sidePage.style.height = ($obj.allHeight - $obj.headerHeight) + "px"
+      $obj.$sidePage.style.top = $obj.headerHeight + "px"
     }
 
     if (sidePageInfo.type == 1) {
-      let sidePageWidth = allWidth - sideWidth - contentSideWidth
-      sidePageWidth -= $sidePageMin.offsetWidth
-      $sidePageMin.style.height = (allHeight - headerHeight) + "px"
-      $sidePageMin.style.top = headerHeight + "px"
-      $sidePage.style.width = sidePageWidth + "px"
+      $obj.sidePageWidth = $obj.allWidth - $obj.sideWidth - $obj.contentSideWidth
+      $obj.sidePageWidth = $obj.sidePageWidth - $obj.$sidePageMin.offsetWidth
+      $obj.$sidePageMin.style.height = ($obj.allHeight - $obj.headerHeight) + "px"
+      $obj.$sidePageMin.style.top = $obj.headerHeight + "px"
+      $obj.$sidePage.style.width = $obj.sidePageWidth + "px"
     }
 
-    //this.autoAdapter()
+    this.autoAdapter($obj)
   }
 
-  autoAdapter() {
+  autoAdapter($obj) {
     //side缩小时,让sidePage自适应
     //right等于0px的时候,表示sidepage已经打开了
-    if ($sidePage.style.right == "0px") {
-      if (sideStatus == 1) {
-        let sidePageMinWidth = 200,
-          sideWidth = 60,
-          sidePageWidth = sidePageMinWidth + sideWidth
-        if (sidePageInfo.type == 1) {
-          $sidePageMin.style.left = sideWidth + "px"
+    let sidePageMinWidth = $obj.$sidePageMin.offsetWidth
+    if ($obj.$sidePage.style.right == "0px" && !$obj.sidePageInfo.width) {
+      if ($obj.sideStatus == 1) {
+        let sideWidth = 60
+        if ($obj.sidePageInfo.type == 1) {
+          $obj.$sidePageMin.style.left = sideWidth + "px"
+          $obj.$sidePage.style.right = "0px"
+          $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - sidePageMinWidth) + "px"
         }
         else {
-          $sidePage.style.width = (allWidth - sideWidth) + "px"
+          $obj.$sidePage.style.width = ($obj.allWidth - sideWidth-$obj.content3SideWidth) + "px"
         }
       }
       else {
-        let sidePageMinWidth = 200,
-          sideWidth = 160,
-          sidePageWidth = sidePageMinWidth + sideWidth
-        if (sidePageInfo.type == 1) {
-          $sidePageMin.style.left = sideWidth + "px"
-          $sidePage.style.width = (allWidth - sidePageWidth) + "px"
+        let sideWidth = 160
+
+        if ($obj.sidePageInfo.type == 1) {
+          $obj.$sidePageMin.style.left = sideWidth + "px"
+          $obj.$sidePage.style.width = ($obj.allWidth - sidePageMinWidth - sideWidth) + "px"
         }
         else {
-          $sidePage.style.width = sidePageInfo.width ? sidePageInfo.width : (allWidth - sideWidth) + "px"
+          $obj.$sidePage.style.width = ($obj.allWidth - sideWidth-$obj.content3SideWidth) + "px"
         }
       }
     }
@@ -151,7 +165,7 @@ export function openSidePage(_this, params) {
         // let sidePageWidth = allWidth - sideWidth - contentSideWidth
         // sidePageWidth -= $sidepagemin.offsetWidth
         // $sidepage.style.right = "-" + sidePageWidth + "px"
-        $sidepage.style["transition"] = "right,width 1500ms ease"
+        $sidepage.style["transition"] = "right,width 300ms ease"
         $sidepage.style.right = "0px"
       }
       else {

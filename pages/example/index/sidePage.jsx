@@ -7,7 +7,8 @@ class _SidePage extends React.Component {
         return (
             <div>
                 <Content txt="SidePage">
-                    <Btn type="add" txt="展开sidePage【单内容】" href={this._openSidePage1.bind(this)} style={{ padding: "10px" }} />
+                    <Btn type="add" txt="展开sidePage【全屏】" href={this._openSidePage1.bind(this)} style={{ padding: "10px" }} />
+                    <Btn type="add" txt="展开sidePage【自定义展开距离】" href={this._openSidePage4.bind(this)} style={{ padding: "10px" }} />
                     <Btn type="add" txt="展开sidePage【多内容】" href={this._openSidePage2.bind(this)} style={{ padding: "10px" }} />
                     <Btn type="add" txt="展开sidePage【多任务】" href={this._openSidePage3.bind(this)} style={{ padding: "10px" }} />
                 </Content>
@@ -36,6 +37,11 @@ class _SidePage extends React.Component {
     }
 
     _openSidePage1() {
+        openSidePage(this, {
+            status: "addTeam"
+        })
+    }
+    _openSidePage4() {
         openSidePage(this, {
             status: "addTeam",
             width: "500"
