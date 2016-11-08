@@ -8,7 +8,7 @@ import back from "!url!./img/back.png"
 
 class Btn extends React.Component {
   render() {
-    const {type, width, href, txt, style} = this.props
+    const {type, width, href, txt, style,fromControl} = this.props
     let icon
 
     if (type == "edit") {

@@ -6,7 +6,7 @@ import * as config from "config"
 
 class Side extends React.Component {
   render() {
-    const {sideStatus, userId, list,title} = this.props
+    const {sideStatus, userId, list, title} = this.props
 
     let _list = []
     for (let i = 0; i < list.length; i++) {
@@ -14,14 +14,14 @@ class Side extends React.Component {
         _a = []
 
       if (!$l.url && $l.url != "#") {
-        _a = <Link key={"side_main_link"+i} to={$l.url}><img src={$l.sicon} data-src={$l.icon}  data-src-s={$l.sicon} /><span style={{ display: sideStatus == "0" ? "inline" : "none" }}>{$l.name}</span></Link>
+        _a = <Link key={"side_main_link" + i} to={$l.url}><img src={$l.sicon} data-src={$l.icon} data-src-s={$l.sicon} /><span style={{ display: sideStatus == "0" ? "inline" : "none" }}>{$l.name}</span></Link>
       }
       else {
-        _a = <a key={"side_main_a"+i} href="#"><img src={$l.sicon} data-src={$l.icon}   data-src-s={$l.sicon} /><span style={{ display: sideStatus == "0" ? "inline" : "none" }}>{$l.name}</span></a>
+        _a = <a key={"side_main_a" + i} href="#"><img src={$l.sicon} data-src={$l.icon} data-src-s={$l.sicon} /><span style={{ display: sideStatus == "0" ? "inline" : "none" }}>{$l.name}</span></a>
       }
 
       _list.push(
-        <li  key={"side_main_li"+i} className="tSubSide" data-status={sideStatus == "0" ? "open" : "close"}>
+        <li key={"side_main_li" + i} className="tSubSide" data-status={sideStatus == "0" ? "open" : "close"}>
           <div onClick={this.updateSubStatus} >{_a}</div>
           <SubNode list={$l.sub} />
         </li>
@@ -73,13 +73,14 @@ class Side extends React.Component {
       let s = tSubSide[index]
 
       //初始化话side状态
-      
-      if(typeof _open_status =="object" && _open_status.length==2){
-        if(index == _open_status[0]){
-          s.setAttribute("data-status","open")
+
+      if (typeof _open_status == "object" && _open_status.length == 2) {
+        if (index == _open_status[0]) {
+          s.setAttribute("data-status", "open")
           s.style.backgroundColor = "rgb(36, 46, 63)"
-          s.getElementsByTagName("div")[0].getElementsByTagName("a")[0].style.color="white"
+          s.getElementsByTagName("div")[0].getElementsByTagName("a")[0].style.color = "white"
           s.getElementsByTagName("ul")[0].style.display = "block"
+          s.getElementsByTagName("img")[0].setAttribute("src", s.getElementsByTagName("img")[0].getAttribute("data-src"))
         }
       }
 
@@ -95,7 +96,7 @@ class Side extends React.Component {
           this.style.backgroundColor = "rgba(36,46,63,1)"
           for (let i = 0; i < tSubSide.length; i++) {
             let $s = tSubSide[i]
-            if (this!=$s && $s.getAttribute("data-click") == "true") {
+            if (this != $s && $s.getAttribute("data-click") == "true") {
               $s.style.backgroundColor = "transparent"
             }
           }
@@ -133,6 +134,7 @@ class Side extends React.Component {
           _tSubSide[i].setAttribute("data-click", "false")
         }
 
+        //切换主菜单的状态
         let img = this.getElementsByTagName("img")[0].getAttribute("data-src")
         this.getElementsByTagName("img")[0].setAttribute("src", img)
         this.getElementsByTagName("a")[0].style.color = "white"
@@ -152,13 +154,13 @@ class Side extends React.Component {
       for (var j = 0; j < twoSub.length; j++) {
         var $twoSub = twoSub[j]
 
-        if(typeof _open_status =="object" && _open_status.length==2){
-          if(j == _open_status[1]){
+        if (typeof _open_status == "object" && _open_status.length == 2) {
+          if (j == _open_status[1] && index == _open_status[0]) {
             $twoSub.style.borderRightWidth = "3px"
-            $twoSub.style.borderRightStyle ="solid"
+            $twoSub.style.borderRightStyle = "solid"
             $twoSub.style.borderRightColor = "rgb(76, 134, 220)"
             $twoSub.getElementsByTagName("a")[0].style.color = "white"
-            $twoSub.setAttribute("data-click","true")
+            $twoSub.setAttribute("data-click", "true")
           }
         }
         $twoSub.addEventListener("mouseenter", function (e) {
@@ -192,6 +194,16 @@ class Side extends React.Component {
   }
 
   addSubMenuStatus($obj) {
+    //取消所有子菜单的选中状态
+    let _sub_li = document.getElementsByClassName("sub_li")
+    
+    for (let k = 0; k < _sub_li.length; k++) {
+      let $k = _sub_li[k]
+      $k.style.borderRight = "3px solid transparent"
+      $k.getElementsByTagName("a")[0].style.color = "rgb(153, 153, 153)"
+      $k.setAttribute("data-click","false")
+    }
+
     $obj.style.borderRight = "3px solid #4C86DC"
     $obj.setAttribute("data-click", "true")
     $obj.style.color = "white"
@@ -226,10 +238,10 @@ class SubNode extends React.Component {
       for (let j = 0; j < list.length; j++) {
         let $s = list[j]
         if ($s.url) {
-          _list.push(<li key={"side_sub_link"+j}><Link to={$s.url}>{$s.name}</Link></li>)
+          _list.push(<li className="sub_li" key={"side_sub_link" + j}><Link to={$s.url}>{$s.name}</Link></li>)
         }
         else {
-          _list.push(<li key={"side_sub_a"+j}><a href="#" onClick={$s.fn}>{$s.name}</a></li>)
+          _list.push(<li className="sub_li" key={"side_sub_a" + j}><a href="#" onClick={$s.fn}>{$s.name}</a></li>)
         }
       }
     }

@@ -16,18 +16,13 @@ class _Pager extends Component {
                     <Pager fn={this.theFn.bind(this)} />
                     <Btn
                         type="add"
-                        txt="打开OpenSidePage"
+                        txt="多Pager"
                         href={this._openSidePage.bind(this)}
                         style={{ marginTop: "20px" }} />
                 </Content>
-                <SidePage id="pager-sidePage">
+                <SidePage id="pager-sidePage" title="多Pager">
                     <div>
                         <Pager id="pagerTwo" fn={this.theFn.bind(this)} />
-                        <Btn
-                            type="add"
-                            txt="关闭OpenSidePage"
-                            href={closeSidePage}
-                            style={{ marginTop: "20px", marginLeft: "10px" }} />
                     </div>
                 </SidePage>
             </div>

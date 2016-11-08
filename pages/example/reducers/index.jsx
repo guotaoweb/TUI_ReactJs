@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import { routerReducer } from 'react-router-redux'
 
 import publicInfo from '../../../components/Public/public.reducers.jsx'
+import formControlInfo from '../../../components/Public/public.formControl.reducer' //public 不能用,貌似是关键字
 import multyMenu from './multyMenu.reducers'
 
 
@@ -9,6 +10,7 @@ import multyMenu from './multyMenu.reducers'
 const rootReducer = combineReducers({
 	multyMenu,
 	publicInfo,
+	formControlInfo,
   	routing: routerReducer //整合路由 
 })
 

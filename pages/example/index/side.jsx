@@ -76,7 +76,7 @@ class _Side extends React.Component {
         }]
     }]
     return (
-      <Side list={list} />
+      <Side list={list} title="TUI" />
     )
   }
 

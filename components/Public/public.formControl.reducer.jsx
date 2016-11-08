@@ -1,7 +1,7 @@
 import 'babel-polyfill'
 
 const initState = {
-    data: ""
+    data: {}
 }
 
 export default function manageReducers(state = initState, action) {
@@ -10,8 +10,9 @@ export default function manageReducers(state = initState, action) {
             let _infoName = action.data.infoName,
                 initObject = {}
             if (_infoName) {
+               
                 if (!state.data[_infoName]) {
-                    initObject[_infoName] = {}
+                    initObject[_infoName] ={}
                 }
                 else {
                     initObject = state.data
@@ -25,10 +26,11 @@ export default function manageReducers(state = initState, action) {
                     }
                 }
             }
-console.info(initObject)
+            state.data[_infoName] = initObject[_infoName]
             return Object.assign({}, state, {
-                data: initObject
+                data: JSON.parse(JSON.stringify(state.data))
             })
+
         case "UPDATE_FORMCONTROL":
             let _infoName1 = action.data.infoName,
                 initObject1 = {}
@@ -48,9 +50,9 @@ console.info(initObject)
                     }
                 }
             }
-
+            state.data[_infoName1] = initObject1[_infoName1]
             return Object.assign({}, state, {
-                data: initObject1
+                data: JSON.parse(JSON.stringify(state.data))
             })
 
         case "CLEAR_FORMCONTROL":
@@ -63,11 +65,11 @@ console.info(initObject)
                 else {
                     initObject2 = state.data
                 }
-                initObject2={}
+                initObject2 = {}
             }
-
+            state.data[_infoName2] = initObject2[_infoName2]
             return Object.assign({}, state, {
-                data: initObject2
+                data: JSON.parse(JSON.stringify(state.data))
             })
         default: return state
     }

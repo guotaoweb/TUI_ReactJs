@@ -70,19 +70,15 @@ class CTRL_INPUT extends React.Component {
       }
     }
 
-    let _value=data[value.split(".")[0]][value.split(".")[1]]
-    // console.info(value)
-    // console.info(data[value.split(".")[0]])
-    // if(value && data[value.split(".")[0]]){
-    //   console.info("===>")
-    //     _value = data[value.split(".")[0]][value.split(".")[1]]
-    // }
-    
+    let _value = ""
+    if (value && data[value.split(".")[0]]) {
+      _value = data[value.split(".")[0]][value.split(".")[1]]
+    }
 
     return (
       <div className="t-formControls">
         {_label}
-        <input className={required} type={type ? type : "text"} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value} style={style} disabled={disabled} data-addFn={addFn} />
+        <input className={required} type={type ? type : "text"} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} disabled={disabled} />
       </div>
     )
   }
@@ -128,13 +124,11 @@ class CTRL_TEXTAREA extends React.Component {
       }
     }
 
-    let _value=""
-
-    if(value && data[value.split(".")[0]]){
-        _value = data[value.split(".")[0]][value.split(".")[1]]
+    let _value = ""
+    if (value && data[value.split(".")[0]]) {
+      _value = data[value.split(".")[0]][value.split(".")[1]]
     }
-
-
+    
     return (
       <div className="t-formControls">
         {_label}
@@ -348,5 +342,5 @@ class CTRL_TIP extends React.Component {
 
 
 export default TUI._connect({
-  data: "formControlInfo.data"
+  data: "formControlInfo.data",
 }, FormControls)
