@@ -23,10 +23,10 @@ class _Side extends React.Component {
       sicon: admins,
       sub: [{
         name: "管理员列表",
-        url: config.ROOTPATH + "admins"
+        url: Config.ROOTPATH + "admins"
       }, {
         name: "教师列表",
-        url: config.ROOTPATH + "teachers"
+        url: Config.ROOTPATH + "teachers"
       }]
     }, {
       name: "班级管理",
@@ -35,10 +35,10 @@ class _Side extends React.Component {
       sicon: classess,
       sub: [{
         name: "科目列表",
-        url: config.ROOTPATH + "courses"
+        url: Config.ROOTPATH + "courses"
       }, {
         name: "班级列表",
-        url: config.ROOTPATH + "classes"
+        url: Config.ROOTPATH + "classes"
       }]
     }, {
       name: "问卷管理",
@@ -59,17 +59,17 @@ class _Side extends React.Component {
       sicon: reports,
       sub: [{
         name: "在线分析",
-        url: config.ROOTPATH + "TeacherList"
+        url: Config.ROOTPATH + "TeacherList"
       },{
         name: "导出报表",
-        url: config.ROOTPATH + "TeacherList"
+        url: Config.ROOTPATH + "TeacherList"
       },{
         name: "报表列表",
-        url: config.ROOTPATH + "reports"
+        url: Config.ROOTPATH + "reports"
       }]
     }]
     return (
-      <Side list={list} />
+      <Side list={list} title="TSM" />
     )
   }
 

@@ -35,7 +35,7 @@ const initState = {
         info: ""
     },
     tips: [],//标签集合
-    isRefreshPage: false //是否在回退的时候,刷新页面
+    init: 0 //0 初始化 1 非初始化状态
 }
 
 export default function manageReducers(state = initState, action) {
@@ -182,6 +182,8 @@ export default function manageReducers(state = initState, action) {
             })
         case "CLEAR_TIP":
             return Object.assign({}, state, { tips: [] })
+        case "UPDATE_INIT":
+            return Object.assign({}, state, { init: 1 })
         default: return state
     }
 }

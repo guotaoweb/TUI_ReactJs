@@ -67,7 +67,7 @@ class Side extends React.Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        if (this.props.list.length == 0) {
+        if (this.props.list.length == 0 || this.props.sideStatus != nextProps.sideStatus) {
             return true
         }
         else {
@@ -76,10 +76,12 @@ class Side extends React.Component {
     }
     componentDidMount() {
         ReactDOM.findDOMNode(this.refs.tSide).style.height = document.documentElement.clientHeight + "px"
+       
     }
     componentDidUpdate() {
         let _this = this
         let _open_status = config.DEFAULT_OPEN_SIDE
+   
         let tSubSide = document.getElementsByClassName("tSubSide")
 
         for (let index = 0; index < tSubSide.length; index++) {
@@ -87,7 +89,7 @@ class Side extends React.Component {
             let s = tSubSide[index]
 
             //初始化话side状态
-            if (typeof _open_status == "object" && _open_status.length == 2) {
+            if (typeof _open_status == "object" && _open_status.length == 2 && _this.props.init==0) {
                 if (index == _open_status[0]) {
                     s.setAttribute("data-status", "open")
                     s.style.backgroundColor = "rgb(36, 46, 63)"
@@ -167,7 +169,7 @@ class Side extends React.Component {
             for (var j = 0; j < twoSub.length; j++) {
                 var $twoSub = twoSub[j]
 
-                if (typeof _open_status == "object" && _open_status.length == 2) {
+                if (typeof _open_status == "object" && _open_status.length == 2  && _this.props.init==0) {
                     if (j == _open_status[1] && index == _open_status[0]) {
                         $twoSub.style.borderRightWidth = "3px"
                         $twoSub.style.borderRightStyle = "solid"
@@ -175,6 +177,7 @@ class Side extends React.Component {
                         $twoSub.getElementsByTagName("a")[0].style.color = "white"
                         $twoSub.setAttribute("data-click", "true")
                     }
+                    this.props.programInit()
                 }
                 $twoSub.addEventListener("mouseenter", function(e) {
                     this.style.borderRight = "3px solid #4C86DC"
@@ -192,6 +195,8 @@ class Side extends React.Component {
                 })
             }
         }
+
+ 
     }
 
 
@@ -241,6 +246,7 @@ export default TUI._connect({
     sideStatus: "publicInfo.sideStatus",
     userId: "publicInfo.userInfo.id",
     data: "sideList.data",
+    init:"publicInfo.init"
 }, Side)
 
 

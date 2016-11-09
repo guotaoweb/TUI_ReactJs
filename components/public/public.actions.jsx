@@ -148,4 +148,11 @@ export function clearTip(data){
     } 
 }
 
+export function programInit(data){
+    return {
+        type:"UPDATE_INIT",
+        data
+    } 
+}
+
 

@@ -1,5 +1,4 @@
-
-import { Router, Route, IndexRoute} from 'react-router' // 路由
+import { Router, Route, IndexRoute } from 'react-router' // 路由
 
 import Index from './index/index'
 
@@ -10,28 +9,19 @@ import SurvyList from './index/survyList'
 import ClassesList from './index/classesList'
 import ReportList from './index/reportList'
 
-class Routers extends Raect.Component {
+class Routers extends React.Component {
     render() {
-        let _route
-        //如果module不为空,则表示是单独打开的页面
-        if (TUI.fn.requestParam("module") == "manage") {
-            _route = <Route path={TUI.ROOTPATH} component={Manage}></Route>
-        }
-        else {
-            _route =
-                <Route path={TUI.ROOTPATH} component={Index}>
-                    <IndexRoute component={SurvyList} />
-                    <Route path={TUI.ROOTPATH + "teachers"} component={TeacherList} />
-                    <Route path={TUI.ROOTPATH + "courses"} component={CourseList} />
-                    <Route path={TUI.ROOTPATH + "admins"} component={AdminList} />
-                    <Route path={TUI.ROOTPATH + "survys"} component={SurvyList} />
-                    <Route path={TUI.ROOTPATH + "reports"} component={ReportList} />
-                </Route>
-        }
         const {history} = this.props
         return (
             <Router history={history}>
-                {_route}
+                <Route path={Config.ROOTPATH} component={Index}>
+                    <IndexRoute component={SurvyList} />
+                    <Route path={Config.ROOTPATH + "teachers"} component={TeacherList} />
+                    <Route path={Config.ROOTPATH + "courses"} component={CourseList} />
+                    <Route path={Config.ROOTPATH + "admins"} component={AdminList} />
+                    <Route path={Config.ROOTPATH + "survys"} component={SurvyList} />
+                    <Route path={Config.ROOTPATH + "reports"} component={ReportList} />
+                </Route>
             </Router>
         )
     }
