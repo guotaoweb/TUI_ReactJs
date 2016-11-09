@@ -162,7 +162,7 @@ class Manage extends React.Component {
           index: index,
           size: 5,
           sum: parseInt(result.pagertotal),
-          url: pageInfo.url
+          url: pageInfo.index.url
         })
         loadComplete()
       }

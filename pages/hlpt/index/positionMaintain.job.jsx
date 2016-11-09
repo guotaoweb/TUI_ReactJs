@@ -72,7 +72,7 @@ class PositionMaintainJob extends React.Component {
                     </span>
                     <Btn style={{ float: "right" }} txt="新增" type="add" href={this.addPositionMaintainJob.bind(this)} />
                 </div>
-                <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,100" />
+                <Table id="positionMaintainJob" num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,100" />
             </div>
         )
     }

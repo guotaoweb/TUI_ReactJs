@@ -10,7 +10,7 @@ import PositionMaintainEditSelect from "./personMatchPost.editSelect"
 import PersonMatchPostEditSetRole from "./personMatchPost.editSetRole"
 
 import FormControls from "FormControls"
-import Content3 from "Content3"
+import Content3,{openContent3Loading,closeContent3Loading} from "Content3"
 import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, { editFn } from "MultyMenu"
@@ -22,7 +22,7 @@ import { openLoading, closeLoading } from "Loading"
 class PersonMatchPost extends React.Component {
 
     render() {
-        const {odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo, addPersonMatchPostRole,updateSearchInfo} = this.props
+        const {updatePageInfo,odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo, addPersonMatchPostRole, updateSearchInfo} = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "职位", "name3": "人数", "name4": "编制数量", "name5": "操作" },
@@ -31,7 +31,7 @@ class PersonMatchPost extends React.Component {
         for (var i = 0; i < data.length; i++) {
             let _d = data[i]
             tblContent.tbody.push({
-                "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
+                "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                 "value2": _d.positionName,
                 "value3": _d.sumStaff,
                 "value4": _d.staffing ? _d.staffing : 0,
@@ -48,19 +48,27 @@ class PersonMatchPost extends React.Component {
 
                         updateSearchInfo({
                             key: {
-                                type:"addPersonMatchPostRole",
-                                positionId:_d.positionId
+                                type: "addPersonMatchPostRole",
+                                positionId: _d.positionId
                             },
                             name: "personMatchPost",
                             info: "请输入关键字(用户名)"
                         })
 
-                        TUI.platform.get("/dutys/?positionId=" + _d.positionId, function (result) {
+                        TUI.platform.get("/dutys/?positionId=" + _d.positionId+"&from=0&limit=10", function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
                                 addPersonMatchPostRole(_data)
+                                updatePageInfo({
+                                    id:"personMatchPostEditPager",
+                                    index: 1,
+                                    size: 10,
+                                    sum: result._page.total,
+                                    url: "/dutys/?positionId=" + _d.positionId+"&form={0}&limit=10"
+                                })
+                                
                             }
-                            else{
+                            else {
                                 addPersonMatchPostRole([])
                             }
                         })
@@ -207,6 +215,7 @@ class PersonMatchPost extends React.Component {
         _this.props.updatePositionMaintainEditId(code)
 
         this.props.clearPositionMaintainInfo()
+        openContent3Loading()
         this.loadPosition(id)
         closeSidePage()
     }
@@ -233,8 +242,8 @@ class PersonMatchPost extends React.Component {
                 //更新搜索信息
                 updateSearchInfo({
                     key: {
-                        type:"addPersonMatchPost",
-                        unitId:id
+                        type: "addPersonMatchPost",
+                        unitId: id
                     },
                     name: "personMatchPost",
                     info: "输入关键字(职位名称)"
@@ -245,6 +254,7 @@ class PersonMatchPost extends React.Component {
                 clearPageInfo()
             }
             closeLoading()
+            closeContent3Loading()
         })
     }
 
@@ -370,7 +380,7 @@ class PersonMatchPost extends React.Component {
 
     pageFn(index, loadComplete) {
         const {pageInfo, addPositionMaintain, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.url.replace("{0}", pageInfo.size * (index - 1)), function (result) {
+        TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
             if (result.code == 0) {
                 addPositionMaintain(result.data)
                 updatePageInfo({

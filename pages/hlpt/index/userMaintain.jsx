@@ -8,7 +8,7 @@ import singleLeft from "!url!./img/singleLeft.png"
 //组件
 import UserMaintainEdit from "./userMaintain.edit"
 import FormControls from "FormControls"
-import Content3 from "Content3"
+import Content3,{openContent3Loading,closeContent3Loading} from "Content3"
 import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, { editFn } from "MultyMenu"
@@ -216,6 +216,7 @@ class UserMaintain extends React.Component {
     this.props.clearEditInfo({
       infoName:"userMaintainInfo"
     })
+    openContent3Loading()
     this.loadUser(id)
     closeSidePage()
   }
@@ -253,6 +254,7 @@ class UserMaintain extends React.Component {
         addUserMaintain([])
         clearPageInfo()
       }
+      closeContent3Loading()
     })
   }
 

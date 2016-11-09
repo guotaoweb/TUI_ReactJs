@@ -8,7 +8,7 @@ import singleLeft from "!url!./img/singleLeft.png"
 
 import OrgnizationEdit from "./orgnization.edit"
 import FormControls from "FormControls"
-import Content3 from "Content3"
+import Content3,{openContent3Loading,closeContent3Loading} from "Content3"
 import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, { editFn } from "MultyMenu"
@@ -350,6 +350,7 @@ class Orgnization extends React.Component {
 
     this.loadSubOrgnization(id)
     closeSidePage()
+    openContent3Loading()
   }
 
   loadSubOrgnization(id) {
@@ -375,6 +376,7 @@ class Orgnization extends React.Component {
         addSubList([])
         clearPageInfo()
       }
+      closeContent3Loading()
     })
   }
 

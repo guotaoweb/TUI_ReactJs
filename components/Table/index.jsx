@@ -52,7 +52,7 @@ class Table extends React.Component {
       tbl_tbody.push(<tr key="tbl_nodata"><td colSpan={tbl_thead.length} style={{ textAlign: "center", color: "#999" }}>没有任何数据</td></tr>)
     }
     return (
-      <table className="t-tbl" style={this.props.style}>
+      <table id={this.props.id} className="t-tbl" style={this.props.style}>
         <thead>
           <tr>
             {tbl_thead}
@@ -64,10 +64,28 @@ class Table extends React.Component {
       </table>
     )
   }
+
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.tblContent.tbody.length > 0 && nextProps.tblContent.tbody.length == this.props.tblContent.tbody.length) {
+      return false
+    }
+    else {
+      return true
+    }
+  }
+
   componentDidUpdate() {
-    const {width} = this.props
+
+    const {width, id} = this.props
 
     let $tlb = document.getElementsByClassName("t-tbl")[0]
+    console.info(id)
+    if (id) {
+      $tlb = document.getElementById(id)
+    }
+
+
+
     let tblWidth = $tlb.offsetWidth,
       $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
       autoLength = 0

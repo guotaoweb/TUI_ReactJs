@@ -13,6 +13,7 @@ import positionMaintain from './positionMaintain.reducers'
 import userMaintain from './userMaintain.reducers'
 import dataPrivileges from './dataPrivileges.reducers'
 import personMatchPost from './personMatchPost.reducers'
+import sideList from './sideList.reducers'
 
 //使用redux的combineReducers方法将所有reducer打包起来
 	// dialog,
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
 	dataPrivileges,
 	personMatchPost,
 	formControlInfo,
+	sideList,
   	routing: routerReducer //整合路由 
 })
 

@@ -11,6 +11,7 @@ import * as positionMaintain from './positionMaintain.actions'
 import * as userMaintain from './userMaintain.actions'
 import * as dataPrivileges from './dataPrivileges.actions'
 import * as personMatchPost from './personMatchPost.actions'
+import * as sideList from './sideList.actions'
 
 export default {
     ...vteamEdit,
@@ -25,5 +26,6 @@ export default {
     ...userMaintain,
     ...dataPrivileges,
     ...personMatchPost,
-    ...fromControl
+    ...fromControl,
+    ...sideList
 }

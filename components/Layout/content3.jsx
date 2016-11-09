@@ -1,6 +1,7 @@
 import '!style!css!postcss!sass!./style.scss'
 
 import Btn from "Btn"
+import loading from "!url!./img/loading.png"
 
 class Content extends React.Component {
   render() {
@@ -24,8 +25,14 @@ class Content extends React.Component {
           {this.props.children[0]}
         </div>
         <div className="t-content3_c">
+
           {this.props.children[1]}
           <div className="tblContent" ref="tblContent">
+            <div className="t-content3-loading">
+              <div className="t_loading_img">
+                <img src={loading} />
+              </div>
+            </div>
             {this.props.children[2]}
             {this.props.children[3]}
             {this.props.children[4]}
@@ -37,14 +44,32 @@ class Content extends React.Component {
 
   componentDidMount() {
     let allHeight = document.documentElement.clientHeight
-    let headerHeight = document.querySelector(".t-header")?document.querySelector(".t-header").offsetHeight:0
+    let headerHeight = document.querySelector(".t-header") ? document.querySelector(".t-header").offsetHeight : 0
     ReactDOM.findDOMNode(this.refs.tContent3).style.height = (allHeight - headerHeight) + "px"
     ReactDOM.findDOMNode(this.refs.tContent3Side).style.height = (allHeight - headerHeight) + "px"
 
     let tip = ReactDOM.findDOMNode(this.refs.tblContent).previousSibling.offsetHeight
-    tip= tip>0?tip+30:20;
+    tip = tip > 0 ? tip + 30 : 20;
     ReactDOM.findDOMNode(this.refs.tblContent).style.height = (allHeight - headerHeight - tip) + "px"
   }
 };
 
 export default Content;
+
+export function openContent3Loading() {
+  let sidepage = document.querySelector(".t-content3-loading")
+  sidepage.style["transition"] = "opacity 200ms ease"
+  sidepage.style.opacity = "1"
+  sidepage.style.display = "block"
+}
+
+export function closeContent3Loading() {
+  setTimeout(function () {
+    let sidepage = document.querySelector(".t-content3-loading")
+    sidepage.style["transition"] = "opacity 200ms ease"
+    sidepage.style.opacity = "0"
+    setTimeout(function () {
+      sidepage.style.display = "none"
+    }, 201)
+  }, 500)
+}

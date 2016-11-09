@@ -102,7 +102,7 @@ export default function manageReducers(state = initState, action) {
                     url: action.data.url ? action.data.url : state.pageInfo[_id].url
                 }
                 return Object.assign({}, state, {
-                    pageInfo: state.pageInfo
+                    pageInfo: JSON.parse(JSON.stringify(state.pageInfo))
                 })
             }
             else {

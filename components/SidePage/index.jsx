@@ -55,7 +55,7 @@ class SidePage extends React.Component {
       $sidePageMin: document.querySelector(".t-sidepage_min"),//辅SidePage
       sideStatus: sideStatus,
       sidePageInfo: sidePageInfo,
-      content3SideWidth:document.querySelector(".t-content3_side")?document.querySelector(".t-content3_side").offsetWidth:0
+      content3SideWidth: document.querySelector(".t-content3_side") ? document.querySelector(".t-content3_side").offsetWidth : 0
     }
 
     if (sidePageInfo.id) {
@@ -87,28 +87,31 @@ class SidePage extends React.Component {
   autoAdapter($obj) {
     //side缩小时,让sidePage自适应
     //right等于0px的时候,表示sidepage已经打开了
-    let sidePageMinWidth = $obj.$sidePageMin.offsetWidth
-    if ($obj.$sidePage.style.right == "0px" && !$obj.sidePageInfo.width) {
-      if ($obj.sideStatus == 1) {
-        let sideWidth = 60
-        if ($obj.sidePageInfo.type == 1) {
-          $obj.$sidePageMin.style.left = sideWidth + "px"
-          $obj.$sidePage.style.right = "0px"
-          $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - sidePageMinWidth) + "px"
-        }
-        else {
-          $obj.$sidePage.style.width = ($obj.allWidth - sideWidth-$obj.content3SideWidth) + "px"
-        }
-      }
-      else {
-        let sideWidth = 160
 
-        if ($obj.sidePageInfo.type == 1) {
-          $obj.$sidePageMin.style.left = sideWidth + "px"
-          $obj.$sidePage.style.width = ($obj.allWidth - sidePageMinWidth - sideWidth) + "px"
+    let sidePageMinWidth = $obj.$sidePageMin ? $obj.$sidePageMin.offsetWidth : 0
+    if ($obj.$sidePage) {
+      if ($obj.$sidePage.style.right == "0px" && !$obj.sidePageInfo.width) {
+        if ($obj.sideStatus == 1) {
+          let sideWidth = 60
+          if ($obj.sidePageInfo.type == 1) {
+            $obj.$sidePageMin.style.left = sideWidth + "px"
+            $obj.$sidePage.style.right = "0px"
+            $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - sidePageMinWidth) + "px"
+          }
+          else {
+            $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - $obj.content3SideWidth) + "px"
+          }
         }
         else {
-          $obj.$sidePage.style.width = ($obj.allWidth - sideWidth-$obj.content3SideWidth) + "px"
+          let sideWidth = 160
+
+          if ($obj.sidePageInfo.type == 1) {
+            $obj.$sidePageMin.style.left = sideWidth + "px"
+            $obj.$sidePage.style.width = ($obj.allWidth - sidePageMinWidth - sideWidth) + "px"
+          }
+          else {
+            $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - $obj.content3SideWidth) + "px"
+          }
         }
       }
     }

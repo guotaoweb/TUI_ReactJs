@@ -19,7 +19,7 @@ class PositionMaintainRole extends React.Component {
             for (var i = 0; i < rolesData.length; i++) {
                 let _d = rolesData[i]
                 tblContent.tbody.push({
-                    "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
+                    "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                     "value2": _d.roleName,
                     "value3": _d.jobNames,
                     "fns": [{
@@ -94,7 +94,7 @@ class PositionMaintainRole extends React.Component {
                     </span>
                     <Btn style={{ float: "right" }} txt="新增" type="add" href={this.addPositionMaintainRole.bind(this)} />
                 </div>
-                <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,200,0,100" />
+                <Table id="positionMaintainRole" num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,200,0,100" />
 
             </div>
         )

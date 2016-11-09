@@ -7,15 +7,15 @@ import MultyMenu from "MultyMenu"
 
 import singleLeft from "!url!./img/singleLeft.png"
 
-class DataPrivilegesMenu extends React.Component {
+class DataPrivilegesSideMenu extends React.Component {
     render() {
-        const {odata, osdata, updateOData, hasVerticalScroll} = this.props
-
+        const {data, sdata, updateOData, hasVerticalScroll} = this.props
+        console.info(data)
         return (
             <div key="content2_userList" >
                 <div className="t-content_t">
-                    <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />组织机构</span>
-                    <Btn style={{ float: "right" }} txt="保存" href={this.saveOrgnizationSelected.bind(this)} />
+                    <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />菜单</span>
+                    <Btn style={{ float: "right" }} txt="保存" href={this.saveSideSelected.bind(this)} />
                 </div>
                 <div ref="scrollContent">
                     <ReactIScroll iScroll={iScroll} options={{
@@ -23,7 +23,7 @@ class DataPrivilegesMenu extends React.Component {
                         scrollbars: hasVerticalScroll
                     }} onRefresh={this.onScrollRefresh.bind(this)}>
                         <div>
-                            <MultyMenu data={odata} sdata={osdata} openSubMenu={this.openSubMenu.bind(this)} type="allcheck" lastdeep="5" color="dark" style={{ marginTop: "10px" }} />
+                            <MultyMenu data={data} sdata={sdata} openSubMenu={this.openSubMenu.bind(this)} type="allcheck" lastdeep="5" color="dark" style={{ marginTop: "10px" }} />
                             <br />
                         </div>
                     </ReactIScroll>
@@ -51,7 +51,7 @@ class DataPrivilegesMenu extends React.Component {
         this.props.setCanVerticallyScroll(iScrollInstance.hasVerticalScroll)
     }
 
-    saveOrgnizationSelected() {
+    saveSideSelected() {
         const {errorMsg, successMsg, userId, cUserId} = this.props
        
         let $checkbox = document.getElementsByClassName("menu_checkbox"),
@@ -61,18 +61,18 @@ class DataPrivilegesMenu extends React.Component {
         for (let index = 0; index < $checkbox.length; index++) {
             let c = $checkbox[index];
             if (c.getAttribute("data-status") == "check") {
+           
                 let mid = c.getAttribute("data-mid")
-                let mtype = c.getAttribute("data-mtype")
-                additem.push(mtype)
+                additem.push(mid)
             }
 
         }
 
         if (additem.length > 0) {
-            //选中管理员或组织
-            TUI.platform.post("/dataprivileges", {
+            
+            TUI.platform.post("/menustaffs", {
                 "loginUid": cUserId,
-                "dataPrivileges": additem.join(",")
+                "menustaffs": additem.join(",")
             }, function (result) {
                 if (result.code == 0) {
                     successMsg("权限分配成功")
@@ -91,12 +91,12 @@ class DataPrivilegesMenu extends React.Component {
     }
 
     openSubMenu(_data, id, deep, loadComplete) {
-        const {addData, odata, updateOData} = this.props
+        const {data, addSide} = this.props
         for (let index = 0; index < _data.length; index++) {
             let d = _data[index]
 
             if (d.id == id) {
-                TUI.platform.get("/units/tree/" + id, function (result) {
+                TUI.platform.get("/menu/tree/" + id, function (result) {
                     if (result.code == 0) {
                         let children = []
                         let _deep = parseInt(deep) + 1
@@ -105,17 +105,15 @@ class DataPrivilegesMenu extends React.Component {
                             children.push({
                                 id: $s.id,
                                 name: $s.name,
-                                type: $s.unitCode,
                                 isHadSub: $s.isleaf,
-                                ext1: $s.unitLevel,
+                                ext1: $s.url,
                                 deep: _deep,
-                                sId:$s.unitCode
+                                sId:id
                             })
                         }
                         d.children = children
-
                         loadComplete()
-                        updateOData(odata)
+                        addSide(data)
                     }
                 })
                 break
@@ -125,9 +123,9 @@ class DataPrivilegesMenu extends React.Component {
 }
 
 export default TUI._connect({
-    odata: "orgnizations.odata",
-    osdata:  "orgnizations.osdata",
+    data: "sideList.data",
+    sdata:  "sideList.sdata",
     userId: "publicInfo.userInfo.id",
     hasVerticalScroll: "orgnizationManage.hasVerticalScroll",
-    cUserId:"publicInfo.sidePageInfo.gateWay",
-}, DataPrivilegesMenu)
+    cUserId:"publicInfo.sidePageInfo.gateWay"
+}, DataPrivilegesSideMenu)

@@ -14,16 +14,16 @@ class FormControls extends React.Component {
         let bindElem
 
         if (ctrl == "input") {
-            bindElem = <CTRL_INPUT label={label} labelWidth={labelWidth} type={type} value={value} onBlur={this.props.onBlur} style={this.props.style} disabled={this.props.disabled} addFn={this.props.addEditInfo
+            bindElem = <CTRL_INPUT label={label} labelWidth={labelWidth} type={type} value={value} onFocus={this.props.onFocus} onBlur={this.props.onBlur} style={this.props.style} disabled={this.props.disabled} addFn={this.props.addEditInfo
             } required={this.props.required} data={data} />
         }
         else if (ctrl == "textarea") {
-            bindElem = <CTRL_TEXTAREA label={label} labelWidth={labelWidth} value={value} tyle={this.props.style} required={this.props.required} addFn={this.props.addEditInfo
+            bindElem = <CTRL_TEXTAREA label={label} labelWidth={labelWidth} value={value} tyle={this.props.style} onFocus={this.props.onFocus} onBlur={this.props.onBlur} required={this.props.required} addFn={this.props.addEditInfo
             } required={this.props.required} data={data} />
         }
         else if (ctrl == "select") {
-            bindElem = <CTRL_SELECT label={label} labelWidth={labelWidth} value={value} options={this.props.options} style={this.props.style} required={this.props.required}  addFn={this.props.addEditInfo
-            }  data={data} />
+            bindElem = <CTRL_SELECT label={label} labelWidth={labelWidth} value={value} options={this.props.options} style={this.props.style} required={this.props.required} addFn={this.props.addEditInfo
+            } data={data} />
         }
         else if (ctrl == "radio") {
             bindElem = <CTRL_RADIO label={label} labelWidth={labelWidth} txt={txt} style={this.props.style} disabled={this.props.disabled} groupName={this.props.groupName} selected={this.props.selected} value={this.props.value} />
@@ -51,6 +51,7 @@ class CTRL_INPUT extends React.Component {
             labelWidth,
             type,
             onBlur,
+            onFocus,
             addFn,
             style,
             disabled,
@@ -79,7 +80,7 @@ class CTRL_INPUT extends React.Component {
         return (
             <div className="t-formControls">
                 {_label}
-                <input className={required} type={type ? type : "text"} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} disabled={disabled} />
+                <input className={required} type={type ? type : "text"} onFocus={onFocus} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} disabled={disabled} />
             </div>
         )
     }
@@ -107,7 +108,9 @@ class CTRL_TEXTAREA extends React.Component {
             addFn,
             style,
             value,
-            data
+            data,
+            onBlur,
+            onFocus,
         } = this.props
 
         let _label
@@ -133,7 +136,7 @@ class CTRL_TEXTAREA extends React.Component {
         return (
             <div className="t-formControls">
                 {_label}
-                <textarea className={required} value={_value || ""} onChange={this._onChange.bind(this)} style={style} ></textarea>
+                <textarea className={required} value={_value || ""} onFocus={onFocus} onBlur={onBlur} onChange={this._onChange.bind(this)} style={style} ></textarea>
             </div>
         )
     }

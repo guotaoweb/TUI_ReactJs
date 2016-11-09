@@ -8,7 +8,7 @@ import { openLoading, closeLoading } from "Loading"
 
 class PersonMatchPostEdit extends React.Component {
     render() {
-        const {pageInfo, sidePageStatus, roleData, sidePageInfo, deletePersonMatchPostRole, addPersonMatchPostSetRoleData, updatePersonMatchPostNumber,updateSearchInfo } = this.props
+        const {pageInfo, sidePageStatus, roleData, sidePageInfo, deletePersonMatchPostRole, addPersonMatchPostSetRoleData, updatePersonMatchPostNumber, updateSearchInfo } = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "角色", "name5": "操作" },
@@ -28,7 +28,7 @@ class PersonMatchPostEdit extends React.Component {
                             status: "personMatchPostEditSetRole",
                             gateWay: {
                                 positionId: _d.positionId,
-                                poId:_d.poid
+                                poId: _d.poid
                             },
                             id: "PersonMatchPostEditSelect"
                         })
@@ -42,10 +42,10 @@ class PersonMatchPostEdit extends React.Component {
                         })
                         TUI.platform.get("/roles?positionId=" + _d.positionId, function (result) {
                             if (result.code == 0) {
-                                let _data = result.data 
+                                let _data = result.data
                                 addPersonMatchPostSetRoleData(_data)
                             }
-                            else{
+                            else {
                                 addPersonMatchPostSetRoleData([])
                             }
                         })
@@ -88,6 +88,7 @@ class PersonMatchPostEdit extends React.Component {
                     addTxt="调入"
                     editTxt="兼职">
                     <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,150,150,150" />
+                    <Pager id="personMatchPostEditPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                 </Content>
             </div>
         )
@@ -165,11 +166,15 @@ class PersonMatchPostEdit extends React.Component {
 
     pageFn(index, loadComplete) {
         const {pageInfo, addPositionMaintain, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.url.replace("{0}", pageInfo.size * (index - 1)), function (result) {
+        TUI.platform.get(pageInfo.personMatchPostEditPager.url.replace("{0}", pageInfo.personMatchPostEditPager.size * (index - 1)), function (result) {
             if (result.code == 0) {
                 addPositionMaintain(result.data)
                 updatePageInfo({
-                    index: index
+                    id: "personMatchPostEditPager",
+                    index: index,
+                    size: 10,
+                    sum: result._page.total,
+                    url: pageInfo.personMatchPostEditPager.url
                 })
                 loadComplete()
             }
@@ -186,5 +191,6 @@ export default TUI._connect({
     selectUserData: "personMatchPost.selectUserData",
     sidePageInfo: "publicInfo.sidePageInfo",
     hasVerticalScroll: "orgnizationManage.hasVerticalScroll",
-    eidtId: "personMatchPost.editId"
+    eidtId: "personMatchPost.editId",
+    pageInfo: "publicInfo.pageInfo"
 }, PersonMatchPostEdit)

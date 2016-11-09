@@ -10,7 +10,7 @@ import PositionMaintainEdit from "./positionMaintain.edit"
 import PositionMaintainRoleInList from "./positionMaintain.role.jobList"
 import FormControls from "FormControls"
 import { getContentIndex } from "Content2"
-import Content3 from "Content3"
+import Content3,{openContent3Loading,closeContent3Loading} from "Content3"
 import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, { editFn } from "MultyMenu"
@@ -139,7 +139,7 @@ class PositionMaintain extends React.Component {
             <span>职位维护列表</span>
             {addBtn}
           </div>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,100,0,120,0,70,70,100" />
+          <Table id="positionMaintain" num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,100,0,120,0,70,70,100" />
           <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
         </Content3>
         <SidePage id="PositionMaintain">
@@ -268,6 +268,7 @@ class PositionMaintain extends React.Component {
     _this.props.updatePositionMaintainEditId(code)
 
     this.props.clearPositionMaintainInfo()
+    openContent3Loading()
     this.loadPosition(id)
     closeSidePage()
     this.props.updatePositionMaintainJobsInfo({
@@ -308,6 +309,7 @@ class PositionMaintain extends React.Component {
         addPositionMaintain([])
         clearPageInfo()
       }
+      closeContent3Loading()
       closeLoading()
     })
   }
@@ -440,7 +442,6 @@ class PositionMaintain extends React.Component {
         updatePageInfo({
           index: index
         })
-        console.info("下面是加载完成的代码")
         loadComplete()
       }
       else {

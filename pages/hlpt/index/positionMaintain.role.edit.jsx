@@ -9,9 +9,9 @@ class PositionMaintainRoleEdit extends React.Component {
 
         return (
             <div>
-                <FormControls label="角色名称" ctrl="input" value="rolesInfo.name" required="required"/>
+                <FormControls label="角色名称" ctrl="input" onFocus={this.closeSelectList} value="rolesInfo.name" required="required" />
                 <FormControls label="关联职责" ctrl="tip" txt={tips} addFn={this.addFn.bind(this)} deleteFn={this.deleteFn.bind(this)} /><br className="clear" />
-                <FormControls label="备注" ctrl="textarea" value="rolesInfo.remark" />
+                <FormControls label="备注" ctrl="textarea" value="rolesInfo.remark" onFocus={this.closeSelectList}  />
 
                 <div style={{ marginLeft: "100px", paddingTop: "5px" }}>
                     <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} style={{ float: "left", marginRight: "10px" }} />
@@ -37,7 +37,7 @@ class PositionMaintainRoleEdit extends React.Component {
     }
 
     editPositionMaintainRole() {
-        const {tips, sidePageInfo, errorMsg, successMsg, editInfo, pushPositionMaintainRoles,jobsSelectedData} = this.props
+        const {tips, sidePageInfo, errorMsg, successMsg, editInfo, pushPositionMaintainRoles, jobsSelectedData} = this.props
 
         let _positionId = [],
             _this = this
@@ -136,22 +136,28 @@ class PositionMaintainRoleEdit extends React.Component {
 
     goBack() {
         this.props.updateEditInfo({
-            infoName:"rolesInfo",
+            infoName: "rolesInfo",
             status: "list"
         })
         this.props.clearEditInfo({
-            infoName:"rolesInfo"
+            infoName: "rolesInfo"
         })
         this.props.clearTip()
         closeSidePage({
-            id:"PositionMaintainRoleEdit"
+            id: "PositionMaintainRoleEdit"
+        })
+    }
+
+    closeSelectList() {
+        closeSidePage({
+            id: "PositionMaintainRoleEdit"
         })
     }
 
     goClose() {
         closeSidePage()
         this.props.clearEditInfo({
-            infoName:"rolesInfo"
+            infoName: "rolesInfo"
         })
         this.props.clearTip()
     }
@@ -162,5 +168,6 @@ export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
     rolesInfo: "positionMaintain.rolesInfo",
     jobsSelectedData: "positionMaintain.jobsSelectedData",
-    tips: "publicInfo.tips"
+    tips: "publicInfo.tips",
+    editInfo:"formControlInfo.data"
 }, PositionMaintainRoleEdit)

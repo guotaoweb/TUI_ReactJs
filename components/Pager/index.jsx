@@ -23,6 +23,7 @@ class Pager extends React.Component {
         if (pageLoadStatus == 0) {
             loadStatusImg = <div className="pager-loading"><img src={loading} /></div>
         }
+
         if (_pageInfo[_id]) {
             let pageInfo = _pageInfo[_id]
             pageCIndex = pageInfo.index
@@ -68,6 +69,8 @@ class Pager extends React.Component {
             pageSize = 5
             pageSum = 1
         }
+
+
         return (
             <div style={{ display: (pagerLength == 1 ? "none" : "block") }}>
                 <div className="t-pager" style={this.props.style}>
