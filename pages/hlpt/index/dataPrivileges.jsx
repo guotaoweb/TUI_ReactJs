@@ -78,7 +78,7 @@ class DataPrivileges extends React.Component {
                                 addOSData("")
                             }
                             else {
-                                errorMsg(TUI.ERROR_INFO[result.code]);
+                                errorMsg(result.message)
                             }
                         }, this)
 
@@ -106,7 +106,7 @@ class DataPrivileges extends React.Component {
                                 addOSData("")
                             }
                             else {
-                                errorMsg(Config.ERROR_INFO[result.code]);
+                                errorMsg(result.message)
                             }
                         }, this)
 
@@ -170,11 +170,11 @@ class DataPrivileges extends React.Component {
 
                 closeLoading()
             }
-            else if (result.code == 9) {
+            else if (result.code == 404) {
                 addDataPrivileges([])
             }
             else {
-                errorMsg(TUI.ERROR_INFO[result.code]);
+                errorMsg(result.message)
             }
         }, this)
 
@@ -196,7 +196,7 @@ class DataPrivileges extends React.Component {
                 updateOData(_d)
             }
             else {
-                errorMsg(TUI.ERROR_INFO[result.code]);
+                errorMsg(result.message)
             }
         })
 

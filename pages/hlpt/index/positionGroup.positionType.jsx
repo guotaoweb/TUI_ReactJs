@@ -35,7 +35,7 @@ class PositionTypeEdit extends React.Component {
                     _this.updateData(data, editDeep.split("-"), params)
                 }
                 else {
-                    errorMsg(Config.config.ERROR_INFO[result.code]);
+                    errorMsg(result.message)
                 }
             })
         }
@@ -56,7 +56,7 @@ class PositionTypeEdit extends React.Component {
                     _this.addData(data, editDeep.split("-"), _addData)
                 }
                 else {
-                    errorMsg(Config.ERROR_INFO[result.code]);
+                    errorMsg(result.message)
                 }
             })
         }

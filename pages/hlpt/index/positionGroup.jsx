@@ -89,8 +89,11 @@ class PositionGroup extends React.Component {
 
         addPositionGroup(main)
       }
+      else if(result.code==404){
+        addPositionGroup([])
+      }
       else {
-        errorMsg(Config.ERROR_INFO[obj.code]);
+        errorMsg(result.message)
       }
     })
 
@@ -118,8 +121,11 @@ class PositionGroup extends React.Component {
           _editInfo["infoName"] = "positionTypeInfo"
           _this.props.addEditInfo(_editInfo)
         }
+        else if(result.code==404){
+          _this.props.addEditInfo([])
+        }
         else {
-          _this.props.errorMsg(Config.ERROR_INFO[result.code]);
+         errorMsg(result.message)
         }
       })
     }
@@ -163,8 +169,11 @@ class PositionGroup extends React.Component {
           _this.props.addEditInfo(_editInfo)
         }
       }
+      else if(result.code==404){
+        _this.props.addEditInfo([])
+      }
       else {
-        _this.props.errorMsg(Config.ERROR_INFO[result.code]);
+        _this.props.errorMsg(result.message)
       }
     })
   }
@@ -172,7 +181,7 @@ class PositionGroup extends React.Component {
   openSubMenu(_data, id, deep, loadComplete) {
 
     let _this = this
-    const {data, updatePageInfo, updateSearchInfo} = this.props
+    const {errorMsg,data, updatePageInfo, updateSearchInfo} = this.props
 
     for (let index = 0; index < _data.length; index++) {
       let d = _data[index]
@@ -211,6 +220,13 @@ class PositionGroup extends React.Component {
             d.children = children
             _this.props.updatePositionGroup(data)
             loadComplete()
+          }
+          else if(result.code==404){
+            _this.props.updatePositionGroup([])
+            loadComplete()
+          }
+          else{
+            errorMsg(result.message)
           }
         })
         break
@@ -251,7 +267,7 @@ class PositionGroup extends React.Component {
             _this.props.successMsg(name + "删除成功")
           }
           else {
-            _this.props.errorMsg(Config.ERROR_INFO[result.code]);
+            _this.props.errorMsg(result.errors);
           }
         })
       }
@@ -264,7 +280,7 @@ class PositionGroup extends React.Component {
             _this.props.successMsg(name + "删除成功")
           }
           else {
-            _this.props.errorMsg(Config.ERROR_INFO[result.code]);
+            _this.props.errorMsg(result.errors);
           }
         })
       }

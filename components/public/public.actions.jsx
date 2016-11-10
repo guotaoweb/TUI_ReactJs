@@ -155,4 +155,19 @@ export function programInit(data){
     } 
 }
 
+export function refreshTable(data){
+    return {
+        type:"REFRESH_TABLE",
+        data
+    } 
+}
+
+export function noRefreshTable(data){
+    return {
+        type:"NO_REFRESH_TABLE",
+        data
+    } 
+}
+
+
 

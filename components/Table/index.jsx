@@ -66,7 +66,7 @@ class Table extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.tblContent.tbody.length > 0 && nextProps.tblContent.tbody.length == this.props.tblContent.tbody.length) {
+    if (nextProps.tblContent.tbody.length > 0 && nextProps.tblContent.tbody.length == this.props.tblContent.tbody.length && this.props.isRefreshTable==0) {
       return false
     }
     else {
@@ -75,16 +75,13 @@ class Table extends React.Component {
   }
 
   componentDidUpdate() {
-
     const {width, id} = this.props
-
+    Actions.noRefreshTable()
     let $tlb = document.getElementsByClassName("t-tbl")[0]
-    console.info(id)
+
     if (id) {
       $tlb = document.getElementById(id)
     }
-
-
 
     let tblWidth = $tlb.offsetWidth,
       $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
@@ -103,7 +100,6 @@ class Table extends React.Component {
       }
     }
 
-
     for (let j = 0; j < $autoTblWidth.length; j++) {
       let $a = $autoTblWidth[j]
       $a.style.width = tblWidth / autoLength + "px"
@@ -112,9 +108,7 @@ class Table extends React.Component {
       $a.style.whiteSpace = "nowrap"
       $a.style.textOverflow = "ellipsis"
     }
-
   }
-
 }
 
 

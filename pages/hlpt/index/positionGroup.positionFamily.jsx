@@ -36,7 +36,7 @@ class PositionFamilyEdit extends React.Component {
                     _this.updateData(data, editDeep.split("-"), params)
                 }
                 else {
-                    errorMsg(Config.ERROR_INFO[result.code]);
+                    errorMsg(result.message)
                 }
             })
         }
@@ -60,7 +60,7 @@ class PositionFamilyEdit extends React.Component {
                     _this.addData(data, editDeep.split("-"), _addData)
                 }
                 else {
-                    errorMsg(Config.ERROR_INFO[result.code]);
+                    errorMsg(result.message)
                 }
             })
         }

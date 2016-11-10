@@ -8,7 +8,7 @@ import singleLeft from "!url!./img/singleLeft.png"
 
 import OrgnizationEdit from "./orgnization.edit"
 import FormControls from "FormControls"
-import Content3,{openContent3Loading,closeContent3Loading} from "Content3"
+import Content3, { openContent3Loading, closeContent3Loading } from "Content3"
 import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, { editFn } from "MultyMenu"
@@ -19,8 +19,17 @@ import { openLoading, closeLoading } from "Loading"
 
 class Orgnization extends React.Component {
   render() {
-    const {odata, pageInfo, sidePageStatus, hasVerticalScroll, subList} = this.props
     let _this = this
+    const {
+      odata,
+      pageInfo,
+      sidePageStatus,
+      hasVerticalScroll,
+      subList,
+      successMsg,
+      delSubList
+    } = _this.props
+    
     let tblContent = {
       "thead": { "name1": "序号", "name2": "组织编码", "name3": "名称", "name4": "排序号", "name5": "上级组织", "name6": "状态", "name7": "操作" },
       "tbody": []
@@ -32,8 +41,8 @@ class Orgnization extends React.Component {
         "value2": _d.unitCode,
         "value3": _d.unitName,
         "value4": _d.sort,
-        "value5": _d.superUnitName,
-        "value6": _this.switchStatusName(_d.status),
+        "value5": _d.superExt2,
+        "value6": _d.statusName,
         "fns": [{
           "name": "编辑",
           "fn": function () {
@@ -45,11 +54,15 @@ class Orgnization extends React.Component {
             let delFetch = function () {
               TUI.platform.patch("/unit/" + _d.unitId, function (result) {
                 if (result.code == 0) {
-                  _this.props.successMsg("组织删除成功")
-                  _this.props.delSubList({
+                  //删除列表中的组织
+                  delSubList({
                     unitId: _d.unitId
                   })
-                  //_this.deleteData(_this.props.odata,params.deep.split("-"))
+
+                  //删除树中的组织
+                  _this.deleteData(_this.props.odata, params.deep.split("-"))
+
+                  successMsg("组织删除成功")
                 }
               })
             }
@@ -68,10 +81,13 @@ class Orgnization extends React.Component {
     return (
       <div>
         <Content3>
-          <ReactIScroll iScroll={iScroll} options={{
-            mouseWheel: true,
-            scrollbars: hasVerticalScroll
-          }} onRefresh={this.onScrollRefresh.bind(this)}>
+          <ReactIScroll
+            iScroll={iScroll}
+            options={{
+              mouseWheel: true,
+              scrollbars: hasVerticalScroll
+            }}
+            onRefresh={this.onScrollRefresh.bind(this)}>
             <div>
               <MultyMenu data={odata} type="edit" lastdeep="6" color="white" addMenu={this.addMenu.bind(this)} editMenu={this.editMenu.bind(this)} delMenu={this.delMenu.bind(this)} clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
               <br />
@@ -83,7 +99,7 @@ class Orgnization extends React.Component {
             <span>组织信息列表</span>
             {addBtn}
           </div>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,140,0,80,0,80,80" />
+          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,140,0,80,0,80,80" isRefreshTable={this.props.isRefreshTable} />
           <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
         </Content3>
         <SidePage>
@@ -93,14 +109,6 @@ class Orgnization extends React.Component {
     )
   }
 
-  switchStatusName(status) {
-    switch (status) {
-      case "1": return "经营"
-      case "0": return "停业"
-      case "2": return "申请"
-      default: return "撤销"
-    }
-  }
   onScrollRefresh(iScrollInstance, $this) {
     this.props.setCanVerticallyScroll(iScrollInstance.hasVerticalScroll)
   }
@@ -169,7 +177,7 @@ class Orgnization extends React.Component {
         })
       }
       else {
-        errorMsg(TUI.ERROR_INFO[result.code]);
+        errorMsg(result.message);
       }
     })
 
@@ -224,12 +232,14 @@ class Orgnization extends React.Component {
   }
 
   addMenu(params) {
-    const {updateTeamInfo, clearOrgnizationInfo, detail} = this.props
+    const {updateTeamInfo, clearEditInfo, detail} = this.props
     let _this = this
 
     closeSidePage()
 
-    clearOrgnizationInfo()
+    clearEditInfo({
+      infoName: "orgnizationInfo"
+    })
 
     setTimeout(function () {
       openSidePage(_this, {
@@ -244,7 +254,7 @@ class Orgnization extends React.Component {
     let _this = this
     closeSidePage()
     clearEditInfo({
-      infoName:"orgnizationInfo"
+      infoName: "orgnizationInfo"
     })
     setTimeout(function () {
       openSidePage(_this, {
@@ -272,7 +282,7 @@ class Orgnization extends React.Component {
       if (result.code == 0) {
         var _d = result.data
         addEditInfo({
-          infoName:"orgnizationInfo",
+          infoName: "orgnizationInfo",
           id: _d.unitId,
           code: _d.unitCode,
           who: _d.unitName,
@@ -288,8 +298,8 @@ class Orgnization extends React.Component {
           sort: _d.sort,
           remark: _d.remark,
           permission: _d.unitCode,
-          globalCode:_d.globalCode,
-          staffing:_d.staffing
+          globalCode: _d.globalCode,
+          staffing: _d.staffing
         })
       }
     })
@@ -314,42 +324,31 @@ class Orgnization extends React.Component {
     }
 
     openDialog(_this, "是否确定删除此项？", delFetch)
-
-    // TUI.platform.patch("/unit/" + params.id, function (result) {
-    //   if (result.code == 0) {
-    //     _this.props.successMsg("组织删除成功")
-    //     _this.props.delSubList({
-    //       unitId: params.id
-    //     })
-    //   }
-    //   else {
-    //     _this.props.errorMsg(result.errors)
-    //   }
-    // })
   }
 
   clickMenu($m) {
     let _this = this
     let $menuLi = document.getElementsByClassName("clickmenu")
     for (let j = 0; j < $menuLi.length; j++) {
-      let $m1 = $menuLi[j];
+      let $m1 = $menuLi[j]
       $m1.style.backgroundColor = ""
     }
     $m.style.backgroundColor = "rgba(250,250,250,0.5)"
     $m.style.borderRadius = "3px"
 
     let id = $m.getAttribute("data-id")
-
-    let num = $m.getAttribute("data-num")
     let relateId = $m.getAttribute("data-deep")
-    let type = $m.getAttribute("data-type")
+    let unitCode = $m.getAttribute("data-type")
+
     _this.props.updateOrgnizationRelateId({
-      relateId: relateId,
-      type: type
+      relateId: relateId,//级联的关系ID
+      unitCode: unitCode //上级的code
     })
 
     this.loadSubOrgnization(id)
+
     closeSidePage()
+
     openContent3Loading()
   }
 
@@ -418,31 +417,6 @@ class Orgnization extends React.Component {
     }
   }
 
-  delData(data, deep, fn, _deep) {
-    //deep的格式是1-2-3,拆成数组
-    //如果deep的length==1的话,就说明已经钻到底层了
-    if (deep.length == 1) {
-      for (let index = 0; index < data.length; index++) {
-        let d = data[index]
-        if (d.id == deep[0]) {
-          data.splice(index, 1)
-          fn(this.props.xnsubdata)
-        }
-      }
-      return false
-    }
-
-    //钻到最底层
-    for (var index = 0; index < data.length; index++) {
-      let d = data[index]
-      if (d.id == deep[0] && deep.length > 1) {
-        deep.splice(0, 1)
-        this.delData(d.children, deep, fn, _deep + 1)
-      }
-    }
-  }
-
-
   deleteData(data, deep) {
     //deep的格式是1-2-3,拆成数组
     //如果deep的length==1的话,就说明已经钻到底层了
@@ -467,11 +441,12 @@ class Orgnization extends React.Component {
     }
   }
 
+
+  //展开树子节点方法
   openSubMenu(_data, id, deep, loadComplete) {
-    const {addData, odata} = this.props
+    const {addData, odata, errorMsg} = this.props
     for (let index = 0; index < _data.length; index++) {
       let d = _data[index]
-
       if (d.id == id) {
         TUI.platform.get("/units/tree/" + id, function (result) {
           if (result.code == 0) {
@@ -490,8 +465,15 @@ class Orgnization extends React.Component {
               })
             }
             d.children = children
-            setTimeout(function () { loadComplete() }, 1000)
           }
+          else if (result.code == 404) {
+
+          }
+          else {
+            errorMsg(result.message)
+          }
+
+          setTimeout(function () { loadComplete() }, 1000)
         })
         break
       }
@@ -499,8 +481,9 @@ class Orgnization extends React.Component {
   }
 
 
+  //翻页方法
   pageFn(index, loadComplete) {
-    const {pageInfo, addSubList, updatePageInfo} = this.props
+    const {pageInfo, addSubList, updatePageInfo, errorMsg} = this.props
     TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
       if (result.code == 0) {
         addSubList(result.data)
@@ -509,11 +492,13 @@ class Orgnization extends React.Component {
         })
         loadComplete()
       }
-      else {
+      else if (result.code == 404) {
         addSubList([])
       }
+      else {
+        errorMsg(result.message)
+      }
     })
-
   }
 }
 
@@ -526,5 +511,6 @@ export default TUI._connect({
   detail: "orgnizationManage.detail",
   searchInfo: "publicInfo.searchInfo",
   relateId: "orgnizationManage.relateId",
-  editInfo:"formControlInfo.data"
+  editInfo: "formControlInfo.data",
+  isRefreshTable:"orgnizationManage.isRefreshTable"
 }, Orgnization)

@@ -16,24 +16,24 @@ class OrgnizationEdit extends React.Component {
         return (
             <Content2 tabs={tabs} key="content2_userEdit">
                 <div>
-                    <FormControls label="组织编码" ctrl="input" value="orgnizationInfo.code" disabled="disabled"/>
+                    <FormControls label="组织编码" ctrl="input" value="orgnizationInfo.code" disabled="disabled" />
 
                     <FormControls label="上级组织" ctrl="input" value="orgnizationInfo.upper" disabled="disabled" />
-                    <FormControls label="级别" ctrl="input" value="orgnizationInfo.level" disabled="disabled"/>
+                    <FormControls label="级别" ctrl="input" value="orgnizationInfo.level" disabled="disabled" />
                     <FormControls label="全称" ctrl="input" value="orgnizationInfo.unitName" required="required" />
                     <FormControls label="短名称" ctrl="input" value="orgnizationInfo.ext2" required="required" />
 
-                    <FormControls label="组织机构" ctrl="select" options={unitKind} value="orgnizationInfo.kind"/>
+                    <FormControls label="组织机构" ctrl="select" options={unitKind} value="orgnizationInfo.kind" />
                     <FormControls label="状态" ctrl="select" options={status} value="orgnizationInfo.status" />
 
                     <FormControls label="序号" ctrl="input" type="number" value="orgnizationInfo.sort" required="required" />
-                    <FormControls label="编制" ctrl="input" type="number" value="orgnizationInfo.staffing"  />
+                    <FormControls label="编制" ctrl="input" type="number" value="orgnizationInfo.staffing" />
                     <FormControls label="人资编码" ctrl="input" value="orgnizationInfo.globalCode" />
                     <FormControls label="备注" ctrl="textarea" value="orgnizationInfo.remark" />
 
                     <div className="formControl-btn">
-                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)}/>
-                        <Btn type="check" txt="确定" href={this.editOrgization.bind(this)}/>
+                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
+                        <Btn type="submit" txt="确定" href={this.editOrgization.bind(this)} />
                     </div>
                     <br /><br /><br />
                 </div>
@@ -68,7 +68,7 @@ class OrgnizationEdit extends React.Component {
                 "staffing": editInfo.orgnizationInfo.staffing,
                 "superUnitid1": unitCode ? unitCode : sidePageInfo.gateWay.type,
                 "unitLevel": relateId ? relateId.split("-").length + 1 : sidePageInfo.gateWay.ext1,
-                "globalCode":editInfo.orgnizationInfo.globalCode
+                "globalCode": editInfo.orgnizationInfo.globalCode
             }
 
             TUI.platform.post("/unit", postJson, function (result) {
@@ -76,8 +76,11 @@ class OrgnizationEdit extends React.Component {
                     closeSidePage()
                     _this.props.successMsg("新增组织成功")
                     postJson.unitCode = result.data.unitCode
+                    postJson.superExt2 = result.data.superExt2
+                    postJson.statusName = result.data.statusName
                     //实时新增组织
                     pushSubList(postJson)
+
 
                     _this.addData(data, relateId.split("-"), {
                         id: result.data.unitId,
@@ -86,9 +89,10 @@ class OrgnizationEdit extends React.Component {
                         deep: relateId.split("-").length,
                         unitCode: result.data.unitCode
                     })
+                    _this.props.refreshTable()
                 }
                 else {
-                    errorMsg(Config.ERROR_INFO[result.code])
+                    errorMsg(result.message)
                 }
             })
         }
@@ -105,7 +109,7 @@ class OrgnizationEdit extends React.Component {
                 "sort": editInfo.orgnizationInfo.sort,
                 "staffing": editInfo.orgnizationInfo.staffing,
                 "remark": editInfo.orgnizationInfo.remark,
-                "globalCode":editInfo.orgnizationInfo.globalCode
+                "globalCode": editInfo.orgnizationInfo.globalCode
             }
 
 
@@ -113,7 +117,7 @@ class OrgnizationEdit extends React.Component {
                 if (result.code == 0) {
                     closeSidePage()
                     _this.props.successMsg("编辑组织成功");
-
+                    postJson["statusName"] = editInfo.orgnizationInfo.statusName
                     //实时更新组织
                     updateSubList(postJson)
 
@@ -122,7 +126,7 @@ class OrgnizationEdit extends React.Component {
                     })
                 }
                 else {
-                    errorMsg(config.ERROR_INFO[result.code]);
+                    errorMsg(result.message)
                 }
             })
         }
@@ -190,6 +194,6 @@ export default TUI._connect({
     status: "orgnizationManage.status",
     city: "orgnizationManage.city",
     relateId: "orgnizationManage.relateId",
-    unitCode: "orgnizationManage.type",
-    editInfo:"formControlInfo.data"
+    unitCode: "orgnizationManage.unitCode",
+    editInfo: "formControlInfo.data"
 }, OrgnizationEdit)

@@ -62,7 +62,7 @@ class PositionMaintainRoleEdit extends React.Component {
                     pushPositionMaintainRoles(result.data)
                 }
                 else {
-                    errorMsg(Config.ERROR_INFO[result.code])
+                    errorMsg(result.message)
                 }
             })
         }
@@ -81,10 +81,11 @@ class PositionMaintainRoleEdit extends React.Component {
                     updatePositionMaintainRoles(jsonParam)
                 }
                 else {
-                    errorMsg(Config.ERROR_INFO[result.code]);
+                    errorMsg(result.message)
                 }
             })
         }
+        this.props.refreshTable()
     }
 
     updateData(data, deep, newData) {

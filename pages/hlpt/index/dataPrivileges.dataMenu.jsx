@@ -79,7 +79,7 @@ class DataPrivilegesDataMenu extends React.Component {
                     _this._closeSidePage()
                 }
                 else {
-                    errorMsg(TUI.ERROR_INFO[result.code]);
+                    errorMsg(result.message)
                 }
             })
 

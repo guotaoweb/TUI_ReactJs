@@ -1,6 +1,6 @@
 import Header from 'Header'
-import {openDialog} from 'Dialog'
-import {openModalDialog} from 'ModalDialog'
+import { openDialog } from 'Dialog'
+import { openModalDialog } from 'ModalDialog'
 import * as config from 'config'
 
 class _Header extends React.Component {
@@ -26,7 +26,7 @@ class _Header extends React.Component {
 
 
   componentDidMount() {
-    const {updateUserInfo, alertMsg, history, searchInfo} = this.props
+    const {updateUserInfo, errorMsg, history, searchInfo} = this.props
     let USER_ID = TUI.fn.requestParam("uId")
     let _this = this
     //获取当前用户信息
@@ -35,8 +35,11 @@ class _Header extends React.Component {
         let _d = result.datas[0]
         updateUserInfo({ id: _d.uid, name: _d.username, photo: _d.photocrc })
       }
+      else if (result.code == 404) {
+        updateUserInfo({})
+      }
       else {
-        alertMsg(config.ERROR_INFO[result.code]);
+        errorMsg(result.message)
       }
     })
 
@@ -78,7 +81,7 @@ class _Header extends React.Component {
   }
 
   searchOrgnization(val) {
-    let {searchInfo, addSubList, updatePageInfo} = this.props
+    let {searchInfo, addSubList, updatePageInfo, errorMsg} = this.props
     //uid=" + searchInfo.key + "&
     let params = ["", ""]
     var _val = val.split(",")
@@ -98,8 +101,11 @@ class _Header extends React.Component {
       if (result.code == 0) {
         addSubList(result.data)
       }
-      else {
+      else if (result.code == 404) {
         addSubList([])
+      }
+      else {
+        errorMsg(result.message)
       }
       updatePageInfo({
         size: 1,
@@ -109,14 +115,17 @@ class _Header extends React.Component {
   }
 
   searchManage(val) {
-    let {searchInfo, addUserInVTeam, updatePageInfo} = this.props
+    let {searchInfo, addUserInVTeam, updatePageInfo, errorMsg} = this.props
     val = val ? "/projectteam/persons/" + val + "/" + searchInfo.key : "/projectteam/persons/" + searchInfo.key + "/1/6"
     TUI.platform.get(val, function (result) {
       if (result.code == 0) {
         addUserInVTeam(result.datas)
       }
-      else {
+      else if (result.code == 404) {
         addUserInVTeam([])
+      }
+      else {
+        errorMsg(result.message)
       }
       updatePageInfo({
         sum: 1
@@ -125,6 +134,7 @@ class _Header extends React.Component {
   }
 
   searchVTeam(val) {
+    const {errorMsg} = this.props
     let _this = this
     val = val ? "/projectteam/team/name/" + val + "/p" : "/projectteam/teams/all/1/7"
     TUI.platform.get(val, function (result) {
@@ -142,25 +152,28 @@ class _Header extends React.Component {
             })
           }
         }
-        else if (result.code == 9) {
+        else if (result.code == 404) {
           addVTeamData([])
         }
         else {
-          errorMsg(TUI.ERROR_INFO[result.code]);
+          errorMsg(result.message)
         }
       }
     })
   }
 
   searchPositionMaintain(val) {
-    let {searchInfo, addPositionMaintain, updatePageInfo} = this.props
+    let {searchInfo, addPositionMaintain, updatePageInfo, errorMsg} = this.props
     val = "/positions?positionName=" + val + "&from=0&limit=10"
     TUI.platform.get(val, function (result) {
       if (result.code == 0) {
         addPositionMaintain(result.data)
       }
-      else {
+      else if (result.code == 404) {
         addPositionMaintain([])
+      }
+      else {
+        errorMsg(result.message)
       }
       updatePageInfo({
         index: 1,
@@ -172,14 +185,17 @@ class _Header extends React.Component {
   }
 
   searchUserMaintain(val) {
-    let {searchInfo, addUserMaintain, updatePageInfo} = this.props
+    let {searchInfo, addUserMaintain, updatePageInfo, errorMsg} = this.props
     val = "/staffs?loginName=" + val + "&from=0&limit=10"
     TUI.platform.get(val, function (result) {
       if (result.code == 0) {
         addUserMaintain(result.data)
       }
-      else {
+      else if (result.code == 404) {
         addUserMaintain([])
+      }
+      else {
+        errorMsg(result.message)
       }
       updatePageInfo({
         index: 1,
@@ -191,7 +207,7 @@ class _Header extends React.Component {
   }
 
   searchDataPrivileges(val) {
-    let {searchInfo, addDataPrivileges, updatePageInfo} = this.props
+    let {searchInfo, addDataPrivileges, updatePageInfo, errorMsg} = this.props
     if (val) {
       val = "/staffs?loginName=" + val + "&from=0&limit=10"
     }
@@ -202,8 +218,11 @@ class _Header extends React.Component {
       if (result.code == 0) {
         addDataPrivileges(result.data)
       }
-      else {
+      else if (result.code == 404) {
         addDataPrivileges([])
+      }
+      else {
+        errorMsg(result.message)
       }
       updatePageInfo({
         index: 1,
@@ -215,7 +234,7 @@ class _Header extends React.Component {
   }
 
   searchPersonMatchPost(val) {
-    let {searchInfo, addDataPrivileges, updatePageInfo, addPersonMatchPostSelectUserData, addPersonMatchPostRole, addPersonMatchPostSetRoleData, addPersonMatchPost} = this.props
+    let {errormsg, searchInfo, addDataPrivileges, updatePageInfo, addPersonMatchPostSelectUserData, addPersonMatchPostRole, addPersonMatchPostSetRoleData, addPersonMatchPost} = this.props
     if (searchInfo.key.type == "addPersonMatchPostRole") {
       TUI.platform.get("/dutys/?positionId=" + searchInfo.key.positionId + "&loginUid=" + val, function (result) {
         if (result.code == 0) {
@@ -237,8 +256,11 @@ class _Header extends React.Component {
               url: val.replace("from=0", "from={0}")
             })
           }
-          else {
+          else if (result.code == 404) {
             addPersonMatchPostSelectUserData([])
+          }
+          else {
+            errorMsg(result.message)
           }
         })
       }
@@ -254,6 +276,12 @@ class _Header extends React.Component {
           let _data = result.data
           addPersonMatchPostSetRoleData(_data)
         }
+        else if (result.code == 404) {
+          addPersonMatchPostSetRoleData([])
+        }
+        else {
+          errorMsg(result.message)
+        }
       })
     }
     else {
@@ -262,8 +290,11 @@ class _Header extends React.Component {
         if (result.code == 0) {
           addPersonMatchPost(result.data)
         }
-        else {
+        else if(result.code==404){
           addPersonMatchPost([])
+        }
+        else{
+          errorMsg(result.message)
         }
       })
     }

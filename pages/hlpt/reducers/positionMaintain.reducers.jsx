@@ -2,35 +2,12 @@ import 'babel-polyfill'
 
 const initState = {
     data: [],
-    baseInfo: {
-        name: "",//职位名称
-        id: "",//职位ID
-        staffing: "",//职位编制
-        positionFamily: "",//职位族
-        jobFamily: "",//职位序列
-        positionLevel: "",//级别
-        remark: "",//职位说明
-        sort: ""//排序
-    },
+    
     positionFamilys: "",
     jobFamilys: [{name:"请选择",id:"-1"}],
     jobsData: [],//工作职责
     jobsSearchData: [],//搜索职责结果
-    jobsInfo: {
-        id: "",
-        name: "",
-        remark: "",
-        standard: "",
-        status: "" //edit 编辑页面 list 列表页面
-    },//工作职责编辑信息
     rolesData: [],//角色
-    rolesInfo: {
-        id: "",
-        name: "",
-        position: "",
-        remark: "",
-        status: "" //edit 编辑页面 list 列表页面
-    },//角色编辑信息
     tabStatus: "",
     editId: ""//职位信息所属的组织架构ID
 }
@@ -65,45 +42,7 @@ export default function manageReducers(state = initState, action) {
                 }
             }
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
-        case "ADD_POSITIONMAINTAIN_INFO":
-            return Object.assign({}, state, {
-                baseInfo: {
-                    name: action.data.name,
-                    id: action.data.id,
-                    staffing: action.data.staffing,
-                    positionFamily: action.data.positionFamily,
-                    jobFamily: action.data.jobFamily,
-                    positionLevel: action.data.positionLevel,
-                    remark: action.data.remark,
-                    sort: action.data.sort
-                }
-            })
-        case "UPDATE_POSITIONMAINTAIN_INFO":
-            return Object.assign({}, state, {
-                baseInfo: {
-                    name: action.data.name != undefined ? action.data.name : state.baseInfo.name,
-                    id: action.data.id != undefined ? action.data.id : state.baseInfo.id,
-                    staffing: action.data.staffing != undefined ? action.data.staffing : state.baseInfo.staffing,
-                    positionFamily: action.data.positionFamily != undefined ? action.data.positionFamily : state.baseInfo.positionFamily,
-                    jobFamily: action.data.jobFamily != undefined ? action.data.jobFamily : state.baseInfo.jobFamily,
-                    positionLevel: action.data.positionLevel != undefined ? action.data.positionLevel : state.baseInfo.positionLevel,
-                    remark: action.data.remark != undefined ? action.data.remark : state.baseInfo.remark,
-                    sort: action.data.sort != undefined ? action.data.sort : state.baseInfo.sort,
-                }
-            })
-        case "CLEAR_POSITIONMAINTAIN_INFO":
-            return Object.assign({}, state, {
-                baseInfo: {
-                    name: "",
-                    id: "",
-                    staffing: "",
-                    positionFamily: "",
-                    jobFamily: "",
-                    positionLevel: "",
-                    remark: "",
-                    sort: ""
-                }
-            })
+       
         case "ADD_POSITIONMAINTAIN_POSITIONFAMILYS":
             return Object.assign({}, state, { positionFamilys: action.data })
         case "ADD_POSITIONMAINTAIN_JOBFAMILYS":
@@ -161,46 +100,6 @@ export default function manageReducers(state = initState, action) {
                 }
             }
             return Object.assign({}, state, { rolesData: eval(JSON.stringify(state.rolesData)) })
-        case "UPDATE_POSITIONMAINTAIN_JOBS_INFO":
-            return Object.assign({}, state, {
-                jobsInfo: {
-                    id: action.data.id != undefined ? action.data.id : state.jobsInfo.id,
-                    name: action.data.name != undefined ? action.data.name : state.jobsInfo.name,
-                    remark: action.data.remark != undefined ? action.data.remark : state.jobsInfo.remark,
-                    standard: action.data.standard != undefined ? action.data.standard : state.jobsInfo.standard,
-                    status: action.data.status != undefined ? action.data.status : state.jobsInfo.status
-                }
-            })
-        case "UPDATE_POSITIONMAINTAIN_ROLES_INFO":
-            return Object.assign({}, state, {
-                rolesInfo: {
-                    id: action.data.id != undefined ? action.data.id : state.rolesInfo.id,
-                    name: action.data.name != undefined ? action.data.name : state.rolesInfo.name,
-                    position: action.data.position != undefined ? action.data.position : state.rolesInfo.position,
-                    remark: action.data.remark != undefined ? action.data.remark : state.rolesInfo.remark,
-                    status: action.data.status != undefined ? action.data.status : state.rolesInfo.status
-                }
-            })
-        case "CLEAR_POSITIONMAINTAIN_JOBS_INFO":
-            return Object.assign({}, state, {
-                jobsInfo: {
-                    id: "",
-                    name: "",
-                    remark: "",
-                    standard: "",
-                    status: ""
-                }
-            })
-        case "CLEAR_POSITIONMAINTAIN_ROLES_INFO":
-            return Object.assign({}, state, {
-                rolesInfo: {
-                    id: "",
-                    name: "",
-                    position: "",
-                    remark: "",
-                    status: ""
-                }
-            })
         default: return state
     }
 }

@@ -1,7 +1,7 @@
 import Content from "Content"
 import Table from "Table"
 import Pager from "Pager"
-import {openDialog} from "Dialog"
+import { openDialog } from "Dialog"
 
 class TablePage extends React.Component {
     render() {
@@ -13,7 +13,7 @@ class TablePage extends React.Component {
             "tbody": []
         }
 
-        for (var index = 0;  index< list.length; index++) {
+        for (var index = 0; index < list.length; index++) {
             let $t = list[index]
             tblContent.tbody.push({
                 "value1": index + 1,
@@ -26,11 +26,11 @@ class TablePage extends React.Component {
                         openDialog(_this, "这是编辑按钮")
                     }
                 }, {
-                        "name": "删除",
-                        "fn": function () {
-                            openDialog(_this, "这是删除按钮")
-                        }
-                    }]
+                    "name": "删除",
+                    "fn": function () {
+                        openDialog(_this, "这是删除按钮")
+                    }
+                }]
             })
 
         }
@@ -38,15 +38,22 @@ class TablePage extends React.Component {
         return (
             <div>
                 <Content txt="Table表格">
-                    <Table id="table" tblContent={tblContent} width="50,200,0,0,180"/>
-                    <Pager fn={this.pageFn.bind(this) } style={{ float: "right", marginRight: "5px" }}/>
+                    <Table id="table" tblContent={tblContent} width="50,200,0,0,180" />
+                    <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+
                 </Content>
             </div>
         )
     }
 
     pageFn() {
-
+        this.props.addTableData([{
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }])
     }
 
     componentDidMount() {
@@ -58,23 +65,29 @@ class TablePage extends React.Component {
         })
 
         this.props.addTableData([{
-            name:"这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
-        },{
-            name:"这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
-        },{
-            name:"这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
-        },{
-            name:"这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
-        },{
-            name:"这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
-        },{
-            name:"这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
-        },{
-            name:"这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
         }])
     }
 }
 
 export default TUI._connect({
-    list:"tableList.data"
+    list: "tableList.data"
 }, TablePage)

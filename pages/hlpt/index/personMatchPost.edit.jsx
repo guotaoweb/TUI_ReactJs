@@ -45,8 +45,11 @@ class PersonMatchPostEdit extends React.Component {
                                 let _data = result.data
                                 addPersonMatchPostSetRoleData(_data)
                             }
-                            else {
+                            else if(result.code==404) {
                                 addPersonMatchPostSetRoleData([])
+                            }
+                            else{
+                                errorMsg(result.message)
                             }
                         })
 
@@ -63,6 +66,9 @@ class PersonMatchPostEdit extends React.Component {
                                         positionId: _d.positionId,
                                         type: "sub"
                                     })
+                                }
+                                else{
+                                    errorMsg(result.errors)
                                 }
                             })
                         }
@@ -147,8 +153,11 @@ class PersonMatchPostEdit extends React.Component {
             if (result.code == 0) {
                 _this.addPersonMatchPostSelectUserData(result.data)
             }
-            else {
+            else if(result.code ==404) {
                 _this.addPersonMatchPostSelectUserData([])
+            }
+            else{
+                errorMsg(result.message)
             }
         })
     }
@@ -165,10 +174,10 @@ class PersonMatchPostEdit extends React.Component {
     }
 
     pageFn(index, loadComplete) {
-        const {pageInfo, addPositionMaintain, updatePageInfo} = this.props
+        const {pageInfo, addPersonMatchPostRole, updatePageInfo} = this.props
         TUI.platform.get(pageInfo.personMatchPostEditPager.url.replace("{0}", pageInfo.personMatchPostEditPager.size * (index - 1)), function (result) {
             if (result.code == 0) {
-                addPositionMaintain(result.data)
+                addPersonMatchPostRole(result.data)
                 updatePageInfo({
                     id: "personMatchPostEditPager",
                     index: index,
@@ -179,7 +188,7 @@ class PersonMatchPostEdit extends React.Component {
                 loadComplete()
             }
             else {
-                addPositionMaintain([])
+                addPersonMatchPostRole([])
             }
         })
 

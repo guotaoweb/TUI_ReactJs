@@ -1,25 +1,3 @@
-export function addPositionMaintainInfo(data){
-    return {
-        type:"ADD_POSITIONMAINTAIN_INFO",
-        data
-    }
-}
-
-//更新职位类别信息【1】
-export function updatePositionMaintainInfo(data){
-    return {
-        type:"UPDATE_POSITIONMAINTAIN_INFO",
-        data
-    }
-}
-
-//清除职位类别信息【2】
-export function clearPositionMaintainInfo(data){
-    return {
-        type:"CLEAR_POSITIONMAINTAIN_INFO",
-        data
-    }
-}
 
 
 
@@ -136,34 +114,6 @@ export function deletePositionMaintainJobs(data){
 export function deletePositionMaintainRoles(data){
     return {
         type:"DELETE_POSITIONMAINTAIN_ROLES",
-        data
-    }
-}
-
-export function clearPositionMaintainJobsInfo(data){
-    return {
-        type:"CLEAR_POSITIONMAINTAIN_JOBS_INFO",
-        data
-    }
-}
-
-export function clearPositionMaintainRolesInfo(data){
-    return {
-        type:"CLEAR_POSITIONMAINTAIN_ROLES_INFO",
-        data
-    }
-}
-
-export function updatePositionMaintainJobsInfo(data){
-    return {
-        type:"UPDATE_POSITIONMAINTAIN_JOBS_INFO",
-        data
-    }
-}
-
-export function updatePositionMaintainRolesInfo(data){
-    return {
-        type:"UPDATE_POSITIONMAINTAIN_ROLES_INFO",
         data
     }
 }

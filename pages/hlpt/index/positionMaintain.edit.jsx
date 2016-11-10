@@ -23,7 +23,7 @@ class PositionMaintainEdit extends React.Component {
 
         let _PositionMaintainJob = [],
             _PositionMaintainRole = []
-     
+
         if (editInfo.jobsInfo) {
             if (editInfo.jobsInfo.status == "edit" || editInfo.jobsInfo.status == "add") {
                 _PositionMaintainJob.push(<PositionMaintainJobEdit key="PositionMaintainJobEdit" />)
@@ -32,7 +32,7 @@ class PositionMaintainEdit extends React.Component {
                 _PositionMaintainJob.push(<PositionMaintainJob key="PositionMaintainJob" />)
             }
         }
-        else{
+        else {
             _PositionMaintainJob.push(<PositionMaintainJob key="PositionMaintainJob" />)
         }
 
@@ -44,7 +44,7 @@ class PositionMaintainEdit extends React.Component {
                 _PositionMaintainRole.push(<PositionMaintainRole key="PositionMaintainRole" />)
             }
         }
-        else{
+        else {
             _PositionMaintainRole.push(<PositionMaintainRole key="PositionMaintainRole" />)
         }
 
@@ -55,11 +55,11 @@ class PositionMaintainEdit extends React.Component {
                     <FormControls label="职位ID" ctrl="input" value="positionMaintainInfo.id" disabled="disabled" />
 
                     <FormControls label="职位名称" ctrl="input" value="positionMaintainInfo.name" required="required" />
-                    <FormControls label="职位编制" ctrl="input" value="positionMaintainInfo.staffing" />
+                    <FormControls label="职位编制" ctrl="input" type="number" value="positionMaintainInfo.staffing" />
 
-                    <FormControls label="职位族" ctrl="select" options={positionFamilys} value="positionMaintainInfo.positionFamily" />
+                    <FormControls label="职位族" ctrl="select" options={positionFamilys} value="positionMaintainInfo.positionFamily" onChangeFn={this.onChangeFnByPositionFamilys.bind(this)} />
                     <FormControls label="职位序列" ctrl="select" options={jobFamilys} value="positionMaintainInfo.jobFamily" />
-
+                    <FormControls label="排序号" ctrl="input" type="number" value="positionMaintainInfo.sort" />
                     <FormControls label="备注" ctrl="textarea" value="positionMaintainInfo.remark" />
 
                     <div className="formControl-btn">
@@ -72,6 +72,10 @@ class PositionMaintainEdit extends React.Component {
                 <div style={{ borderTop: "1px solid #ebebeb" }}>{_PositionMaintainRole}</div>
             </Content2>
         )
+    }
+
+    onChangeFnByPositionFamilys(id){
+        this.loadJobFamilys(id)
     }
 
     getPositionMaintainJobs() {
@@ -87,8 +91,11 @@ class PositionMaintainEdit extends React.Component {
                     url: "/jobs?positionId=" + sidePageInfo.gateWay.positionId + "&from={0}&limit=10"
                 })
             }
-            else {
+            else if (result.code == 404) {
                 addPositionMaintainJobs([])
+            }
+            else {
+                errorMsg(result.message)
             }
         })
     }
@@ -105,8 +112,11 @@ class PositionMaintainEdit extends React.Component {
                     url: "/roles?positionId=" + sidePageInfo.gateWay.positionId + "&from={0}&limit=10"
                 })
             }
-            else {
+            else if (result.code == 404) {
                 addPositionMaintainRoles([])
+            }
+            else {
+                errorMsg(result.message)
             }
         })
 
@@ -116,17 +126,17 @@ class PositionMaintainEdit extends React.Component {
     }
 
     editPositionMaintain() {
-        const {errorMsg, data, baseInfo, sidePageInfo, editId, pushPositionMaintain, updatePositionMaintain} = this.props
+        const {errorMsg, data, editInfo, sidePageInfo, editId, pushPositionMaintain, updatePositionMaintain} = this.props
 
         let _this = this,
             postJson = {
                 "unitId": editId,
-                "positionName": baseInfo.name,
-                "staffing": parseInt(baseInfo.staffing),
-                "jobfamilyId": baseInfo.positionFamily,
-                "jobseqId": baseInfo.jobFamily,
-                "remark": baseInfo.remark,
-                "sort": ""
+                "positionName": editInfo.positionMaintainInfo.name,
+                "staffing": parseInt(editInfo.positionMaintainInfo.staffing),
+                "jobfamilyId": editInfo.positionMaintainInfo.positionFamily,
+                "jobseqId": editInfo.positionMaintainInfo.jobFamily,
+                "remark": editInfo.positionMaintainInfo.remark,
+                "sort": editInfo.positionMaintainInfo.sort
             }
         if (sidePageInfo.status == "addPositionMaintain") {
             TUI.platform.post("/position", postJson, function (result) {
@@ -136,12 +146,12 @@ class PositionMaintainEdit extends React.Component {
                     pushPositionMaintain(result.data)
                 }
                 else {
-                    _this.props.errorMsg(Config.ERROR_INFO[result.code])
+                    errorMsg(result.message)
                 }
             })
         }
         else {
-            postJson.positionId = baseInfo.id
+            postJson.positionId = editInfo.positionMaintainInfo.id
             TUI.platform.put("/position", postJson, function (result) {
                 if (result.code == 0) {
                     closeSidePage()
@@ -149,7 +159,7 @@ class PositionMaintainEdit extends React.Component {
                     updatePositionMaintain(postJson)
                 }
                 else {
-                    _this.props.errorMsg(Config.ERROR_INFO[result.code]);
+                    errorMsg(result.message)
                 }
             })
         }
@@ -203,11 +213,14 @@ class PositionMaintainEdit extends React.Component {
     }
 
     goBack() {
-        this.props.clearPositionMaintainInfo()
+        this.props.clearEditInfo({
+            infoName:"positionMaintainInfo"
+        })
         closeSidePage()
     }
 
     loadJobFamilys(familyId) {
+        const {errorMsg, addPositionMaintainJobFamilys} = this.props
         if (familyId) {
             let _this = this
             TUI.platform.get("/jobfamilys/" + familyId, function (result) {
@@ -225,7 +238,13 @@ class PositionMaintainEdit extends React.Component {
                             name: $d.seqName
                         })
                     }
-                    _this.props.addPositionMaintainJobFamilys(newData)
+                    addPositionMaintainJobFamilys(newData)
+                }
+                else if (result.code == 404) {
+                    addPositionMaintainJobFamilys([])
+                }
+                else {
+                    errorMsg(result.message)
                 }
             })
         }

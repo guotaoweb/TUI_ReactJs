@@ -35,7 +35,8 @@ const initState = {
         info: ""
     },
     tips: [],//标签集合
-    init: 0 //0 初始化 1 非初始化状态
+    init: 0, //0 初始化 1 非初始化状态
+    isRefreshTable: 0 //0不刷新 1刷新
 }
 
 export default function manageReducers(state = initState, action) {
@@ -106,12 +107,6 @@ export default function manageReducers(state = initState, action) {
                 })
             }
             else {
-                // state.pageInfo["index"] = {
-                //     index: action.data.index ? action.data.index : state.pageInfo["index"].index,
-                //     size: action.data.size ? action.data.size : state.pageInfo["index"].size,
-                //     sum: action.data.sum ? action.data.sum : state.pageInfo["index"].sum,
-                //     url: action.data.url ? action.data.url : state.pageInfo["index"].url
-                // }
                 return Object.assign({}, state, {
                     pageInfo: {
                         index: {
@@ -184,6 +179,10 @@ export default function manageReducers(state = initState, action) {
             return Object.assign({}, state, { tips: [] })
         case "UPDATE_INIT":
             return Object.assign({}, state, { init: 1 })
+        case "REFRESH_TABLE":
+            return Object.assign({}, state, { isRefreshTable: 1 })
+        case "NO_REFRESH_TABLE":
+            return Object.assign({}, state, { isRefreshTable: 0 })
         default: return state
     }
 }

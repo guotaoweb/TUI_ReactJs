@@ -41,6 +41,9 @@ class PersonMatchPostEditSetRole extends React.Component {
                                 updatePersonMatchPostRole(setRole)
                                  _this._closeSidePage()
                             }
+                            else{
+                                errorMsg(result.message)
+                            }
                         })
 
                     }

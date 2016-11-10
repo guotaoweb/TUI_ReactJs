@@ -10,7 +10,7 @@ import Btn from "Btn"
 
 class FormControls extends React.Component {
     render() {
-        const {ctrl, label, type, txt, labelWidth, data, value} = this.props
+        const {ctrl, label, type, txt, labelWidth, data, value, onChangeFn} = this.props
         let bindElem
 
         if (ctrl == "input") {
@@ -23,7 +23,7 @@ class FormControls extends React.Component {
         }
         else if (ctrl == "select") {
             bindElem = <CTRL_SELECT label={label} labelWidth={labelWidth} value={value} options={this.props.options} style={this.props.style} required={this.props.required} addFn={this.props.addEditInfo
-            } data={data} />
+            } data={data} onChangeFn={onChangeFn} />
         }
         else if (ctrl == "radio") {
             bindElem = <CTRL_RADIO label={label} labelWidth={labelWidth} txt={txt} style={this.props.style} disabled={this.props.disabled} groupName={this.props.groupName} selected={this.props.selected} value={this.props.value} />
@@ -159,7 +159,8 @@ class CTRL_SELECT extends React.Component {
         const {
             addFn,
             value,
-            data
+            data,
+            onChangeFn
         } = this.props
         let label
         if (this.props.label) {
@@ -202,15 +203,19 @@ class CTRL_SELECT extends React.Component {
         )
     }
     _onChange(e) {
-        const {value, addFn, data} = this.props
+        const {value, addFn, data, onChangeFn} = this.props
         let _object = value.split(".")
         let _info = {
             infoName: _object[0]
         }
 
-        _info[_object[1]] = e.currentTarget.value
-
+        let _this = e.currentTarget
+        _info[_object[1]] = _this.value
+        _info[_object[1] + "Name"] = _this.options[_this.selectedIndex].innerHTML
         addFn(_info)
+        if (onChangeFn) {
+            onChangeFn(_this.value)
+        }
     }
 }
 

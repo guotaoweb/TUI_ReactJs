@@ -78,21 +78,6 @@ export function updateOrgnizationById(id){
     }
 }
 
-//更新组织信息(根据详情)
-export function updateOrgnizationInfo(data){
-    return {
-        type:"UPDATE_ORGNIZATIONINFO",
-        data
-    }
-}
-
-//清除组织信息
-export function clearOrgnizationInfo(data){
-    return {
-        type:"CLEAR_ORGNIZATIONINFO",
-        data
-    }
-}
 
 export function updateOrgnizationRelateId(data){
     return {

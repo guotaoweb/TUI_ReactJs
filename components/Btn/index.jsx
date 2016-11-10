@@ -58,6 +58,8 @@ class Btn extends React.Component {
 
       let isRequired = false
       let $requiredInput = e.target.parentNode.parentNode.parentNode.getElementsByClassName("required")
+
+
       for (let i = 0; i < $requiredInput.length; i++) {
         if ($requiredInput[i].tagName == "SELECT") {
         
@@ -67,13 +69,14 @@ class Btn extends React.Component {
           }
         }
         else {
+                
           if (!$requiredInput[i].value) {
             isRequired = true
             break
           }
         }
       }
-
+console.info("==>"+isRequired)
       if (isRequired) {
         errorMsg("标星字段为必填项")
         isRequired = false

@@ -10,8 +10,8 @@ import back from "!url!./img/singleLeft.png"
 
 class PositionMaintainJob extends React.Component {
     render() {
-        const {jobsData, pageInfo} = this.props
-        
+        const {jobsData, pageInfo, errorMsg} = this.props
+
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "职责名称", "name3": "操作" },
@@ -30,7 +30,7 @@ class PositionMaintainJob extends React.Component {
                                 if (result.code == 0) {
                                     let _data = result.data
                                     let _editInfo = {
-                                        infoName:"jobsInfo",
+                                        infoName: "jobsInfo",
                                         id: _d.jobId,
                                         status: "edit",
                                         name: _data.jobName,
@@ -39,8 +39,11 @@ class PositionMaintainJob extends React.Component {
                                     }
                                     _this.props.addEditInfo(_editInfo)
                                 }
+                                else if (result.code == 404) {
+                                    _this.props.addEditInfo({})
+                                }
                                 else {
-                                    //_this.props.addEditInfo({})
+                                    errorMsg(result.message)
                                 }
                             })
 
@@ -53,6 +56,9 @@ class PositionMaintainJob extends React.Component {
                                     if (result.code == 0) {
                                         _this.props.successMsg("职位职责删除成功")
                                         _this.props.deletePositionMaintainJobs(_d.jobId)
+                                    }
+                                    else {
+                                        errorMsg(result.errors)
                                     }
                                 })
                             }
@@ -72,14 +78,14 @@ class PositionMaintainJob extends React.Component {
                     </span>
                     <Btn style={{ float: "right" }} txt="新增" type="add" href={this.addPositionMaintainJob.bind(this)} />
                 </div>
-                <Table id="positionMaintainJob" num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,100" />
+                <Table id="positionMaintainJob" num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,1000,100"/>
             </div>
         )
     }
 
     addPositionMaintainJob() {
         this.props.updateEditInfo({
-            infoName:"jobsInfo",
+            infoName: "jobsInfo",
             status: "add"
         })
     }
@@ -87,7 +93,7 @@ class PositionMaintainJob extends React.Component {
 
     goBack() {
         this.props.clearEditInfo({
-            infoName:"jobsInfo"
+            infoName: "jobsInfo"
         })
         closeSidePage()
     }
@@ -98,5 +104,6 @@ export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo.gateWay",
     pageInfo: "publicInfo.pageInfo",
     jobsData: "positionMaintain.jobsData",
-    editInfo:"formControlInfo.data"
+    editInfo: "formControlInfo.data",
+    refreshTable: "publicInfo.refreshTable"
 }, PositionMaintainJob)

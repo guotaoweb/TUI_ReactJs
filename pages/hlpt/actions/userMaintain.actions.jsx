@@ -1,26 +1,3 @@
-export function addUserMaintainInfo(data){
-    return {
-        type:"ADD_USERMAINTAIN_INFO",
-        data
-    }
-}
-
-//更新职位类别信息【1】
-export function updateUserMaintainInfo(data){
-    return {
-        type:"UPDATE_USERMAINTAIN_INFO",
-        data
-    }
-}
-
-//清除职位类别信息【2】
-export function clearUserMaintainInfo(data){
-    return {
-        type:"CLEAR_USERMAINTAIN_INFO",
-        data
-    }
-}
-
 
 
 //新增职位信息【9】

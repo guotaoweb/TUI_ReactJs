@@ -43,7 +43,7 @@ class PositionMaintainEdit extends React.Component {
                     pushPositionMaintainJobs(result.data)
                 }
                 else {
-                    _this.props.errorMsg(Config.ERROR_INFO[result.code])
+                    errorMsg(result.message)
                 }
             })
         }
@@ -56,10 +56,12 @@ class PositionMaintainEdit extends React.Component {
                         updatePositionMaintainJob(postJson)
                     }
                     else {
-                        _this.props.errorMsg(Config.ERROR_INFO[result.code]);
+                        errorMsg(result.message)
                     }
                 })
         }
+
+        this.props.refreshTable()
     }
 
     updateData(data, deep, newData) {

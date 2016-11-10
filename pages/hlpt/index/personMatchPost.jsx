@@ -22,7 +22,7 @@ import { openLoading, closeLoading } from "Loading"
 class PersonMatchPost extends React.Component {
 
     render() {
-        const {updatePageInfo,odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo, addPersonMatchPostRole, updateSearchInfo} = this.props
+        const {errorMsg,updatePageInfo,odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo, addPersonMatchPostRole, updateSearchInfo} = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "职位", "name3": "人数", "name4": "编制数量", "name5": "操作" },
@@ -55,7 +55,8 @@ class PersonMatchPost extends React.Component {
                             info: "请输入关键字(用户名)"
                         })
 
-                        TUI.platform.get("/dutys/?positionId=" + _d.positionId+"&from=0&limit=10", function (result) {
+                        let _url = "/dutys/?positionId=" + _d.positionId+"&from={0}&limit=10"
+                        TUI.platform.get(_url.replace("{0}",0), function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
                                 addPersonMatchPostRole(_data)
@@ -64,12 +65,15 @@ class PersonMatchPost extends React.Component {
                                     index: 1,
                                     size: 10,
                                     sum: result._page.total,
-                                    url: "/dutys/?positionId=" + _d.positionId+"&form={0}&limit=10"
+                                    url: _url
                                 })
                                 
                             }
-                            else {
+                            else if(result.code == 400){
                                 addPersonMatchPostRole([])
+                            }
+                            else{
+                                errorMsg(result.message)
                             }
                         })
 
@@ -192,10 +196,13 @@ class PersonMatchPost extends React.Component {
                         }
 
                     }
+                    else{
+                        errorMsg(result.message)
+                    }
                 })
             }
             else {
-                errorMsg(TUI.ERROR_INFO[result.code]);
+                errorMsg(result.message)
             }
         })
     }
@@ -214,7 +221,9 @@ class PersonMatchPost extends React.Component {
         let code = $m.getAttribute("data-type")
         _this.props.updatePositionMaintainEditId(code)
 
-        this.props.clearPositionMaintainInfo()
+        this.props.clearEditInfo({
+            infoName:"positionMaintainInfo"
+        })
         openContent3Loading()
         this.loadPosition(id)
         closeSidePage()
@@ -229,11 +238,13 @@ class PersonMatchPost extends React.Component {
 
     loadPosition(id) {
         const {addPersonMatchPost, updatePageInfo, clearPageInfo, updateSearchInfo} = this.props
+clearPageInfo()
         let url = id ? "/positions?unitId=" + id + "&from={0}&limit=10" : "/positions?unitCode=0&from={0}&limit=10"
         TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addPersonMatchPost(result.data)
                 updatePageInfo({
+          
                     index: 1,
                     size: 10,
                     sum: result._page.total,
@@ -249,7 +260,11 @@ class PersonMatchPost extends React.Component {
                     info: "输入关键字(职位名称)"
                 })
             }
+            else if(result.code==404){
+                addPersonMatchPost([])
+            }
             else {
+                errorMsg(result.message)
                 addPersonMatchPost([])
                 clearPageInfo()
             }

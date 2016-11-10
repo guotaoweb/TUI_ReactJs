@@ -52,7 +52,7 @@ class ManageEditUser extends React.Component {
                 closeSidePage()
             }
             else {
-                errorMsg(config.ERROR_INFO[resultobj.code]);
+                errorMsg(result.message)
             }
         })
 

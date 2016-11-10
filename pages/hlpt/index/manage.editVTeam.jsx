@@ -74,7 +74,7 @@ class ManageEditVTeam extends React.Component {
                 successMsg("虚拟组" + (operType == "A" ? "新增" : "编辑") + "成功")
             }
             else {
-                errorMsg(TUI.ERROR_INFO[result.code]);
+                errorMsg(result.message)
             }
         })
 

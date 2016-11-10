@@ -1,14 +1,14 @@
 import Table from "Table"
 import Content2 from "Content2"
 import FormControls from "FormControls"
-import Btn from "Btn"   
+import Btn from "Btn"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 
 import singleLeft from "!url!./img/singleLeft.png"
 
 class PersonMatchPostEditSelect extends React.Component {
     render() {
-        const {errorMsg,selectUserData, sidePageInfo,pushPersonMatchPostRole,updatePersonMatchPostNumber} = this.props
+        const {pageInfo,waiteMsg,successMsg,errorMsg, selectUserData, sidePageInfo, pushPersonMatchPostRole, updatePersonMatchPostNumber} = this.props
         let _this = this
 
         let sidePageName
@@ -26,7 +26,7 @@ class PersonMatchPostEditSelect extends React.Component {
         for (var i = 0; i < selectUserData.length; i++) {
             let _d = selectUserData[i]
             tblContent.tbody.push({
-                "value1": i + 1,
+                "value1": (pageInfo.personMatchPostEditPager.index - 1) * pageInfo.personMatchPostEditPager.size + (i + 1),
                 "value2": _d.cnName,
                 "value3": _d.loginUid,
                 "value4": _d.unitName,
@@ -34,25 +34,32 @@ class PersonMatchPostEditSelect extends React.Component {
                 "fns": [{
                     "name": sidePageName,
                     "fn": function () {
-                       
+
                         let _positionId = sidePageInfo.gateWay.positionId.split("-")[0]
                         let jsonParma = {
                             staffId: _d.staffId,
                             positionId: _positionId,
                             dutyType: sidePageName == "调入" ? 1 : 2
                         }
+                        waiteMsg("数据提交中,请稍等...")
                         TUI.platform.post("/duty", jsonParma, function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
-                                pushPersonMatchPostRole(_data)
+                                if(pageInfo.personMatchPostEditPager.sum+1>pageInfo.personMatchPostEditPager.size){
+                                    //要更新sum
+                                }
+                                else{
+                                    pushPersonMatchPostRole(_data)
+                                }
                                 updatePersonMatchPostNumber({
-                                    positionId:_positionId,
-                                    type:"add"
+                                    positionId: _positionId,
+                                    type: "add"
                                 })
-                                 _this._closeSidePage()
+                                _this._closeSidePage()
+                                successMsg("数据提交成功")
                             }
-                            else if(result.code == 5000){
-                                errorMsg(_d.cnName+"已"+sidePageName);
+                            else {
+                                errorMsg(result.message)
                             }
                         })
 
@@ -99,6 +106,6 @@ class PersonMatchPostEditSelect extends React.Component {
 
 export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
-    selectUserData: "personMatchPost.selectUserData"
-
+    selectUserData: "personMatchPost.selectUserData",
+    pageInfo: "publicInfo.pageInfo",
 }, PersonMatchPostEditSelect)

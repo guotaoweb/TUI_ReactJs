@@ -3,13 +3,6 @@ import 'babel-polyfill'
 const initState = {
     data: "",
     subData:"",
-    detail: {
-        id: "",
-        code: "",
-        name: "",
-        note: "",
-        num: ""
-    },
 }
 
 export default function manageReducers(state = initState, action) {
@@ -21,26 +14,7 @@ export default function manageReducers(state = initState, action) {
                 state.data.push(action.data)
             }
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) }) 
-        case "UPDATE_VTEAM_INFO":
-            return Object.assign({}, state, {
-                detail: {
-                    id: action.data.id!=undefined ? action.data.id : state.detail.id,
-                    code: action.data.code!=undefined? action.data.code : state.detail.code,
-                    name: action.data.name!=undefined? action.data.name : state.detail.name,
-                    note: action.data.note!=undefined? action.data.note : state.detail.note,
-                    num: action.data.num!=undefined? action.data.num : state.detail.num
-                }
-            })
-        case "CLEAR_VTEAM_INFO":
-            return Object.assign({}, state, {
-                detail: {
-                    id: state.detail.id,
-                    code: "",
-                    name: "",
-                    note: "",
-                    num: ""
-                }
-            })
+
         case "UPDATE_VTEAM_ID":
             return Object.assign({}, state, {
                 detail: {

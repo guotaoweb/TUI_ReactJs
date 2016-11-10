@@ -61,8 +61,11 @@ class PositionMaintainRole extends React.Component {
                                     _this.props.addEditInfo(_editInfo)
 
                                 }
-                                else {
-                                    //_this.props.updatePositionMaintainRolesInfo([])
+                                else if(result.code==404){
+                                    _this.props.updatePositionMaintainRolesInfo([])
+                                }
+                                else{
+                                    errorMsg(result.message)
                                 }
                             })
 
@@ -75,6 +78,9 @@ class PositionMaintainRole extends React.Component {
                                     if (result.code == 0) {
                                         _this.props.successMsg("角色删除成功")
                                         _this.props.deletePositionMaintainRoles(_d.roleId)
+                                    }
+                                    else{
+                                        errorMsg(result.errors)
                                     }
                                 })
                             }

@@ -30,13 +30,6 @@ export function updateSubVTeamId(data) {
     }
 }
 
-//清除虚拟子组织信息
-export function clearSubVTeamInfo(data) {
-    return {
-        type: "CLEAR_SUB_VTEAM_INFO",
-        data
-    }
-}
 
 
 

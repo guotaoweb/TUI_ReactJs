@@ -1,18 +1,4 @@
-//更新虚拟组信息【1】
-export function updateVTeamInfo(data){
-    return {
-        type:"UPDATE_VTEAM_INFO",
-        data
-    }
-}
 
-//清除虚拟组信息【2】
-export function clearVTeamInfo(data){
-    return {
-        type:"CLEAR_VTEAM_INFO",
-        data
-    }
-}
 
 //记录当前组ID虚拟组信息【3】
 export function updateVTeamId(id){

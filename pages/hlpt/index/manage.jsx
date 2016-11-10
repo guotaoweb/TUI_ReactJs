@@ -190,6 +190,9 @@ class Manage extends React.Component {
         }
         addOSData(selectedArry)
       }
+      else{
+
+      }
     })
   }
 
@@ -248,7 +251,7 @@ class Manage extends React.Component {
         closeLoading()
       }
       else {
-        errorMsg(TUI.ERROR_INFO[obj.code]);
+        errorMsg(result.message)
       }
     })
 
@@ -279,10 +282,9 @@ class Manage extends React.Component {
         TUI.platform.post("/treenode/unittree", { "unitCode": "0", "isLoadUser": "false" }, function (result) {
           if (result.code == 0) {
             _this.props.addOData(result.datas)
-
           }
           else {
-            _this.props.errorMsg(TUI.ERROR_INFO[result.code]);
+            errorMsg(result.message)
           }
         })
       }
@@ -336,6 +338,7 @@ class Manage extends React.Component {
         })
       }
       else {
+        errorMsg(result.message)
         addUserInVTeam([])
         updatePageInfo({
           sum: 1
