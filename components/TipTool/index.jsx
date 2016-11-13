@@ -4,7 +4,7 @@ class TipTool extends React.Component {
   componentDidUpdate() {
     const {alertMsg, msgInfo} = this.props
     let _color = null
-    console.info("msgInfo.txt"+msgInfo.txt)
+
     if (msgInfo.txt) {
       if (msgInfo.status == 2) {
         _color = "rgba(255, 112, 112,1)"

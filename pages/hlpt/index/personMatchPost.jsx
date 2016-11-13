@@ -10,7 +10,7 @@ import PositionMaintainEditSelect from "./personMatchPost.editSelect"
 import PersonMatchPostEditSetRole from "./personMatchPost.editSetRole"
 
 import FormControls from "FormControls"
-import Content3,{openContent3Loading,closeContent3Loading} from "Content3"
+import Content3, { openContent3Loading, closeContent3Loading } from "Content3"
 import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, { editFn } from "MultyMenu"
@@ -22,7 +22,7 @@ import { openLoading, closeLoading } from "Loading"
 class PersonMatchPost extends React.Component {
 
     render() {
-        const {errorMsg,updatePageInfo,odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo, addPersonMatchPostRole, updateSearchInfo} = this.props
+        const {clearPageInfo,errorMsg, updatePageInfo, odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo, addPersonMatchPostRole, updateSearchInfo} = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "职位", "name3": "人数", "name4": "编制数量", "name5": "操作" },
@@ -54,25 +54,28 @@ class PersonMatchPost extends React.Component {
                             name: "personMatchPost",
                             info: "请输入关键字(用户名)"
                         })
-
-                        let _url = "/dutys/?positionId=" + _d.positionId+"&from={0}&limit=10"
-                        TUI.platform.get(_url.replace("{0}",0), function (result) {
+                        clearPageInfo({
+                            id:"personMatchPostEditPager"
+                        })
+                        let _url = "/dutys/?positionId=" + _d.positionId + "&from={0}&limit=10"
+                        TUI.platform.get(_url.replace("{0}", 0), function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
                                 addPersonMatchPostRole(_data)
+                                
                                 updatePageInfo({
-                                    id:"personMatchPostEditPager",
+                                    id: "personMatchPostEditPager",
                                     index: 1,
                                     size: 10,
                                     sum: result._page.total,
                                     url: _url
                                 })
-                                
+
                             }
-                            else if(result.code == 400){
+                            else if (result.code == 404) {
                                 addPersonMatchPostRole([])
                             }
-                            else{
+                            else {
                                 errorMsg(result.message)
                             }
                         })
@@ -196,7 +199,7 @@ class PersonMatchPost extends React.Component {
                         }
 
                     }
-                    else{
+                    else {
                         errorMsg(result.message)
                     }
                 })
@@ -222,11 +225,14 @@ class PersonMatchPost extends React.Component {
         _this.props.updatePositionMaintainEditId(code)
 
         this.props.clearEditInfo({
-            infoName:"positionMaintainInfo"
+            infoName: "positionMaintainInfo"
         })
         openContent3Loading()
         this.loadPosition(id)
-        closeSidePage()
+
+        //关闭之后可能打开的SidePage
+        closeSidePage({id:"PersonMatchPostEdit"})
+        closeSidePage({id:"PersonMatchPostEditSelect"})
     }
 
     addPositionMaintainBtn() {
@@ -238,13 +244,13 @@ class PersonMatchPost extends React.Component {
 
     loadPosition(id) {
         const {addPersonMatchPost, updatePageInfo, clearPageInfo, updateSearchInfo} = this.props
-clearPageInfo()
+        clearPageInfo()
         let url = id ? "/positions?unitId=" + id + "&from={0}&limit=10" : "/positions?unitCode=0&from={0}&limit=10"
         TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addPersonMatchPost(result.data)
                 updatePageInfo({
-          
+
                     index: 1,
                     size: 10,
                     sum: result._page.total,
@@ -260,7 +266,7 @@ clearPageInfo()
                     info: "输入关键字(职位名称)"
                 })
             }
-            else if(result.code==404){
+            else if (result.code == 404) {
                 addPersonMatchPost([])
             }
             else {

@@ -27,9 +27,10 @@ class Orgnization extends React.Component {
       hasVerticalScroll,
       subList,
       successMsg,
-      delSubList
+      delSubList,
+      errorMsg
     } = _this.props
-    
+
     let tblContent = {
       "thead": { "name1": "序号", "name2": "组织编码", "name3": "名称", "name4": "排序号", "name5": "上级组织", "name6": "状态", "name7": "操作" },
       "tbody": []
@@ -46,6 +47,7 @@ class Orgnization extends React.Component {
         "fns": [{
           "name": "编辑",
           "fn": function () {
+            //获取单击的组织详情
             _this.editMenu({ id: _d.unitId, deep: "0-" + _d.unitId })
           }
         }, {
@@ -59,10 +61,14 @@ class Orgnization extends React.Component {
                     unitId: _d.unitId
                   })
 
+                  let _deep = _this.props.relateId+"-"+_d.unitId
                   //删除树中的组织
-                  _this.deleteData(_this.props.odata, params.deep.split("-"))
+                  _this.deleteData(_this.props.odata, _deep.split("-"))
 
                   successMsg("组织删除成功")
+                }
+                else{
+                  errorMsg(result.message)
                 }
               })
             }
@@ -139,7 +145,17 @@ class Orgnization extends React.Component {
 
 
         let $clickMenu = document.getElementsByClassName("clickmenu")[0]
+        $clickMenu.style.backgroundColor = "rgba(250,250,250,0.5)"
+        $clickMenu.style.borderRadius = "3px"
         let firtNodeId = $clickMenu.getAttribute("data-id")
+        let firstRelateId = $clickMenu.getAttribute("data-deep") ? $clickMenu.getAttribute("data-deep") : firtNodeId
+        let firstUnitCode = $clickMenu.getAttribute("data-type")
+        _this.loadSubOrgnization(firtNodeId)
+
+        _this.props.updateOrgnizationRelateId({
+          relateId: firstRelateId,//级联的关系ID
+          unitCode: firstUnitCode //上级的code
+        })
 
         //展开第一个节点的一级子节点
         TUI.platform.get("/units/tree/" + firtNodeId, function (result) {
@@ -223,7 +239,7 @@ class Orgnization extends React.Component {
     })
 
 
-    this.loadSubOrgnization();
+    //this.loadSubOrgnization();
   }
 
   closeEidtUserPage() {
@@ -252,10 +268,12 @@ class Orgnization extends React.Component {
   addMenuBtn() {
     const {clearEditInfo, sidePageInfo} = this.props
     let _this = this
-    closeSidePage()
+
     clearEditInfo({
       infoName: "orgnizationInfo"
     })
+    closeSidePage()
+
     setTimeout(function () {
       openSidePage(_this, {
         status: "addOrgnization",
@@ -269,7 +287,6 @@ class Orgnization extends React.Component {
     const {addEditInfo} = _this.props
 
     closeSidePage()
-
     setTimeout(function () {
       openSidePage(_this, {
         status: "editOrgnization",
@@ -278,6 +295,11 @@ class Orgnization extends React.Component {
     }, 300)
 
     let ids = params.deep.split("-")
+
+    _this.props.updateOrgnizationRelateId({
+      relateId: _this.props.relateId+"-"+ids[ids.length - 1],//级联的关系ID
+    })
+
     TUI.platform.get("/unit/" + ids[ids.length - 1], function (result) {
       if (result.code == 0) {
         var _d = result.data
@@ -305,6 +327,7 @@ class Orgnization extends React.Component {
     })
   }
 
+
   delMenu(params) {
     let _this = this
 
@@ -315,6 +338,7 @@ class Orgnization extends React.Component {
           _this.props.delSubList({
             unitId: params.id
           })
+      
           _this.deleteData(_this.props.odata, params.deep.split("-"))
         }
         else {
@@ -337,7 +361,7 @@ class Orgnization extends React.Component {
     $m.style.borderRadius = "3px"
 
     let id = $m.getAttribute("data-id")
-    let relateId = $m.getAttribute("data-deep")
+    let relateId = $m.getAttribute("data-deep") ? $m.getAttribute("data-deep") : id
     let unitCode = $m.getAttribute("data-type")
 
     _this.props.updateOrgnizationRelateId({
@@ -431,6 +455,8 @@ class Orgnization extends React.Component {
       return false
     }
 
+   
+
     //钻到最底层
     for (var index = 0; index < data.length; index++) {
       let d = data[index]
@@ -512,5 +538,5 @@ export default TUI._connect({
   searchInfo: "publicInfo.searchInfo",
   relateId: "orgnizationManage.relateId",
   editInfo: "formControlInfo.data",
-  isRefreshTable:"orgnizationManage.isRefreshTable"
+  isRefreshTable: "orgnizationManage.isRefreshTable"
 }, Orgnization)

@@ -6,6 +6,7 @@ import formControlInfo from '../../../components/Public/public.formControl.reduc
 import multyMenu from './multyMenu.reducers'
 import sideList from './sideList.reducers'
 import tableList from './tableList.reducers'
+import pagerList from './pagerList.reducers'
 
 //使用redux的combineReducers方法将所有reducer打包起来
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
 	formControlInfo,
 	sideList,
 	tableList, 
+	pagerList,
   	routing: routerReducer //整合路由 
 })
 

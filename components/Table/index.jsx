@@ -2,7 +2,7 @@ import '!style!css!postcss!sass!./style.scss'
 
 class Table extends React.Component {
   render() {
-    const {tblContent, width} = this.props
+    const {tblContent, width,num} = this.props
     let tbl_thead = [],
       tbl_tbody = []
 
@@ -18,7 +18,7 @@ class Table extends React.Component {
     }
 
     let _width = width ? width : w
-    for (let i = 0; i < tblContent.tbody.length; i++) {
+    for (let i = 0; i < (num?num:tblContent.tbody.length); i++) {
       let _td = tblContent.tbody[i]
 
       let _tds = []
@@ -52,7 +52,7 @@ class Table extends React.Component {
       tbl_tbody.push(<tr key="tbl_nodata"><td colSpan={tbl_thead.length} style={{ textAlign: "center", color: "#999" }}>没有任何数据</td></tr>)
     }
     return (
-      <table id={this.props.id} className="t-tbl" style={this.props.style}>
+      <table ref={"t-tbl"} className="t-tbl" style={this.props.style}>
         <thead>
           <tr>
             {tbl_thead}
@@ -66,7 +66,7 @@ class Table extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.tblContent.tbody.length > 0 && nextProps.tblContent.tbody.length == this.props.tblContent.tbody.length && this.props.isRefreshTable==0) {
+    if (nextProps.tblContent.tbody.length == this.props.tblContent.tbody.length && nextProps.isRefreshTable==0) {
       return false
     }
     else {
@@ -75,42 +75,42 @@ class Table extends React.Component {
   }
 
   componentDidUpdate() {
-    const {width, id} = this.props
-    Actions.noRefreshTable()
-    let $tlb = document.getElementsByClassName("t-tbl")[0]
+    let _this = this
+    const {width, id} = _this.props
+    let $tlb = _this.refs["t-tbl"]
 
-    if (id) {
-      $tlb = document.getElementById(id)
-    }
+    setTimeout(function () {
+      let styleWidth = $tlb.parentNode.style.width
+      let tblWidth = styleWidth?styleWidth.substring(0,styleWidth.length-2):$tlb.parentNode.offsetWidth,
+        $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
+        autoLength = 0
 
-    let tblWidth = $tlb.offsetWidth,
-      $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
-      autoLength = 0
-
-    if (document.getElementsByClassName("tblContent").length > 0) {
-      tblWidth = document.getElementsByClassName("tblContent")[0].offsetWidth
-    }
-
-    let _width = width.split(",")
-    for (let i = 0; i < _width.length; i++) {
-      let $w = _width[i]
-      tblWidth -= $w
-      if ($w == 0) {
-        autoLength++
+      let _width = width.split(",")
+      for (let i = 0; i < _width.length; i++) {
+        let $w = _width[i]
+        tblWidth -= $w
+        if ($w == 0) {
+          autoLength++
+        }
       }
-    }
 
-    for (let j = 0; j < $autoTblWidth.length; j++) {
-      let $a = $autoTblWidth[j]
-      $a.style.width = tblWidth / autoLength + "px"
-      $a.style.display = "block"
-      $a.style.overflow = "hidden"
-      $a.style.whiteSpace = "nowrap"
-      $a.style.textOverflow = "ellipsis"
-    }
+      for (let j = 0; j < $autoTblWidth.length; j++) {
+        let $a = $autoTblWidth[j]
+        $a.style.width = tblWidth / autoLength + "px"
+        $a.style.display = "block"
+        $a.style.overflow = "hidden"
+        $a.style.whiteSpace = "nowrap"
+        $a.style.textOverflow = "ellipsis"
+      }
+
+      _this.props.noRefreshTable()
+    }, 0)
   }
 }
 
 
 
-export default Table
+export default TUI._connect({
+    isRefreshTable: "publicInfo.isRefreshTable",
+    pageLoadStatus: "publicInfo.pageLoadStatus"
+}, Table)

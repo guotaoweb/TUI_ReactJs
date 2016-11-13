@@ -140,7 +140,7 @@ class UserMaintain extends React.Component {
     let _this = this;
 
     const {addData, errorMsg, updatePageInfo, } = this.props
-
+    this.props.refreshTable()
     openLoading()
     //获取组织根节点,且默认展开第一个父节点
     TUI.platform.get("/units/tree/0", function (result) {

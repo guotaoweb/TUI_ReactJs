@@ -1,6 +1,6 @@
 import Content from "Content"
 import Btn from "Btn"
-import {openDialog} from "Dialog"
+import {openDialog,closeDialog} from "Dialog"
 
 class _Dialog extends React.Component {
     render() {
@@ -23,11 +23,22 @@ class _Dialog extends React.Component {
         openDialog(this,"这是Dialog弹窗",function(){})
     }
     _openDialog3() {
-        openDialog(this,{type:"txtarea",placeholder:"请输入内容..."},function(){})
+        let _this = this 
+       
+        openDialog(_this,{title:"这是标题",type:"txtarea",placeholder:"请输入内容..."},function(){
+            if(isNaN(parseInt(_this.props.textareaValue.value))){
+                openDialog(_this,"这是不是数字")
+            }
+            else{
+                closeDialog()
+            }
+        })
     }
     _openDialog4() {
         openDialog(this,{title:"这是标题",data:[{name:"选项一"}]})
     }
 }
 
-export default TUI._connect({}, _Dialog)
+export default TUI._connect({
+    textareaValue:"publicInfo.dialogInfo.txt"
+}, _Dialog)

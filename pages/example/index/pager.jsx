@@ -2,23 +2,62 @@ import Content from "Content"
 import Btn from "Btn"
 import Pager from "Pager"
 import SidePage, { closeSidePage, openSidePage } from 'SidePage'
-
+import Table from "Table"
 
 import React, { Component } from 'react'
 
 class _Pager extends Component {
     render() {
-        console.info("==")
-        console.info(this.props.pageInfo)
+        let _this = this
+        const {list} = _this.props
+
+        let tblContent = {
+            "thead": { "name1": "序号", "name2": "字段一", "name3": "字段二", "name4": "字段三", "name5": "操作" },
+            "tbody": []
+        }
+
+        for (var index = 0; index < list.length; index++) {
+            let $t = list[index]
+            tblContent.tbody.push({
+                "value1": index + 1,
+                "value2": "1",
+                "value3": "2",
+                "value4": $t.name,
+                "fns": [{
+                    "name": "编辑",
+                    "fn": function () {
+                        openDialog(_this, "这是编辑按钮")
+                    }
+                }, {
+                    "name": "删除",
+                    "fn": function () {
+                        openDialog(_this, "这是删除按钮")
+                    }
+                }]
+            })
+        }
+
+
         return (
             <div>
                 <Content txt="Pager">
+                    <Table id="table1" tblContent={tblContent} width="50,200,0,0,180" />
                     <Pager fn={this.theFn.bind(this)} />
-                    <Btn
-                        type="add"
-                        txt="多Pager"
-                        href={this._openSidePage.bind(this)}
-                        style={{ marginTop: "20px" }} />
+                    <div className="formControl-btn" style={{ marginLeft: "10px" }}>
+                        <Btn
+                            type="add"
+                            txt="添加数据"
+                            href={this._addData.bind(this)}
+                            style={{ marginTop: "20px" }} />
+                        <Btn
+                            type="add"
+                            txt="多Pager"
+                            href={this._openSidePage.bind(this)}
+                            style={{ marginTop: "20px" }} />
+                    </div> <br /><br />
+                    <div className="formControl-btn" style={{ marginLeft: "10px" }}>
+                        总数量:{this.props.pageInfo.index.sum}
+                    </div>
                 </Content>
                 <SidePage id="pager-sidePage" title="多Pager">
                     <div>
@@ -31,6 +70,15 @@ class _Pager extends Component {
     theFn(loadComplete) {
         loadComplete()
     }
+    _addData() {
+        const {pushTableData, updatePageInfo, pageInfo} = this.props
+        pushTableData({
+            name: "==>这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        })
+        updatePageInfo({
+            sum: parseInt(pageInfo.index.sum) + 1
+        })
+    }
     _openSidePage() {
         openSidePage(this, {
             id: "pager-sidePage",
@@ -39,11 +87,22 @@ class _Pager extends Component {
         })
     }
     componentDidMount() {
+        this.props.addTableData([{
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }, {
+            name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
+        }])
 
         this.props.updatePageInfo({
             index: 1,
             size: 5,
-            sum: 10,
+            sum: 5,
             url: "#"
         })
 
@@ -58,5 +117,6 @@ class _Pager extends Component {
 }
 
 export default TUI._connect({
-    pageInfo: "publicInfo.pageInfo"
+    pageInfo: "publicInfo.pageInfo",
+    list: "tableList.data"
 }, _Pager)

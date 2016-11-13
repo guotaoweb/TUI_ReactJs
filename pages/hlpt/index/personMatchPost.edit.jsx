@@ -8,10 +8,10 @@ import { openLoading, closeLoading } from "Loading"
 
 class PersonMatchPostEdit extends React.Component {
     render() {
-        const {pageInfo, sidePageStatus, roleData, sidePageInfo, deletePersonMatchPostRole, addPersonMatchPostSetRoleData, updatePersonMatchPostNumber, updateSearchInfo } = this.props
+        const {dialogInfo,pageInfo, sidePageStatus, roleData, sidePageInfo, deletePersonMatchPostRole, addPersonMatchPostSetRoleData, updatePersonMatchPostNumber, updateSearchInfo } = this.props
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "角色", "name5": "操作" },
+            "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "角色","name5": "职位级别", "name6": "操作" },
             "tbody": []
         }
         for (var i = 0; i < roleData.length; i++) {
@@ -21,6 +21,7 @@ class PersonMatchPostEdit extends React.Component {
                 "value2": _d.cnName,
                 "value3": _d.loginUid,
                 "value4": _d.roleName,
+                "value5": "",
                 "fns": [{
                     "name": "设置角色",
                     "fn": function () {
@@ -53,6 +54,27 @@ class PersonMatchPostEdit extends React.Component {
                             }
                         })
 
+                    }
+                },{
+                    "name":"设置级别",
+                    "fn":function(){
+                        let _placeholder = "请设置级别",
+                        min=0,max=0
+                        if(!_d.baseLevel && !_d.channelLevel){
+                            min = _d.baseLevel
+                            max = _d.baseLevel+_d.channelLevel-1
+                            _placeholder= _placeholder+",设置范围("+min+"-"+max+")"
+                        }
+
+                        openDialog(_this,{
+                            title:"职位级别设置",
+                            placeholder:"请设置级别",
+                            value:dialogInfo
+                        },function(){
+                            // if(parseInt(dialogInfo)){
+                            //     openDialog(_this,"请填写数字")
+                            // }
+                        })
                     }
                 }, {
                     "name": "删除",
@@ -93,7 +115,7 @@ class PersonMatchPostEdit extends React.Component {
                     backHref={this.goBackContent.bind(this)}
                     addTxt="调入"
                     editTxt="兼职">
-                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,150,150,150" />
+                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,150,150,100,220" />
                     <Pager id="personMatchPostEditPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                 </Content>
             </div>
@@ -201,5 +223,6 @@ export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
     hasVerticalScroll: "orgnizationManage.hasVerticalScroll",
     eidtId: "personMatchPost.editId",
-    pageInfo: "publicInfo.pageInfo"
+    pageInfo: "publicInfo.pageInfo",
+    dialogInfo:"publicInfo.dialogInfo.txt"
 }, PersonMatchPostEdit)

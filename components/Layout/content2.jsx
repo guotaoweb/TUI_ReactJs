@@ -1,4 +1,5 @@
 import '!style!css!postcss!sass!./style.scss'
+import loading from "!url!./img/loading.png"
 
 class Content2 extends React.Component {
   render() {
@@ -25,7 +26,7 @@ class Content2 extends React.Component {
         isValid = false
       }
     }
-   
+
     if (isValid) {
       if (this.props.children.length != null) {
         children = []
@@ -34,8 +35,8 @@ class Content2 extends React.Component {
           let id = tabs[i] ? tabs[i].id : "none_children_" + i
           children.push(React.cloneElement($c, { style: { display: i > 0 ? "none" : "block" }, key: id, className: id + " t_contemt_c" }))
         }
-        setTimeout(function(){bindEvent()},500)
-        
+        setTimeout(function () { bindEvent() }, 500)
+
       }
     }
     else {
@@ -49,6 +50,11 @@ class Content2 extends React.Component {
             {tabsArry}
           </ul>
           <div>
+            <div className="t-content-loading">
+              <div className="t_loading_img">
+                <img src={loading} />
+              </div>
+            </div>
             {children}
           </div>
         </div>
@@ -82,7 +88,7 @@ export default Content2
 
 export function bindEvent() {
   //为tabs绑定事件
-  let contentTabs = document.getElementsByClassName("t-content2_tab")  
+  let contentTabs = document.getElementsByClassName("t-content2_tab")
   for (var i = 0; i < contentTabs.length; i++) {
     var $t = contentTabs[i]
     $t.addEventListener("click", function () {
@@ -124,4 +130,22 @@ export function getContentIndex(index) {
     }
   }
 
+}
+
+export function openContentLoading() {
+  let sidepage = document.querySelector(".t-content-loading")
+  sidepage.style["transition"] = "opacity 200ms ease"
+  sidepage.style.opacity = "1"
+  sidepage.style.display = "block"
+}
+
+export function closeContentLoading() {
+  setTimeout(function () {
+    let sidepage = document.querySelector(".t-content-loading")
+    sidepage.style["transition"] = "opacity 200ms ease"
+    sidepage.style.opacity = "0"
+    setTimeout(function () {
+      sidepage.style.display = "none"
+    }, 201)
+  }, 500)
 }

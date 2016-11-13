@@ -28,7 +28,7 @@ class Content extends React.Component {
 
           {this.props.children[1]}
           <div className="tblContent" ref="tblContent">
-            <div className="t-content3-loading">
+            <div className="t-content-loading">
               <div className="t_loading_img">
                 <img src={loading} />
               </div>
@@ -56,16 +56,16 @@ class Content extends React.Component {
 
 export default Content;
 
-export function openContent3Loading() {
-  let sidepage = document.querySelector(".t-content3-loading")
+export function openContentLoading() {
+  let sidepage = document.querySelector(".t-content-loading")
   sidepage.style["transition"] = "opacity 200ms ease"
   sidepage.style.opacity = "1"
   sidepage.style.display = "block"
 }
 
-export function closeContent3Loading() {
+export function closeContentLoading() {
   setTimeout(function () {
-    let sidepage = document.querySelector(".t-content3-loading")
+    let sidepage = document.querySelector(".t-content-loading")
     sidepage.style["transition"] = "opacity 200ms ease"
     sidepage.style.opacity = "0"
     setTimeout(function () {

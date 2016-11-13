@@ -6,6 +6,20 @@ export function addTableData(data){
     }
 }
 
+export function pushTableData(data){
+    return {
+        type:"PUSH_TABLE_DATA",
+        data
+    }
+}
+
+
+export function updateTableData(data){
+    return {
+        type:"UPDATE_TABLE_DATA",
+        data
+    }
+}
 
 
 

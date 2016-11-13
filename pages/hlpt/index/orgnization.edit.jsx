@@ -75,21 +75,22 @@ class OrgnizationEdit extends React.Component {
                 if (result.code == 0) {
                     closeSidePage()
                     _this.props.successMsg("新增组织成功")
+                    postJson.unitId = result.data.unitId
                     postJson.unitCode = result.data.unitCode
                     postJson.superExt2 = result.data.superExt2
                     postJson.statusName = result.data.statusName
                     //实时新增组织
                     pushSubList(postJson)
 
-
-                    _this.addData(data, relateId.split("-"), {
+   
+                    _this.addOrgnizationData(data, relateId.split("-"), {
                         id: result.data.unitId,
                         name: result.data.unitName,
                         isleaf: "1",
                         deep: relateId.split("-").length,
                         unitCode: result.data.unitCode
                     })
-                    _this.props.refreshTable()
+                    //_this.props.refreshTable()
                 }
                 else {
                     errorMsg(result.message)
@@ -121,7 +122,7 @@ class OrgnizationEdit extends React.Component {
                     //实时更新组织
                     updateSubList(postJson)
 
-                    _this.updateData(data, relateId.split("-"), {
+                    _this.updateOrgnizationData(data, relateId.split("-"), {
                         name: postJson.unitName
                     })
                 }
@@ -132,7 +133,7 @@ class OrgnizationEdit extends React.Component {
         }
     }
 
-    updateData(data, deep, newData) {
+    updateOrgnizationData(data, deep, newData) {
         //deep的格式是1-2-3,拆成数组
         //如果deep的length==1的话,就说明已经钻到底层了
         if (deep.length == 1) {
@@ -150,18 +151,22 @@ class OrgnizationEdit extends React.Component {
             let d = data[index]
             if (d.id == deep[0] && deep.length > 1) {
                 deep.splice(0, 1)
-                this.updateData(d.children, deep, newData)
+                this.updateOrgnizationData(d.children, deep, newData)
             }
         }
     }
 
 
-    addData(data, deep, newData) {
+    addOrgnizationData(data, deep, newData) {
         //deep的格式是1-2-3,拆成数组
         //如果deep的length==1的话,就说明已经钻到底层了
         if (deep.length == 1) {
             for (let i = 0; i < data.length; i++) {
                 if (data[i].id == deep) {
+                    data[i].isHadSub = 0
+                    if(!data[i].children){
+                        data[i].children= []
+                    }
                     data[i].children.push(newData)
                     this.props.addData(this.props.data)
                 }
@@ -174,7 +179,7 @@ class OrgnizationEdit extends React.Component {
             let d = data[index]
             if (d.id == deep[0] && deep.length > 1) {
                 deep.splice(0, 1)
-                this.addData(d.children, deep, newData)
+                this.addOrgnizationData(d.children, deep, newData)
             }
         }
     }

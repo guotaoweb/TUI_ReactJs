@@ -1,4 +1,4 @@
-import Content from "Content"
+import Content, { openContentLoading, closeContentLoading } from "Content"
 import Btn from "Btn"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 
@@ -37,9 +37,15 @@ class _SidePage extends React.Component {
     }
 
     _openSidePage1() {
-        openSidePage(this, {
-            status: "addTeam"
-        })
+        openContentLoading()
+        let _this = this
+        setTimeout(function () {
+            openSidePage(_this, {
+                status: "addTeam"
+            })
+
+            closeContentLoading()
+        }, 1000)
     }
     _openSidePage4() {
         openSidePage(this, {

@@ -27,7 +27,9 @@ class Dialog extends React.Component {
         resize: "none",
         padding: "5px"
       }
-      txtObject.push(<textarea key="dialog-typ2" style={_style} placeholder={txt.placeholder} onChange={this.onChangeByDialog} value={txt.value}></textarea>)
+      title = txt.title
+      let _value = txt.value ? txt.value : ""
+      txtObject.push(<textarea ref="dialog_textarea" key="dialog-typ2" style={_style} placeholder={txt.placeholder} onChange={this.onChangeByDialog.bind(this)} value={_value || ""}></textarea>)
     }
     else if (type == 3) {
       for (let i = 0; i < txt.data.length; i++) {
@@ -74,17 +76,24 @@ class Dialog extends React.Component {
 
   onChangeByDialog(e) {
     this.props.updateDialog({
-      value: e.currentTarget.value
+      txt: {
+        value: e.currentTarget.value,
+        title: this.props.txt.title
+      },
+      type: 2
     })
   }
 }
 
 let _EVENT_FN
+let _EVENT_TYPE
+// let _PARAM
 export function _event() {
-  
   if (_EVENT_FN) { _EVENT_FN() }
   let d = new Dialog()
-  d.closeDialog()
+  if (_EVENT_TYPE != 2) {
+    d.closeDialog()
+  }
 }
 
 export function openDialog(_this, txt, fn) {
@@ -121,6 +130,7 @@ export function openDialog(_this, txt, fn) {
     $dialog.style["transition"] = "transform 400ms ease"
     $dialog.style.opacity = "1"
     $coverbg.style.display = "block"
+    $coverbg.style.zIndex = "9999"
     $dialog.style["transform"] = "scale(1)"
     // let _event = function () {
     //   console.info(Math.random())
@@ -131,10 +141,18 @@ export function openDialog(_this, txt, fn) {
 
     if ($dialogOk) {
       _EVENT_FN = fn
-      $dialogOk.removeEventListener("click",_event)
-      $dialogOk.addEventListener("click",_event)
+      _EVENT_TYPE = type
+      // _PARAM = _this.refs["dialog_textarea"].value
+
+      $dialogOk.removeEventListener("click", _event)
+      $dialogOk.addEventListener("click", _event)
     }
   }, 120)
+}
+
+export function closeDialog(){
+  let d = new Dialog()
+  d.closeDialog()
 }
 
 export default TUI._connect({

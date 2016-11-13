@@ -127,15 +127,21 @@ export default function manageReducers(state = initState, action) {
                 pageLoadStatus: action.status
             })
         case "CLEAR_PAGEINFO":
+            let _id
+            if (action.data) {
+                _id = action.data.id ? action.data.id : "index"
+            }
+            else {
+                _id = "index"
+            }
+            state.pageInfo[_id] = {
+                index: 1,
+                size: 5,
+                sum: 1,
+                url: ""
+            }
             return Object.assign({}, state, {
-                pageInfo: {
-                    index: {
-                        index: 1,
-                        size: 5,
-                        sum: 1,
-                        url: ""
-                    }
-                }
+                pageInfo: JSON.parse(JSON.stringify(state.pageInfo))
             })
         case "UPDATE_SEARCH_INFO":
             return Object.assign({}, state, {

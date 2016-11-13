@@ -3,11 +3,13 @@ import * as fromControl from '../../../components/Public/public.formControl.acti
 import * as multyMenu from './multyMenu.actions'
 import * as sideList from './sideList.actions'
 import * as tableList from './tableList.actions'
+import * as pagerList from './pagerList.actions'
 
 export default {
     ...multyMenu,
     ...publicActions,
     ...fromControl,
     ...sideList,
-    ...tableList
+    ...tableList,
+    ...pagerList
 }

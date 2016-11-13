@@ -76,7 +76,7 @@ class Btn extends React.Component {
           }
         }
       }
-console.info("==>"+isRequired)
+
       if (isRequired) {
         errorMsg("标星字段为必填项")
         isRequired = false

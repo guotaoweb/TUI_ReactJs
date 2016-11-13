@@ -27,7 +27,7 @@ class Routers extends React.Component {
         return (
             <Router history={history}>
                 <Route path={config.ROOTPATH} component={Index}>
-                    <IndexRoute component={Table} />
+                    <IndexRoute component={_Dialog} />
                     <Route path={config.ROOTPATH + "layout1"} component={Layout1} />
                     <Route path={config.ROOTPATH + "layout2"} component={Layout2} />
                     <Route path={config.ROOTPATH + "layout3"} component={Layout3} />

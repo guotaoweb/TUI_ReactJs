@@ -168,11 +168,11 @@ export function openSidePage(_this, params) {
         // let sidePageWidth = allWidth - sideWidth - contentSideWidth
         // sidePageWidth -= $sidepagemin.offsetWidth
         // $sidepage.style.right = "-" + sidePageWidth + "px"
-        $sidepage.style["transition"] = "right,width 300ms ease"
+        $sidepage.style["transition"] = "all 300ms ease"//right,width
         $sidepage.style.right = "0px"
       }
       else {
-        $sidepage.style["transition"] = "right,width 300ms ease"
+        $sidepage.style["transition"] = "all 300ms ease"
         $sidepage.style.right = "0px"
       }
     }

@@ -25,8 +25,15 @@ class PersonMatchPostEditSelect extends React.Component {
         }
         for (var i = 0; i < selectUserData.length; i++) {
             let _d = selectUserData[i]
+            let _personMatchPostEditPager = ""
+            if(pageInfo.personMatchPostEditPager){
+                _personMatchPostEditPager = (pageInfo.personMatchPostEditPager.index - 1) * pageInfo.personMatchPostEditPager.size+(i + 1)
+            }
+            else{
+                _personMatchPostEditPager = (i + 1)
+            }
             tblContent.tbody.push({
-                "value1": (pageInfo.personMatchPostEditPager.index - 1) * pageInfo.personMatchPostEditPager.size + (i + 1),
+                "value1":_personMatchPostEditPager,
                 "value2": _d.cnName,
                 "value3": _d.loginUid,
                 "value4": _d.unitName,

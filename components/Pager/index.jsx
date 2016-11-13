@@ -108,7 +108,9 @@ class Pager extends React.Component {
      
     }
     clickPrev(e) {
-        const {pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete} = this.props
+        const {_pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete,id} = this.props
+        let _id = id ? id : "index"
+        let pageInfo = _pageInfo[_id]
         if (pageInfo.index == 1) { return false }
         updatePageInfo({
             index: pageInfo.index - 1
@@ -117,7 +119,9 @@ class Pager extends React.Component {
         pageLoading()
     }
     clickNext(e) {
-        const {pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete} = this.props
+        const {_pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete,id} = this.props
+        let _id = id ? id : "index"
+        let pageInfo = _pageInfo[_id]
         if (pageInfo.index == Math.ceil(pageInfo.sum / pageInfo.size)) { return false }
         updatePageInfo({
             index: pageInfo.index + 1
@@ -134,7 +138,9 @@ class Pager extends React.Component {
         pageLoading()
     }
     clickLast(e) {
-        const {pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete} = this.props
+        const {_pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete,id} = this.props
+        let _id = id ? id : "index"
+        let pageInfo = _pageInfo[_id]
         updatePageInfo({
             index: Math.ceil(pageInfo.sum / pageInfo.size)
         })
