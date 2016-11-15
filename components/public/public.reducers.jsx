@@ -36,7 +36,8 @@ const initState = {
     },
     tips: [],//标签集合
     init: 0, //0 初始化 1 非初始化状态
-    isRefreshTable: 0 //0不刷新 1刷新
+    isRefreshTable: 0, //0不刷新 1刷新
+    side:[]
 }
 
 export default function manageReducers(state = initState, action) {
@@ -189,6 +190,8 @@ export default function manageReducers(state = initState, action) {
             return Object.assign({}, state, { isRefreshTable: 1 })
         case "NO_REFRESH_TABLE":
             return Object.assign({}, state, { isRefreshTable: 0 })
+        case "ADD_SIDE":
+            return Object.assign({}, state, { side: action.data })
         default: return state
     }
 }

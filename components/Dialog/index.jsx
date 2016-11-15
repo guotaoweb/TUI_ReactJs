@@ -75,6 +75,7 @@ class Dialog extends React.Component {
   }
 
   onChangeByDialog(e) {
+    
     this.props.updateDialog({
       txt: {
         value: e.currentTarget.value,
@@ -108,6 +109,7 @@ export function openDialog(_this, txt, fn) {
   else if (typeof txt == "object" && !fn) {
     type = 3
   }
+
   _this.props.updateDialog({
     txt: txt,
     type: type

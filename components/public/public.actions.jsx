@@ -169,5 +169,12 @@ export function noRefreshTable(data){
     } 
 }
 
+export function addSide(data){
+    return {
+        type:"ADD_SIDE",
+        data
+    } 
+}
+
 
 

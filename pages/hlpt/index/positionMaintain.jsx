@@ -10,7 +10,7 @@ import PositionMaintainEdit from "./positionMaintain.edit"
 import PositionMaintainRoleInList from "./positionMaintain.role.jobList"
 import FormControls from "FormControls"
 import { getContentIndex } from "Content2"
-import Content3, { openContent3Loading, closeContent3Loading } from "Content3"
+import Content3, { openContentLoading, closeContentLoading } from "Content3"
 import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, { editFn } from "MultyMenu"
@@ -40,7 +40,7 @@ class PositionMaintain extends React.Component {
                 "value7": _d.staffing,
                 "fns": [{
                     "name": "编辑",
-                    "fn": function() {
+                    "fn": function () {
                         openSidePage(_this, {
                             status: "editPositionMaintain",
                             gateWay: {
@@ -48,7 +48,7 @@ class PositionMaintain extends React.Component {
                             }
                         })
 
-                        TUI.platform.get("/position/" + _d.positionId, function(result) {
+                        TUI.platform.get("/position/" + _d.positionId, function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
 
@@ -65,7 +65,7 @@ class PositionMaintain extends React.Component {
                                 })
 
 
-                                TUI.platform.get("/jobfamilys/" + _data.jobfamilyId, function(result) {
+                                TUI.platform.get("/jobfamilys/" + _data.jobfamilyId, function (result) {
                                     if (result.code == 0) {
                                         let _data = result.data
                                         let newData = []
@@ -102,9 +102,9 @@ class PositionMaintain extends React.Component {
                     }
                 }, {
                     "name": "删除",
-                    "fn": function() {
-                        let delFetch = function() {
-                            TUI.platform.patch("/position/" + _d.positionId, function(result) {
+                    "fn": function () {
+                        let delFetch = function () {
+                            TUI.platform.patch("/position/" + _d.positionId, function (result) {
                                 if (result.code == 0) {
                                     _this.props.successMsg("职位删除成功")
                                     _this.props.deletePositionMaintain(_d.positionId)
@@ -184,7 +184,7 @@ class PositionMaintain extends React.Component {
 
         openLoading()
         //获取组织根节点,且默认展开第一个父节点
-        TUI.platform.get("/units/tree/0", function(result) {
+        TUI.platform.get("/units/tree/0", function (result) {
             if (result.code == 0) {
                 let node = []
                 for (let index = 0; index < result.data.length; index++) {
@@ -205,9 +205,10 @@ class PositionMaintain extends React.Component {
 
                 let $clickMenu = document.getElementsByClassName("clickmenu")[0]
                 let firtNodeId = $clickMenu.getAttribute("data-id")
-
+                $clickMenu.style.backgroundColor = "rgba(250,250,250,0.5)"
+                $clickMenu.style.borderRadius = "3px"
                 //展开第一个节点的一级子节点
-                TUI.platform.get("/units/tree/" + firtNodeId, function(result) {
+                TUI.platform.get("/units/tree/" + firtNodeId, function (result) {
                     if (result.code == 0) {
 
                         for (var i = 0; i < _this.props.odata.length; i++) {
@@ -255,7 +256,7 @@ class PositionMaintain extends React.Component {
         })
 
 
-        TUI.platform.get("/positionFamilys", function(result) {
+        TUI.platform.get("/positionFamilys", function (result) {
             if (result.code == 0) {
                 let _data = result.data
                 let newData = []
@@ -298,15 +299,15 @@ class PositionMaintain extends React.Component {
         this.props.clearEditInfo({
             infoName: "positionMaintainInfo"
         })
-        openContent3Loading()
+        openContentLoading()
         this.loadPosition(id)
         closeSidePage()
         this.props.updateEditInfo({
-            infoName:"jobsInfo",
+            infoName: "jobsInfo",
             status: "list"
         })
         this.props.updateEditInfo({
-            infoName:"rolesInfo",
+            infoName: "rolesInfo",
             status: "list"
         })
     }
@@ -321,7 +322,7 @@ class PositionMaintain extends React.Component {
     loadPosition(id) {
         const {addPositionMaintain, updatePageInfo, clearPageInfo, updateSearchInfo} = this.props
         let url = id ? "/positions?unitId=" + id + "&from={0}&limit=10" : "/positions?unitCode=0&from={0}&limit=10"
-        TUI.platform.get(url.replace("{0}", "0"), function(result) {
+        TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addPositionMaintain(result.data)
                 updatePageInfo({
@@ -344,7 +345,7 @@ class PositionMaintain extends React.Component {
             else {
                 errorMsg(result.message)
             }
-            closeContent3Loading()
+            closeContentLoading()
             closeLoading()
         })
     }
@@ -442,7 +443,7 @@ class PositionMaintain extends React.Component {
             let d = _data[index]
 
             if (d.id == id) {
-                TUI.platform.get("/units/tree/" + id, function(result) {
+                TUI.platform.get("/units/tree/" + id, function (result) {
                     if (result.code == 0) {
                         let children = []
                         let _deep = parseInt(deep) + 1
@@ -460,7 +461,7 @@ class PositionMaintain extends React.Component {
                         }
                         d.children = children
 
-                        setTimeout(function() { loadComplete() }, 1000)
+                        setTimeout(function () { loadComplete() }, 1000)
 
                     }
                     else if (result.code == 404) {
@@ -478,7 +479,7 @@ class PositionMaintain extends React.Component {
 
     pageFn(index, loadComplete) {
         const {pageInfo, addPositionMaintain, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function(result) {
+        TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
             if (result.code == 0) {
                 addPositionMaintain(result.data)
                 updatePageInfo({

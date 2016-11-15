@@ -10,7 +10,7 @@ import SidePage, {openSidePage, closeSidePage} from "SidePage"
 import {openDialog, closeDialog} from "Dialog"
 import Pager, {pageLoadCompelte} from "Pager"
 import EditSurvy from "./survyList.editEmpty"
-import SurvyTool from "./survyList.tool"
+
 
 
 class SurvyList extends React.Component {
@@ -110,7 +110,7 @@ class SurvyList extends React.Component {
                     <Pager fn={this.pageFn.bind(this)} />
                 </Content>
                 <SidePage>
-                    <SurvyTool key="survytool" />
+            
                     <EditSurvy key="survyedit" />
                 </SidePage>
             </div>

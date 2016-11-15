@@ -102,24 +102,13 @@ class PersonMatchPost extends React.Component {
 
         return (
             <div>
-                <Content3>
-                    <ReactIScroll iScroll={iScroll} options={{
-                        mouseWheel: true,
-                        scrollbars: hasVerticalScroll
-                    }} onRefresh={this.onScrollRefresh.bind(this)}>
-                        <div>
-                            <MultyMenu data={odata} type="nocheck" lastdeep="6" color="white" clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
-                            <br />
-                        </div>
-                    </ReactIScroll>
-
-                    <div></div>
+                <div>
                     <div className="t-content_t">
                         <span>人职匹配</span>
                     </div>
                     <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,150,150,100" />
                     <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
-                </Content3>
+                </div>
                 <SidePage id="PersonMatchPostEdit">
                     <div>
                         {_personMatchPostEdit}
@@ -141,75 +130,7 @@ class PersonMatchPost extends React.Component {
     }
 
     componentDidMount() {
-        let _this = this;
 
-        const {addData, errorMsg, addUnitBizTypes, addPositionTypes, addStatus, addCity, addSubList, updatePageInfo, addUnitKind} = this.props
-
-        openLoading()
-        //获取组织根节点,且默认展开第一个父节点
-        TUI.platform.get("/units/tree/0", function (result) {
-            if (result.code == 0) {
-                let node = []
-                for (let index = 0; index < result.data.length; index++) {
-                    let _d = result.data[index];
-                    node.push({
-                        id: _d.id,
-                        name: _d.name,
-                        type: _d.unitCode,
-                        isHadSub: _d.isleaf,
-                        ext1: _d.unitLevel,
-                        num: "",
-                        deep: 1
-                    })
-                }
-                addData(node)
-
-
-                let $clickMenu = document.getElementsByClassName("clickmenu")[0]
-                let firtNodeId = $clickMenu.getAttribute("data-id")
-                $clickMenu.style.backgroundColor = "rgba(250,250,250,0.5)"
-                $clickMenu.style.borderRadius = "3px"
-                //展开第一个节点的一级子节点
-                TUI.platform.get("/units/tree/" + firtNodeId, function (result) {
-                    if (result.code == 0) {
-                        for (var i = 0; i < _this.props.odata.length; i++) {
-                            var d = _this.props.odata[i]
-                            if (d.id == firtNodeId) {
-                                let children = []
-                                for (var j = 0; j < result.data.length; j++) {
-                                    var $s = result.data[j];
-                                    children.push({
-                                        id: $s.id,
-                                        name: $s.name,
-                                        type: $s.unitCode,
-                                        isHadSub: $s.isleaf,
-                                        num: "",
-                                        ext1: $s.unitLevel,
-                                        deep: 2
-                                    })
-                                }
-
-                                d.children = children
-                                addData(_this.props.odata)
-                                $clickMenu.nextSibling.style.display = "block"
-                                let $img = $clickMenu.getElementsByTagName("img")[1]
-                                $img.setAttribute("data-status", "show")
-                                $img.setAttribute("src", minus)
-                                //获取职位列表
-                                _this.loadPosition()
-                            }
-                        }
-
-                    }
-                    else {
-                        errorMsg(result.message)
-                    }
-                })
-            }
-            else {
-                errorMsg(result.message)
-            }
-        })
     }
 
     clickMenu($m) {

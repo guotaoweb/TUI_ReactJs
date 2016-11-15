@@ -7,6 +7,8 @@ import PositionMaintainJob from "./positionMaintain.job"
 import PositionMaintainRole from "./positionMaintain.role"
 import PositionMaintainJobEdit from "./positionMaintain.job.edit"
 import PositionMaintainRoleEdit from "./positionMaintain.role.edit"
+import PositionMaintainWorkStandard from "./positionMaintain.workStandard"
+// import PositionMaintainPersonMatchPost from "./positionMaintain.personMatchPost"
 
 class PositionMaintainEdit extends React.Component {
     render() {
@@ -18,7 +20,20 @@ class PositionMaintainEdit extends React.Component {
             tabs = [{ name: "添加职位信息", id: "baseInfo" }]
         }
         else {
-            tabs = [{ name: "编辑职位信息", id: "baseInfo" }, { name: "工作职责", id: "positionmaintain", fn: function () { _this.getPositionMaintainJobs() } }, { name: "角色设置", id: "roleset", fn: function () { _this.getPositionMaintainRoles() } }]
+            tabs = [{
+                name: "编辑职位信息", id: "baseInfo"
+            }, {
+                name: "工作职责", id: "positionmaintain", fn: function () { _this.getPositionMaintainJobs() }
+            }, {
+                name: "角色设置", id: "roleset", fn: function () { _this.getPositionMaintainRoles() }
+            }, {
+                name: "工作标准", id: "workstandard", fn: function () { _this.getWorkStandard() }
+            }]
+            // , {
+            //     name: "人职匹配", id: "personMatchPost", fn: function () {
+            //         //_this.getWorkStandard() 
+            //     }
+            // }
         }
 
         let _PositionMaintainJob = [],
@@ -49,6 +64,8 @@ class PositionMaintainEdit extends React.Component {
         }
 
 
+
+
         return (
             <Content2 tabs={tabs} key="content2_userEdit">
                 <div>
@@ -70,11 +87,18 @@ class PositionMaintainEdit extends React.Component {
                 </div>
                 <div style={{ borderTop: "1px solid #ebebeb" }}>{_PositionMaintainJob}</div>
                 <div style={{ borderTop: "1px solid #ebebeb" }}>{_PositionMaintainRole}</div>
+                <div style={{ borderTop: "1px solid #ebebeb" }}>
+                    <PositionMaintainWorkStandard />
+                </div>
+
             </Content2>
         )
     }
 
-    onChangeFnByPositionFamilys(id){
+                // <div style={{ borderTop: "1px solid #ebebeb" }}>
+                //     <PositionMaintainPersonMatchPost />
+                // </div>
+    onChangeFnByPositionFamilys(id) {
         this.loadJobFamilys(id)
     }
 
@@ -123,6 +147,33 @@ class PositionMaintainEdit extends React.Component {
         if (jobsData) {
             this.getPositionMaintainJobs()
         }
+    }
+
+    getWorkStandard() {
+        const {errorMsg, sidePageInfo, addEditInfo} = this.props
+        TUI.platform.get("/workstandards/byPosition/" + sidePageInfo.gateWay.positionId, function (result) {
+            if (result.code == 0) {
+                let _d = result.data
+                addEditInfo({
+                    "infoName": "workStandardInfo",
+                    "standardId": _d.standardId,
+                    "specialty": _d.specialty,
+                    "education": _d.education,
+                    "proKnowledge": _d.proKnowledge,
+                    "qualification": _d.qualification,
+                    "workExperience": _d.workExperience,
+                    "workSchedule": _d.workSchedule,
+                    "environment": _d.environment,
+                    "others": _d.others
+                })
+            }
+            else if (result.code == 404) {
+
+            }
+            else {
+                errorMsg(result.message)
+            }
+        })
     }
 
     editPositionMaintain() {
@@ -214,7 +265,7 @@ class PositionMaintainEdit extends React.Component {
 
     goBack() {
         this.props.clearEditInfo({
-            infoName:"positionMaintainInfo"
+            infoName: "positionMaintainInfo"
         })
         closeSidePage()
     }

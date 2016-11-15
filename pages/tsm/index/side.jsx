@@ -16,6 +16,13 @@ import reports from "!url!./img/report-s.png"
 
 class _Side extends React.Component {
   render() {
+    const {sideList} = this.props
+    return (
+      <Side list={sideList} title="TSM" />
+    )
+  }
+
+  componentDidMount() {
     let list = [{
       name: "用户管理",
       url: "#",
@@ -52,7 +59,7 @@ class _Side extends React.Component {
       icon: vote,
       sicon: votes,
       sub: []
-    },{
+    }, {
       name: "报表系统",
       url: "#",
       icon: report,
@@ -60,19 +67,16 @@ class _Side extends React.Component {
       sub: [{
         name: "在线分析",
         url: Config.ROOTPATH + "TeacherList"
-      },{
+      }, {
         name: "导出报表",
         url: Config.ROOTPATH + "TeacherList"
-      },{
+      }, {
         name: "报表列表",
         url: Config.ROOTPATH + "reports"
       }]
     }]
-    return (
-      <Side list={list} title="TSM" />
-    )
+    this.props.addSide(list)
   }
-
 
   getImg(src) {
     switch (src) {
@@ -104,16 +108,6 @@ class _Side extends React.Component {
 
 export default TUI._connect({
   sideStatus: "publicInfo.sideStatus",
-  userId: "publicInfo.userInfo.id"
+  userId: "publicInfo.userInfo.id",
+  sideList:"publicInfo.side"
 }, _Side)
-
-
-//菜单示例
-
-// <li onClick={this.updateSubStatus} className="tSubSide" data-status = {sideStatus == "0" ? "open" : "close"}>
-//   <img src={xnzz}/><span style={{display:sideStatus == "0" ? "inline" : "none"}}>虚拟组织管理1</span>
-//   <ul className="t-side_sub">
-//     <li>新增虚拟组织</li>
-//     <li>删除虚拟组织</li>
-//   </ul>
-// </li>

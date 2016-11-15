@@ -18,7 +18,7 @@ class FormControls extends React.Component {
             } required={this.props.required} data={data} />
         }
         else if (ctrl == "textarea") {
-            bindElem = <CTRL_TEXTAREA label={label} labelWidth={labelWidth} value={value} tyle={this.props.style} onFocus={this.props.onFocus} onBlur={this.props.onBlur} required={this.props.required} addFn={this.props.addEditInfo
+            bindElem = <CTRL_TEXTAREA label={label} labelWidth={labelWidth} value={value} tyle={this.props.style} onFocus={this.props.onFocus} onBlur={this.props.onBlur} style={this.props.style}  required={this.props.required} addFn={this.props.addEditInfo
             } required={this.props.required} data={data} />
         }
         else if (ctrl == "select") {

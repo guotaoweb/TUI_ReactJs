@@ -26,7 +26,7 @@ export default function manageReducers(state = initState, action) {
             }
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
         case "ADD_PERSONMATCHPOST_ROLE_DATA":
-            return Object.assign({}, state, { roleData: action.data })
+            return Object.assign({}, state, { roleData: eval(JSON.stringify(action.data)) })
         case "PUSH_PERSONMATCHPOST_ROLE_DATA":
             if (state.roleData) {
                 state.roleData.push(action.data)
@@ -68,7 +68,14 @@ export default function manageReducers(state = initState, action) {
                 }
             }
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
-
+        case "SET_PERSON_LEVEL":
+            for (let i = 0; i < state.roleData.length; i++) {
+                let $d = state.roleData[i]
+                if($d.staffId==action.data.staffId){
+                    $d.userLevel = action.data.userLevel
+                }
+            }
+            return Object.assign({}, state, { roleData: eval(JSON.stringify(state.roleData))})
         default: return state
     }
 }

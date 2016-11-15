@@ -74,7 +74,10 @@ class Content2 extends React.Component {
       if (document.querySelector(".t-sidepage")) {
         let sidePageScrollHeight = document.querySelector(".t-sidepage").scrollHeight
         let scrollHeight = bodyScrollHeight < sidePageScrollHeight ? sidePageScrollHeight : bodyScrollHeight
-        ReactDOM.findDOMNode(_this.refs.tContent2Sub).style.height = (scrollHeight - headerHeight - 30) + "px"
+
+        if (allHeight > _this.refs.tContent2Sub.offsetHeight) {
+          ReactDOM.findDOMNode(_this.refs.tContent2Sub).style.height = (scrollHeight - headerHeight - 60) + "px"
+        }
       }
       else {
         ReactDOM.findDOMNode(_this.refs.tContent2Sub).style.height = (bodyScrollHeight - headerHeight - 60) + "px"
@@ -102,9 +105,19 @@ export function bindEvent() {
         $n.style.display = "none"
       }
 
-      document.querySelector("." + tabId).style.display = "block"
+      let _content = document.querySelector("." + tabId)
+      _content.style.display = "block"
+
+      if (document.documentElement.clientHeight < _content.offsetHeight) {
+        _content.parentNode.parentNode.style.height = "auto"
+      }
+      else {
+        _content.parentNode.parentNode.style.height= (document.documentElement.clientHeight-110) + "px"
+      }
     })
   }
+
+
 }
 
 export function getContentIndex(index) {

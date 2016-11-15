@@ -90,5 +90,12 @@ export function updatePersonMatchPostNumber(data){
     }
 }
 
+export function setPersonLevel(data){
+    return {
+        type:"SET_PERSON_LEVEL",
+        data
+    }
+}
+
 
 
