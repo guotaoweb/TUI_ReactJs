@@ -1,7 +1,7 @@
 import Content2 from "Content2"
 import Btn from "Btn"
 import FormControls from "FormControls"
-import {closeSidePage} from "SidePage"
+import { closeSidePage } from "SidePage"
 
 
 class EditTeacher extends React.Component {
@@ -30,12 +30,14 @@ class EditTeacher extends React.Component {
     return (
       <div>
         <Content2 tabs={tabs}>
-          <FormControls label="教师姓名" ctrl="input" txt={detail.name} onChange={this.onChangeByName.bind(this) }/>
-          <FormControls label="所属科目" ctrl="select" options={course} txt={detail.courseId} onChange={this.onChangeByCourse.bind(this) }/>
-          <FormControls label="所属班级" ctrl="select" options={classes} txt={detail.classesId} onChange={this.onChangeByClasses.bind(this) }/>
-          <div style={{ marginLeft: "70px", paddingTop: "5px" }}>
-            <Btn type="cancel" txt="取消" href={this.goPrevPage.bind(this) } style={{ float: "left", marginRight: "10px" }} />
-            <Btn type="check" txt="确定" href={this.editVTeamInfo.bind(this) } style={{ float: "left" }}  />
+          <div>
+            <FormControls label="教师姓名" ctrl="input" value="teacherInfo.Name" />
+            <FormControls label="所属科目" ctrl="select" options={course} value="teacherInfo.CourseId" />
+            <FormControls label="所属班级" ctrl="select" options={classes} value="teacherInfo.ClassesId" />
+            <div className="formControl-btn">
+              <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
+              <Btn type="submit" txt="确定" href={this.editTeacherInfo.bind(this)} />
+            </div>
           </div>
         </Content2>
       </div>
@@ -43,31 +45,30 @@ class EditTeacher extends React.Component {
   }
 
 
-  editVTeamInfo() {
-    const {detail, sidePageInfo, userId, successMsg, errorMsg, updateVTeamListByID, updateVTeamData, preventSubmit, waiteMsg} = this.props
+  editTeacherInfo() {
+    const {
+      editInfo,
+      sidePageInfo,
+      successMsg,
+      errorMsg,
+    } = this.props
 
-    if (preventSubmit) {
-      return false
+
+    let _this = this
+
+    let jsonParam = {
+      "Name": editInfo.teacherInfo.Name,
+      "CourseId": editInfo.teacherInfo.CourseId,
+      "ClassesId": editInfo.teacherInfo.ClassesId,
     }
 
-    waiteMsg("数据提交中,请稍后...")
-
-    let _this = this,
-      teamId
-
     if (sidePageInfo.status == "editTeacher") {
-      teamId = detail.id
-      console.info(detail.courseId)
-      TUI.platform.put("/Teacher", {
-        "Id": detail.id,
-        "Name": detail.name,
-        "CourseId": detail.courseId,
-        "ClassesId": detail.classesId,
-      }, function (result) {
+      jsonParam["Id"] = editInfo.teacherInfo.Id
+      console.info(jsonParam)
+      TUI.platform.put("/Teacher",jsonParam, function (result) {
         if (result.code == 0) {
           setTimeout(function () { successMsg("教师信息编辑成功") }, 800)
-          updateTeacherListByID()
-          _this.goPrevPage()
+          _this.goBack()
         }
         else {
           errorMsg(TUI.config.ERROR_INFO[result.code]);
@@ -75,19 +76,10 @@ class EditTeacher extends React.Component {
       })
     }
     else {
-      TUI.platform.post("/Teacher", {
-        "Name": detail.name,
-        "CourseId": detail.courseId,
-        "ClassesId": detail.classesId,
-      }, function (result) {
+      TUI.platform.post("/Teacher",jsonParam, function (result) {
         if (result.code == 0) {
           setTimeout(function () { successMsg("教师信息新增成功") }, 800)
-          updateTeacherData({
-            Id: detail.id,
-            CourseId: detail.courseId,
-            ClassesId: detail.classesId,
-          })
-          _this.goPrevPage()
+          _this.goBack()
         }
         else {
           errorMsg(TUI.config.ERROR_INFO[result.code]);
@@ -96,40 +88,20 @@ class EditTeacher extends React.Component {
     }
   }
 
-  goPrevPage() {
-    const {clearVTeamInfo} = this.props
-    setTimeout(function () {
-      clearVTeamInfo()
-      closeSidePage()
-    }, 0)
-  }
+  goBack() {
+    const {clearEditInfo} = this.props
+    clearEditInfo({
+      infoName: "editTeacher"
+    })
 
-  onChangeByName(e) {
-    const {detail, updateVTeamInfo} = this.props
-    updateTeacherInfo({
-      name: e.currentTarget.value
-    })
+    closeSidePage()
   }
-  onChangeByCourse(e) {
-    const {detail, updateVTeamInfo} = this.props
-    updateTeacherInfo({
-      courseId: e.currentTarget.value
-    })
-  }
-  onChangeByClasses(e) {
-    const {detail, updateVTeamInfo} = this.props
-    updateTeacherInfo({
-      classesId: e.currentTarget.value
-    })
-  }
-};
+}
 
 
 export default TUI._connect({
-  userId: "publicInfo.userInfo.id",
   sidePageInfo: "publicInfo.sidePageInfo",
-  detail: "teacherList.detail",
-  preventSubmit: "publicInfo.msgInfo.txt",
+  editInfo: "formControlInfo.data",
   courseData: "teacherList.courseData",
   classesData: "teacherList.classesData"
 }, EditTeacher)

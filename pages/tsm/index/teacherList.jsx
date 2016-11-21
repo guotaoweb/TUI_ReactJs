@@ -5,10 +5,10 @@ import singleLeft from "!url!./img/singleLeft.png"
 import Content from "Content"
 import Btn from "Btn"
 import Table from "Table"
-import MultyMenu, {clearCheckBox, updateCheckBoxStatus} from "MultyMenu"
-import SidePage, {openSidePage, closeSidePage} from "SidePage"
-import {openDialog, closeDialog} from "Dialog"
-import Pager, {pageLoadCompelte} from "Pager"
+import MultyMenu, { clearCheckBox, updateCheckBoxStatus } from "MultyMenu"
+import SidePage, { openSidePage, closeSidePage } from "SidePage"
+import { openDialog, closeDialog } from "Dialog"
+import Pager, { pageLoadCompelte } from "Pager"
 import EditTeacher from "./teacherList.edit"
 
 
@@ -18,18 +18,18 @@ class TeacherList extends React.Component {
       teacherList,
       errorMsg,
       updateSidePageInfo,
-      userId, history,
-      updateDialog,
+      userId, 
+      history,
       sidePageInfo,
-      updateVTeamId,
-      updateTeacherInfo,
-      pageInfo,
-      delTeamList
+      addEditInfo,
+      pageInfo
     } = this.props
+
+    let _this = this
 
     let SidePageContent
     if (sidePageInfo.status == "editTeacher" || sidePageInfo.status == "addTeacher") {
-      SidePageContent = <EditTeacher key="teacherListedit"/>
+      SidePageContent = <EditTeacher key="teacherListedit" />
     }
 
     let tblContent = {
@@ -48,70 +48,66 @@ class TeacherList extends React.Component {
         "fns": [{
           "name": "编辑",
           "fn": function () {
-            updateSidePageInfo({
-              status: "editTeacher",
-              width: ""
-            })
-
             TUI.platform.get("/Teacher/" + _d.Id, function (result) {
               if (result.code == 0) {
-                var _d = result.datas[0]
+                var _r = result.datas[0]
 
-                updateTeacherInfo({
-                  id: _d.Id,
-                  name: _d.Name,
-                  courseId: _d.CourseId,
-                  classesId: _d.ClassesId
+                addEditInfo({
+                  infoName:"teacherInfo",
+                  Id: _r.Id,
+                  Name: _r.Name,
+                  CourseId: _r.CourseId,
+                  ClassesId: _r.ClassesId
                 })
-                openSidePage()
+                openSidePage(_this,{
+                  status:"editTeacher"
+                })
               }
               else {
-                errorMsg(TUI.ERROR_INFO[result.code]);
+                errorMsg(Config.ERROR_INFO[result.code]);
               }
             })
           }
         }, {
-            "name": "管理",
-            "fn": function () {
-              history.push(TUI.ROOTPATH + "manage/" + _d.team_id)
+          "name": "管理",
+          "fn": function () {
+            history.push(Config.ROOTPATH + "manage/" + _d.team_id)
+          }
+        }, {
+          "name": "删除",
+          "fn": function () {
+            var delFetch = function () {
+              TUI.platform.delete("/Teacher/" + _d.Id, function (result) {
+                if (result.code == 0) {
+                  delTeacher(_d.team_id)
+                }
+                else {
+                  errorMsg(Config.ERROR_INFO[result.code]);
+                }
+              })
             }
-          }, {
-            "name": "删除",
-            "fn": function () {
-              var delFetch = function () {
-                TUI.platform.delete("/Teacher/" + _d.Id, function (result) {
-                  if (result.code == 0) {
-                    delTeamList(_d.team_id)
-                  }
-                  else {
-                    errorMsg(TUI.ERROR_INFO[result.code]);
-                  }
-                })
-              }
-              updateDialog("是否确定删除【" + _d.team_name + "】")
-              openDialog(delFetch)
-            }
-          }]
+            openDialog(_this,"是否确定删除【" + _d.team_name + "】",delFetch)
+          }
+        }]
       })
     }
 
     return (
       <div>
-        <Content txt="教师列表" addHref={this.addTeacherList.bind(this) }>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,120,120,120"/>
-          <Pager fn={this.pageFn.bind(this) }/>
+        <Content txt="教师列表" addHref={this.addTeacherList.bind(this)}>
+          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,120,120,120" />
+          <Pager fn={this.pageFn.bind(this)} />
         </Content>
         <SidePage>
-          {SidePageContent}
+          <div>
+            {SidePageContent}
+          </div>
         </SidePage>
       </div>
     )
   }
 
   pageFn(index) {
-    // let obj1 = { "pagertotal": "12", "code": "0", "msg": "", "datas": [{ "id": "CE7993D326454A52859BEE9D308CFBFA", "team_id": "DD103F29F4484B7C855844492AC368F2", "user_id": "wugf1202", "user_name": "吴高峰", "user_note": "领导", "del_flag": "n", "user_type": "1", "sort": "1", "last_modid": "p_guiyue", "last_modtime": "2016-05-28 16:41:42" }, { "id": "692A224422E44716A8B1B98E76463E29", "team_id": "DD103F29F4484B7C855844492AC368F2", "user_id": "dingjh0625", "user_name": "丁君辉", "user_note": "领导", "del_flag": "n", "user_type": "0", "sort": "999", "last_modid": "p_guiyue", "last_modtime": "2016-05-28 16:41:49" }, { "id": "C271D82C7BA14687A6BC92426C45F88F", "team_id": "1FD8F6E054B04D79AC30ADC81C8A5138", "user_id": "p_luob", "user_name": "罗柏", "user_note": null, "del_flag": "n", "user_type": "0", "sort": "999", "last_modid": "p_wenren", "last_modtime": "2016-07-04 18:18:21" }] }
-    // this.props.addXNUserData(obj1.datas)
-    openDialog()
     const {pageInfo, updateVTeamData, updatePageInfo} = this.props
     TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
       if (result.code == 0) {
@@ -130,7 +126,7 @@ class TeacherList extends React.Component {
   }
 
   componentDidMount() {
-    const {addTeacherData, alertMsg, teacherList, updatePageInfo,addClassesData,addCourseData} = this.props
+    const {addTeacherData, alertMsg, teacherList, updatePageInfo, addClassesData, addCourseData} = this.props
 
     //获取教师列表
     TUI.platform.get("/Teacher", function (result) {
@@ -147,7 +143,7 @@ class TeacherList extends React.Component {
         addTeacherData([])
       }
       else {
-        errorMsg(TUI.ERROR_INFO[result.code]);
+        errorMsg(Config.ERROR_INFO[result.code]);
       }
     })
 
@@ -158,7 +154,7 @@ class TeacherList extends React.Component {
         addClassesData(_d)
       }
       else {
-        errorMsg(TUI.ERROR_INFO[result.code]);
+        errorMsg(Config.ERROR_INFO[result.code]);
       }
     })
 
@@ -169,22 +165,22 @@ class TeacherList extends React.Component {
         addCourseData(_d)
       }
       else {
-        errorMsg(TUI.ERROR_INFO[result.code]);
+        errorMsg(Config.ERROR_INFO[result.code]);
       }
     })
   }
 
   addTeacherList() {
-    const {updateSidePageInfo, preventSubmit,clearTeacherInfo} = this.props
+    const {clearEditInfo} = this.props
 
-    updateSidePageInfo({
+    clearEditInfo({
+      infoName:"teacherInfo"
+    })
+
+    openSidePage(this,{
       status: "addTeacher",
       width: ""
     })
-
-    clearTeacherInfo()
-
-    openSidePage()
   }
 }
 

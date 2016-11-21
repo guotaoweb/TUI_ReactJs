@@ -2,13 +2,15 @@ import 'babel-polyfill'
 
 const initState = {
     data: [],
-    orgnizationId: ""
+    orgnizationId: "",
+    nation: [],
+    jobsList: []
 }
 
 export default function manageReducers(state = initState, action) {
     switch (action.type) {
         case "ADD_USERMAINTAIN_DATA":
-            return Object.assign({}, state, { data: action.data })
+            return Object.assign({}, state, { data: eval(JSON.stringify(action.data)) })
         case "UPDATE_USERMAINTAIN_DATA":
             for (let i = 0; i < state.data.length; i++) {
                 let $d = state.data[i]
@@ -36,6 +38,18 @@ export default function manageReducers(state = initState, action) {
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
         case "UPDATE_USERMAINTAIN_EDITID":
             return Object.assign({}, state, { orgnizationId: action.data })
+        case "ADD_NATION":
+            return Object.assign({}, state, { nation: action.data })
+        case "ADD_USERMAINTAIN_JOBLIST":
+            return Object.assign({}, state, { jobsList: eval(JSON.stringify(action.data)) })
+        case "DELETE_USERMAINTAIN_JOBSLIST":
+            for (let i = 0; i < state.jobsList.length; i++) {
+                let $d = state.jobsList[i]
+                if ($d.poid == action.data) {
+                    state.jobsList.splice(i, 1)
+                }
+            }
+            return Object.assign({}, state, { jobsList: eval(JSON.stringify(state.jobsList)) })
         default: return state
     }
 }

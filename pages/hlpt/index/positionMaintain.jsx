@@ -22,7 +22,7 @@ import { openLoading, closeLoading } from "Loading"
 class PositionMaintain extends React.Component {
 
     render() {
-        const {odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo} = this.props
+        const {errorMsg,odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo} = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "职位代码", "name3": "职位名称", "name4": "职位类别", "name5": "所属组织", "name6": "状态", "name7": "编制", "name8": "操作" },

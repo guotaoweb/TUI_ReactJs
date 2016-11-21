@@ -5,7 +5,8 @@ const initState = {
     detail: {
         id: "",
         name: "",
-    }
+    },
+    survyList: []
 }
 
 export default function courseListReducers(state = initState, action) {
@@ -17,20 +18,6 @@ export default function courseListReducers(state = initState, action) {
                 state.data.push(action.data)
             }
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
-        case "UPDATE_COURSE_INFO":
-            return Object.assign({}, state, {
-                detail: {
-                    id: action.data.id ? action.data.id : state.detail.id,
-                    name: action.data.name? action.data.name : state.detail.name
-                }
-            })
-        case "CLEAR_COURSE_INFO":
-            return Object.assign({}, state, {
-                detail: {
-                    id: state.detail.id,
-                    name: ""
-                }
-            })
         case "UPDATE_COURSE_ID":
             return Object.assign({}, state, {
                 detail: {
@@ -62,6 +49,10 @@ export default function courseListReducers(state = initState, action) {
             }
             return Object.assign({}, state, {
                 data: eval(JSON.stringify(state.data))
+            })
+        case "COURSE_BIND_SURVY":
+            return Object.assign({}, state, {
+                survyList: eval(JSON.stringify(action.data))
             })
         default: return state
     }

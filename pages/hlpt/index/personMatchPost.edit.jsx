@@ -18,7 +18,8 @@ class PersonMatchPostEdit extends React.Component {
             deletePersonMatchPostRole,
             addPersonMatchPostSetRoleData,
             updatePersonMatchPostNumber,
-            updateSearchInfo
+            updateSearchInfo,
+            errorMsg
         } = this.props
 
         let _this = this
@@ -49,6 +50,7 @@ class PersonMatchPostEdit extends React.Component {
                             else {
                                 errorMsg(result.message)
                             }
+       
                             openSidePage(_this, {
                                 status: "personMatchPostEditSetRole",
                                 gateWay: {
@@ -175,6 +177,7 @@ class PersonMatchPostEdit extends React.Component {
     }
 
     addUser() {
+        console.info("====调入 ")
         //调入
         const {sidePageInfo, updateSearchInfo} = this.props
         let _positionId = sidePageInfo.gateWay.positionId
@@ -243,7 +246,6 @@ class PersonMatchPostEdit extends React.Component {
     addPositionMaintainBtn() {
         openSidePage(this, {
             status: "addPositionMaintain",
-
         })
     }
 

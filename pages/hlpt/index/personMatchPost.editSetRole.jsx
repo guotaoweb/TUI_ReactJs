@@ -9,6 +9,7 @@ import singleLeft from "!url!./img/singleLeft.png"
 class PersonMatchPostEditSetRole extends React.Component {
     render() {
         const {setRoleData, sidePageInfo,updatePersonMatchPostRole} = this.props
+
         let _this = this
 
 
@@ -25,11 +26,12 @@ class PersonMatchPostEditSetRole extends React.Component {
                 "fns": [{
                     "name": "选择",
                     "fn": function () {
-                        let _poId = sidePageInfo.gateWay.poId
+                        let _poId = _this.props.sidePageInfo.gateWay.poId
                         let jsonParma = {
                             roleId: _d.roleId,
                             poid: _poId
                         }
+                   
                         TUI.platform.put("/duty/role", jsonParma, function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
@@ -40,6 +42,7 @@ class PersonMatchPostEditSetRole extends React.Component {
 
                                 updatePersonMatchPostRole(setRole)
                                  _this._closeSidePage()
+                                 _this.props.refreshTable()
                             }
                             else{
                                 errorMsg(result.message)

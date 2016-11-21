@@ -1,29 +1,31 @@
 import Content2 from "Content2"
 import Btn from "Btn"
 import FormControls from "FormControls"
-import {closeSidePage} from "SidePage"
+import { closeSidePage } from "SidePage"
 
 
 class EditCourse extends React.Component {
   render() {
-    const {sidePageInfo, userId, detail} = this.props
+    const {sidePageInfo,survyList} = this.props
     let tabs = []
 
-    if (sidePageInfo.status == "editClasses") {
+    if (sidePageInfo.status == "editCourse") {
       tabs.push({ name: "编辑科目信息" })
     }
     else {
       tabs.push({ name: "新增科目信息" })
     }
-
+    console.info(survyList)
     return (
       <div>
         <Content2 tabs={tabs}>
-          <FormControls label="科目名称" ctrl="input" txt={detail.code} onChange={this.onChangeByCode.bind(this) }/>
-          <FormControls label="绑定问卷" ctrl="select" txt={detail.name} onChange={this.onChangeByName.bind(this) }/>
-          <div style={{ marginLeft: "70px", paddingTop: "5px" }}>
-            <Btn type="cancel" txt="取消" href={this.goPrevPage.bind(this) } style={{ float: "left", marginRight: "10px" }} />
-            <Btn type="check" txt="确定" href={this.editVTeamInfo.bind(this) } style={{ float: "left" }}  />
+          <div>
+            <FormControls label="科目名称" ctrl="input" value="courseInfo.Name" />
+            <FormControls label="绑定问卷" ctrl="select" options={survyList} value="courseInfo.survyId" />
+            <div className="formControl-btn">
+              <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
+              <Btn type="submit" txt="确定" href={this.editCourseInfo.bind(this)} />
+            </div>
           </div>
         </Content2>
       </div>
@@ -31,103 +33,62 @@ class EditCourse extends React.Component {
   }
 
 
-  editVTeamInfo() {
-    const {detail, sidePageInfo, userId, successMsg, errorMsg, updateVTeamListByID, updateVTeamData, preventSubmit,waiteMsg} = this.props
-
-    if (preventSubmit) {
-      return false
-    }
-
-    waiteMsg("数据提交中,请稍后...")
+  editCourseInfo() {
+    const {
+      editInfo,
+      sidePageInfo,
+      successMsg,
+      errorMsg
+    } = this.props
 
     let _this = this,
-      operType,
-      teamId
+      jsonParam = {
+        Name: editInfo.courseInfo.Name
+      }
 
-    if (sidePageInfo.status == "editVTeam") {
-      operType = "U"
-      teamId = detail.id
-    }
-    else {
-      operType = "A"
-    }
 
-    TUI.platform.post("/projectteam/team", {
-      "uid": userId,
-      "team_id": teamId,
-      "upper_team_id": "-1",
-      "team_code": detail.code,
-      "team_name": detail.name,
-      "team_note": detail.note,
-      "team_icon": "",
-      "sort": "99",
-      "state": "1",
-      "del_flag": "n",
-      "opertype": operType
-    }, function (result) {
-      if (result.code == 0) {
-        if (operType == "U") {
-          setTimeout(function(){successMsg("虚拟组编辑成功")},800)
+    if (sidePageInfo.status == "editCourse") {
+      TUI.platform.put("/Course/" + _id, jsonParam, function (result) {
+        if (result.code == 0) {
+          setTimeout(function () { successMsg("虚拟组新增成功") }, 800)
+          _this.goBack()
         }
         else {
-          setTimeout(function(){successMsg("虚拟组新增成功")},800)
-          let _addData = {
-            team_id: result.datas[0],
-            team_code: detail.code,
-            team_name: detail.name,
-            team_note: detail.note,
-            admins: {} 
-          }
- 
-          updateVTeamData(_addData)
+          errorMsg(config.ERROR_INFO[result.code]);
         }
-        updateVTeamListByID(teamId)
-        _this.goPrevPage()
-      }
-      else {
-        errorMsg(config.ERROR_INFO[result.code]);
-      }
-    })
+      })
+    }
+    else {
+      let _id = editInfo.courseInfo.Id
+      TUI.platform.post("/Course", jsonParam, function (result) {
+        if (result.code == 0) {
+          setTimeout(function () { successMsg("虚拟组编辑成功") }, 800)
+
+          _this.goBack()
+        }
+        else {
+          errorMsg(config.ERROR_INFO[result.code]);
+        }
+      })
+    }
+
+
   }
 
-  goPrevPage() {
-    const {clearVTeamInfo} = this.props
-    setTimeout(function () {
-      clearVTeamInfo()
-      closeSidePage()
-    }, 0)
-  }
+  goBack() {
+    const {clearEditInfo} = this.props
 
-  onChangeByCode(e) {
-    const {detail, updateVTeamInfo} = this.props
-    updateVTeamInfo({
-      code: e.currentTarget.value,
-      name: detail.name,
-      note: detail.note
+    clearEditInfo({
+      infoName: "courseInfo"
     })
+    closeSidePage()
   }
-  onChangeByName(e) {
-    const {detail, updateVTeamInfo} = this.props
-    updateVTeamInfo({
-      code: detail.code,
-      name: e.currentTarget.value,
-      note: detail.note
-    })
-  }
-  onChangeByNote(e) {
-    const {detail, updateVTeamInfo} = this.props
-    updateVTeamInfo({
-      code: detail.code,
-      name: detail.name,
-      note: e.currentTarget.value
-    })
-  }
-};
+}
 
 
 export default TUI._connect({
   userId: "publicInfo.userInfo.id",
   sidePageInfo: "publicInfo.sidePageInfo",
-  detail: "vteamList.detail",
-  preventSubmit: "publicInfo.msgInfo.txt"
+  editInfo: "formControlInfo.data",
+  survyList:"courseList.survyList"
 }, EditCourse)

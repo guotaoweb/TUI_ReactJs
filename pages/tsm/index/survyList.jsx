@@ -1,21 +1,23 @@
-//图片
-import singleLeft from "!url!./img/singleLeft.png"
-
 //组件
-import Content from "Content"
+import Content, { openContentLoading, closeContentLoading } from "Content"
 import Btn from "Btn"
 import Table from "Table"
-import MultyMenu, {clearCheckBox, updateCheckBoxStatus} from "MultyMenu"
-import SidePage, {openSidePage, closeSidePage} from "SidePage"
-import {openDialog, closeDialog} from "Dialog"
-import Pager, {pageLoadCompelte} from "Pager"
-import EditSurvy from "./survyList.editEmpty"
-
+import SidePage, { openSidePage, closeSidePage } from "SidePage"
+import { openDialog, closeDialog } from "Dialog"
+import Pager from "Pager"
+import EditSurvy from "./survyList.edit"
+import SurvyBindCourse from "./survyList.bindCourse"
 
 
 class SurvyList extends React.Component {
     render() {
-        const {survyList, errorMsg, userId, history, sidePageInfo, pageInfo} = this.props
+        const {
+            survyList,
+            errorMsg,
+            sidePageInfo,
+            pageInfo,
+            addCourseData
+        } = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "名称", "name3": "创建时间", "name4": "操作" },
@@ -30,64 +32,58 @@ class SurvyList extends React.Component {
                 "value3": _d.UpdateTime,
                 "fns": [{
                     "name": "编辑",
-                    "fn": function () {
-                        openSidePage(_this, {
-                            status: "editAdmin",
-                            type: 1
-                        })
-                        // TUI.platform.get("/projectteam/team/" + _d.team_id, function (result) {
-                        //   if (result.code == 0) {
-                        //     var _d = result.datas[0]
-                        //     updateVTeamInfo({
-                        //       id: _d.team_id,
-                        //       code: _d.team_code,
-                        //       name: _d.team_name,
-                        //       note: _d.team_note
-                        //     })
-
-                        //     openSidePage()
-                        //   }
-                        //   else {
-                        //     errorMsg(config.ERROR_INFO[result.code]);
-                        //   }
-                        // })
-                    }
-                }, {
-                    "name": "权限",
-                    "fn": function () {
-                        updateSidePageInfo({
-                            status: "vteamUserList",
-                            width: "400"
-                        })
-                        openSidePage()
-
-                        TUI.platform.get("/projectteam/permission/getpersons/" + _d.team_id, function (result) {
+                    "fn": function() {
+                        openContentLoading()
+                        TUI.platform.get("/Vote/" + _d.Id, function(result) {
                             if (result.code == 0) {
-                                let selectedArry = []
-                                for (let i = 0; i < result.datas.length; i++) {
-                                    let d = result.datas[i];
-                                    selectedArry.push(d.power_value)
-                                }
-                                updateVTeamId(_d.team_id)
-                                addOSData(selectedArry)
+                                var _d = result.datas[0]
+                                updateEditInfo({
+                                    infoName: "editSurvy",
+                                    Name: _d.Name,
+                                    Desp: _d.Desp
+                                })
                             }
                             else {
-                                //errorMsg(TUI.ERROR_INFO[result.code]);
+                                errorMsg(Config.ERROR_INFO[result.code]);
                             }
+                            openSidePage(_this, {
+                                id:"survyEdit",
+                                status: "editSurvy"
+                            })
+                            closeContentLoading()
+                        })
+                    }
+                }, {
+                    "name": "绑定",
+                    "fn": function() {
+                        openContentLoading()
+                        TUI.platform.get("/Course", function(result) {
+                            if (result.code == 0) {
+                                addCourseData(result.datas)
+                            }
+                            else {
+                                errorMsg(Config.ERROR_INFO[result.code]);
+                            }
+                            openSidePage(_this,{
+                                id:"bindCourse",
+                                status: "survyBindCourse",
+                                width: "400"
+                            })
+                            closeContentLoading()
                         })
 
                     }
                 }, {
                     "name": "删除",
-                    "fn": function () {
-                        var delFetch = function () {
+                    "fn": function() {
+                        var delFetch = function() {
                             TUI.platform.post("/projectteam/team", {
                                 "uid": userId,
                                 "team_id": _d.team_id,
                                 "upper_team_id": "-1",
                                 "del_flag": "y",
                                 "opertype": "U"
-                            }, function (result) {
+                            }, function(result) {
                                 if (result.code == 0) {
                                     delTeamList(_d.team_id)
                                 }
@@ -97,7 +93,7 @@ class SurvyList extends React.Component {
                             })
                         }
 
-                        openDialog(_this, "是否确定删除【" + _d.team_name + "】", delFetch)
+                        openDialog(_this, "是否确定删除【" + _d.Name + "】", delFetch)
                     }
                 }]
             })
@@ -109,20 +105,37 @@ class SurvyList extends React.Component {
                     <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,220,180" />
                     <Pager fn={this.pageFn.bind(this)} />
                 </Content>
-                <SidePage>
-            
+                <SidePage id="survyEdit">
                     <EditSurvy key="survyedit" />
+                </SidePage>
+                <SidePage id="bindCourse" title="绑定科目" href={this.bindCourse.bind(this)}>
+                    <SurvyBindCourse key="survyBindCourse" />
                 </SidePage>
             </div>
         )
     }
 
+    bindCourse(){
+        let selected = [],
+        courseList = document.getElementsByClassName("t-c_checkbox")
+        for (var i = 0; i < courseList.length; i++) {
+            var $c = courseList[i];
+            if($c.getAttribute("data-status")=="selected"){
+                selected.push($c.getAttribute("data-id"))
+            }
+        }
+        closeSidePage({
+            id:"bindCourse"
+        })
+        console.info(selected)
+    }
+
     pageFn(index) {
         openDialog()
-        const {pageInfo, updateSurvy, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
+        const {pageInfo, updateSurvyList, updatePageInfo} = this.props
+        TUI.platform.get(pageInfo.url.replace("{0}", index), function(result) {
             if (result.code == 0) {
-                updateSurvy(result.datas)
+                updateSurvyList(result.datas)
                 updatePageInfo({
                     index: index,
                     size: 7,
@@ -131,32 +144,32 @@ class SurvyList extends React.Component {
                 })
             }
             else {
-                updateSurvy([])
+                updateSurvyList([])
             }
         })
     }
 
     componentDidMount() {
-        const {addSurvy, errorMsg, updatePageInfo} = this.props
+        const {addSurvyList, errorMsg, updatePageInfo} = this.props
         let _this = this
-        setTimeout(function () {
-            openSidePage(_this, {
-                status: "editAdmin"
-            })
+        // setTimeout(function () {
+        //     openSidePage(_this, {
+        //         status: "editAdmin"
+        //     })
 
-            // openDialog(_this, { placeholder: "请输入数字", value: "这是内容" }, function () {
-            //     alert("a")
-            // })
-            // let _test = function(){
-            //     _this.test()
-            // }
-            // openDialog(_this,{title:"创建问题",data:[{name:"第一个",fn:_test},{name:"第二个",url:"2"},{name:"第三个",url:"3"},{name:"第三个",url:"3"},{name:"第三个",url:"3"}]})
-        }, 500)
+        //     // openDialog(_this, { placeholder: "请输入数字", value: "这是内容" }, function () {
+        //     //     alert("a")
+        //     // })
+        //     // let _test = function(){
+        //     //     _this.test()
+        //     // }
+        //     // openDialog(_this,{title:"创建问题",data:[{name:"第一个",fn:_test},{name:"第二个",url:"2"},{name:"第三个",url:"3"},{name:"第三个",url:"3"},{name:"第三个",url:"3"}]})
+        // }, 500)
         //获取虚拟组织列表
         //if (!vteamList) {
-        TUI.platform.get("/Vote", function (result) {
+        TUI.platform.get("/Vote", function(result) {
             if (result.code == 0) {
-                addSurvy(result.datas)
+                addSurvyList(result.datas)
                 updatePageInfo({
                     index: 1,
                     size: 7,
@@ -165,7 +178,7 @@ class SurvyList extends React.Component {
                 })
             }
             else if (result.code == 9) {
-                addSurvy([])
+                addSurvyList([])
             }
             else {
                 errorMsg(TUI.ERROR_INFO[result.code]);
@@ -179,16 +192,11 @@ class SurvyList extends React.Component {
             width: ""
         })
     }
-
-    test(){
-        alert("test")
-    }
 }
 
 
 export default TUI._connect({
-    survyList: "survyList.data",
-    userId: "publicInfo.userInfo.userId",
+    survyList: "survyList.list",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo"
 }, SurvyList)

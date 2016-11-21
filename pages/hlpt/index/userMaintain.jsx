@@ -8,6 +8,7 @@ import singleLeft from "!url!./img/singleLeft.png"
 //组件
 import UserMaintainEdit from "./userMaintain.edit"
 import FormControls from "FormControls"
+import { getContentIndex } from "Content2"
 import Content3, { openContentLoading, closeContentLoading } from "Content3"
 import Btn from "Btn"
 import Table from "Table"
@@ -20,7 +21,7 @@ import { openLoading, closeLoading } from "Loading"
 class UserMaintain extends React.Component {
 
   render() {
-    const {odata, pageInfo, sidePageStatus, hasVerticalScroll, data, addEditInfo} = this.props
+    const {odata, pageInfo, sidePageStatus, hasVerticalScroll, data, addEditInfo,errorMsg} = this.props
     let _this = this
     let tblContent = {
       "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "默认组织", "name5": "职位", "name6": "手机", "name7": "排序号", "name9": "操作" },
@@ -40,15 +41,11 @@ class UserMaintain extends React.Component {
         "fns": [{
           "name": "编辑",
           "fn": function () {
-
-            openSidePage(_this, {
-              status: "editUserMaintain"
-            })
+            openContentLoading()
 
             TUI.platform.get("/staff/" + _d.staffId, function (result) {
               if (result.code == 0) {
                 let _data = result.data
-
                 addEditInfo({
                   infoName: "userMaintainInfo",
                   uId: _data.staffId,//用户ID
@@ -65,8 +62,8 @@ class UserMaintain extends React.Component {
                   wx: "",//微信号
                   sort: _data.sort,//排序号
                   isShow: _data.ext2,//是否显示
-                  kind:_data.kind,
-                  staffCode:_data.staffCode
+                  kind: _data.kind,
+                  staffCode: _data.staffCode
                 })
               }
               else if (result.code == 404) {
@@ -75,8 +72,13 @@ class UserMaintain extends React.Component {
               else {
                 errorMsg(result.message)
               }
+              openSidePage(_this, {
+                status: "editUserMaintain"
+              })
+              closeContentLoading()
+              getContentIndex(0)
             })
-
+            
           }
         }, {
           "name": "删除",
@@ -249,7 +251,7 @@ class UserMaintain extends React.Component {
   }
 
   loadUser(id) {
-    const {errorMsg,addUserMaintain, updatePageInfo, clearPageInfo, updateSearchInfo} = this.props
+    const {errorMsg, addUserMaintain, updatePageInfo, clearPageInfo, updateSearchInfo} = this.props
     let url = id ? "/staffs?unitId=" + id + "&from={0}&limit=10" : "/staffs?from={0}&limit=10"
     TUI.platform.get(url.replace("{0}", "0"), function (result) {
       if (result.code == 0) {
@@ -267,11 +269,11 @@ class UserMaintain extends React.Component {
           info: "输入关键字(用户名称或账号)"
         })
       }
-      else if(result.code==404){
+      else if (result.code == 404) {
         addUserMaintain([])
         clearPageInfo()
       }
-      else{
+      else {
         errorMsg(result.message)
       }
       closeContentLoading()

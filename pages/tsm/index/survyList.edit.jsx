@@ -3,6 +3,7 @@ import FormControls from "FormControls"
 import Btn from "Btn"
 import { openDialog, closeDialog } from "Dialog"
 import { closeSidePage } from 'SidePage'
+import SurvyListPreView from './survyList.preview'
 
 import addImg from "!url!./img/add.png"
 import deleteImg from "!url!./img/delete.png"
@@ -12,22 +13,21 @@ import downImg from "!url!./img/down.png"
 class EditSurvy extends React.Component {
     render() {
         const {editInfo, survyData} = this.props
-
         let tabs = [{
-            name: "创建空白问卷", id: "tabs1"
+            name: "基本信息", id: "tabs1"
         }, {
             name: "问卷内容", id: "tabs2"
         }, {
-            name: "预览", id: "tabs3"
+            name: "问卷预览", id: "tabs3"
         }]
 
         let _survys = []
-
+        console.info(survyData)
         if (survyData.length == 0) {
             _survys.push(<SurvyEmpty key="survyEmpty" action={this} />)
         }
         else {
-            _survys.push(<SurvyProblem key="survyProblem" data={survyData} action={this} />)
+            _survys.push(<SurvyProblem key="survyProblem" survyData={survyData} action={this} />)
         }
         return (
             <Content2 tabs={tabs}>
@@ -35,7 +35,7 @@ class EditSurvy extends React.Component {
                     <FormControls label="问卷名称" ctrl="input" required="required" value="survyInfo.name" />
                     <FormControls label="问卷说明" ctrl="textarea" value="survyInfo.despInfo" />
                     <div className="formControl-btn">
-                        <Btn type="cancel" txt="取消" />
+                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                         <Btn type="add" txt="确定" />
                     </div>
                 </div>
@@ -43,13 +43,17 @@ class EditSurvy extends React.Component {
                     {_survys}
                     <br /><br />
                 </div>
-                <div>预览内容</div>
+                <div><SurvyListPreView /></div>
             </Content2>
         )
     }
 
+    goBack() {
+        closeSidePage()
+    }
+
     componentDidMount() {
-        // this.props.updateSurvyOptions([{
+        // this.props.updateSurvy([{
         //     txt: "这是第一道题",
         //     sort: 0,
         //     type: "radio",
@@ -126,29 +130,35 @@ class EditSurvy extends React.Component {
 
 export default TUI._connect({
     editInfo: "formControlInfo.data",
-    survyData: "survyList.odata"
+    survyData: "survyList.data"
 }, EditSurvy)
 
 
 class SurvyProblem extends React.Component {
     render() {
-        const {data, action} = this.props
+        const {survyData, action} = this.props
 
         let _survyProblem = []
-        for (var i = 0; i < data.length; i++) {
-            var $s = data[i]
+        for (var i = 0; i < survyData.length; i++) {
+            var $s = survyData[i]
+            let _bind = {
+                Id: $s.Id,
+                ParentId: $s.ParentId,
+                Type: $s.Type,
+                Order: $s.Order
+            }
             _survyProblem.push(
                 <div key={"survyProblem_" + i}>
                     <span style={{ float: "left", marginTop: "5px", marginRight: "10px" }}>{i + 1}、</span>
-                    <div style={{ float: "left" }}><FormControls ctrl="input" value={"survyProblemInfo_" + i +"_"+ $s.Type+ "_"+ $s.Order+"_" + $s.ParentId + ".value"} style={{ width: "437px" }} /></div>
+                    <div style={{ float: "left" }}><FormControls ctrl="input" bind={_bind} value={"survyProblemInfo_" + $s.Id + ".value"} style={{ width: "437px" }} /></div>
                     <ul className="optionbtns" ref="optionbtns">
-                        <li onClick={this.addSubject.bind(this)} data-parent={i}><img src={addImg} /></li>
-                        <li onClick={this.deleteSubject.bind(this)} data-parent={i}><img src={deleteImg} /></li>
-                        <li onClick={this.upSubject.bind(this)} data-parent={i}><img src={upImg} /></li>
-                        <li onClick={this.downSubject.bind(this)} data-parent={i}><img src={downImg} /></li>
+                        <li onClick={this.addSubject.bind(this)} data-order={$s.Order}><img src={addImg} /></li>
+                        <li onClick={this.deleteSubject.bind(this)} data-order={$s.Order}><img src={deleteImg} /></li>
+                        <li onClick={this.upSubject.bind(this)} data-order={$s.Order}><img src={upImg} /></li>
+                        <li onClick={this.downSubject.bind(this)} data-order={$s.Order}><img src={downImg} /></li>
                     </ul>
                     <br className="clear" />
-                    <SurvyOptions data={$s.Options} i={i} action={action} type={$s.Type} parentId={$s.Id} />
+                    <SurvyOptions survyOptionsData={$s.Datas} i={i} action={action} type={$s.Type} parentId={$s.Id} />
                 </div>
             )
         }
@@ -165,21 +175,16 @@ class SurvyProblem extends React.Component {
 
     ediSurvy() {
         let _editInfo = this.props.action.props.editInfo
-        console.info(_editInfo)
 
         let _survy = []
 
         for (let key in _editInfo) {
-            let array = key.split("_"),
-            _parentId = array[array.length - 1],
-            _order = array[array.length - 2],
-            _type = array[array.length - 3]
-
             _survy.push({
-                ParentId: _parentId,
+                Id: _editInfo[key].Id,
+                ParentId: _editInfo[key].ParentId,
                 Name: _editInfo[key].value,
-                Order: 0,
-                Type: "radio"
+                Order: _editInfo[key].Order,
+                Type: _editInfo[key].Type
             })
 
         }
@@ -195,199 +200,185 @@ class SurvyProblem extends React.Component {
     //新增题目
     addSubject(e) {
         let _this = this.props.action
-        const {survyData, updateSurvyOptions} = _this.props
+        const {survyData, updateSurvy} = _this.props
         let $elem = e.target.parentNode,
-            main = $elem.getAttribute("data-parent"),
+            order = $elem.getAttribute("data-order"),
             _props = this
 
 
         openDialog(_this, {
             title: "选择题型", data: [{
                 name: "单选题", fn: function () {
-                    survyData.push({
-                        Id:"b0",
-                        ParentId: "0",
-                        Name: "",
-                        Order: 1,
-                        Type: "checkbox",
-                        Options: [{
-                            Name: "",
-                            Order: 0
-                        }]
-                    })
-
-                    updateSurvyOptions(survyData)
+                    _props._addSubject(_this, order, "radio")
                 }
             }, {
                 name: "多选题", fn: function () {
-
-                    _props._addSubject(_this, main, "checkbox")
-                    //updateSurvyOptions(odata)
+                    _props._addSubject(_this, order, "checkbox")
                 }
             }, {
                 name: "填空题", fn: function () {
-                    survyData.push({
-                        Id:"c0",
-                        ParentId: "",
-                        Name: "",
-                        Order: 1,
-                        Type: "checkbox",
-                        Options: [{
-                            Name: "",
-                            Order: 0
-                        }]
-                    })
-                    updateSurvyOptions(survyData)
+                    _props._addSubject(_this, order, "textarea")
                 }
             }]
         })
-        //updateSurvyOptions(odata)
     }
 
-    _addSubject(_this, main, type) {
-        const {survyData, updateSurvyOptions} = _this.props
+    _addSubject(_this, order, type) {
+        const {survyData, updateSurvy} = _this.props
 
         survyData.push({
             Name: survyData[survyData.length - 1].Name,
             Order: survyData[survyData.length - 1].Order,
             Type: survyData[survyData.length - 1].Type,
-            Options: survyData[survyData.length - 1].Options
+            Datas: survyData[survyData.length - 1].Datas
         })
 
         let _odata = eval(JSON.stringify(survyData))
         for (let i = 0; i < survyData.length; i++) {
             let $m = survyData[i]
 
-            if (i > main && i < (survyData.length - 1)) {
+            if (i > order && i < (survyData.length - 1)) {
                 _odata[i + 1] = survyData[i]
+                _odata[i + 1].Order = parseInt(i) + 1
+            }
+            else {
+                if (i > order) {
+                    _odata.Order = parseInt(i) + 1
+                }
             }
 
         }
-        _odata[parseInt(main) + 1] = {
-            Id:"d0",
-            ParentId: "",
+        _odata[parseInt(order) + 1] = {
+            Id: TUI.fn.newGuid(),
+            ParentId: "0",
             Name: "",
-            Order: 1,
-            Type: "checkbox",
-            Options: [{
+            Order: parseInt(order) + 1,
+            Type: type,
+            Datas: [{
+                Id: TUI.fn.newGuid(),
                 Name: "",
-                Order: 1
+                Order: 0
             }]
         }
 
-        updateSurvyOptions(_odata)
+        updateSurvy(_odata)
     }
 
     //删除题目
     deleteSubject(e) {
         let _this = this.props.action
-        const {survyData, updateSurvyOptions} = _this.props
+        const {survyData, updateSurvy} = _this.props
         let $elem = e.target.parentNode,
-            main = $elem.getAttribute("data-parent")
+            order = $elem.getAttribute("data-order")
 
         for (let i = 0; i < survyData.length; i++) {
             let $m = survyData[i]
-            if (i == main) {
+            if (i == order) {
                 survyData.splice(i, 1)
             }
+            if (i > order) {
+                $m.Order = parseInt($m.Order) - 1
+            }
         }
-        updateSurvyOptions(survyData)
+        updateSurvy(survyData)
     }
+
     //题目升序
     upSubject(e) {
         let _this = this.props.action
-        const {survyData, updateSurvyOptions} = _this.props
+        const {survyData, updateSurvy} = _this.props
         let $elem = e.target.parentNode,
-            main = $elem.getAttribute("data-parent")
-        if (main == 0) {
+            order = $elem.getAttribute("data-order")
+        if (order == 0) {
             openDialog(_this, "此项无法进行升序操作")
             return false
         }
         for (let i = 0; i < survyData.length; i++) {
             let $m = survyData[i]
             let temp = eval(JSON.stringify(survyData))
-            if (i == main) {
+            if (i == order) {
                 survyData[i - 1] = temp[i]
-                $m.Options[i] = temp[i - 1]
+                survyData[i - 1].Order = parseInt(order) - 1
+                survyData[i] = temp[i - 1]
+                survyData[i].Order = parseInt(order)
+            }
+            else {
+                $m.Order = parseInt(i)
             }
         }
-        updateSurvyOptions(survyData)
     }
     //题目降序
     downSubject(e) {
         let _this = this.props.action
-        const {survyData, updateSurvyOptions} = _this.props
+        const {survyData, updateSurvy} = _this.props
         let $elem = e.target.parentNode,
-            main = $elem.getAttribute("data-parent")
-        if (main == survyData.length - 1) {
+            order = $elem.getAttribute("data-order")
+        if (order == survyData.length - 1) {
             openDialog(_this, "此项无法进行降序操作")
             return false
         }
         for (let i = 0; i < survyData.length; i++) {
             let temp = eval(JSON.stringify(survyData))
-            if (i == main) {
+            if (i == order) {
                 survyData[i + 1] = temp[i]
+                survyData[i + 1].Order = parseInt(order) + 1
                 survyData[i] = temp[i + 1]
+                survyData[i].Order = parseInt(order)
             }
         }
-        updateSurvyOptions(survyData)
+        updateSurvy(survyData)
     }
 }
 
 
 class SurvyOptions extends React.Component {
     render() {
-        const {data, i, action, type, parentId} = this.props
-
+        const {survyOptionsData, i, action, type, parentId} = this.props
         let _survy = []
-        if (data.length > 0) {
-            for (let j = 0; j < data.length; j++) {
-                let $o = data[j]
+        if (survyOptionsData) {
+            for (let j = 0; j < survyOptionsData.length; j++) {
+                let $o = survyOptionsData[j]
+                let _bind = {
+                    Id: $o.Id,
+                    ParentId: parentId,
+                    Type: type,
+                    Order: $o.Order
+                }
+
+                let optionNo = [],
+                    optionBtns = [],
+                    _type = "input",
+                    _width = {
+                        width: "400px"
+                    }
+
+                if (type != "textarea") {
+                    optionNo.push(<span key={"survy-no-" + i} style={{ float: "left", marginTop: "5px", marginRight: "10px" }}>{this.NumSwitchChar(j + 1)}、</span>)
+                    optionBtns.push(
+                        <ul key={"survy-o-" + j} className="optionbtns">
+                            <li onClick={this.addOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}><img src={addImg} /></li>
+                            <li onClick={this.deleteOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}><img src={deleteImg} /></li>
+                            <li onClick={this.upOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}><img src={upImg} /></li>
+                            <li onClick={this.downOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}><img src={downImg} /></li>
+                        </ul>
+                    )
+                }
+                else {
+                    _width = {
+                        width: "435px"
+                    }
+                    _type = "textarea"
+                }
 
                 _survy.push(
                     <div key={"survy_s_" + i + "_" + j} style={{ marginLeft: "35px" }}>
-                        <span style={{ float: "left", marginTop: "5px", marginRight: "10px" }}>{this.NumSwitchChar(j + 1)}、</span>
-                        <div style={{ float: "left" }}><FormControls ctrl="input" value={"survyOptionInfo_" + j + "_" + $o.Type+ "_"+ $o.Order+"_" +  parentId + ".value"} style={{ width: "400px" }} /></div>
-                        <ul className="optionbtns">
-                            <li onClick={this.addOption.bind(this)} data-parent={i} data-sub={j}><img src={addImg} /></li>
-                            <li onClick={this.deleteOption.bind(this)} data-parent={i} data-sub={j}><img src={deleteImg} /></li>
-                            <li onClick={this.upOption.bind(this)} data-parent={i} data-sub={j}><img src={upImg} /></li>
-                            <li onClick={this.downOption.bind(this)} data-parent={i} data-sub={j}><img src={downImg} /></li>
-                        </ul>
+                        {optionNo}
+                        <div style={{ float: "left" }}><FormControls ctrl={_type} bind={_bind} value={"survyOptionInfo_" + $o.Id + ".value"} style={_width} /></div>
+                        {optionBtns}
                         <br className="clear" />
                     </div>
                 )
             }
-        }
-        else {
-
-            let optionNo = [],
-                optionBtns = [],
-                _marginLeft = "35px",
-                _width = "400px"
-            if (type != "textarea") {
-                optionNo.push(<span key={"survy-no-" + i}>{this.NumSwitchChar(1)}、</span>)
-                optionBtns.push(
-                    <ul key={"survy-o-" + i} className="optionbtns">
-                        <li onClick={this.addOption.bind(this)} data-parent={i} data-sub={0}><img src={addImg} /></li>
-                        <li onClick={this.deleteOption.bind(this)} data-parent={i} data-sub={0}><img src={deleteImg} /></li>
-                        <li onClick={this.upOption.bind(this)} data-parent={i} data-sub={0}><img src={upImg} /></li>
-                        <li onClick={this.downOption.bind(this)} data-parent={i} data-sub={0}><img src={downImg} /></li>
-                    </ul>
-                )
-            }
-            else {
-                _marginLeft = "25px"
-                _width = "437px"
-            }
-            _survy.push(
-                <div key={"survy_s_" + i + "_0"} style={{ marginLeft: _marginLeft }}>
-                    <span style={{ float: "left", marginTop: "5px", marginRight: "10px" }}>{optionNo}</span>
-                    <div style={{ float: "left" }}><FormControls ctrl={type == "textarea" ? "textarea" : "input"} value={"survyOptionInfo_" + j + "_" + parentId + ".value"} style={{ width: _width }} /></div>
-                    {optionBtns}
-                    <br className="clear" />
-                </div>
-            )
         }
 
         return (
@@ -401,51 +392,61 @@ class SurvyOptions extends React.Component {
     //新增题目项
     addOption(e) {
         let _this = this.props.action
-        const {survyData, updateSurvyOptions} = _this.props
-        console.info("+新增选项+")
+        const {survyData, updateSurvy} = _this.props
 
         let $elem = e.target.parentNode,
-            main = $elem.getAttribute("data-parent"),
-            sub = $elem.getAttribute("data-sub"),
+            parent = $elem.getAttribute("data-parent"),
+            order = $elem.getAttribute("data-order"),
+            type = $elem.getAttribute("data-type"),
             _options = []
 
 
         for (let i = 0; i < survyData.length; i++) {
             let $m = survyData[i]
 
-            if (i == main) {
-                if ($m.Options.length > 13) {
+            if ($m.Id == parent) {
+                if ($m.Datas.length > 13) {
                     openDialog(_this, "超过最大选项数量限制")
                     break
                 }
 
-                $m.Options.push({
-                    Name: $m.Options[$m.Options.length - 1].Name,
-                    Order: $m.Options[$m.Options.length - 1].Order
+                $m.Datas.push({
+                    Id: $m.Datas[$m.Datas.length - 1].Id,
+                    ParentId: $m.Datas[$m.Datas.length - 1].ParentId,
+                    Name: $m.Datas[$m.Datas.length - 1].Name,
+                    Order: $m.Datas[$m.Datas.length - 1].Order,
+                    Type: $m.Datas[$m.Datas.length - 1].Type
                 })
-                _options = eval(JSON.stringify(survyData[i].Options))
+                _options = eval(JSON.stringify(survyData[i].Datas))
                 for (let j = 0; j < _options.length; j++) {
 
-                    if (j >= sub && j < _options.length - 1) {
-                        _options[j + 1] = $m.Options[j]
+                    if (j > order && j < _options.length - 1) {
+                        _options[j + 1] = $m.Datas[j]
+                        _options[j + 1].Order = parseInt(j) + 1
                     }
-
+                    else {
+                        if (i > order) {
+                            _options.Order = parseInt(j) + 1
+                        }
+                    }
                 }
-                _options[sub] = {
+                _options[parseInt(order) + 1] = {
+                    Id: TUI.fn.newGuid(),
+                    Type: type,
+                    ParentId: parent,
                     Name: "",
-                    Order: 0
+                    Order: parseInt(order) + 1
                 }
-                $m.Options = _options
+                $m.Datas = _options
                 break
             }
         }
-        updateSurvyOptions(survyData)
     }
 
     //删除题目项
     deleteOption(e) {
         let _this = this.props.action
-        const {survyData, updateSurvyOptions} = _this.props
+        const {survyData, updateSurvy} = _this.props
         let $elem = e.target.parentNode,
             main = $elem.getAttribute("data-parent"),
             sub = $elem.getAttribute("data-sub")
@@ -453,69 +454,77 @@ class SurvyOptions extends React.Component {
         for (let i = 0; i < survyData.length; i++) {
             let $m = survyData[i]
             if (i == main) {
-                for (let j = 0; j < $m.Options.length; j++) {
-                    let $s = $m.Options[j]
+                for (let j = 0; j < $m.Datas.length; j++) {
+                    let $s = $m.Datas[j]
                     if (j == sub) {
-                        $m.Options.splice(j, 1)
+                        $m.Datas.splice(j, 1)
                     }
                 }
             }
         }
-        updateSurvyOptions(survyData)
+        updateSurvy(survyData)
     }
 
     //题目升序
     upOption(e) {
         let _this = this.props.action
-        const {survyData, updateSurvyOptions} = _this.props
+        const {survyData, updateSurvy} = _this.props
         let $elem = e.target.parentNode,
-            main = $elem.getAttribute("data-parent"),
-            sub = $elem.getAttribute("data-sub")
-        if (sub == 0) {
+            parent = $elem.getAttribute("data-parent"),
+            order = $elem.getAttribute("data-order")
+        if (order == 0) {
             openDialog(_this, "此项无法进行升序操作")
             return false
         }
         for (let i = 0; i < survyData.length; i++) {
             let $m = survyData[i]
-            if (i == main) {
-                for (let j = 0; j < $m.Options.length; j++) {
-                    let temp = eval(JSON.stringify($m.Options))
-                    if (j == sub) {
-                        $m.Options[j - 1] = temp[j]
-                        $m.Options[j] = temp[j - 1]
+            if ($m.Id == parent) {
+                for (let j = 0; j < $m.Datas.length; j++) {
+                    let temp = eval(JSON.stringify($m.Datas))
+                    if (j == order) {
+
+                        $m.Datas[j - 1] = temp[j]
+                        $m.Datas[j - 1].Order = parseInt(order) - 1
+                        $m.Datas[j] = temp[j - 1]
+                        $m.Datas[j].Order = parseInt(order)
+                    }
+                    else {
+                        $m.Datas[j].Order = parseInt(j)
                     }
                 }
             }
         }
-        updateSurvyOptions(survyData)
+        updateSurvy(survyData)
     }
 
     //题目降序
     downOption(e) {
         let _this = this.props.action
-        const {survyData, updateSurvyOptions} = _this.props
+        const {survyData, updateSurvy} = _this.props
         let $elem = e.target.parentNode,
-            main = $elem.getAttribute("data-parent"),
-            sub = $elem.getAttribute("data-sub")
+            parent = $elem.getAttribute("data-parent"),
+            order = $elem.getAttribute("data-order")
 
         for (let i = 0; i < survyData.length; i++) {
             let $m = survyData[i]
-            if (i == main) {
-                for (let j = 0; j < $m.Options.length; j++) {
-                    if (sub == $m.Options.length - 1) {
+            if ($m.Id == parent) {
+                for (let j = 0; j < $m.Datas.length; j++) {
+                    if (order == $m.Datas.length - 1) {
                         openDialog(_this, "此项无法进行降序操作")
                         break
                     }
-                    let $s = $m.Options[j]
-                    let temp = eval(JSON.stringify($m.Options))
-                    if (j == sub) {
-                        $m.Options[j + 1] = temp[j]
-                        $m.Options[j] = temp[j + 1]
+                    let $s = $m.Datas[j]
+                    let temp = eval(JSON.stringify($m.Datas))
+                    if (j == order) {
+                        $m.Datas[j + 1] = temp[j]
+                        $m.Datas[j + 1].Order = parseInt(order) + 1
+                        $m.Datas[j] = temp[j + 1]
+                        $m.Datas[j].Order = parseInt(order)
                     }
                 }
             }
         }
-        updateSurvyOptions(survyData)
+        updateSurvy(survyData)
     }
 
     NumSwitchChar(num) {
@@ -557,13 +566,14 @@ class SurvyEmpty extends React.Component {
     }
 
     addSurvy() {
-        this.props.action.props.updateSurvyOptions([{
-            Id:"a0",
+        this.props.action.props.updateSurvy([{
+            Id: TUI.fn.newGuid(),
             ParentId: "0",
             Name: "",
             Order: 0,
             Type: "radio",
-            Options: [{
+            Datas: [{
+                Id: TUI.fn.newGuid(),
                 Name: "",
                 Order: 0
             }]

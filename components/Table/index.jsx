@@ -66,12 +66,18 @@ class Table extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.tblContent.tbody.length == this.props.tblContent.tbody.length && nextProps.isRefreshTable==0) {
-      return false
-    }
-    else {
-      return true
-    }
+    // console.info(nextProps.isRefreshTable)
+    // if (nextProps.tblContent.tbody.length == this.props.tblContent.tbody.length && nextProps.isRefreshTable==0) {
+    //   console.info("不刷新")
+    //   return false
+    // }
+    // else {
+    //   console.clear()
+    //   console.info("刷新")
+    //   console.info(nextProps.tblContent)
+    //   return true
+    // }
+    return true
   }
 
   componentDidUpdate() {

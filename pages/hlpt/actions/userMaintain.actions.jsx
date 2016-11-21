@@ -39,3 +39,22 @@ export function updateUserMaintainOrgnizationId(data){
 }
 
 
+export function addNation(data){
+    return {
+        type:"ADD_NATION",
+        data
+    }
+}
+export function addUserMaintainJobsList(data){
+    return {
+        type:"ADD_USERMAINTAIN_JOBLIST",
+        data
+    }
+}
+
+export function delUserMaintainJobsList(data){
+    return {
+        type:"DELETE_USERMAINTAIN_JOBSLIST",
+        data
+    }
+}

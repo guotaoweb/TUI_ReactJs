@@ -52,6 +52,7 @@ class PositionMaintainRoleInJobList extends React.Component {
             </div>
         )
     }
+
     _closeSidePage() {
         closeSidePage({
             id: "PositionMaintainRoleEdit"
@@ -60,7 +61,7 @@ class PositionMaintainRoleInJobList extends React.Component {
 
 
     checkboxClick(action, params) {
-        if (action == "open") {
+        if (action == "open") { 
             let _param  = []
             _param.push(params)
             this.props.pushTip(_param)
@@ -69,8 +70,8 @@ class PositionMaintainRoleInJobList extends React.Component {
             let selectedId = params.id
             this.props.deleteTip(selectedId)
         }
-
     }
+
 
     componentDidMount() {
         const {jobsData, jobsSearchData, searchPositionMaintainJobs} = this.props
@@ -111,5 +112,6 @@ export default TUI._connect({
     jobsSearchData: "positionMaintain.jobsSearchData",
     jobsSelectedData:"positionMaintain.jobsSelectedData",
     jobsInfo:"positionMaintain.jobsInfo",
-    tips: "publicInfo.tips"
+    tips: "publicInfo.tips",
+    editInfo:"formControlInfo.data"
 }, PositionMaintainRoleInJobList)

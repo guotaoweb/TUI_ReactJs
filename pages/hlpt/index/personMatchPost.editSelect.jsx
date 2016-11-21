@@ -9,6 +9,7 @@ import singleLeft from "!url!./img/singleLeft.png"
 class PersonMatchPostEditSelect extends React.Component {
     render() {
         const {pageInfo,waiteMsg,successMsg,errorMsg, selectUserData, sidePageInfo, pushPersonMatchPostRole, updatePersonMatchPostNumber} = this.props
+
         let _this = this
 
         let sidePageName
@@ -52,12 +53,12 @@ class PersonMatchPostEditSelect extends React.Component {
                         TUI.platform.post("/duty", jsonParma, function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
-                                if(pageInfo.personMatchPostEditPager.sum+1>pageInfo.personMatchPostEditPager.size){
-                                    //要更新sum
-                                }
-                                else{
+                                // if(pageInfo.personMatchPostEditPager.sum+1>pageInfo.personMatchPostEditPager.size){
+                                //     //要更新sum
+                                // }
+                                // else{
                                     pushPersonMatchPostRole(_data)
-                                }
+                                //}
                                 updatePersonMatchPostNumber({
                                     positionId: _positionId,
                                     type: "add"
@@ -81,7 +82,7 @@ class PersonMatchPostEditSelect extends React.Component {
                     <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />{sidePageName}列表</span>
                 </div>
                 <div>
-                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,100,150,150,0,80" />
+                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,100,150,0,0,80" />
                 </div>
             </div>
         )

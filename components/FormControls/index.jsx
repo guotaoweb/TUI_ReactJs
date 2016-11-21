@@ -1,4 +1,7 @@
 import '!style!css!postcss!sass!./style.scss'
+import '!style!css!react-date-picker/index.css'
+import { DateField} from 'react-date-picker'
+
 import unRadio from "!url!./img/unradio.png"
 import isRadio from "!url!./img/radio.png"
 import unCheckbox from "!url!./img/uncheckbox.png"
@@ -7,23 +10,28 @@ import cha from "!url!./img/chacha.png"
 
 import Btn from "Btn"
 
+const onChange = (dateString, { dateMoment, timestamp }) => {
+    console.log(dateString)
+}
 
 class FormControls extends React.Component {
     render() {
-        const {ctrl, label, type, txt, labelWidth, data, value, onChangeFn} = this.props
+        const {ctrl, label, type, txt, labelWidth, data, value, onChangeFn, bind} = this.props
         let bindElem
+
+
 
         if (ctrl == "input") {
             bindElem = <CTRL_INPUT label={label} labelWidth={labelWidth} type={type} value={value} onFocus={this.props.onFocus} onBlur={this.props.onBlur} style={this.props.style} disabled={this.props.disabled} addFn={this.props.addEditInfo
-            } required={this.props.required} data={data} />
+            } required={this.props.required} data={data} bind={bind} />
         }
         else if (ctrl == "textarea") {
-            bindElem = <CTRL_TEXTAREA label={label} labelWidth={labelWidth} value={value} tyle={this.props.style} onFocus={this.props.onFocus} onBlur={this.props.onBlur} style={this.props.style}  required={this.props.required} addFn={this.props.addEditInfo
-            } required={this.props.required} data={data} />
+            bindElem = <CTRL_TEXTAREA label={label} labelWidth={labelWidth} value={value} tyle={this.props.style} onFocus={this.props.onFocus} onBlur={this.props.onBlur} style={this.props.style} required={this.props.required} addFn={this.props.addEditInfo
+            } required={this.props.required} data={data} bind={bind} />
         }
         else if (ctrl == "select") {
             bindElem = <CTRL_SELECT label={label} labelWidth={labelWidth} value={value} options={this.props.options} style={this.props.style} required={this.props.required} addFn={this.props.addEditInfo
-            } data={data} onChangeFn={onChangeFn} />
+            } data={data} onChangeFn={onChangeFn} bind={bind} />
         }
         else if (ctrl == "radio") {
             bindElem = <CTRL_RADIO label={label} labelWidth={labelWidth} txt={txt} style={this.props.style} disabled={this.props.disabled} groupName={this.props.groupName} selected={this.props.selected} value={this.props.value} />
@@ -33,6 +41,10 @@ class FormControls extends React.Component {
         }
         else if (ctrl == "tip") {
             bindElem = <CTRL_TIP label={label} labelWidth={labelWidth} txt={txt} deleteFn={this.props.deleteFn} addFn={this.props.addFn} style={this.props.style} />
+        }
+        else if (ctrl == "datepicker") {
+            bindElem = <CTRL_DATE_PICKER label={label} labelWidth={labelWidth}  value={value} style={this.props.style}  addFn={this.props.addEditInfo
+            } required={this.props.required} data={data} bind={bind}/>
         }
 
         return (
@@ -56,7 +68,8 @@ class CTRL_INPUT extends React.Component {
             style,
             disabled,
             value,
-            data
+            data,
+            bind
         } = this.props
 
         let _label
@@ -86,13 +99,17 @@ class CTRL_INPUT extends React.Component {
     }
 
     _onChange(e) {
-        const {value, addFn, data} = this.props
+        const {value, addFn, data, bind} = this.props
 
         let _object = value.split(".")
         let _info = {
             infoName: _object[0]
         }
-
+        if (bind) {
+            for (let key in bind) {
+                _info[key] = bind[key]
+            }
+        }
         _info[_object[1]] = e.currentTarget.value
 
         addFn(_info)
@@ -111,6 +128,7 @@ class CTRL_TEXTAREA extends React.Component {
             data,
             onBlur,
             onFocus,
+            bind
         } = this.props
 
         let _label
@@ -142,12 +160,17 @@ class CTRL_TEXTAREA extends React.Component {
     }
 
     _onChange(e) {
-        const {value, addFn, data} = this.props
+        const {value, addFn, data, bind} = this.props
         let _object = value.split(".")
         let _info = {
             infoName: _object[0]
         }
 
+        if (bind) {
+            for (let key in bind) {
+                _info[key] = bind[key]
+            }
+        }
         _info[_object[1]] = e.currentTarget.value
 
         addFn(_info)
@@ -160,7 +183,8 @@ class CTRL_SELECT extends React.Component {
             addFn,
             value,
             data,
-            onChangeFn
+            onChangeFn,
+            bind
         } = this.props
         let label
         if (this.props.label) {
@@ -203,12 +227,16 @@ class CTRL_SELECT extends React.Component {
         )
     }
     _onChange(e) {
-        const {value, addFn, data, onChangeFn} = this.props
+        const {value, addFn, data, onChangeFn, bind} = this.props
         let _object = value.split(".")
         let _info = {
             infoName: _object[0]
         }
-
+        if (bind) {
+            for (let key in bind) {
+                _info[key] = bind[key]
+            }
+        }
         let _this = e.currentTarget
         _info[_object[1]] = _this.value
         _info[_object[1] + "Name"] = _this.options[_this.selectedIndex].innerHTML
@@ -359,7 +387,69 @@ class CTRL_TIP extends React.Component {
     }
 }
 
+class CTRL_DATE_PICKER extends React.Component {
+    render() {
+        const {
+            label,
+            required,
+            labelWidth,
+            type,
+            addFn,
+            style,
+            disabled,
+            value,
+            data,
+            bind
+        } = this.props
 
+        let _label
+        if (label) {
+            let _style = {
+                width: labelWidth + "px"
+            }
+            if (required == "required") {
+                _label = <label style={_style}><b style={{ color: "red" }}>*</b>{label}: </label>
+            }
+            else {
+                _label = <label style={_style}><b style={{ color: "red" }}>&nbsp;&nbsp;</b>{label}: </label>
+            }
+        }
+
+        let _value = ""
+        if (value && data[value.split(".")[0]]) {
+            _value = data[value.split(".")[0]][value.split(".")[1]]
+        }
+        
+
+        return (
+            <div className="t-formControls">
+                {_label}
+                <DateField
+                    defaultValue={_value}
+                    dateFormat="YYYY-MM-DD"
+                    onChange = {this._onChange.bind(this)}
+                    />
+            </div>
+        )
+    }
+
+    _onChange(e) {
+        const {value, addFn, data, bind} = this.props
+
+        let _object = value.split(".")
+        let _info = {
+            infoName: _object[0]
+        }
+        if (bind) {
+            for (let key in bind) {
+                _info[key] = bind[key]
+            }
+        }
+
+        _info[_object[1]] = e
+        addFn(_info)
+    }
+}
 
 export default TUI._connect({
     data: "formControlInfo.data",

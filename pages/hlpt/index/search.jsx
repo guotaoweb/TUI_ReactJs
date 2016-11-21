@@ -46,7 +46,8 @@ class _Header extends React.Component {
     let $search = document.getElementById("t-header-search-i")
     let keypressFn = function (e) {
       if (e.keyCode == 13) {
-
+        console.info("刷新table")
+        _this.props.refreshTable()
         if (_this.props.searchInfo.name == "orgnization") {
           _this.searchOrgnization($search.value)
         }
@@ -68,6 +69,8 @@ class _Header extends React.Component {
         else if (_this.props.searchInfo.name == "personMatchPost") {
           _this.searchPersonMatchPost($search.value)
         }
+
+
       }
     }
     //搜索
@@ -290,14 +293,15 @@ class _Header extends React.Component {
         if (result.code == 0) {
           addPersonMatchPost(result.data)
         }
-        else if(result.code==404){
+        else if (result.code == 404) {
           addPersonMatchPost([])
         }
-        else{
+        else {
           errorMsg(result.message)
         }
       })
     }
+
   }
 
   showMore() {

@@ -2,14 +2,14 @@
 import singleLeft from "!url!./img/singleLeft.png"
 
 //组件
-import Content from "Content"
+import Content, { openContentLoading, closeContentLoading } from "Content"
 import Btn from "Btn"
 import Table from "Table"
-import MultyMenu, { clearCheckBox, updateCheckBoxStatus } from "MultyMenu"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import { openDialog, closeDialog } from "Dialog"
 import EditCourse from "./courseList.edit"
 import Pager from "Pager"
+import { openLoading, closeLoading } from "Loading"
 
 class CourseList extends React.Component {
   render() {
@@ -17,11 +17,10 @@ class CourseList extends React.Component {
       courseList,
       errorMsg,
       userId,
-      history,
-      updateDialog,
       sidePageInfo,
       pageInfo,
-      addOSData
+      delCourse,
+      addEditInfo
     } = this.props
 
     let SidePageContent,
@@ -46,43 +45,36 @@ class CourseList extends React.Component {
         "fns": [{
           "name": "编辑",
           "fn": function () {
-            openSidePage(_this, {
-              status: "editCourse",
-              width: ""
+            openContentLoading()
+            TUI.platform.get("/Course/" + _d.Id, function (result) {
+              if (result.code == 0) {
+                let _r = result.datas[0]
+                addEditInfo({
+                  infoName:"courseInfo",
+                  Id: _r.Id,
+                  Name: _r.Name
+                })
+              }
+              else {
+                errorMsg(config.ERROR_INFO[result.code]);
+              }
+              closeContentLoading()
+              openSidePage(_this, {
+                status: "editCourse",
+                width: ""
+              })
             })
-            // TUI.platform.get("/projectteam/team/" + _d.team_id, function (result) {
-            //   if (result.code == 0) {
-            //     var _d = result.datas[0]
-            //     updateVTeamInfo({
-            //       id: _d.team_id,
-            //       code: _d.team_code,
-            //       name: _d.team_name,
-            //       note: _d.team_note
-            //     })
-
-            //     openSidePage()
-            //   }
-            //   else {
-            //     errorMsg(config.ERROR_INFO[result.code]);
-            //   }
-            // })
           }
         }, {
           "name": "删除",
           "fn": function () {
             var delFetch = function () {
-              TUI.platform.post("/projectteam/team", {
-                "uid": userId,
-                "team_id": _d.team_id,
-                "upper_team_id": "-1",
-                "del_flag": "y",
-                "opertype": "U"
-              }, function (result) {
+              TUI.platform.delete("/Course/"+_d.Id,function (result) {
                 if (result.code == 0) {
-                  delTeamList(_d.team_id)
+                  delCourse(_d.Id)
                 }
                 else {
-                  errorMsg(TUI.ERROR_INFO[result.code]);
+                  errorMsg(Config.ERROR_INFO[result.code]);
                 }
               })
             }
@@ -100,7 +92,9 @@ class CourseList extends React.Component {
           <Pager fn={this.pageFn.bind(this)} />
         </Content>
         <SidePage>
+          <div>
             {SidePageContent}
+          </div>
         </SidePage>
       </div>
     )
@@ -125,8 +119,12 @@ class CourseList extends React.Component {
   }
 
   componentDidMount() {
-    const {addCourseData, alertMsg, addOData, vteamList, orgnization, updatePageInfo} = this.props
-
+    const {
+      addCourseData,
+      updatePageInfo,
+      courseBindSurvy
+    } = this.props
+    //openLoading()
     //获取科目列表
     TUI.platform.get("/Course", function (result) {
       if (result.code == 0) {
@@ -142,15 +140,40 @@ class CourseList extends React.Component {
         addCourseData([])
       }
       else {
-        errorMsg(TUI.ERROR_INFO[result.code]);
+        errorMsg(Config.ERROR_INFO[result.code]);
+      }
+      //closeLoading()
+    })
+
+    //获取问卷列表
+    TUI.platform.get("/Vote", function (result) {
+      if (result.code == 0) {
+        let _survy = [{
+          id:"0",
+          name:"请选择"
+        }]
+        for (var i = 0; i < result.datas.length; i++) {
+          var $e = result.datas[i];
+          _survy.push({
+            id:$e.Id,
+            name:$e.Name
+          })
+        }
+
+        courseBindSurvy(_survy)
+      }
+      else if (result.code == 9) {
+        courseBindSurvy([])
+      }
+      else {
+        errorMsg(Config.ERROR_INFO[result.code]);
       }
     })
   }
 
   addCourseList() {
     openSidePage(this, {
-      status: "addCourse",
-      width: ""
+      status: "addCourse"
     })
   }
 }

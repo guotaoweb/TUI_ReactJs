@@ -1,5 +1,5 @@
 //接口地址前缀
-export const INTERFACE = "/v1"
+export const INTERFACE1 = "/v1"
 //项目根目录
 export const ROOTPATH = "/tsm/"
 //图片地址

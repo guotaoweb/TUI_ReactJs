@@ -22,22 +22,13 @@ export function updateCourseData(data){
     } 
 }
 
-//更新科目实体信息【6】
-export function updateCourseInfo(data){
+
+export function courseBindSurvy(data){
     return {
-        type:"UPDATE_COURSE_INFO",
+        type:"COURSE_BIND_SURVY",
         data
     } 
 }
-
-//清楚科目实体信息【7】
-export function clearCourseInfo(data){
-    return {
-        type:"CLEAR_COURSE_INFO",
-        data
-    } 
-}
-
 
 
 

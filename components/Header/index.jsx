@@ -16,7 +16,7 @@ class Header extends React.Component {
         myPhoto = require("./img/HeadImage/" + userInfo.photo)
       }
       else {
-        myPhoto = config.IMGPATH + userInfo.photo;
+        myPhoto = Config.IMGPATH + userInfo.photo;
       }
     }
     else {

@@ -11,7 +11,7 @@ class PositionMaintainRoleEdit extends React.Component {
             <div>
                 <FormControls label="角色名称" ctrl="input" onFocus={this.closeSelectList} value="rolesInfo.name" required="required" />
                 <FormControls label="关联职责" ctrl="tip" txt={tips} addFn={this.addFn.bind(this)} deleteFn={this.deleteFn.bind(this)} /><br className="clear" />
-                <FormControls label="备注" ctrl="textarea" value="rolesInfo.remark" onFocus={this.closeSelectList}  />
+                <FormControls label="备注" ctrl="textarea" value="rolesInfo.remark" onFocus={this.closeSelectList} />
 
                 <div style={{ marginLeft: "100px", paddingTop: "5px" }}>
                     <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} style={{ float: "left", marginRight: "10px" }} />
@@ -33,12 +33,13 @@ class PositionMaintainRoleEdit extends React.Component {
     }
 
     deleteFn(id) {
-        this.props.deleteTip(id)
+        const {deleteTip, editInfo} = this.props
+        deleteTip(id)
     }
 
     editPositionMaintainRole() {
-        const {tips, sidePageInfo, errorMsg, successMsg, editInfo, pushPositionMaintainRoles, jobsSelectedData} = this.props
-
+        const {updatePositionMaintainRoles,tips, sidePageInfo, errorMsg, successMsg, editInfo, pushPositionMaintainRoles, jobsSelectedData} = this.props
+  
         let _positionId = [],
             _this = this
         for (let i = 0; i < tips.length; i++) {
@@ -170,5 +171,5 @@ export default TUI._connect({
     rolesInfo: "positionMaintain.rolesInfo",
     jobsSelectedData: "positionMaintain.jobsSelectedData",
     tips: "publicInfo.tips",
-    editInfo:"formControlInfo.data"
+    editInfo: "formControlInfo.data"
 }, PositionMaintainRoleEdit)

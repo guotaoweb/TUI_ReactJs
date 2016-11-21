@@ -2,9 +2,9 @@ import 'babel-polyfill'
 
 const initState = {
     data: [],
-    
+
     positionFamilys: "",
-    jobFamilys: [{name:"请选择",id:"-1"}],
+    jobFamilys: [{ name: "请选择", id: "-1" }],
     jobsData: [],//工作职责
     jobsSearchData: [],//搜索职责结果
     rolesData: [],//角色
@@ -42,7 +42,7 @@ export default function manageReducers(state = initState, action) {
                 }
             }
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
-       
+
         case "ADD_POSITIONMAINTAIN_POSITIONFAMILYS":
             return Object.assign({}, state, { positionFamilys: action.data })
         case "ADD_POSITIONMAINTAIN_JOBFAMILYS":

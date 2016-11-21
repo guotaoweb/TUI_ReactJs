@@ -10,4 +10,4 @@ export const ERROR_INFO = {
     "404":"没有找到数据"
 }    
 export const DEFAULT_OPEN_SIDE = [0,0]
-export const VERSION = "Version 2.3.3(20161115)"
+export const VERSION = "Version 2.5.6(20161121)"

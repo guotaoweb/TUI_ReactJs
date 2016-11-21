@@ -58,13 +58,13 @@ export const fn = {
 
         return nodes
     },
-    updateData:function(data, deep, newData,fn) {
+    updateData: function (data, deep, newData, fn) {
         //deep的格式是1-2-3,拆成数组
         //如果deep的length==1的话,就说明已经钻到底层了
         if (deep.length == 1) {
             for (let i = 0; i < data.length; i++) {
                 if (data[i].id == deep) {
-                    fn(data,newData)
+                    fn(data, newData)
                 }
             }
             return false
@@ -75,8 +75,14 @@ export const fn = {
             let d = data[index]
             if (d.id == deep[0] && deep.length > 1) {
                 deep.splice(0, 1)
-                this.updateData(d.children, deep, newData,fn)
+                this.updateData(d.children, deep, newData, fn)
             }
         }
+    },
+    newGuid: function () {
+        var S4 = function () {
+            return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        };
+        return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
     }
 }

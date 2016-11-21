@@ -75,6 +75,7 @@ class Content2 extends React.Component {
         let sidePageScrollHeight = document.querySelector(".t-sidepage").scrollHeight
         let scrollHeight = bodyScrollHeight < sidePageScrollHeight ? sidePageScrollHeight : bodyScrollHeight
 
+        //console.info(allHeight +","+ _this.refs.tContent2Sub.offsetHeight)
         if (allHeight > _this.refs.tContent2Sub.offsetHeight) {
           ReactDOM.findDOMNode(_this.refs.tContent2Sub).style.height = (scrollHeight - headerHeight - 60) + "px"
         }
@@ -112,7 +113,7 @@ export function bindEvent() {
         _content.parentNode.parentNode.style.height = "auto"
       }
       else {
-        _content.parentNode.parentNode.style.height= (document.documentElement.clientHeight-110) + "px"
+        _content.parentNode.parentNode.style.height= (document.documentElement.clientHeight-105) + "px"
       }
     })
   }

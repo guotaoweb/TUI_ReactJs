@@ -25,10 +25,11 @@ class PositionMaintainRole extends React.Component {
                     "fns": [{
                         "name": "编辑",
                         "fn": function () {
-                            // _this.props.updatePositionMaintainRolesInfo({
-                            //     status: "edit",
-                            //     id: _d.roleId
-                            // })
+                            _this.props.updateEditInfo({
+                                infoName:"rolesInfo",
+                                status: "edit",
+                                id: _d.roleId
+                            })
 
                             TUI.platform.get("/role/" + _d.roleId, function (result) {
                                 if (result.code == 0) {
@@ -114,7 +115,7 @@ class PositionMaintainRole extends React.Component {
     }
 
     goBack() {
-        this.props.cleareEditInfo({
+        this.props.clearEditInfo({
             infoName:"rolesInfo",
         })
         closeSidePage()

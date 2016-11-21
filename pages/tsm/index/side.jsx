@@ -24,6 +24,7 @@ class _Side extends React.Component {
 
   componentDidMount() {
     let list = [{
+      id:"1",
       name: "用户管理",
       url: "#",
       icon: admin,
@@ -36,6 +37,7 @@ class _Side extends React.Component {
         url: Config.ROOTPATH + "teachers"
       }]
     }, {
+      id:"2",
       name: "班级管理",
       url: "#",
       icon: classes,
@@ -48,20 +50,23 @@ class _Side extends React.Component {
         url: Config.ROOTPATH + "classes"
       }]
     }, {
+      id:"3",
       name: "问卷管理",
       url: "survys",
       icon: survy,
       sicon: survys,
       sub: []
     }, {
+      id:"4",
       name: "投票设置",
       url: "setSurvy",
       icon: vote,
       sicon: votes,
       sub: []
     }, {
+      id:"5",
       name: "报表系统",
-      url: "#",
+      url: "survys",
       icon: report,
       sicon: reports,
       sub: [{
