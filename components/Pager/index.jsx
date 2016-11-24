@@ -72,6 +72,7 @@ class Pager extends React.Component {
 
 
         return (
+    
             <div style={{ display: (pagerLength == 1 ? "none" : "block") }}>
                 <div className="t-pager" style={this.props.style}>
                     <span>总条数: {pageSum} </span>{loadStatusImg}

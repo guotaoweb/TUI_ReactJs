@@ -11,7 +11,7 @@ class Content2 extends React.Component {
       for (var index = 0; index < tabs.length; index++) {
         var $li = tabs[index]
         if (index == 0) {
-          tabsArry.push(<li key='content2_editVteam_0' className="t-content2_tab t-contetn2_tab--active" data-bind={$li.id}>{$li.name}</li>)
+          tabsArry.push(<li key='content2_editVteam_0' className="t-content2_tab t-contetn2_tab--active" data-bind={$li.id} onClick={$li.fn}>{$li.name}</li>)
         }
         else {
           tabsArry.push(<li key={"content2_editVteam_" + index} className="t-content2_tab" data-bind={$li.id} onClick={$li.fn}>{$li.name}</li>)
@@ -108,12 +108,12 @@ export function bindEvent() {
 
       let _content = document.querySelector("." + tabId)
       _content.style.display = "block"
-
-      if (document.documentElement.clientHeight < _content.offsetHeight) {
+    
+      if (_content.offsetHeight < document.querySelector(".t-content2_sub").offsetHeight && _content.offsetHeight > (document.documentElement.clientHeight - 115)) {
         _content.parentNode.parentNode.style.height = "auto"
       }
       else {
-        _content.parentNode.parentNode.style.height= (document.documentElement.clientHeight-105) + "px"
+        _content.parentNode.parentNode.style.height = (document.documentElement.clientHeight - 105) + "px"
       }
     })
   }

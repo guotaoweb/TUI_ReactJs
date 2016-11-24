@@ -177,4 +177,30 @@ export function addSide(data){
 }
 
 
+export function addBreadNav(data){
+    return {
+        type:"ADD_BREAD_NAV",
+        data
+    } 
+}
+export function pushBreadNav(data){
+    return {
+        type:"PUSH_BREAD_NAV",
+        data
+    } 
+}
+export function backBreadNav(data){
+    return {
+        type:"BACK_BREAD_NAV",
+        data
+    } 
+}
+export function clearBreadNav(data){
+    return {
+        type:"CLEAR_BREAD_NAV",
+        data
+    } 
+}
+
+
 

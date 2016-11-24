@@ -4,7 +4,7 @@ import Table from "Table"
 import { closeSidePage } from "SidePage"
 import { openDialog } from "Dialog"
 import Pager from "Pager"
-import Content from "Content"
+import Content,{openContentLoading,closeContentLoading} from "Content"
 
 import back from "!url!./img/singleLeft.png"
 
@@ -27,8 +27,8 @@ class PositionMaintainJob extends React.Component {
                         "name": "编辑",
                         "fn": function () {
                             TUI.platform.get("/job/" + _d.jobId, function (result) {
+                                let _data = result.data
                                 if (result.code == 0) {
-                                    let _data = result.data
                                     let _editInfo = {
                                         infoName: "jobsInfo",
                                         id: _d.jobId,
@@ -45,6 +45,7 @@ class PositionMaintainJob extends React.Component {
                                 else {
                                     errorMsg(result.message)
                                 }
+                                _this.props.pushBreadNav({name:_data.jobName})
                             })
 
                         }
@@ -88,6 +89,8 @@ class PositionMaintainJob extends React.Component {
             infoName: "jobsInfo",
             status: "add"
         })
+
+        this.props.pushBreadNav({name:"新增职位职责"})
     }
 
 
@@ -96,6 +99,7 @@ class PositionMaintainJob extends React.Component {
             infoName: "jobsInfo"
         })
         closeSidePage()
+        this.props.backBreadNav()
     }
 }
 

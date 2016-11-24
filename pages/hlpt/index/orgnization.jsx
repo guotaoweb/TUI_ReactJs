@@ -16,6 +16,7 @@ import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import Pager from "Pager"
 import { openDialog, closeDialog } from "Dialog"
 import { openLoading, closeLoading } from "Loading"
+import Search from "Search"
 
 class Orgnization extends React.Component {
   render() {
@@ -48,7 +49,10 @@ class Orgnization extends React.Component {
           "name": "编辑",
           "fn": function () {
             //获取单击的组织详情
+            openContentLoading()
             _this.editMenu({ id: _d.unitId, deep: "0-" + _d.unitId })
+
+
           }
         }, {
           "name": "删除",
@@ -61,13 +65,13 @@ class Orgnization extends React.Component {
                     unitId: _d.unitId
                   })
 
-                  let _deep = _this.props.relateId+"-"+_d.unitId
+                  let _deep = _this.props.relateId + "-" + _d.unitId
                   //删除树中的组织
                   _this.deleteData(_this.props.odata, _deep.split("-"))
 
                   successMsg("组织删除成功")
                 }
-                else{
+                else {
                   errorMsg(result.message)
                 }
               })
@@ -105,8 +109,16 @@ class Orgnization extends React.Component {
             <span>组织信息列表</span>
             {addBtn}
           </div>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,140,0,80,0,80,80" isRefreshTable={this.props.isRefreshTable} />
-          <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+          <div>
+            <Search placeholder="输入关键字(名称,组织编码)搜索" style={{
+              border: "none",
+              borderBottom: "1px solid #ebebeb",
+              width: "98%",
+              margin: "auto"
+            }} fn={this._searchOrgnization.bind(this)} />
+            <Table num="10" tblContent={tblContent} width="50,140,0,80,0,80,80" />
+            <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+          </div>
         </Content3>
         <SidePage>
           <OrgnizationEdit key="orgnization_edit" />
@@ -203,7 +215,7 @@ class Orgnization extends React.Component {
         addUnitBizTypes(result.data)
       }
       else {
-        errorMsg("业务类型:" + TUI.ERROR_INFO[result.code]);
+        errorMsg("业务类型:" + Config.ERROR_INFO[result.code]);
       }
     })
 
@@ -214,7 +226,7 @@ class Orgnization extends React.Component {
         addUnitKind(result.data)
       }
       else {
-        errorMsg("机构类别:" + TUI.ERROR_INFO[result.code]);
+        errorMsg("机构类别:" + Config.ERROR_INFO[result.code]);
       }
     })
 
@@ -224,7 +236,7 @@ class Orgnization extends React.Component {
         addStatus(result.data)
       }
       else {
-        errorMsg("状态:" + TUI.ERROR_INFO[result.code]);
+        errorMsg("状态:" + Config.ERROR_INFO[result.code]);
       }
     })
 
@@ -234,12 +246,49 @@ class Orgnization extends React.Component {
         addCity(result.data)
       }
       else {
-        errorMsg("地区:" + TUI.ERROR_INFO[result.code]);
+        errorMsg("地区:" + Config.ERROR_INFO[result.code]);
       }
     })
 
 
+
+    this.props.addBreadNav({ name: "组织架构维护" })
     //this.loadSubOrgnization();
+  }
+
+
+  _searchOrgnization(val) {
+    let {searchInfo, addSubList, updatePageInfo, errorMsg} = this.props
+    //uid=" + searchInfo.key + "&
+    let params = ["", ""]
+    var _val = val.split(",")
+    for (var i = 0; i < _val.length; i++) {
+      if (i > 1) { break }
+      var $v = _val[i]
+      if (isNaN(parseInt($v))) {
+        params[0] = $v
+      }
+      else {
+        params[1] = $v
+      }
+    }
+
+    val = val ? "/units?from=0&limit=10&unitName=" + params[0] + "&unitCode=" + params[1] : "/units?from=0&limit=10"
+    TUI.platform.get(val, function (result) {
+      if (result.code == 0) {
+        addSubList(result.data)
+      }
+      else if (result.code == 404) {
+        addSubList([])
+      }
+      else {
+        errorMsg(result.message)
+      }
+      updatePageInfo({
+        size: 1,
+        sum: 1
+      })
+    })
   }
 
   closeEidtUserPage() {
@@ -280,6 +329,8 @@ class Orgnization extends React.Component {
         gateWay: sidePageInfo.gateWay
       })
     }, 300)
+
+    this.props.pushBreadNav({name:"添加组织机构"})
   }
 
   editMenu(params) {
@@ -297,7 +348,7 @@ class Orgnization extends React.Component {
     let ids = params.deep.split("-")
 
     _this.props.updateOrgnizationRelateId({
-      relateId: _this.props.relateId+"-"+ids[ids.length - 1],//级联的关系ID
+      relateId: _this.props.relateId + "-" + ids[ids.length - 1],//级联的关系ID
     })
 
     TUI.platform.get("/unit/" + ids[ids.length - 1], function (result) {
@@ -324,6 +375,8 @@ class Orgnization extends React.Component {
           staffing: _d.staffing
         })
       }
+      _this.props.pushBreadNav({ name: _d.unitName })
+      closeContentLoading()
     })
   }
 
@@ -338,7 +391,7 @@ class Orgnization extends React.Component {
           _this.props.delSubList({
             unitId: params.id
           })
-      
+
           _this.deleteData(_this.props.odata, params.deep.split("-"))
         }
         else {
@@ -374,6 +427,8 @@ class Orgnization extends React.Component {
     closeSidePage()
 
     openContentLoading()
+
+    this.props.addBreadNav({name:"组织架构维护"})
   }
 
   loadSubOrgnization(id) {
@@ -382,6 +437,7 @@ class Orgnization extends React.Component {
     TUI.platform.get(url.replace("{0}", "0"), function (result) {
       if (result.code == 0) {
         addSubList(result.data)
+
         updatePageInfo({
           index: 1,
           size: 10,
@@ -455,7 +511,7 @@ class Orgnization extends React.Component {
       return false
     }
 
-   
+
 
     //钻到最底层
     for (var index = 0; index < data.length; index++) {

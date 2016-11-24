@@ -18,11 +18,12 @@ import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import Pager from "Pager"
 import { openDialog, closeDialog } from "Dialog"
 import { openLoading, closeLoading } from "Loading"
+import Search from "Search"
 
 class PositionMaintain extends React.Component {
 
     render() {
-        const {errorMsg,odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo} = this.props
+        const {errorMsg, odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo} = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "职位代码", "name3": "职位名称", "name4": "职位类别", "name5": "所属组织", "name6": "状态", "name7": "编制", "name8": "操作" },
@@ -41,13 +42,8 @@ class PositionMaintain extends React.Component {
                 "fns": [{
                     "name": "编辑",
                     "fn": function () {
-                        openSidePage(_this, {
-                            status: "editPositionMaintain",
-                            gateWay: {
-                                positionId: _d.positionId
-                            }
-                        })
 
+                        openContentLoading()
                         TUI.platform.get("/position/" + _d.positionId, function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
@@ -64,6 +60,12 @@ class PositionMaintain extends React.Component {
                                     sort: _data.sort//排序
                                 })
 
+                                openSidePage(_this, {
+                                    status: "editPositionMaintain",
+                                    gateWay: {
+                                        positionId: _d.positionId
+                                    }
+                                })
 
                                 TUI.platform.get("/jobfamilys/" + _data.jobfamilyId, function (result) {
                                     if (result.code == 0) {
@@ -96,6 +98,8 @@ class PositionMaintain extends React.Component {
                             else {
                                 errorMsg(result.message)
                             }
+                            _this.props.pushBreadNav({ name: _d.positionName })
+                            closeContentLoading()
                         })
 
                         getContentIndex(0)
@@ -154,8 +158,16 @@ class PositionMaintain extends React.Component {
                         <span>职位维护列表</span>
                         {addBtn}
                     </div>
-                    <Table id="positionMaintain" num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,100,0,120,0,70,70,100" />
-                    <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+                    <div>
+                        <Search placeholder="输入关键字(职位名称)搜索" style={{
+                            border: "none",
+                            borderBottom: "1px solid #ebebeb",
+                            width: "98%",
+                            margin: "auto"
+                        }} fn={this._searchPositionMaintain.bind(this)} />
+                        <Table id="positionMaintain" num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,100,0,120,0,70,70,100" />
+                        <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+                    </div>
                 </Content3>
                 <SidePage id="PositionMaintain">
                     <div>
@@ -171,10 +183,30 @@ class PositionMaintain extends React.Component {
         )
     }
 
-
-
     onScrollRefresh(iScrollInstance, $this) {
         this.props.setCanVerticallyScroll(iScrollInstance.hasVerticalScroll)
+    }
+
+    _searchPositionMaintain(val) {
+        let {searchInfo, addPositionMaintain, updatePageInfo, errorMsg} = this.props
+        val = "/positions?unitId=" + searchInfo.key + "&positionName=" + val + "&from=0&limit=10"
+        TUI.platform.get(val, function (result) {
+            if (result.code == 0) {
+                addPositionMaintain(result.data)
+            }
+            else if (result.code == 404) {
+                addPositionMaintain([])
+            }
+            else {
+                errorMsg(result.message)
+            }
+            updatePageInfo({
+                index: 1,
+                size: 10,
+                sum: result._page ? result._page.total : 1,
+                url: "/positions?positionName=" + val + "&from={0}&limit=10"
+            })
+        })
     }
 
     componentDidMount() {
@@ -280,6 +312,9 @@ class PositionMaintain extends React.Component {
                 errorMsg(result.message)
             }
         })
+
+
+        this.props.addBreadNav({ name: "职位维护" })
     }
 
     clickMenu($m) {
@@ -310,6 +345,7 @@ class PositionMaintain extends React.Component {
             infoName: "rolesInfo",
             status: "list"
         })
+        this.props.addBreadNav({name:"职位维护"})
     }
 
     addPositionMaintainBtn() {
@@ -317,6 +353,8 @@ class PositionMaintain extends React.Component {
             status: "addPositionMaintain",
             id: "PositionMaintain"
         })
+
+        this.props.pushBreadNav({ name: "添加职位信息" })
     }
 
     loadPosition(id) {
@@ -325,26 +363,26 @@ class PositionMaintain extends React.Component {
         TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addPositionMaintain(result.data)
-                updatePageInfo({
-                    index: 1,
-                    size: 10,
-                    sum: result._page.total,
-                    url: url
-                })
-                //更新搜索信息
-                updateSearchInfo({
-                    key: id,
-                    name: "positionMaintain",
-                    info: "输入关键字(职位名称)"
-                })
             }
             else if (result.code == 404) {
                 addPositionMaintain([])
-                clearPageInfo()
+                //clearPageInfo()
             }
             else {
                 errorMsg(result.message)
             }
+            updatePageInfo({
+                index: 1,
+                size: 10,
+                sum: result._page ? result._page.total : 1,
+                url: url
+            })
+            //更新搜索信息
+            updateSearchInfo({
+                key: id,
+                name: "positionMaintain",
+                info: "输入关键字(职位名称)"
+            })
             closeContentLoading()
             closeLoading()
         })

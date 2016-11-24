@@ -23,7 +23,7 @@ class EditVTeam extends React.Component {
             <FormControls label="组织编码" ctrl="input" value="VTeamInfo.code"/>
             <FormControls label="组织名称" ctrl="input" value="VTeamInfo.name"/>
             <FormControls label="组织简介" ctrl="textarea" value="VTeamInfo.note"/>
-            <div style={{ marginLeft: "70px", paddingTop: "5px" }}>
+            <div className="formControl-btn">
               <Btn type="cancel" txt="取消" href={this.goPrevPage.bind(this) } style={{ float: "left", marginRight: "10px" }} />
               <Btn type="check" txt="确定" href={this.editVTeamInfo.bind(this) } style={{ float: "left" }}  />
             </div>
@@ -95,6 +95,7 @@ class EditVTeam extends React.Component {
       })
       closeSidePage()
     }, 0)
+    this.props.backBreadNav()
   }
 
   // onChangeByCode(e) {

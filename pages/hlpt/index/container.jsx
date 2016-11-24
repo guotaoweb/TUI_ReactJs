@@ -1,12 +1,12 @@
 //组件
-import Search from "./search"
+import _Header from "./header"
 
 class Container extends React.Component {
   render() {
     const {sideStatus} = this.props
     return (
       <div className={"t-container " + (sideStatus == "0" ? "t-container--close" : "") } ref="tContainter">
-        <Search/>
+        <_Header/>
         {this.props.children}
       </div>
     )

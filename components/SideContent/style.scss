@@ -1,0 +1,16 @@
+.t-sidecontent{
+    width:240px;
+    background-color:#2C3549;
+    float:left;
+    box-shadow: inset 2px 0px 2px #2C3549;
+    position:absolute;
+    z-index:99;
+    left:-1000px;
+    transition:all 200ms ease;
+}
+
+.t-sidecontent--open{
+    left:160px;
+}
+
+

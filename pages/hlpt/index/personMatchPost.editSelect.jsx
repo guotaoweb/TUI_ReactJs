@@ -3,12 +3,13 @@ import Content2 from "Content2"
 import FormControls from "FormControls"
 import Btn from "Btn"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
+import Search from "Search"
 
 import singleLeft from "!url!./img/singleLeft.png"
 
 class PersonMatchPostEditSelect extends React.Component {
     render() {
-        const {pageInfo,waiteMsg,successMsg,errorMsg, selectUserData, sidePageInfo, pushPersonMatchPostRole, updatePersonMatchPostNumber} = this.props
+        const {pageInfo, waiteMsg, successMsg, errorMsg, selectUserData, sidePageInfo, pushPersonMatchPostRole, updatePersonMatchPostNumber} = this.props
 
         let _this = this
 
@@ -27,14 +28,14 @@ class PersonMatchPostEditSelect extends React.Component {
         for (var i = 0; i < selectUserData.length; i++) {
             let _d = selectUserData[i]
             let _personMatchPostEditPager = ""
-            if(pageInfo.personMatchPostEditPager){
-                _personMatchPostEditPager = (pageInfo.personMatchPostEditPager.index - 1) * pageInfo.personMatchPostEditPager.size+(i + 1)
+            if (pageInfo.personMatchPostEditPager) {
+                _personMatchPostEditPager = (pageInfo.personMatchPostEditPager.index - 1) * pageInfo.personMatchPostEditPager.size + (i + 1)
             }
-            else{
+            else {
                 _personMatchPostEditPager = (i + 1)
             }
             tblContent.tbody.push({
-                "value1":_personMatchPostEditPager,
+                "value1": _personMatchPostEditPager,
                 "value2": _d.cnName,
                 "value3": _d.loginUid,
                 "value4": _d.unitName,
@@ -57,7 +58,7 @@ class PersonMatchPostEditSelect extends React.Component {
                                 //     //要更新sum
                                 // }
                                 // else{
-                                    pushPersonMatchPostRole(_data)
+                                pushPersonMatchPostRole(_data)
                                 //}
                                 updatePersonMatchPostNumber({
                                     positionId: _positionId,
@@ -82,16 +83,40 @@ class PersonMatchPostEditSelect extends React.Component {
                     <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />{sidePageName}列表</span>
                 </div>
                 <div>
+                    <Search placeholder="请输入关键字(用户名)搜索" style={{
+                        border: "none",
+                        borderBottom: "1px solid #ebebeb",
+                        width: "98%",
+                        margin: "auto"
+                    }} fn={this._searchPersonMachPostEditSelect.bind(this)} />
                     <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,100,150,0,0,80" />
                 </div>
             </div>
         )
     }
 
+    _searchPersonMachPostEditSelect(val) {
+        const {addPersonMatchPostSelectUserData,errorMsg,updatePageInfo} = this.props
+        let _url = "/staffs?loginName=" + val + "&from={0}&limit=10"
+        //positionId=" + this.props.sidePageInfo.gateWay.positionId + "
+        TUI.platform.get(_url.replace("{0}",0), function (result) {
+            if (result.code == 0) {
+                addPersonMatchPostSelectUserData(result.data)
+            }
+            else if (result.code == 404) {
+                addPersonMatchPostSelectUserData([])
+            }
+            else {
+                errorMsg(result.message)
+            }
+        })
+    }
+
     _closeSidePage() {
         closeSidePage({
             id: "PersonMatchPostEditSelect"
         })
+        this.props.backBreadNav()
     }
 
 

@@ -186,6 +186,7 @@ class OrgnizationEdit extends React.Component {
 
     goBack() {
         closeSidePage()
+        this.props.backBreadNav()
     }
 }
 

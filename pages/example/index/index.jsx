@@ -1,12 +1,13 @@
 import '!style!css!postcss!sass!./style.scss'
 //import ReactCSSTransitionGroup  from 'react-addons-css-transition-group' //引用动画
 import Side from "./side"
+import SideContent from "SideContent"
 import Container from "./container"
 import TipTool from "TipTool"
 import Dialog from "Dialog"
 import ModalDialog from "ModalDialog"
 import Loading from "Loading"  
-
+import FormControls from "FormControls"  
 class Index extends React.Component {
   render() {
     const {children} = this.props
@@ -14,6 +15,9 @@ class Index extends React.Component {
     return (
       <div className="t-page">
         <Side />
+        <SideContent>
+          <FormControls ctrl="input" value="test.val" style={{margin:"10px"}}/>
+        </SideContent>
         <Container>
           {children}
         </Container>
@@ -24,6 +28,7 @@ class Index extends React.Component {
       </div>
     )
   }
+
 }
 
 export default TUI._connect({

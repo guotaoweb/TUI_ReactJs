@@ -5,6 +5,7 @@ import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import Pager from "Pager"
 import { openDialog, closeDialog } from "Dialog"
 import { openLoading, closeLoading } from "Loading"
+import Search from "Search"
 
 class PersonMatchPostEdit extends React.Component {
     render() {
@@ -50,7 +51,7 @@ class PersonMatchPostEdit extends React.Component {
                             else {
                                 errorMsg(result.message)
                             }
-       
+
                             openSidePage(_this, {
                                 status: "personMatchPostEditSetRole",
                                 gateWay: {
@@ -68,6 +69,10 @@ class PersonMatchPostEdit extends React.Component {
                                 info: "请输入关键字(角色)"
                             })
                             closeContentLoading()
+
+                            _this.props.pushBreadNav({
+                                name:_d.cnName
+                            })
                         })
                     }
                 }, {
@@ -169,15 +174,43 @@ class PersonMatchPostEdit extends React.Component {
                     backHref={this.goBackContent.bind(this)}
                     addTxt="调入"
                     editTxt="兼职">
+                    <Search placeholder="请输入关键字(用户名)搜索" style={{
+                        border: "none",
+                        borderBottom: "1px solid #ebebeb",
+                        width: "98%",
+                        margin: "auto"
+                    }} fn={this._searchPersonMachPostEdit.bind(this)} />
                     <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,150,150,100,220" />
                     <Pager id="personMatchPostEditPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                 </Content>
             </div>
         )
     }
-
+    _searchPersonMachPostEdit(val) {
+        const {addPersonMatchPostRole,updatePageInfo,errorMsg}= this.props
+        let _url = "/dutys/?positionId=" + this.props.sidePageInfo.gateWay.positionId + "&loginUid="+val+"&from={0}&limit=10"
+        TUI.platform.get(_url.replace("{0}", 0), function (result) {
+            if (result.code == 0) {
+                let _data = result.data
+                addPersonMatchPostRole(_data)
+                //_this.props.refreshTable()
+            }
+            else if (result.code == 404) {
+                addPersonMatchPostRole([])
+            }
+            else {
+                errorMsg(result.message)
+            }
+            updatePageInfo({
+                id: "personMatchPostEditPager",
+                index: 1,
+                size: 10,
+                sum: result._page ? result._page.total : 1,
+                url: _url
+            })
+        })
+    }
     addUser() {
-        console.info("====调入 ")
         //调入
         const {sidePageInfo, updateSearchInfo} = this.props
         let _positionId = sidePageInfo.gateWay.positionId
@@ -196,9 +229,7 @@ class PersonMatchPostEdit extends React.Component {
             name: "personMatchPost",
             info: "请输入关键字(用户名)"
         })
-        // if (this.props.selectUserData.length == 0) {
-        //     this.loadUsers(this.props)
-        // }
+        this.props.pushBreadNav({ name: "调入列表" })
     }
 
     editUser() {
@@ -220,9 +251,7 @@ class PersonMatchPostEdit extends React.Component {
             name: "personMatchPost",
             info: "请输入关键字(用户名)"
         })
-        // if (this.props.selectUserData.length == 0) {
-        //     this.loadUsers(this.props)
-        // }
+        this.props.pushBreadNav({ name: "兼职列表" })
     }
 
     loadUsers(_this) {
@@ -241,6 +270,7 @@ class PersonMatchPostEdit extends React.Component {
 
     goBackContent() {
         closeSidePage()
+        this.props.backBreadNav()
     }
 
     addPositionMaintainBtn() {

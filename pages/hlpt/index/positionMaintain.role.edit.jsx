@@ -148,6 +148,8 @@ class PositionMaintainRoleEdit extends React.Component {
         closeSidePage({
             id: "PositionMaintainRoleEdit"
         })
+
+        this.props.backBreadNav()
     }
 
     closeSelectList() {

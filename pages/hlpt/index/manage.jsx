@@ -111,7 +111,7 @@ class Manage extends React.Component {
     //如果module不为空,则表示是单独打开的页面
     let backBtn
     if (!TUI.fn.requestParam("module")) {
-      backBtn = <Btn txt="返回" href={this.props.router.goBack} width="95" style={{ marginLeft: "10px", marginTop: "25px" }} />
+      backBtn = <Btn txt="返回" href={this._goBack.bind(this)} width="95" style={{ marginLeft: "10px", marginTop: "25px" }} />
     }
 
     return (
@@ -149,6 +149,10 @@ class Manage extends React.Component {
     )
   }
 
+  _goBack(){
+    this.props.router.goBack()
+    this.props.backBreadNav()
+  }
   pageFn(index, loadComplete) {
     // let obj1 = { "pagertotal": "12", "code": "0", "msg": "", "datas": [{ "id": "CE7993D326454A52859BEE9D308CFBFA", "team_id": "DD103F29F4484B7C855844492AC368F2", "user_id": "wugf1202", "user_name": "吴高峰", "user_note": "领导", "del_flag": "n", "user_type": "1", "sort": "1", "last_modid": "p_guiyue", "last_modtime": "2016-05-28 16:41:42" }, { "id": "692A224422E44716A8B1B98E76463E29", "team_id": "DD103F29F4484B7C855844492AC368F2", "user_id": "dingjh0625", "user_name": "丁君辉", "user_note": "领导", "del_flag": "n", "user_type": "0", "sort": "999", "last_modid": "p_guiyue", "last_modtime": "2016-05-28 16:41:49" }, { "id": "C271D82C7BA14687A6BC92426C45F88F", "team_id": "1FD8F6E054B04D79AC30ADC81C8A5138", "user_id": "p_luob", "user_name": "罗柏", "user_note": null, "del_flag": "n", "user_type": "0", "sort": "999", "last_modid": "p_wenren", "last_modtime": "2016-07-04 18:18:21" }] }
     // this.props.addXNUserData(obj1.datas)

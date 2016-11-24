@@ -7,15 +7,18 @@ import {openSideContent} from "SideContent"
 class _Search extends React.Component {
     render() {
         return (
-            <Content txt="搜索框">
-                <Search  fn={this._Search.bind(this)} />
-                <div>当前输入的内容为:<span ref="inputContent"></span></div>
+            <Content txt="SideContent">
+                SideContent
             </Content>
         )
     }
 
+    componentDidMount(){
+        openSideContent()
+    }
+
     _Search(val){
-        this.refs.inputContent.innerHTML = val
+        console.info(val)
     }
 }
 

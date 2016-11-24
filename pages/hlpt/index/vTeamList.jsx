@@ -78,12 +78,15 @@ class Manage extends React.Component {
               else {
                 errorMsg(config.ERROR_INFO[result.code]);
               }
+
+              _this.props.pushBreadNav({name:_d.team_name})
             })
           }
         }, {
           "name": "管理",
           "fn": function () {
             router.push(config.ROOTPATH + "manage/" + _d.team_id)
+            _this.props.pushBreadNav({name:_d.team_name})
           }
         }, {
           "name": "权限",
@@ -227,12 +230,8 @@ class Manage extends React.Component {
           errorMsg(TUI.ERROR_INFO[result.code]);
         }
       })
- 
+      this.props.addBreadNav({name:"虚拟组织管理"})
   }
-
-
-
-
 
   addVTeamList() {
     openSidePage(this, {

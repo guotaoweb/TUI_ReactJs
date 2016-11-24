@@ -8,8 +8,8 @@ class UserMaintainExtInfo extends React.Component {
         const {sidePageInfo, positionFamilys, jobFamilys, nations} = this.props
 
         return (
-            <div> 
-                <FormControls label="生日" ctrl="datepicker" value="userMaintainExtInfo.birthday" />
+            <div>
+            
                 <FormControls label="籍贯" ctrl="input" value="userMaintainExtInfo.postAddr" />
                 <FormControls label="国籍" ctrl="input" value="userMaintainExtInfo.regAddr" />
                 <FormControls label="政治面貌" ctrl="input" value="userMaintainExtInfo.roomNumber" />
@@ -17,10 +17,11 @@ class UserMaintainExtInfo extends React.Component {
                 <FormControls label="家庭电话" ctrl="input" value="userMaintainExtInfo.homePhone" />
                 <FormControls label="家庭地址" ctrl="input" value="userMaintainExtInfo.homeAddress" />
                 <FormControls label="学历" ctrl="input" value="userMaintainExtInfo.education" />
-                <FormControls label="职位等级" ctrl="input" value="userMaintainExtInfo.grade" />
+               <FormControls label="学历" ctrl="input" value="userMaintainExtInfo.education" />
+               <FormControls label="学历" ctrl="input" value="userMaintainExtInfo.education" />
+               <FormControls label="学历" ctrl="input" value="userMaintainExtInfo.education" />
                 <FormControls label="职称名" ctrl="input" value="userMaintainExtInfo.jobTitles" />
-                <FormControls label="退休日期" ctrl="datepicker" value="userMaintainExtInfo.retireDate" />
-
+                <FormControls label="职位等级" ctrl="input" value="userMaintainExtInfo.grade" />
                 <div className="formControl-btn">
                     <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                     <Btn type="submit" txt="确定" href={this.editUserMaintainExtInfo.bind(this)} />
@@ -39,7 +40,7 @@ class UserMaintainExtInfo extends React.Component {
 
         let _this = this,
             postJson = {
-                staffId:editInfo.userMaintainExtInfo.staffId,
+                staffId: editInfo.userMaintainExtInfo.staffId,
                 birthday: editInfo.userMaintainExtInfo.birthday,
                 postAddr: editInfo.userMaintainExtInfo.postAddr,
                 regAddr: editInfo.userMaintainExtInfo.regAddr,
@@ -53,16 +54,16 @@ class UserMaintainExtInfo extends React.Component {
                 retireDate: editInfo.userMaintainExtInfo.retireDate
             }
 
-            TUI.platform.put("/staff_s", postJson, function(result) {
-                if (result.code == 0) {
-                    _this.goBack()
-                    successMsg("编辑用户扩展信息成功");
-                }
-                else {
-                    errorMsg(result.message)
-                }
-            })
-     
+        TUI.platform.put("/staff_s", postJson, function (result) {
+            if (result.code == 0) {
+                _this.goBack()
+                successMsg("编辑用户扩展信息成功");
+            }
+            else {
+                errorMsg(result.message)
+            }
+        })
+
     }
 
     goBack() {
@@ -70,6 +71,7 @@ class UserMaintainExtInfo extends React.Component {
             infoName: "userMaintainExtInfo"
         })
         closeSidePage()
+        this.props.backBreadNav()
     }
 }
 

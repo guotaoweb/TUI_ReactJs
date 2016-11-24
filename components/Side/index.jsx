@@ -1,7 +1,7 @@
 import '!style!css!postcss!sass!./style.scss'
 import { Link } from 'react-router'
 import { openLoading } from "Loading"
-import * as config from "config"
+import { closeSideContent } from "SideContent"
 
 
 class Side extends React.Component {
@@ -13,20 +13,28 @@ class Side extends React.Component {
             let $l = list[i],
                 _a = []
 
-            if (!$l.url && $l.url != "#") {
-                _a = <Link key={"side_main_link" + i} to={$l.url}><img src={$l.sicon} data-src={$l.icon} data-src-s={$l.sicon} /><span style={{ display: sideStatus == "0" ? "inline" : "none" }}>{$l.name}</span></Link>
+            if ($l.url && $l.url != "#") {
+                _a = <Link key={"side_main_link" + i} to={$l.url}><img src={$l.sicon} data-src={$l.icon} data-src-s={$l.sicon} onClick={this.closeSideContent.bind(this)} /><span style={{ display: sideStatus == "0" ? "inline" : "none" }}>{$l.name}</span></Link>
             }
             else {
                 _a = <a key={"side_main_a" + i} href="#"><img src={$l.sicon} data-src={$l.icon} data-src-s={$l.sicon} /><span style={{ display: sideStatus == "0" ? "inline" : "none" }}>{$l.name}</span></a>
             }
 
-            _list.push(
-                <li key={"side_main_li" + i} className="tSubSide" data-status={sideStatus == "0" ? "open" : "close"}>
-                    <div id={$l.id} ref={$l.id + "s"} onClick={this.updateSubStatus.bind(this, this.props.addFn, $l.id)}>{_a}</div>
-                    <SubNode list={$l.sub} />
-                </li>
-            )
-
+            if ($l.sub) {
+                _list.push(
+                    <li key={"side_main_li" + i} className="tSubSide" data-status={sideStatus == "0" ? "open" : "close"}>
+                        <div id={$l.id} ref={$l.id + "s"} onClick={this.updateSubStatus.bind(this, this.props.addFn, $l.id)}>{_a}</div>
+                        <SubNode list={$l.sub} closeSideContent={closeSideContent} />
+                    </li>
+                )
+            }
+            else {
+                _list.push(
+                    <li key={"side_main_li" + i} className="tSubSide" data-status={sideStatus == "0" ? "open" : "close"}>
+                        <div id={$l.id} ref={$l.id + "s"} onClick={this.updateSubStatus.bind(this, this.props.addFn, $l.id)}>{_a}</div>
+                    </li>
+                )
+            }
         }
 
         return (
@@ -37,6 +45,10 @@ class Side extends React.Component {
                 </ul>
             </div>
         )
+    }
+
+    closeSideContent(){
+        closeSideContent()
     }
 
     //展开/收缩 菜单
@@ -76,12 +88,12 @@ class Side extends React.Component {
     }
     componentDidMount() {
         ReactDOM.findDOMNode(this.refs.tSide).style.height = document.documentElement.clientHeight + "px"
-       
+
     }
     componentDidUpdate() {
         let _this = this
-        let _open_status = config.DEFAULT_OPEN_SIDE
-   
+        let _open_status = Config.DEFAULT_OPEN_SIDE
+
         let tSubSide = document.getElementsByClassName("tSubSide")
 
         for (let index = 0; index < tSubSide.length; index++) {
@@ -89,7 +101,7 @@ class Side extends React.Component {
             let s = tSubSide[index]
 
             //初始化话side状态
-            if (typeof _open_status == "object" && _open_status.length == 2 && _this.props.init==0) {
+            if (typeof _open_status == "object" && _open_status.length == 2 && _this.props.init == 0) {
                 if (index == _open_status[0]) {
                     s.setAttribute("data-status", "open")
                     s.style.backgroundColor = "rgb(36, 46, 63)"
@@ -101,7 +113,7 @@ class Side extends React.Component {
 
 
 
-            s.addEventListener("mouseenter", function(e) {
+            s.addEventListener("mouseenter", function (e) {
                 if (_this.props.sideStatus == "1") {
                     this.parentNode.style.overflow = "visible"
                     this.getElementsByTagName("span")[0].style.display = "inline"
@@ -118,7 +130,7 @@ class Side extends React.Component {
                 }
             })
 
-            s.addEventListener("mouseleave", function(e) {
+            s.addEventListener("mouseleave", function (e) {
                 if (_this.props.sideStatus == "1") {
                     this.parentNode.style.overflow = "hidden"
                     this.getElementsByTagName("span")[0].style.display = "none"
@@ -138,7 +150,7 @@ class Side extends React.Component {
                 }
             })
 
-            s.addEventListener("click", function() {
+            s.addEventListener("click", function () {
                 let _tSubSide = document.getElementsByClassName("tSubSide")
                 //将菜单中所有的图片和文字都切换成灰色(为选中状态)
                 for (let i = 0; i < _tSubSide.length; i++) {
@@ -169,7 +181,7 @@ class Side extends React.Component {
             for (var j = 0; j < twoSub.length; j++) {
                 var $twoSub = twoSub[j]
 
-                if (typeof _open_status == "object" && _open_status.length == 2  && _this.props.init==0) {
+                if (typeof _open_status == "object" && _open_status.length == 2 && _this.props.init == 0) {
                     if (j == _open_status[1] && index == _open_status[0]) {
                         $twoSub.style.borderRightWidth = "3px"
                         $twoSub.style.borderRightStyle = "solid"
@@ -179,16 +191,16 @@ class Side extends React.Component {
                     }
                     this.props.programInit()
                 }
-                $twoSub.addEventListener("mouseenter", function(e) {
+                $twoSub.addEventListener("mouseenter", function (e) {
                     this.style.borderRight = "3px solid #4C86DC"
                 })
 
-                $twoSub.addEventListener("mouseleave", function(e) {
+                $twoSub.addEventListener("mouseleave", function (e) {
                     if (this.getAttribute("data-click") != "true") {
                         this.style.borderRight = "3px solid transparent"
                     }
                 })
-                $twoSub.addEventListener("click", function() {
+                $twoSub.addEventListener("click", function () {
                     _this.removeSubMenuStatus(twoSub)
                     _this.clearSubMenu()
                     _this.addSubMenuStatus(this)
@@ -196,7 +208,7 @@ class Side extends React.Component {
             }
         }
 
- 
+
     }
 
 
@@ -246,7 +258,7 @@ export default TUI._connect({
     sideStatus: "publicInfo.sideStatus",
     userId: "publicInfo.userInfo.id",
     data: "sideList.data",
-    init:"publicInfo.init"
+    init: "publicInfo.init"
 }, Side)
 
 
@@ -258,7 +270,7 @@ class SubNode extends React.Component {
             for (let j = 0; j < list.length; j++) {
                 let $s = list[j]
                 if ($s.url) {
-                    _list.push(<li className="sub_li" key={"side_sub_link" + j}><Link to={$s.url}>{$s.name}</Link></li>)
+                    _list.push(<li className="sub_li" key={"side_sub_link" + j}><Link to={$s.url} onClick={this.props.closeSideContent}>{$s.name}</Link></li>)
                 }
                 else {
                     _list.push(<li className="sub_li" key={"side_sub_a" + j}><a href="#" onClick={$s.fn}>{$s.name}</a></li>)

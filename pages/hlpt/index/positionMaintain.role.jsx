@@ -4,12 +4,13 @@ import { closeSidePage } from "SidePage"
 import Table from "Table"
 import Pager from "Pager"
 import { openDialog, closeDialog } from "Dialog"
+import Content,{openContentLoading,closeContentLoading} from "Content"
 
 import back from "!url!./img/singleLeft.png"
 
 class PositionMaintainRole extends React.Component {
     render() {
-        const {sidePageInfo,rolesData, pageInfo} = this.props
+        const {sidePageInfo, rolesData, pageInfo} = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "角色名", "name3": "职责", "name4": "操作" },
@@ -25,12 +26,6 @@ class PositionMaintainRole extends React.Component {
                     "fns": [{
                         "name": "编辑",
                         "fn": function () {
-                            _this.props.updateEditInfo({
-                                infoName:"rolesInfo",
-                                status: "edit",
-                                id: _d.roleId
-                            })
-
                             TUI.platform.get("/role/" + _d.roleId, function (result) {
                                 if (result.code == 0) {
                                     let _data = result.data
@@ -51,7 +46,7 @@ class PositionMaintainRole extends React.Component {
                                         }
                                         _this.props.addTip(eval(JSON.stringify(_tips)))
                                     }
-                               
+
                                     let _editInfo = {
                                         infoName: "rolesInfo",
                                         id: _d.roleId,
@@ -60,14 +55,20 @@ class PositionMaintainRole extends React.Component {
                                         remark: _data.remark
                                     }
                                     _this.props.addEditInfo(_editInfo)
-
+                                    _this.props.updateEditInfo({
+                                        infoName: "rolesInfo",
+                                        status: "edit",
+                                        id: _d.roleId
+                                    })
+                                    
                                 }
-                                else if(result.code==404){
+                                else if (result.code == 404) {
                                     _this.props.updatePositionMaintainRolesInfo([])
                                 }
-                                else{
+                                else {
                                     errorMsg(result.message)
                                 }
+                                _this.props.pushBreadNav({ name: _d.roleName })
                             })
 
                         }
@@ -80,7 +81,7 @@ class PositionMaintainRole extends React.Component {
                                         _this.props.successMsg("角色删除成功")
                                         _this.props.deletePositionMaintainRoles(_d.roleId)
                                     }
-                                    else{
+                                    else {
                                         errorMsg(result.errors)
                                     }
                                 })
@@ -109,16 +110,21 @@ class PositionMaintainRole extends React.Component {
 
     addPositionMaintainRole() {
         this.props.updateEditInfo({
-            infoName:"rolesInfo",
+            infoName: "rolesInfo",
             status: "add"
+        })
+
+        this.props.pushBreadNav({
+            name: "新增角色"
         })
     }
 
     goBack() {
         this.props.clearEditInfo({
-            infoName:"rolesInfo",
+            infoName: "rolesInfo",
         })
         closeSidePage()
+        this.props.backBreadNav()
     }
 }
 
@@ -127,5 +133,5 @@ export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo.gateWay",
     pageInfo: "publicInfo.pageInfo",
     rolesData: "positionMaintain.rolesData",
-    editInfo:"formControlInfo.data"
+    editInfo: "formControlInfo.data"
 }, PositionMaintainRole)

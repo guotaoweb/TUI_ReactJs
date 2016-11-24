@@ -30,6 +30,7 @@ const initState = {
     loadStatus: 1, //0 加载中 1加载完成
     pageLoadStatus: 1, //0 加载中 1加载完成
     searchInfo: {
+        id:"",
         key: "",
         name: "",
         info: ""
@@ -37,7 +38,8 @@ const initState = {
     tips: [],//标签集合
     init: 0, //0 初始化 1 非初始化状态
     isRefreshTable: 0, //0不刷新 1刷新
-    side:[]
+    side: [],
+    breadNav: []//面包屑
 }
 
 export default function manageReducers(state = initState, action) {
@@ -128,6 +130,7 @@ export default function manageReducers(state = initState, action) {
                 pageLoadStatus: action.status
             })
         case "CLEAR_PAGEINFO":
+      
             let _id
             if (action.data) {
                 _id = action.data.id ? action.data.id : "index"
@@ -147,6 +150,7 @@ export default function manageReducers(state = initState, action) {
         case "UPDATE_SEARCH_INFO":
             return Object.assign({}, state, {
                 searchInfo: {
+                    id: action.data.key ? action.data.key : state.searchInfo.key,
                     key: action.data.key ? action.data.key : state.searchInfo.key,
                     name: action.data.name ? action.data.name : state.searchInfo.name,
                     info: action.data.info ? action.data.info : state.searchInfo.info,
@@ -192,6 +196,26 @@ export default function manageReducers(state = initState, action) {
             return Object.assign({}, state, { isRefreshTable: 0 })
         case "ADD_SIDE":
             return Object.assign({}, state, { side: action.data })
+        case "ADD_BREAD_NAV":
+            let _breadNav = []
+            if (action.data.length) {
+                for (var i = 0; i < action.data.length; i++) {
+                    var $a = action.data[i];
+                    _breadNav.push($a)
+                }
+            }
+            else {
+                _breadNav.push(action.data)
+            }
+            return Object.assign({}, state, { breadNav: eval(JSON.stringify(_breadNav)) })
+        case "PUSH_BREAD_NAV":
+            state.breadNav.push(action.data)
+            return Object.assign({}, state, { breadNav: eval(JSON.stringify(state.breadNav)) })
+        case "CLEAR_BREAD_NAV":
+            return Object.assign({}, state, { breadNav: [] })
+        case "BACK_BREAD_NAV":
+            state.breadNav.splice(state.breadNav.length-1, 1)
+            return Object.assign({}, state, { breadNav: eval(JSON.stringify(state.breadNav)) })
         default: return state
     }
 }

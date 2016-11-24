@@ -7,7 +7,7 @@ import UserMaintainJobsList from "./userMaintain.jobsList"
 
 class PositionMaintainEdit extends React.Component {
     render() {
-        const {sidePageInfo, positionFamilys, jobFamilys} = this.props
+        const {sidePageInfo, positionFamilys, jobFamilys, defaultUnit} = this.props
 
         let tabs = null,
             _this = this,
@@ -49,6 +49,7 @@ class PositionMaintainEdit extends React.Component {
                     {userEditStatus}
                     <FormControls label="中文名" ctrl="input" value="userMaintainInfo.name" required="required" />
                     <FormControls label="员工号" ctrl="input" value="userMaintainInfo.staffCode" />
+                    <FormControls label="默认组织" ctrl="select" options={defaultUnit} value="userMaintainInfo.ext5" />
                     <FormControls label="员工类型" ctrl="select" options={kind} value="userMaintainInfo.kind" />
                     <FormControls label="账户状态" ctrl="select" options={userStatus} value="userMaintainInfo.status" />
                     <FormControls label="常用手机" ctrl="input" value="userMaintainInfo.mobile" />
@@ -64,7 +65,7 @@ class PositionMaintainEdit extends React.Component {
                         <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                         <Btn type="submit" txt="确定" href={this.editUserMaintain.bind(this)} />
                     </div>
-                    <br /><br /><br />
+                  
                 </div>
                 <div>
                     <UserMaintainExtInfo />
@@ -95,7 +96,8 @@ class PositionMaintainEdit extends React.Component {
                 sort: editInfo.userMaintainInfo.sort ? editInfo.userMaintainInfo.sort : "9999",//排序号
                 ext2: editInfo.userMaintainInfo.isShow ? editInfo.userMaintainInfo.isShow : 1,//是否显示
                 staffCode: editInfo.userMaintainInfo.staffCode,
-                kind: editInfo.userMaintainInfo.kind
+                kind: editInfo.userMaintainInfo.kind,
+                ext5: editInfo.userMaintainInfo.ext5
             }
 
         if (sidePageInfo.status == "addUserMaintain") {
@@ -119,6 +121,7 @@ class PositionMaintainEdit extends React.Component {
                 if (result.code == 0) {
                     closeSidePage()
                     successMsg("编辑用户成功");
+                    postJson.ext5Name = editInfo.userMaintainInfo.ext5Name
                     updateUserMaintain(postJson)
                 }
                 else {
@@ -165,16 +168,16 @@ class PositionMaintainEdit extends React.Component {
     }
 
     getUserMaintainJobList(_this) {
-        const {errorMsg, addUserMaintainJobsList, editInfo,updatePageInfo} = _this.props
+        const {errorMsg, addUserMaintainJobsList, editInfo, updatePageInfo} = _this.props
         let id = editInfo.userMaintainInfo.uId
-        let _url = "/dutys?staffId=" + id +"&from={0}&limit=10"
-        TUI.platform.get(_url.replace("{0}",0), function (result) {
+        let _url = "/dutys?staffId=" + id + "&from={0}&limit=10"
+        TUI.platform.get(_url.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 addUserMaintainJobsList(result.data)
                 updatePageInfo({
-                    id:"userMaintainJobsList",
+                    id: "userMaintainJobsList",
                     index: 1,
-                    size: 10>result._page.total?result._page.total:10,
+                    size: 10 > result._page.total ? result._page.total : 10,
                     sum: result._page.total,
                     url: _url
                 })
@@ -251,6 +254,7 @@ class PositionMaintainEdit extends React.Component {
             infoName: "userMaintainInfo"
         })
         closeSidePage()
+        this.props.backBreadNav()
     }
 }
 
@@ -259,5 +263,6 @@ export default TUI._connect({
     baseInfo: "userMaintain.baseInfo",
     sidePageInfo: "publicInfo.sidePageInfo",
     orgnizationId: "userMaintain.orgnizationId",
-    editInfo: "formControlInfo.data"
+    editInfo: "formControlInfo.data",
+    defaultUnit: "userMaintain.defaultUnit"
 }, PositionMaintainEdit)

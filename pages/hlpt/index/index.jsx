@@ -6,6 +6,7 @@ import TipTool from "TipTool"
 import Dialog from "Dialog"
 import ModalDialog from "ModalDialog"
 import Loading from "Loading"
+import SideContent from "SideContent"
 
 class Index extends React.Component {
   render() {
@@ -14,6 +15,7 @@ class Index extends React.Component {
     return (
       <div className="t-page">
         <Side/>
+        <SideContent />
         <Container>
           {children}
         </Container>

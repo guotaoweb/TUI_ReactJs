@@ -59,6 +59,7 @@ class PositionMaintainWorkStandard extends React.Component {
             infoName: "workStandardInfo"
         })
         closeSidePage()
+        this.props.backBreadNav()
     }
 }
 

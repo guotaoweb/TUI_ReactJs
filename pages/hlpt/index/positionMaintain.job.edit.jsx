@@ -119,7 +119,7 @@ class PositionMaintainEdit extends React.Component {
         this.props.clearEditInfo({
             infoName:"jobsInfo"
         })
-
+        this.props.backBreadNav()
     }
 
     goClose() {

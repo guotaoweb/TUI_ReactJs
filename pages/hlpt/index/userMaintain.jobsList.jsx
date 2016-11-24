@@ -23,7 +23,7 @@ class UserMaintainJobsList extends React.Component {
 
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "部门", "name3": "职位", "name4": "角色", "name5": "默认组织", "name6": "操作" },
+            "thead": { "name1": "序号", "name2": "部门", "name3": "职位", "name4": "角色", "name5": "兼职类型", "name6": "操作" },
             "tbody": []
         }
 
@@ -35,14 +35,13 @@ class UserMaintainJobsList extends React.Component {
                 "value2": _d.unitName,
                 "value3": _d.positionName,
                 "value4": _d.roleName,
-                "value5": _d.unitCodeM == _d.unitCode ? "是" : "否",
+                "value5": _d.dutyType == 1 ? "主职" : "兼职",
                 "fns": [{
-                    "name": "设为默认",
+                    "name": "设为主职",
                     "fn": function () {
                         waiteMsg("正在提交,请稍等...")
-                        TUI.platform.put("/staff/unit", {
-                            "staffId": _this.props.editInfo.userMaintainInfo.uId,
-                            "unitCode": _d.unitCode
+                        TUI.platform.put("/duty/dutyType", {
+                            "poid": _d.poid
                         }, function (result) {
                             if (result.code == 0) {
                                 successMsg("设置成功")
@@ -84,6 +83,7 @@ class UserMaintainJobsList extends React.Component {
 
     _closeSidePage() {
         closeSidePage()
+        this.props.backBreadNav()
     }
 
     editUserMaintain() {

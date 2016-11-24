@@ -3,18 +3,19 @@ import Content2 from "Content2"
 import FormControls from "FormControls"
 import Btn from "Btn"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
+import Search from "Search"
 
 import singleLeft from "!url!./img/singleLeft.png"
 
 class PersonMatchPostEditSetRole extends React.Component {
     render() {
-        const {setRoleData, sidePageInfo,updatePersonMatchPostRole} = this.props
+        const {setRoleData, sidePageInfo, updatePersonMatchPostRole} = this.props
 
         let _this = this
 
 
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "角色", "name3": "职位名","name4": "操作" },
+            "thead": { "name1": "序号", "name2": "角色", "name3": "职位名", "name4": "操作" },
             "tbody": []
         }
         for (var i = 0; i < setRoleData.length; i++) {
@@ -31,7 +32,7 @@ class PersonMatchPostEditSetRole extends React.Component {
                             roleId: _d.roleId,
                             poid: _poId
                         }
-                   
+
                         TUI.platform.put("/duty/role", jsonParma, function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
@@ -41,10 +42,10 @@ class PersonMatchPostEditSetRole extends React.Component {
                                 }
 
                                 updatePersonMatchPostRole(setRole)
-                                 _this._closeSidePage()
-                                 _this.props.refreshTable()
+                                _this._closeSidePage()
+                                _this.props.refreshTable()
                             }
-                            else{
+                            else {
                                 errorMsg(result.message)
                             }
                         })
@@ -60,16 +61,39 @@ class PersonMatchPostEditSetRole extends React.Component {
                     <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />角色列表</span>
                 </div>
                 <div>
+                    <Search placeholder="请输入关键字(角色)搜索" style={{
+                        border: "none",
+                        borderBottom: "1px solid #ebebeb",
+                        width: "98%",
+                        margin: "auto"
+                    }} fn={this._searchPersonMachPostSetRole.bind(this)} />
                     <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,150,0,80" />
                 </div>
             </div>
         )
     }
 
+    _searchPersonMachPostSetRole(val) {
+        const {addPersonMatchPostSetRoleData, errorMsg,updatePageInfo,searchInfo} =this.props
+        TUI.platform.get("/roles?positionId=" + searchInfo.key.positionId + "&roleName=" + val, function (result) {
+            if (result.code == 0) {
+                let _data = result.data
+                addPersonMatchPostSetRoleData(_data)
+            }
+            else if (result.code == 404) {
+                addPersonMatchPostSetRoleData([])
+            }
+            else {
+                errorMsg(result.message)
+            }
+        })
+    }
+
     _closeSidePage() {
         closeSidePage({
             id: "PersonMatchPostEditSelect"
         })
+        this.props.backBreadNav()
     }
 
 
@@ -92,6 +116,6 @@ class PersonMatchPostEditSetRole extends React.Component {
 
 export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
-    setRoleData: "personMatchPost.setRoleData"
-
+    setRoleData: "personMatchPost.setRoleData",
+    searchInfo: "publicInfo.searchInfo"
 }, PersonMatchPostEditSetRole)

@@ -58,3 +58,11 @@ export function delUserMaintainJobsList(data){
         data
     }
 }
+
+export function addDefaultUnit(data){
+    return {
+        type:"ADD_USERMAINTAIN_DEFAULTUNIT",
+        data
+    }
+}
+

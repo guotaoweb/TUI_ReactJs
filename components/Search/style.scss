@@ -1,0 +1,54 @@
+.t-search{
+    position:relative;
+    padding-right:70px;
+    input{
+        width: 100%;
+        height: 38px;
+        line-height: 38px;
+        display: inline-block;
+        border: 1px solid #ebebeb;
+        padding-left: 10px;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        margin-top: -1px;
+    }
+    >div{
+        position:absolute;
+        right:0px;
+        top:7px;
+        width:70px;
+        a{
+            border-top-left-radius:0px;
+            border-bottom-left-radius:0px;
+        }
+    }
+}
+
+
+.t-search1{
+    width: 100%;
+    height: 45px;
+    padding-right: 50px;
+    border: 1px solid #ebebeb;
+    position: relative;
+    input{
+        width:100%;
+        height:43px;
+        border:none;
+        padding-left:10px;
+    }
+    >div{
+        width: 50px;
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        height: 43px;
+        cursor:pointer;
+        img{
+            width:25px;
+            height:25px;
+            margin-left:15px;
+            margin-top:10px;
+        }
+    }
+}

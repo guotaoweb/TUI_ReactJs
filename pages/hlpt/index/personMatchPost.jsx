@@ -18,6 +18,7 @@ import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import Pager from "Pager"
 import { openDialog, closeDialog } from "Dialog"
 import { openLoading, closeLoading } from "Loading"
+import Search from "Search"
 
 class PersonMatchPost extends React.Component {
 
@@ -48,13 +49,7 @@ class PersonMatchPost extends React.Component {
                                 let _data = result.data
                                 addPersonMatchPostRole(_data)
                                 _this.props.refreshTable()
-                                updatePageInfo({
-                                    id: "personMatchPostEditPager",
-                                    index: 1,
-                                    size: 10,
-                                    sum: result._page.total,
-                                    url: _url
-                                })
+
                             }
                             else if (result.code == 404) {
                                 addPersonMatchPostRole([])
@@ -62,6 +57,13 @@ class PersonMatchPost extends React.Component {
                             else {
                                 errorMsg(result.message)
                             }
+                            updatePageInfo({
+                                id: "personMatchPostEditPager",
+                                index: 1,
+                                size: 10,
+                                sum: result._page ? result._page.total : 1,
+                                url: _url
+                            })
                             openSidePage(_this, {
                                 status: "personMatchPostEdit",
                                 id: "PersonMatchPostEdit",
@@ -79,6 +81,7 @@ class PersonMatchPost extends React.Component {
                                 info: "请输入关键字(用户名)"
                             })
                             closeContentLoading()
+                            _this.props.pushBreadNav({ name: _d.positionName })
                         })
 
                     }
@@ -117,8 +120,16 @@ class PersonMatchPost extends React.Component {
                     <div className="t-content_t">
                         <span>人职匹配</span>
                     </div>
-                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,150,150,100" />
-                    <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+                    <div>
+                        <Search placeholder="输入关键字(职位名称)搜索" style={{
+                            border: "none",
+                            borderBottom: "1px solid #ebebeb",
+                            width: "98%",
+                            margin: "auto"
+                        }} fn={this._searchPersonMachPost.bind(this)} />
+                        <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,150,150,100" />
+                        <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+                    </div>
                 </Content3>
                 <SidePage id="PersonMatchPostEdit">
                     <div>
@@ -140,10 +151,89 @@ class PersonMatchPost extends React.Component {
         this.props.setCanVerticallyScroll(iScrollInstance.hasVerticalScroll)
     }
 
+    _searchPersonMachPost(val) {
+        let {errormsg, searchInfo, updatePageInfo, addPersonMatchPost} = this.props
+        let _url = "/positions/?unitId=" + searchInfo.key.unitId + "&positionName=" + val+"&from={0}&limit=10"
+        TUI.platform.get(_url.replace("{0}","0"), function (result) {
+            if (result.code == 0) {
+                let _data = result.data
+                addPersonMatchPost(_data)
+            }
+            else if (result.code == 404) {
+                addPersonMatchPost([])
+            }
+            else {
+                errorMsg(result.message)
+            }
+            updatePageInfo({
+                index: 1,
+                size: 10,
+                sum: result._page?result._page.total:1,
+                url: _url
+            })
+        })
+
+        // else if (searchInfo.key.type == "personMatchPostEdit_parttime" || searchInfo.key.type == "personMatchPostEdit_callin") {
+        //     if (val) {
+        //         val = "/staffs?loginName=" + val + "&from=0&limit=10"
+        //         TUI.platform.get(val, function (result) {
+        //             if (result.code == 0) {
+        //                 addPersonMatchPostSelectUserData(result.data)
+        //                 updatePageInfo({
+        //                     index: 1,
+        //                     size: 10,
+        //                     sum: result._page.total,
+        //                     url: val.replace("from=0", "from={0}")
+        //                 })
+        //             }
+        //             else if (result.code == 404) {
+        //                 addPersonMatchPostSelectUserData([])
+        //             }
+        //             else {
+        //                 errorMsg(result.message)
+        //             }
+        //         })
+        //     }
+        //     else {
+        //         //val = "/staffs?from=0&limit=10"
+        //         addPersonMatchPostSelectUserData([])
+        //     }
+
+        // }
+        // else if (searchInfo.key.type == "addPersonMatchPostSetRoleData") {
+        //     TUI.platform.get("/roles?positionId=" + searchInfo.key.positionId + "&roleName=" + val, function (result) {
+        //         if (result.code == 0) {
+        //             let _data = result.data
+        //             addPersonMatchPostSetRoleData(_data)
+        //         }
+        //         else if (result.code == 404) {
+        //             addPersonMatchPostSetRoleData([])
+        //         }
+        //         else {
+        //             errorMsg(result.message)
+        //         }
+        //     })
+        // }
+        // else {
+        //     let url = searchInfo.key.unitId ? "/positions?unitId=" + searchInfo.key.unitId + "&positionName=" + val + "&from={0}&limit=10" : "/positions?positionName=" + val + "&unitCode=0&from={0}&limit=10"
+        //     TUI.platform.get(url.replace("{0}", "0"), function (result) {
+        //         if (result.code == 0) {
+        //             addPersonMatchPost(result.data)
+        //         }
+        //         else if (result.code == 404) {
+        //             addPersonMatchPost([])
+        //         }
+        //         else {
+        //             errorMsg(result.message)
+        //         }
+        //     })
+        // }
+    }
+
     componentDidMount() {
         let _this = this;
 
-        const {addData, errorMsg, addUnitBizTypes, addPositionTypes, addStatus, addCity, addSubList, updatePageInfo, addUnitKind} = this.props
+        const {addData, errorMsg, addUnitBizTypes, addPositionTypes, addStatus, addCity, addSubList, updatePageInfo, addUnitKind } = this.props
 
         openLoading()
         //获取组织根节点,且默认展开第一个父节点
@@ -169,6 +259,8 @@ class PersonMatchPost extends React.Component {
                 let firtNodeId = $clickMenu.getAttribute("data-id")
                 $clickMenu.style.backgroundColor = "rgba(250,250,250,0.5)"
                 $clickMenu.style.borderRadius = "3px"
+                //获取职位列表
+                _this.loadPosition(firtNodeId)
                 //展开第一个节点的一级子节点
                 TUI.platform.get("/units/tree/" + firtNodeId, function (result) {
                     if (result.code == 0) {
@@ -195,8 +287,7 @@ class PersonMatchPost extends React.Component {
                                 let $img = $clickMenu.getElementsByTagName("img")[1]
                                 $img.setAttribute("data-status", "show")
                                 $img.setAttribute("src", minus)
-                                //获取职位列表
-                                _this.loadPosition()
+
                             }
                         }
 
@@ -209,6 +300,10 @@ class PersonMatchPost extends React.Component {
             else {
                 errorMsg(result.message)
             }
+        })
+
+        this.props.addBreadNav({
+            name: "人职匹配"
         })
     }
 
@@ -235,6 +330,7 @@ class PersonMatchPost extends React.Component {
         //关闭之后可能打开的SidePage
         closeSidePage({ id: "PersonMatchPostEdit" })
         closeSidePage({ id: "PersonMatchPostEditSelect" })
+        this.props.addBreadNav({name:"人职匹配"})
     }
 
     addPositionMaintainBtn() {
@@ -251,22 +347,6 @@ class PersonMatchPost extends React.Component {
         TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addPersonMatchPost(result.data)
-                updatePageInfo({
-
-                    index: 1,
-                    size: 10,
-                    sum: result._page.total,
-                    url: url
-                })
-                //更新搜索信息
-                updateSearchInfo({
-                    key: {
-                        type: "addPersonMatchPost",
-                        unitId: id
-                    },
-                    name: "personMatchPost",
-                    info: "输入关键字(职位名称)"
-                })
             }
             else if (result.code == 404) {
                 addPersonMatchPost([])
@@ -276,6 +356,21 @@ class PersonMatchPost extends React.Component {
                 addPersonMatchPost([])
                 clearPageInfo()
             }
+            updatePageInfo({
+                index: 1,
+                size: 10,
+                sum: result._page ? result._page.total : 1,
+                url: url
+            })
+            //更新搜索信息
+            updateSearchInfo({
+                key: {
+                    type: "addPersonMatchPost",
+                    unitId: id
+                },
+                name: "personMatchPost",
+                info: "输入关键字(职位名称)"
+            })
             closeLoading()
             closeContentLoading()
         })
@@ -402,17 +497,17 @@ class PersonMatchPost extends React.Component {
 
 
     pageFn(index, loadComplete) {
-        const {pageInfo, addPositionMaintain, updatePageInfo} = this.props
+        const {pageInfo, addPersonMatchPost, updatePageInfo} = this.props
         TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
             if (result.code == 0) {
-                addPositionMaintain(result.data)
+                addPersonMatchPost(result.data)
                 updatePageInfo({
                     index: index
                 })
                 loadComplete()
             }
             else {
-                addPositionMaintain([])
+                addPersonMatchPost([])
             }
         })
 

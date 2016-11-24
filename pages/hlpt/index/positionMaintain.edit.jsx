@@ -21,9 +21,24 @@ class PositionMaintainEdit extends React.Component {
         }
         else {
             tabs = [{
-                name: "编辑职位信息", id: "baseInfo"
+                name: "编辑职位信息", id: "baseInfo", fn: function () {
+                    //更新面包屑
+                    if (editInfo.jobsInfo.status == "add" || editInfo.jobsInfo.status == "add" || editInfo.jobsInfo.status == "edit" || editInfo.jobsInfo.status == "edit") {
+                        _this.props.backBreadNav()
+                        _this.props.updateEditInfo({
+                            infoName: "jobsInfo",
+                            status: "list"
+                        })
+                        _this.props.updateEditInfo({
+                            infoName: "rolesInfo",
+                            status: "list"
+                        })
+                    }
+                }
             }, {
-                name: "工作职责", id: "positionmaintain", fn: function () { _this.getPositionMaintainJobs() }
+                name: "工作职责", id: "positionmaintain", fn: function () {
+                    _this.getPositionMaintainJobs()
+                }
             }, {
                 name: "角色设置", id: "roleset", fn: function () { _this.getPositionMaintainRoles() }
             }, {
@@ -95,25 +110,20 @@ class PositionMaintainEdit extends React.Component {
         )
     }
 
-                // <div style={{ borderTop: "1px solid #ebebeb" }}>
-                //     <PositionMaintainPersonMatchPost />
-                // </div>
+    // <div style={{ borderTop: "1px solid #ebebeb" }}>
+    //     <PositionMaintainPersonMatchPost />
+    // </div>
     onChangeFnByPositionFamilys(id) {
         this.loadJobFamilys(id)
     }
 
     getPositionMaintainJobs() {
-        const {sidePageInfo, addPositionMaintainJobs, searchPositionMaintainJobs, updatePageInfo} = this.props
+        const {sidePageInfo, addPositionMaintainJobs, searchPositionMaintainJobs, updatePageInfo, editInfo} = this.props
         TUI.platform.get("/jobs?positionId=" + sidePageInfo.gateWay.positionId + "&from=0&limit=10", function (result) {
             if (result.code == 0) {
                 addPositionMaintainJobs(result.data)
                 searchPositionMaintainJobs(eval(JSON.stringify(result.data)))
-                updatePageInfo({
-                    index: 1,
-                    size: 10,
-                    sum: result._page.total,
-                    url: "/jobs?positionId=" + sidePageInfo.gateWay.positionId + "&from={0}&limit=10"
-                })
+
             }
             else if (result.code == 404) {
                 addPositionMaintainJobs([])
@@ -121,20 +131,28 @@ class PositionMaintainEdit extends React.Component {
             else {
                 errorMsg(result.message)
             }
+            updatePageInfo({
+                index: 1,
+                size: 10,
+                sum: result._page ? result._page.total : 1,
+                url: "/jobs?positionId=" + sidePageInfo.gateWay.positionId + "&from={0}&limit=10"
+            })
         })
+
+        if (editInfo.rolesInfo.status == "edit" || editInfo.rolesInfo.status == "add") {
+            this.props.backBreadNav()
+            this.props.updateEditInfo({
+                infoName: "rolesInfo",
+                status: "list"
+            })
+        }
     }
 
     getPositionMaintainRoles() {
-        const {sidePageInfo, addPositionMaintainRoles, updatePageInfo, jobsData} = this.props
+        const {sidePageInfo, addPositionMaintainRoles, updatePageInfo, jobsData,editInfo} = this.props
         TUI.platform.get("/roles?positionId=" + sidePageInfo.gateWay.positionId + "&from=0&limit=10", function (result) {
             if (result.code == 0) {
                 addPositionMaintainRoles(result.data)
-                updatePageInfo({
-                    index: 1,
-                    size: 10,
-                    sum: result._page.total,
-                    url: "/roles?positionId=" + sidePageInfo.gateWay.positionId + "&from={0}&limit=10"
-                })
             }
             else if (result.code == 404) {
                 addPositionMaintainRoles([])
@@ -142,10 +160,23 @@ class PositionMaintainEdit extends React.Component {
             else {
                 errorMsg(result.message)
             }
+            updatePageInfo({
+                index: 1,
+                size: 10,
+                sum: result._page ? result._page.total : 1,
+                url: "/roles?positionId=" + sidePageInfo.gateWay.positionId + "&from={0}&limit=10"
+            })
         })
 
         if (jobsData) {
             this.getPositionMaintainJobs()
+        }
+        if (editInfo.jobsInfo.status == "edit" || editInfo.jobsInfo.status == "add") {
+            this.props.backBreadNav()
+            this.props.updateEditInfo({
+                infoName: "jobsInfo",
+                status: "list"
+            })
         }
     }
 
@@ -268,6 +299,7 @@ class PositionMaintainEdit extends React.Component {
             infoName: "positionMaintainInfo"
         })
         closeSidePage()
+        this.props.backBreadNav()
     }
 
     loadJobFamilys(familyId) {

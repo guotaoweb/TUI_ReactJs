@@ -1,5 +1,5 @@
 import Side from 'Side'
-import * as config from "config"
+
 
 //图片
 import xnzz from "!url!./img/xnzz.png"
@@ -7,7 +7,7 @@ import xnzzs from "!url!./img/xnzz-s.png"
 
 class _Side extends React.Component {
     render() {
-        const {sideStatus, userId,list} = this.props
+        const {sideStatus, userId, list} = this.props
 
         return (
             <Side list={list} title="TUI" />
@@ -15,6 +15,7 @@ class _Side extends React.Component {
     }
 
     componentDidMount() {
+        
         let list = [{
             id: "1",
             name: "页面内容布局",
@@ -23,13 +24,16 @@ class _Side extends React.Component {
             sicon: xnzzs,
             sub: [{
                 name: "布局1",
-                url: config.ROOTPATH + "layout1"
+                url: Config.ROOTPATH + "layout1"
             }, {
                 name: "布局2",
-                url: config.ROOTPATH + "layout2"
+                url: Config.ROOTPATH + "layout2"
             }, {
                 name: "布局3",
-                url: config.ROOTPATH + "layout3"
+                url: Config.ROOTPATH + "layout3"
+            }, {
+                name: "布局4",
+                url: Config.ROOTPATH + "layout4"
             }]
         }, {
             id: "2",
@@ -39,22 +43,28 @@ class _Side extends React.Component {
             sicon: xnzzs,
             sub: [{
                 name: "表格",
-                url: config.ROOTPATH + "table"
+                url: Config.ROOTPATH + "table"
             }, {
                 name: "按钮",
-                url: config.ROOTPATH + "btn"
+                url: Config.ROOTPATH + "btn"
             }, {
                 name: "输入框",
-                url: config.ROOTPATH + "input"
+                url: Config.ROOTPATH + "input"
             }, {
                 name: "下拉框",
-                url: config.ROOTPATH + "select"
+                url: Config.ROOTPATH + "select"
             }, {
                 name: "选择框",
-                url: config.ROOTPATH + "check"
+                url: Config.ROOTPATH + "check"
             }, {
                 name: "标签",
-                url: config.ROOTPATH + "tip"
+                url: Config.ROOTPATH + "tip"
+            }, {
+                name: "滑动框",
+                url: Config.ROOTPATH + "slide"
+            }, {
+                name: "搜索框",
+                url: Config.ROOTPATH + "search"
             }]
         }, {
             id: "3",
@@ -64,26 +74,35 @@ class _Side extends React.Component {
             sicon: xnzzs,
             sub: [{
                 name: "SidePage",
-                url: config.ROOTPATH + "sidePage"
+                url: Config.ROOTPATH + "sidePage"
             }, {
                 name: "Dialog",
-                url: config.ROOTPATH + "dialog"
+                url: Config.ROOTPATH + "dialog"
             }, {
                 name: "MultyMenu",
-                url: config.ROOTPATH + "multyMenu"
+                url: Config.ROOTPATH + "multyMenu"
             }, {
                 name: "TipTool",
-                url: config.ROOTPATH + "tipTool"
+                url: Config.ROOTPATH + "tipTool"
             }, {
                 name: "Pager",
-                url: config.ROOTPATH + "pager"
+                url: Config.ROOTPATH + "pager"
             }, {
                 name: "Loading",
-                url: config.ROOTPATH + "loading"
+                url: Config.ROOTPATH + "loading"
             }, {
                 name: "modelDialog",
-                url: config.ROOTPATH + "modelDialog"
+                url: Config.ROOTPATH + "modelDialog"
+            }, {
+                name: "breadNav",
+                url: Config.ROOTPATH + "breadNav"
             }]
+        }, {
+            id: "3",
+            name: "常用插件",
+            url: "breadNav",
+            icon: xnzz,
+            sicon: xnzzs
         }]
         this.props.addSide(list)
     }
@@ -101,7 +120,7 @@ class _Side extends React.Component {
 }
 
 export default TUI._connect({
-    list:"sideList.data",
+    list: "sideList.data",
     sideStatus: "publicInfo.sideStatus",
     userId: "publicInfo.userInfo.id"
 }, _Side)

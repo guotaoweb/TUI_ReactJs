@@ -1,6 +1,6 @@
 import '!style!css!postcss!sass!./style.scss'
 import '!style!css!react-date-picker/index.css'
-import { DateField} from 'react-date-picker'
+import { DateField } from 'react-date-picker'
 
 import unRadio from "!url!./img/unradio.png"
 import isRadio from "!url!./img/radio.png"
@@ -43,8 +43,12 @@ class FormControls extends React.Component {
             bindElem = <CTRL_TIP label={label} labelWidth={labelWidth} txt={txt} deleteFn={this.props.deleteFn} addFn={this.props.addFn} style={this.props.style} />
         }
         else if (ctrl == "datepicker") {
-            bindElem = <CTRL_DATE_PICKER label={label} labelWidth={labelWidth}  value={value} style={this.props.style}  addFn={this.props.addEditInfo
-            } required={this.props.required} data={data} bind={bind}/>
+            bindElem = <CTRL_DATE_PICKER label={label} labelWidth={labelWidth} value={value} style={this.props.style} addFn={this.props.addEditInfo
+            } required={this.props.required} data={data} bind={bind} />
+        }
+        else if (ctrl == "slide") {
+            bindElem = <CTRL_SLIDE label={label} labelWidth={labelWidth} value={value} style={this.props.style} addFn={this.props.addEditInfo
+            } options={this.props.options} data={data} bind={bind} />
         }
 
         return (
@@ -419,7 +423,7 @@ class CTRL_DATE_PICKER extends React.Component {
         if (value && data[value.split(".")[0]]) {
             _value = data[value.split(".")[0]][value.split(".")[1]]
         }
-        
+
 
         return (
             <div className="t-formControls">
@@ -427,7 +431,7 @@ class CTRL_DATE_PICKER extends React.Component {
                 <DateField
                     defaultValue={_value}
                     dateFormat="YYYY-MM-DD"
-                    onChange = {this._onChange.bind(this)}
+                    onChange={this._onChange.bind(this)}
                     />
             </div>
         )
@@ -447,6 +451,86 @@ class CTRL_DATE_PICKER extends React.Component {
         }
 
         _info[_object[1]] = e
+        addFn(_info)
+    }
+}
+
+class CTRL_SLIDE extends React.Component {
+    render() {
+        const {
+            label,
+            labelWidth,
+            type,
+            addFn,
+            style,
+            value,
+            data,
+            bind,
+            options
+        } = this.props
+
+        let _label
+        if (label) {
+            let _style = {
+                width: labelWidth + "px",
+                verticalAlign: "middle",
+                marginTop: "-20px"
+            }
+
+            _label = <label style={_style}>{label}: </label>
+        }
+
+        let _value = options[0].name
+        if (value && data[value.split(".")[0]]) {
+            _value = data[value.split(".")[0]][value.split(".")[1]]
+        }
+        let _object = value.split(".")
+        let _index = 0
+        if (data[_object[0]]) {
+            _index = data[_object[0]][_object[1] + "index"] == 0 ? 1 : 0
+        }
+        let _activity = _index == 0 ? 't-slide t-slide_activity' : "t-slide"
+
+        return (
+            <div className="t-formControls">
+                {_label}
+                <div className={_activity} onClick={this._onClick.bind(this)}>
+                    <span>{_value}</span>
+                    <b></b>
+                </div>
+            </div>
+        )
+    }
+
+    componentDidMount() {
+        const {value, addFn, data, options} = this.props
+        let _object = value.split(".")
+        let _info = {
+            infoName: _object[0]
+        }
+
+        _info[_object[1]] = options[0].name
+        _info[_object[1] + "index"] = 0
+        addFn(_info)
+    }
+
+    _onClick() {
+        const {value, addFn, data, bind, options} = this.props
+
+        let _object = value.split(".")
+        let _info = {
+            infoName: _object[0]
+        }
+        if (bind) {
+            for (let key in bind) {
+                _info[key] = bind[key]
+            }
+        }
+
+        let _index = data[_object[0]][_object[1] + "index"] == 0 ? 1 : 0
+
+        _info[_object[1]] = options[_index].name
+        _info[_object[1] + "index"] = _index
         addFn(_info)
     }
 }

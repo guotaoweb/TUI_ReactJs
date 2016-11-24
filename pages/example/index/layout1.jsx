@@ -31,6 +31,10 @@ class Layout1 extends React.Component {
     _openDialog3() {
         openDialog(this,"单击了backHref")
     }
+    
+    componentDidMount(){
+        this.props.addBreadNav([{name:"布局1"}])
+    }
 }
 
 export default TUI._connect({
