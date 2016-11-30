@@ -1,6 +1,3 @@
-import ReactIScroll from 'react-iscroll'
-import iScroll from 'iscroll'
-
 import Content2 from "Content2"
 import FormControls from "FormControls"
 import Btn from "Btn"
@@ -18,16 +15,10 @@ class ManageUserMenu extends React.Component {
                     <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />新增项目组成员</span>
                     <Btn style={{ float: "right" }} txt="保存" href={this.saveSelectedPerson.bind(this)} />
                 </div>
-                <div ref="scrollContent">
-                    <ReactIScroll iScroll={iScroll} options={{
-                        mouseWheel: true,
-                        scrollbars: hasVerticalScroll
-                    }} onRefresh={this.onScrollRefresh.bind(this)}>
-                        <div>
-                            <MultyMenu sdata={osdata} data={odata} type="lastcheck" lastdeep="3" color="dark" openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "10px" }} />
-                            <br />
-                        </div>
-                    </ReactIScroll>
+
+                <div>
+                    <MultyMenu sdata={osdata} data={odata} type="lastcheck" lastdeep="3" color="dark" openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "10px" }} />
+                    <br />
                 </div>
             </div>
         )
@@ -92,17 +83,14 @@ class ManageUserMenu extends React.Component {
         closeSidePage()
     }
 
-    onScrollRefresh(iScrollInstance, $this) {
-        this.props.setCanVerticallyScroll(iScrollInstance.hasVerticalScroll)
-    }
 
     componentDidMount() {
-        let $scrollContent = ReactDOM.findDOMNode(this.refs.scrollContent)
-        let header = document.querySelector(".t-header")
-        header = header ? header.offsetHeight : 0
-        let contentTitle = document.querySelector(".t-content_t")
-        contentTitle = contentTitle ? contentTitle.offsetHeight : 0
-        $scrollContent.style.height = document.documentElement.clientHeight - header - contentTitle + "px"
+        // let $scrollContent = ReactDOM.findDOMNode(this.refs.scrollContent)
+        // let header = document.querySelector(".t-header")
+        // header = header ? header.offsetHeight : 0
+        // let contentTitle = document.querySelector(".t-content_t")
+        // contentTitle = contentTitle ? contentTitle.offsetHeight : 0
+        // $scrollContent.style.height = document.documentElement.clientHeight - header - contentTitle + "px"
     }
 
     loadSubVTeamList(id) {

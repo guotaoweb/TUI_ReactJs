@@ -1,59 +1,51 @@
 import 'babel-polyfill'
 
 const initState = {
-    data: "",
-    detail: {
-        id: "",
-        name: "",
-    },
-    survyList: []
+    list: []
 }
 
-export default function courseListReducers(state = initState, action) {
+export default function classesListReducers(state = initState, action) {
     switch (action.type) {
-        case "ADD_COURSE_DATA":
-            return Object.assign({}, state, { data: action.data })
-        case "UPDATE_COURSE_DATA":
-            if (state.data) {
-                state.data.push(action.data)
+        case "ADD_COURSE_LIST":
+            if (state.list.length == 0) {
+                return Object.assign({}, state, { list: action.data })
+            } else {
+                state
+                    .list
+                    .push(action.data)
+                return Object.assign({}, state, {
+                    list: JSON.parse(JSON.stringify(state.list))
+                })
             }
-            return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
-        case "UPDATE_COURSE_ID":
+        case "LOAD_COURSE_LIST":
             return Object.assign({}, state, {
-                detail: {
-                    id: action.id,
-                    name: ""
-                }
+                list: JSON.parse(JSON.stringify(action.data))
             })
+        case "DELETE_COURSE_LIST":
+            for (let i = 0; i < state.list.length; i++) {
+                let $d = state.list[i]
+                if ($d.Id == action.id) {
+                    state
+                        .list
+                        .splice(i, 1)
+                }
+            }
+            return Object.assign({}, state, {
+                list: eval(JSON.stringify(state.list))
+            })
+        case "UPDATE_COURSE_LIST":
+            for (let i = 0; i < state.list.length; i++) {
+                let $d = state.list[i]
 
-        case "UPDATE_COURSE_LIST_BYID":
-            for (var i = 0; i < state.data.length; i++) {
-                var _d = state.data[i]
-                if (_d.id == state.detail.id) {
-                    _d.name = state.detail.name
-                    _d.course = state.detail.course
-                    _d.classes = state.detail.classes
-                    break
-                }
-            }
-
-            return Object.assign({}, state, {
-                data: eval(JSON.stringify(state.data))
-            })
-        case "DELETE_COURSE_BYID":
-            for (var i = 0; i < state.data.length; i++) {
-                var _d = state.data[i]
-                if (_d.id == action.id) {
-                    state.data.splice(i, 1)
+                if ($d.Id == action.data.Id) {
+                    $d.Name = action.data.Name
+                    $d.Survy = action.data.Survy
                 }
             }
             return Object.assign({}, state, {
-                data: eval(JSON.stringify(state.data))
+                list: eval(JSON.stringify(state.list))
             })
-        case "COURSE_BIND_SURVY":
-            return Object.assign({}, state, {
-                survyList: eval(JSON.stringify(action.data))
-            })
-        default: return state
+        default:
+            return state
     }
 }

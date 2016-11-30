@@ -1,6 +1,3 @@
-import ReactIScroll from 'react-iscroll'
-import iScroll from 'iscroll'
-
 //图片
 import minus from "!url!../../../components/MultyMenu/img/minus.png"
 
@@ -41,15 +38,10 @@ class PositionGroup extends React.Component {
     return (
       <div>
         <Content3>
-          <ReactIScroll iScroll={iScroll} options={{
-            mouseWheel: true,
-            scrollbars: hasVerticalScroll
-          }} onRefresh={this.onScrollRefresh.bind(this)}>
-            <div>
-              <MultyMenu data={data} type="edit" lastdeep="2" color="white" addMenu={this.addMenu.bind(this)} delMenu={this.delMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} clickMenu={this.clickSubMenu.bind(this)} style={{ marginTop: "20px" }} />
-              <br />
-            </div>
-          </ReactIScroll>
+          <div>
+            <MultyMenu data={data} type="edit" lastdeep="2" color="white" addMenu={this.addMenu.bind(this)} delMenu={this.delMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} clickMenu={this.clickSubMenu.bind(this)} style={{ marginTop: "20px" }} />
+            <br />
+          </div>
           <div></div>
           <div className="t-content_t">
             <span>{editTxt}</span>
@@ -62,14 +54,11 @@ class PositionGroup extends React.Component {
     )
   }
 
-  onScrollRefresh(iScrollInstance, $this) {
-    this.props.setCanVerticallyScroll(iScrollInstance.hasVerticalScroll)
-  }
 
   componentDidMount() {
     const {addPositionGroup, params, errorMsg, updateSearchInfo} = this.props
     const _this = this
-
+    this.props.addBreadNav({ name: "职位族维护" })
     openLoading()
     TUI.platform.get("/positionTypes", function (result) {
       if (result.code == 0) {
@@ -89,7 +78,7 @@ class PositionGroup extends React.Component {
 
         addPositionGroup(main)
       }
-      else if(result.code==404){
+      else if (result.code == 404) {
         addPositionGroup([])
       }
       else {
@@ -121,11 +110,11 @@ class PositionGroup extends React.Component {
           _editInfo["infoName"] = "positionTypeInfo"
           _this.props.addEditInfo(_editInfo)
         }
-        else if(result.code==404){
+        else if (result.code == 404) {
           _this.props.addEditInfo([])
         }
         else {
-         errorMsg(result.message)
+          errorMsg(result.message)
         }
       })
     }
@@ -169,7 +158,7 @@ class PositionGroup extends React.Component {
           _this.props.addEditInfo(_editInfo)
         }
       }
-      else if(result.code==404){
+      else if (result.code == 404) {
         _this.props.addEditInfo([])
       }
       else {
@@ -181,7 +170,7 @@ class PositionGroup extends React.Component {
   openSubMenu(_data, id, deep, loadComplete) {
 
     let _this = this
-    const {errorMsg,data, updatePageInfo, updateSearchInfo} = this.props
+    const {errorMsg, data, updatePageInfo, updateSearchInfo} = this.props
 
     for (let index = 0; index < _data.length; index++) {
       let d = _data[index]
@@ -221,11 +210,11 @@ class PositionGroup extends React.Component {
             _this.props.updatePositionGroup(data)
             loadComplete()
           }
-          else if(result.code==404){
+          else if (result.code == 404) {
             _this.props.updatePositionGroup([])
             loadComplete()
           }
-          else{
+          else {
             errorMsg(result.message)
           }
         })
@@ -290,22 +279,22 @@ class PositionGroup extends React.Component {
   }
 
   addMenu(params) {
-    const {clearEditInfo,updatePositionType} = this.props
+    const {clearEditInfo, updatePositionType} = this.props
     let _type = parseInt(params.type) + 1
 
     if (_type == 0) {
       clearEditInfo({
-        infoName:"positionTypeInfo"
+        infoName: "positionTypeInfo"
       })
     }
     else if (_type == 1) {
       clearEditInfo({
-        infoName:"positionFamilyInfo"
+        infoName: "positionFamilyInfo"
       })
     }
     else {
       clearEditInfo({
-        infoName:"jobFamilyInfo"
+        infoName: "jobFamilyInfo"
       })
     }
     setTimeout(function () { updatePositionType(_type) }, 200)
@@ -343,5 +332,5 @@ export default TUI._connect({
   data: "positionGroup.data",
   type: "positionGroup.type",
   hasVerticalScroll: "orgnizationManage.hasVerticalScroll",
-  editInfo:"formControlInfo.data"
+  editInfo: "formControlInfo.data"
 }, PositionGroup)

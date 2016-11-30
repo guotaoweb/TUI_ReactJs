@@ -223,7 +223,7 @@ class PositionMaintainEdit extends React.Component {
         if (sidePageInfo.status == "addPositionMaintain") {
             TUI.platform.post("/position", postJson, function (result) {
                 if (result.code == 0) {
-                    closeSidePage()
+                    _this.goBack()
                     _this.props.successMsg("新增职位成功")
                     pushPositionMaintain(result.data)
                 }
@@ -236,7 +236,7 @@ class PositionMaintainEdit extends React.Component {
             postJson.positionId = editInfo.positionMaintainInfo.id
             TUI.platform.put("/position", postJson, function (result) {
                 if (result.code == 0) {
-                    closeSidePage()
+                    _this.goBack()
                     _this.props.successMsg("编辑职位成功");
                     updatePositionMaintain(postJson)
                 }

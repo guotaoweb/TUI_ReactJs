@@ -29,10 +29,10 @@ export default function manageReducers(state = initState, action) {
         case "UPDATE_VTEAM_LIST_BYID":
             for (var i = 0; i < state.data.length; i++) {
                 var _d = state.data[i]
-                if (_d.team_id == state.detail.id) {
-                    _d.team_name = state.detail.name
-                    _d.team_note = state.detail.note
-                    _d.team_code = state.detail.code
+                if (_d.team_id == action.data.team_id) {
+                    _d.team_name = action.data.team_name
+                    _d.team_note = action.data.team_note
+                    _d.team_code = action.data.team_code
                     break
                 }
             }

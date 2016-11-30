@@ -9,7 +9,8 @@ class UserMaintainExtInfo extends React.Component {
 
         return (
             <div>
-            
+                <FormControls label="生日" ctrl="datepicker" value="userMaintainExtInfo.birthday" />
+                <FormControls label="退休日期" ctrl="datepicker" value="userMaintainExtInfo.retireDate" />
                 <FormControls label="籍贯" ctrl="input" value="userMaintainExtInfo.postAddr" />
                 <FormControls label="国籍" ctrl="input" value="userMaintainExtInfo.regAddr" />
                 <FormControls label="政治面貌" ctrl="input" value="userMaintainExtInfo.roomNumber" />
@@ -17,9 +18,6 @@ class UserMaintainExtInfo extends React.Component {
                 <FormControls label="家庭电话" ctrl="input" value="userMaintainExtInfo.homePhone" />
                 <FormControls label="家庭地址" ctrl="input" value="userMaintainExtInfo.homeAddress" />
                 <FormControls label="学历" ctrl="input" value="userMaintainExtInfo.education" />
-               <FormControls label="学历" ctrl="input" value="userMaintainExtInfo.education" />
-               <FormControls label="学历" ctrl="input" value="userMaintainExtInfo.education" />
-               <FormControls label="学历" ctrl="input" value="userMaintainExtInfo.education" />
                 <FormControls label="职称名" ctrl="input" value="userMaintainExtInfo.jobTitles" />
                 <FormControls label="职位等级" ctrl="input" value="userMaintainExtInfo.grade" />
                 <div className="formControl-btn">

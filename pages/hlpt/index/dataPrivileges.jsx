@@ -10,6 +10,7 @@ import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import { openDialog, closeDialog } from "Dialog"
 import Pager, { pageLoadCompelte } from "Pager"
 import { openLoading, closeLoading } from "Loading"
+import Search from "Search"
 import DataPrivilegesDataMenu from "./dataPrivileges.dataMenu"
 import DataPrivilegesSideMenu from "./dataPrivileges.sideMenu"
 
@@ -58,14 +59,14 @@ class DataPrivileges extends React.Component {
                 "value4": _d.unitName,
                 "fns": [{
                     "name": "数据权限",
-                    "fn": function() {
+                    "fn": function () {
                         openSidePage(_this, {
                             status: "dataPrivilegesDataMenu",
                             width: "500",
                             gateWay: _d.loginUid
                         })
 
-                        TUI.platform.get("/dataprivileges/" + _d.loginUid, function(result) {
+                        TUI.platform.get("/dataprivileges/" + _d.loginUid, function (result) {
                             if (result.code == 0) {
                                 let selectedIds = []
                                 for (let i = 0; i < result.data.length; i++) {
@@ -86,14 +87,14 @@ class DataPrivileges extends React.Component {
                     }
                 }, {
                     "name": "菜单权限",
-                    "fn": function() {
+                    "fn": function () {
                         openSidePage(_this, {
                             status: "dataPrivilegesSideMenu",
                             width: "400",
                             gateWay: _d.loginUid
                         })
 
-                        TUI.platform.get("/menustaffs/" + _d.loginUid, function(result) {
+                        TUI.platform.get("/menustaffs/" + _d.loginUid, function (result) {
                             if (result.code == 0) {
                                 let selectedIds = []
                                 for (let i = 0; i < result.data.length; i++) {
@@ -119,7 +120,13 @@ class DataPrivileges extends React.Component {
         return (
             <div>
                 <Content txt="人员列表">
-                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,150,150,0,80" />
+                    <Search placeholder="输入关键字(姓名,账号)搜索" style={{
+                        border: "none",
+                        borderBottom: "1px solid #ebebeb",
+                        width: "98%",
+                        margin: "auto"
+                    }} fn={this._searchOrgnization.bind(this)} />
+                    <Table num="10" tblContent={tblContent} width="50,150,150,0,80" />
                     <Pager fn={this.pageFn.bind(this)} />
                 </Content>
                 <SidePage>
@@ -131,9 +138,33 @@ class DataPrivileges extends React.Component {
         )
     }
 
+    _searchOrgnization(val) {
+        let {searchInfo, addDataPrivileges, updatePageInfo, errorMsg} = this.props
+
+
+        val = val ? "/staffs/?isData=1&from={0}&limit=10&loginName=" + val : "/staffs/?isData=1&from={0}&limit=10"
+        TUI.platform.get(val.replace("{0}",0), function (result) {
+            if (result.code == 0) {
+                addDataPrivileges(result.data)
+            }
+            else if (result.code == 404) {
+                addDataPrivileges([])
+            }
+            else {
+                errorMsg(result.message)
+            }
+            updatePageInfo({
+                index: 1,
+                size: 10,
+                sum: result._page ? result._page.total : 1,
+                url: val
+            })
+        })
+    }
+
     pageFn(index, loadComplete) {
         const {pageInfo, addDataPrivileges, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.index.url.replace("{0}", index * pageInfo.index.size), function(result) {
+        TUI.platform.get(pageInfo.index.url.replace("{0}", index * pageInfo.index.size), function (result) {
             if (result.code == 0) {
                 addDataPrivileges(result.data)
                 updatePageInfo({
@@ -149,10 +180,10 @@ class DataPrivileges extends React.Component {
 
     componentDidMount() {
         const {addDataPrivileges, updateOData, orgnization, updatePageInfo, updateSearchInfo, userId, errorMsg} = this.props
-
+        this.props.addBreadNav({name:"权限管理"})
         //获取数据权限列表
         openLoading()
-        TUI.platform.get("/staffs/?isData=1&from=0&limit=10", function(result) {
+        TUI.platform.get("/staffs/?isData=1&from=0&limit=10", function (result) {
             if (result.code == 0) {
                 addDataPrivileges(result.data)
                 updatePageInfo({
@@ -179,7 +210,7 @@ class DataPrivileges extends React.Component {
         }, this)
 
         //获取组织机构
-        TUI.platform.get("/units/tree/0", function(result) {
+        TUI.platform.get("/units/tree/0", function (result) {
             if (result.code == 0) {
                 let _d = []
                 for (var i = 0; i < result.data.length; i++) {

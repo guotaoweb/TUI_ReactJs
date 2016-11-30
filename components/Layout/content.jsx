@@ -1,5 +1,6 @@
 import '!style!css!postcss!sass!./style.scss'
-import { Link } from 'react-router'
+
+import ScrollArea from 'react-scrollbar';
 
 import Btn from "Btn"
 import back from "!url!./img/singleLeft.png"
@@ -7,7 +8,7 @@ import loading from "!url!./img/loading.png"
 
 class Content extends React.Component {
     render() {
-        const {addHref, txt, children, editHref, addTxt, editTxt, backHref} = this.props
+        const {addHref, txt, children, editHref, addTxt, editTxt, backHref, hasVerticalScroll} = this.props
         let addBtn,
             editBtn,
             backBtn
@@ -32,9 +33,21 @@ class Content extends React.Component {
                     <span>{backBtn}{txt}</span>
                     {addBtn}{editBtn}
                 </div>
-                <div style={{ padding: "5px 7px" }}>
-
-                    {children}
+                <div ref="tContentDiv">
+                    <ScrollArea
+                    className="area"
+                    contentClassName="content"
+                    speed={Config.SCROLL.speed}
+                    smoothScrolling={Config.SCROLL.smoothScrolling}
+                    minScrollSize={Config.SCROLL.minScrollSize}
+                    verticalScrollbarStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+                    verticalContainerStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+                        ref={(component) => { this.scrollAreaComponent = component } }
+                        >
+                        <div>
+                            {children}
+                        </div>
+                    </ScrollArea>
                 </div>
                 <div className="t-content-loading">
                     <div className="t_loading_img">
@@ -46,11 +59,18 @@ class Content extends React.Component {
     }
 
     componentDidMount() {
-        let allHeight = document.documentElement.clientHeight;
-        let headerHeight = document.querySelector(".t-header").offsetHeight;
-        let marginTop = 15;
-        ReactDOM.findDOMNode(this.refs.tContent).style.height = (allHeight - headerHeight - marginTop * 2) + "px";
+        let allHeight = document.documentElement.clientHeight
+        let headerHeight = document.querySelector(".t-header").offsetHeight
+        let marginTop = 15
+        let _height = allHeight - headerHeight - marginTop * 2
+        ReactDOM.findDOMNode(this.refs.tContent).style.height = _height + "px"
+        
+        this.scrollAreaComponent.wrapper.style.height = (allHeight - headerHeight - 80) + "px"
         ReactDOM.findDOMNode(this.refs.tContent).style.marginTop = marginTop + "px"
+
+        if (this.scrollAreaComponent) {
+            this.scrollAreaComponent.scrollArea.refresh()
+        }
     }
 
     goBack() {
@@ -58,7 +78,9 @@ class Content extends React.Component {
     }
 };
 
-export default Content;
+export default TUI._connect({
+    hasVerticalScroll: "publicInfo.hasVerticalScroll"
+}, Content)
 
 export function openContentLoading() {
     let sidepage = document.querySelector(".t-content-loading")
@@ -68,11 +90,11 @@ export function openContentLoading() {
 }
 
 export function closeContentLoading() {
-    setTimeout(function() {
+    setTimeout(function () {
         let sidepage = document.querySelector(".t-content-loading")
         sidepage.style["transition"] = "opacity 200ms ease"
         sidepage.style.opacity = "0"
-        setTimeout(function() {
+        setTimeout(function () {
             sidepage.style.display = "none"
         }, 201)
     }, 500)

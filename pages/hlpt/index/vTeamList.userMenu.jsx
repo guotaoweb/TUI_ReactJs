@@ -1,7 +1,3 @@
-
-import ReactIScroll from 'react-iscroll'
-import iScroll from 'iscroll'
-
 import Btn from "Btn"
 import { closeSidePage } from "SidePage"
 
@@ -22,15 +18,12 @@ class VTeamListUserMenu extends React.Component {
                     <Btn style={{ float: "right" }} txt="保存" href={this.saveOrgnizationSelected.bind(this)} />
                 </div>
                 <div ref="scrollContent">
-                    <ReactIScroll iScroll={iScroll} options={{
-                        mouseWheel: true,
-                        scrollbars: hasVerticalScroll
-                    }} onRefresh={this.onScrollRefresh.bind(this)}>
+               
                         <div>
                             <MultyMenu data={odata} sdata={osdata} openSubMenu={this.openSubMenu.bind(this)} type="allcheck" lastdeep="3" color="dark" style={{ marginTop: "10px" }} />
                             <br />
                         </div>
-                    </ReactIScroll>
+            
                 </div>
             </div>
         )
@@ -49,10 +42,6 @@ class VTeamListUserMenu extends React.Component {
         const {clearOSData} = this.props
         clearOSData()
         closeSidePage()
-    }
-
-    onScrollRefresh(iScrollInstance, $this) {
-        this.props.setCanVerticallyScroll(iScrollInstance.hasVerticalScroll)
     }
 
     saveOrgnizationSelected() {

@@ -54,15 +54,13 @@ class _Side extends React.Component {
       name: "问卷管理",
       url: "survys",
       icon: survy,
-      sicon: survys,
-      sub: []
+      sicon: survys
     }, {
       id:"4",
-      name: "投票设置",
-      url: "setSurvy",
+      name: "投票管理",
+      url: "votes",
       icon: vote,
-      sicon: votes,
-      sub: []
+      sicon: votes
     }, {
       id:"5",
       name: "报表系统",

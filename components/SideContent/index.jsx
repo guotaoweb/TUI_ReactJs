@@ -1,6 +1,5 @@
 import '!style!css!postcss!sass!./style.scss'
-import { Link } from 'react-router'
-import { openLoading } from "Loading"
+import ScrollArea from 'react-scrollbar'
 
 let SIDESTATUS = 0 //open
 class SideContent extends React.Component {
@@ -8,7 +7,20 @@ class SideContent extends React.Component {
         const {sideStatus} = this.props
         return (
             <div className="t-sidecontent" ref="sideContent">
-                {this.props.children}
+                <ScrollArea
+                    className="area"
+                    contentClassName="content"
+                    speed={Config.SCROLL.speed}
+                    smoothScrolling={Config.SCROLL.smoothScrolling}
+                    minScrollSize={Config.SCROLL.minScrollSize}
+                    verticalScrollbarStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+                    verticalContainerStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+                    ref={(component) => { this.scrollAreaComponent = component } }
+                    >
+                    <div>
+                        {this.props.children}
+                    </div>
+                </ScrollArea>
             </div>
         )
     }
@@ -19,17 +31,24 @@ class SideContent extends React.Component {
         ReactDOM.findDOMNode(this.refs.sideContent).style.top = _obj().headerHeight + "px"
 
         SIDESTATUS = sideStatus
+
+        this.scrollAreaComponent.wrapper.style.height = (_obj().allHeight - _obj().headerHeight) + "px"
+
+        //bindEvent(this)
+        if (this.scrollAreaComponent) {
+            this.scrollAreaComponent.scrollArea.refresh()
+        }
     }
 
     componentDidUpdate(nextProps) {
         const {sideStatus} = this.props
-        console.info(nextProps)
-        if (sideStatus != nextProps.sideStatus) {
+
+        if (sideStatus != nextProps.sideStatus && document.getElementsByClassName("t-sidecontent")[0].style.left > 0) {
             SIDESTATUS = sideStatus
             openSideContent()
             return true
         }
-        else{
+        else {
             return false
         }
     }
@@ -51,7 +70,6 @@ export function _obj() {
 export function openSideContent() {
 
     let _sideWidth = SIDESTATUS == 0 ? "160" : "60"
-    console.info(_sideWidth)
     _obj().sideContent.style.left = _sideWidth + "px"
     let $tContent = document.getElementsByClassName("t-content")[0]
 

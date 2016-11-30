@@ -10,4 +10,10 @@ export const ERROR_INFO = {
     "404":"没有找到数据"
 }    
 export const DEFAULT_OPEN_SIDE = [0,0]
-export const VERSION = "Version 2.6.7(20161124)"
+export const VERSION = "Version 2.6.8(20161129)"
+export const SCROLL = {
+    speed:0.8,
+    smoothScrolling:true,
+    minScrollSize:40,
+    scrollRadius:5
+}

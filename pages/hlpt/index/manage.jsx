@@ -2,15 +2,15 @@
 import minus from "!url!../../../components/MultyMenu/img/minus.png"
 
 //组件
-import Content2 from "Content2"
+import Content2, { openContentLoading, closeContentLoading } from "Content2"
 import Content3 from "Content3"
 import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, { editFn } from "MultyMenu"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import Pager from "Pager"
-import { openDialog, closeDialog } from "Pager"
-
+import { openDialog, closeDialog } from "Dialog"
+import Search from "Search"
 import ManageEditVTeam from "./manage.editVTeam"
 import ManageEditUser from "./manage.editUser"
 import ManageUserMenu from "./manage.userMenu"
@@ -22,7 +22,7 @@ let DEFAULT_TEAM_ID = null
 
 class Manage extends React.Component {
   render() {
-    const { errorMsg, msg, users, updateSidePageInfo, sidePageInfo, data, pageInfo, updateUserInVTeam, updateSubVTeamUser, updateDialog, delSubVTeamUserToList, updatePageInfo, userId, teamId} = this.props
+    const { errorMsg, msg, users, updateSidePageInfo, sidePageInfo, data, pageInfo, updateUserInVTeam, addEditInfo, updateDialog, delSubVTeamUserToList, updatePageInfo, userId, teamId} = this.props
 
     let _this = this
     let tblContent = {
@@ -40,15 +40,13 @@ class Manage extends React.Component {
         "fns": [{
           "name": "编辑",
           "fn": function () {
-            openSidePage(_this, {
-              status: "eidtUser",
-              width: ""
-            })
 
+            openContentLoading()
             TUI.platform.get("/projectteam/persons/" + _d.id, function (result) {
               if (result.code == 0) {
                 let _d = result.datas[0]
-                updateSubVTeamUser({
+                addEditInfo({
+                  infoName: "editUserInfo",
                   id: _d.id,
                   user: _d.user_id,
                   name: _d.user_name,
@@ -57,6 +55,11 @@ class Manage extends React.Component {
                   sort: _d.sort
                 })
               }
+              openSidePage(_this, {
+                status: "eidtUser",
+                width: ""
+              })
+              closeContentLoading()
             })
 
           }
@@ -137,8 +140,17 @@ class Manage extends React.Component {
             <span>虚拟组织人员列表</span>
             <Btn type="add" txt="新增" style={{ float: "right" }} href={this.addUserList.bind(this)} />
           </div>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="80,0,0,150,150,150" />
-          <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+          <div>
+            <Search placeholder="请输入关键字(用户)搜索" style={{
+              border: "none",
+              borderBottom: "1px solid #ebebeb",
+              width: "98%",
+              margin: "auto"
+            }} fn={this._searchManage.bind(this)} />
+            <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="80,0,0,150,150,150" />
+            <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+          </div>
+
         </Content3>
         <SidePage>
           <div>
@@ -148,8 +160,25 @@ class Manage extends React.Component {
       </div>
     )
   }
-
-  _goBack(){
+  _searchManage(val) {
+      let {searchInfo, addUserInVTeam, updatePageInfo, errorMsg} = this.props
+      val = val ? "/projectteam/persons/" + val + "/" + searchInfo.key : "/projectteam/persons/" + searchInfo.key + "/1/6"
+      TUI.platform.get(val, function (result) {
+        if (result.code == 0) {
+          addUserInVTeam(result.datas)
+        }
+        else if (result.code == 404) {
+          addUserInVTeam([])
+        }
+        else {
+          errorMsg(result.message)
+        }
+        updatePageInfo({
+          sum: 1
+        })
+      })
+  }
+  _goBack() {
     this.props.router.goBack()
     this.props.backBreadNav()
   }
@@ -194,7 +223,7 @@ class Manage extends React.Component {
         }
         addOSData(selectedArry)
       }
-      else{
+      else {
 
       }
     })
@@ -318,7 +347,7 @@ class Manage extends React.Component {
   }
 
   loadSubVTeamList(id, num, relateId) {
-    const {updateSubVTeamId, addUserInVTeam, updatePageInfo, updateSearchInfo} = this.props
+    const {updateSubVTeamId, addUserInVTeam, updatePageInfo, updateSearchInfo,errorMsg} = this.props
 
     updateSubVTeamId({
       id: id,
@@ -380,29 +409,43 @@ class Manage extends React.Component {
   }
 
   addMenu(params) {
-    const {updateSidePageInfo, clearSubVTeamInfo} = this.props
+    const {sidePageInfo, clearEditInfo} = this.props
     let _this = this
-    closeSidePage()
+
+    if (sidePageInfo.status == "editUser" || sidePageInfo.status == "editMenu" || sidePageInfo.status == "addMenu") {
+      _this.props.backBreadNav()
+      closeSidePage()
+    }
+
+    _this.props.pushBreadNav({ name: "新增虚拟组织" })
 
     setTimeout(function () {
       openSidePage(_this, {
         status: "addMenu",
-        width: ""
+        width: "",
+        gateWay:params
       })
     }, 100);
 
-    clearSubVTeamInfo()
+    clearEditInfo({
+      infoName: "editVTeamInfo"
+    })
   }
 
   editMenu(params) {
-    const {updateSidePageInfo, updateSubVTeamInfo, errorMsg} = this.props
+    const {sidePageInfo, updateSubVTeamInfo, errorMsg, addEditInfo} = this.props
     let _this = this
 
-    closeSidePage()
+    if (sidePageInfo.status == "editUser" || sidePageInfo.status == "editMenu" || sidePageInfo.status == "addMenu") {
+      _this.props.backBreadNav()
+      closeSidePage()
+    }
+
     setTimeout(function () {
       openSidePage(_this, {
         status: "editMenu",
-        width: ""
+        width: "",
+        gateWay:params
       })
     }, 100);
 
@@ -410,11 +453,17 @@ class Manage extends React.Component {
     TUI.platform.get("/projectteam/team/" + editIds[editIds.length - 1], function (result) {
       if (result.code == 0) {
         let _d = result.datas[0]
-        updateSubVTeamInfo({
+        console.info(_d)
+        addEditInfo({
+          infoName: "editVTeamInfo",
           relateId: params.id,
           code: _d.team_code,
           name: _d.team_name,
-          note: _d.team_note
+          note: _d.team_note,
+          num:_d.team_users
+        })
+        _this.props.pushBreadNav({
+          name: _d.team_name
         })
       }
       else {
@@ -487,5 +536,6 @@ export default TUI._connect({
   msg: "publicInfo.msgInfo.txt",
   teamId: "manages.detail.id",
   sidePageInfo: "publicInfo.sidePageInfo",
-  data: "manages.data"
+  data: "manages.data",
+  searchInfo:"publicInfo.searchInfo"
 }, Manage)

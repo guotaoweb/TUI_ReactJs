@@ -4,6 +4,7 @@ import * as multyMenu from './multyMenu.actions'
 import * as sideList from './sideList.actions'
 import * as tableList from './tableList.actions'
 import * as pagerList from './pagerList.actions'
+import * as sideContentTest from './sideContentTest.actions'
 
 export default {
     ...multyMenu,
@@ -11,5 +12,6 @@ export default {
     ...fromControl,
     ...sideList,
     ...tableList,
-    ...pagerList
+    ...pagerList,
+    ...sideContentTest
 }

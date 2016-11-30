@@ -6,7 +6,7 @@ import { closeSidePage } from "SidePage"
 
 class EditTeacher extends React.Component {
   render() {
-    const {sidePageInfo, userId, detail, classesData, courseData} = this.props
+    const {sidePageInfo,courseList} = this.props
     let tabs = []
 
     if (sidePageInfo.status == "editTeacher") {
@@ -16,15 +16,11 @@ class EditTeacher extends React.Component {
       tabs.push({ name: "新增教师信息" })
     }
 
-    let course = new Array();
-    course.push({ id: "0", name: "请选择" })
-    for (let i = 0; i < courseData.length; i++) {
-      course.push({ id: courseData[i].Id, name: courseData[i].Name })
-    }
-    let classes = new Array();
-    classes.push({ id: "0", name: "请选择" })
-    for (let i = 0; i < classesData.length; i++) {
-      classes.push({ id: classesData[i].Id, name: classesData[i].Name })
+    let course = [];
+
+    for (let i = 0; i < courseList.length; i++) {
+      let $c = courseList[i]
+      course.push({ id: $c.Id, name: $c.Name })
     }
 
     return (
@@ -33,7 +29,6 @@ class EditTeacher extends React.Component {
           <div>
             <FormControls label="教师姓名" ctrl="input" value="teacherInfo.Name" />
             <FormControls label="所属科目" ctrl="select" options={course} value="teacherInfo.CourseId" />
-            <FormControls label="所属班级" ctrl="select" options={classes} value="teacherInfo.ClassesId" />
             <div className="formControl-btn">
               <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
               <Btn type="submit" txt="确定" href={this.editTeacherInfo.bind(this)} />
@@ -51,6 +46,8 @@ class EditTeacher extends React.Component {
       sidePageInfo,
       successMsg,
       errorMsg,
+      updateTeacherList,
+      addTeacherList
     } = this.props
 
 
@@ -58,16 +55,18 @@ class EditTeacher extends React.Component {
 
     let jsonParam = {
       "Name": editInfo.teacherInfo.Name,
-      "CourseId": editInfo.teacherInfo.CourseId,
-      "ClassesId": editInfo.teacherInfo.ClassesId,
+      "CourseId": editInfo.teacherInfo.CourseId
     }
 
     if (sidePageInfo.status == "editTeacher") {
-      jsonParam["Id"] = editInfo.teacherInfo.Id
-      console.info(jsonParam)
-      TUI.platform.put("/Teacher",jsonParam, function (result) {
+      
+      let _id = editInfo.teacherInfo.Id
+      TUI.platform.put("/Teacher/"+_id,jsonParam, function (result) {
         if (result.code == 0) {
-          setTimeout(function () { successMsg("教师信息编辑成功") }, 800)
+          jsonParam["Id"] = _id
+          jsonParam["Courses"] = editInfo.teacherInfo.CourseIdName
+          updateTeacherList(jsonParam)
+          successMsg("编辑成功")
           _this.goBack()
         }
         else {
@@ -78,7 +77,11 @@ class EditTeacher extends React.Component {
     else {
       TUI.platform.post("/Teacher",jsonParam, function (result) {
         if (result.code == 0) {
-          setTimeout(function () { successMsg("教师信息新增成功") }, 800)
+          jsonParam["Id"] = result.datas
+          jsonParam["Courses"] = editInfo.teacherInfo.CourseIdName
+          jsonParam["UpdateTime"] = TUI.fn.currentTime()
+          addTeacherList(jsonParam)
+          successMsg("新增成功")
           _this.goBack()
         }
         else {
@@ -94,7 +97,9 @@ class EditTeacher extends React.Component {
       infoName: "editTeacher"
     })
 
-    closeSidePage()
+    closeSidePage({
+      id:"editTeacher"
+    })
   }
 }
 
@@ -102,6 +107,5 @@ class EditTeacher extends React.Component {
 export default TUI._connect({
   sidePageInfo: "publicInfo.sidePageInfo",
   editInfo: "formControlInfo.data",
-  courseData: "teacherList.courseData",
-  classesData: "teacherList.classesData"
+  courseList: "courseList.list"
 }, EditTeacher)

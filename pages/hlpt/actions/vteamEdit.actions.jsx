@@ -10,10 +10,10 @@ export function updateVTeamId(id){
 
 
 //根据ID,更新虚拟组列表中的相应信息【4】
-export function updateVTeamListByID(id){
+export function updateVTeamListByID(data){
     return {
         type:"UPDATE_VTEAM_LIST_BYID",
-        id
+        data
     } 
 }
 

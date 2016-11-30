@@ -1,5 +1,3 @@
-import ReactIScroll from 'react-iscroll'
-import iScroll from 'iscroll'
 
 //图片
 import minus from "!url!../../../components/MultyMenu/img/minus.png"
@@ -106,15 +104,12 @@ class PersonMatchPost extends React.Component {
         return (
             <div>
                 <Content3>
-                    <ReactIScroll iScroll={iScroll} options={{
-                        mouseWheel: true,
-                        scrollbars: hasVerticalScroll
-                    }} onRefresh={this.onScrollRefresh.bind(this)}>
+                  
                         <div>
                             <MultyMenu data={odata} type="nocheck" lastdeep="6" color="white" clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
                             <br />
                         </div>
-                    </ReactIScroll>
+              
 
                     <div></div>
                     <div className="t-content_t">

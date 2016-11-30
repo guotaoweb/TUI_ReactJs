@@ -7,6 +7,8 @@ import isRadio from "!url!./img/radio.png"
 import unCheckbox from "!url!./img/uncheckbox.png"
 import isCheckbox from "!url!./img/checkbox.png"
 import cha from "!url!./img/chacha.png"
+import search from "!url!./img/search.png"
+import chag from "!url!./img/chacha-g.png"
 
 import Btn from "Btn"
 
@@ -16,14 +18,14 @@ const onChange = (dateString, { dateMoment, timestamp }) => {
 
 class FormControls extends React.Component {
     render() {
-        const {ctrl, label, type, txt, labelWidth, data, value, onChangeFn, bind} = this.props
+        const {ctrl, label, type, txt, labelWidth, data, value, onChangeFn, bind, selectFn} = this.props
         let bindElem
 
 
 
         if (ctrl == "input") {
             bindElem = <CTRL_INPUT label={label} labelWidth={labelWidth} type={type} value={value} onFocus={this.props.onFocus} onBlur={this.props.onBlur} style={this.props.style} disabled={this.props.disabled} addFn={this.props.addEditInfo
-            } required={this.props.required} data={data} bind={bind} />
+            } required={this.props.required} data={data} bind={bind} selectFn={selectFn} />
         }
         else if (ctrl == "textarea") {
             bindElem = <CTRL_TEXTAREA label={label} labelWidth={labelWidth} value={value} tyle={this.props.style} onFocus={this.props.onFocus} onBlur={this.props.onBlur} style={this.props.style} required={this.props.required} addFn={this.props.addEditInfo
@@ -73,7 +75,8 @@ class CTRL_INPUT extends React.Component {
             disabled,
             value,
             data,
-            bind
+            bind,
+            selectFn
         } = this.props
 
         let _label
@@ -94,14 +97,41 @@ class CTRL_INPUT extends React.Component {
             _value = data[value.split(".")[0]][value.split(".")[1]]
         }
 
+        let _input = []
+        if (type == "select") {
+            _input.push(
+                <div key={"formcontrol-input-search" + data} className="formcontrol-input-select">
+                    <input className={required} type="text" onFocus={onFocus} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} readOnly />
+                    <img src={search} onClick={this._selectFn.bind(this)} />
+                    <img src={chag} className="chachag" />
+                </div>
+            )
+        }
+        else {
+            _input.push(<input key={"formcontrol-input-other" + data} className={required} type={type ? type : "text"} onFocus={onFocus} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} disabled={disabled} />)
+        }
+
         return (
             <div className="t-formControls">
                 {_label}
-                <input className={required} type={type ? type : "text"} onFocus={onFocus} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} disabled={disabled} />
+                {_input}
             </div>
         )
     }
-
+    _selectFn() {
+        const {selectFn, bind,addFn,value} = this.props
+        if (this.props.selectFn) {
+            let _object = value.split(".")
+            let _info = {
+                infoName: _object[0]
+            }
+            for(let key in bind){
+                _info[key] = bind[key]
+            }
+            addFn(_info)
+            selectFn(_info)
+        }
+    }
     _onChange(e) {
         const {value, addFn, data, bind} = this.props
 
@@ -210,6 +240,8 @@ class CTRL_SELECT extends React.Component {
         }
 
         let options = []
+        options.push(<option key={"o-1"} value="-1">请选择</option>)
+
         if (this.props.options) {
             for (var index = 0; index < this.props.options.length; index++) {
                 var $o = this.props.options[index];
@@ -348,7 +380,6 @@ class CTRL_CHECKBOX extends React.Component {
 
     }
 }
-
 
 class CTRL_TIP extends React.Component {
     render() {

@@ -16,7 +16,6 @@ class CourseList extends React.Component {
     const {
       courseList,
       errorMsg,
-      userId,
       sidePageInfo,
       pageInfo,
       delCourse,
@@ -31,7 +30,7 @@ class CourseList extends React.Component {
 
 
     let tblContent = {
-      "thead": { "name1": "序号", "name2": "名称", "name3": "问卷", "name4": "操作" },
+      "thead": { "name1": "序号", "name2": "名称", "name3": "问卷", "name4": "更新时间", "name5": "操作" },
       "tbody": []
     }
 
@@ -41,7 +40,8 @@ class CourseList extends React.Component {
       tblContent.tbody.push({
         "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
         "value2": _d.Name,
-        "value3": "",
+        "value3": _d.Survy,
+        "value4": _d.UpdateTime,
         "fns": [{
           "name": "编辑",
           "fn": function () {
@@ -50,9 +50,11 @@ class CourseList extends React.Component {
               if (result.code == 0) {
                 let _r = result.datas[0]
                 addEditInfo({
-                  infoName:"courseInfo",
+                  infoName: "courseInfo",
                   Id: _r.Id,
-                  Name: _r.Name
+                  Name: _r.Name,
+                  SurvyId: _r.SurvyId,
+                  SurvyIdName: _d.Survy
                 })
               }
               else {
@@ -69,7 +71,7 @@ class CourseList extends React.Component {
           "name": "删除",
           "fn": function () {
             var delFetch = function () {
-              TUI.platform.delete("/Course/"+_d.Id,function (result) {
+              TUI.platform.delete("/Course/" + _d.Id, function (result) {
                 if (result.code == 0) {
                   delCourse(_d.Id)
                 }
@@ -79,7 +81,7 @@ class CourseList extends React.Component {
               })
             }
 
-            openDialog(_this, "是否确定删除【" + _d.team_name + "】", delFetch)
+            openDialog(_this, "是否确定删除【" + _d.Name + "】", delFetch)
           }
         }]
       })
@@ -88,7 +90,7 @@ class CourseList extends React.Component {
     return (
       <div>
         <Content txt="科目列表" addHref={this.addCourseList.bind(this)}>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,200,0,140" />
+          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,200,0,200,140" />
           <Pager fn={this.pageFn.bind(this)} />
         </Content>
         <SidePage>
@@ -102,68 +104,54 @@ class CourseList extends React.Component {
 
   pageFn(index) {
     const {pageInfo, updateCourseData, updatePageInfo} = this.props
-    TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
-      if (result.code == 0) {
-        updateCourseData(result.datas)
-        updatePageInfo({
-          index: index,
-          size: 7,
-          sum: parseInt(result.pagertotal),
-          url: pageInfo.url
-        })
-      }
-      else {
-        updateCourseData([])
-      }
-    })
+    // TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
+    //   if (result.code == 0) {
+    //     updateCourseData(result.datas)
+    //     updatePageInfo({
+    //       index: index,
+    //       size: 7,
+    //       sum: 10,
+    //       url: pageInfo.url
+    //     })
+    //   }
+    //   else {
+    //     updateCourseData([])
+    //   }
+    // })
   }
 
   componentDidMount() {
-    const {
-      addCourseData,
-      updatePageInfo,
-      courseBindSurvy
-    } = this.props
-    //openLoading()
+    const {addCourseList, updatePageInfo, addSurvyList} = this.props
+
+    openLoading()
+
     //获取科目列表
     TUI.platform.get("/Course", function (result) {
       if (result.code == 0) {
-        addCourseData(result.datas)
-        updatePageInfo({
-          index: 1,
-          size: 7,
-          sum: result.pagertotal,
-          url: "/Course"
-        })
+        addCourseList(result.datas)
       }
       else if (result.code == 9) {
-        addCourseData([])
+        addCourseList([])
       }
       else {
         errorMsg(Config.ERROR_INFO[result.code]);
       }
-      //closeLoading()
+      updatePageInfo({
+        index: 1,
+        size: 7,
+        sum: 10,
+        url: "/Course"
+      })
+      closeLoading()
     })
 
     //获取问卷列表
-    TUI.platform.get("/Vote", function (result) {
+    TUI.platform.get("/Survy", function (result) {
       if (result.code == 0) {
-        let _survy = [{
-          id:"0",
-          name:"请选择"
-        }]
-        for (var i = 0; i < result.datas.length; i++) {
-          var $e = result.datas[i];
-          _survy.push({
-            id:$e.Id,
-            name:$e.Name
-          })
-        }
-
-        courseBindSurvy(_survy)
+        addSurvyList(result.datas)
       }
       else if (result.code == 9) {
-        courseBindSurvy([])
+        addSurvyList([])
       }
       else {
         errorMsg(Config.ERROR_INFO[result.code]);
@@ -180,8 +168,7 @@ class CourseList extends React.Component {
 
 
 export default TUI._connect({
-  courseList: "courseList.data",
-  userId: "publicInfo.userInfo.userId",
+  courseList: "courseList.list",
   sidePageInfo: "publicInfo.sidePageInfo",
   pageInfo: "publicInfo.pageInfo"
 }, CourseList) 

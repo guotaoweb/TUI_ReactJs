@@ -30,7 +30,7 @@ const initState = {
     loadStatus: 1, //0 加载中 1加载完成
     pageLoadStatus: 1, //0 加载中 1加载完成
     searchInfo: {
-        id:"",
+        id: "",
         key: "",
         name: "",
         info: ""
@@ -39,7 +39,8 @@ const initState = {
     init: 0, //0 初始化 1 非初始化状态
     isRefreshTable: 0, //0不刷新 1刷新
     side: [],
-    breadNav: []//面包屑
+    breadNav: [],//面包屑
+    hasVerticalScroll: true,//iScroll专用,判断滚动条
 }
 
 export default function manageReducers(state = initState, action) {
@@ -130,7 +131,7 @@ export default function manageReducers(state = initState, action) {
                 pageLoadStatus: action.status
             })
         case "CLEAR_PAGEINFO":
-      
+
             let _id
             if (action.data) {
                 _id = action.data.id ? action.data.id : "index"
@@ -214,8 +215,10 @@ export default function manageReducers(state = initState, action) {
         case "CLEAR_BREAD_NAV":
             return Object.assign({}, state, { breadNav: [] })
         case "BACK_BREAD_NAV":
-            state.breadNav.splice(state.breadNav.length-1, 1)
+            state.breadNav.splice(state.breadNav.length - 1, 1)
             return Object.assign({}, state, { breadNav: eval(JSON.stringify(state.breadNav)) })
+        case "SET_CANVERTICALLYSCROLL":
+            return Object.assign({}, state, { hasVerticalScroll: action.data })
         default: return state
     }
 }

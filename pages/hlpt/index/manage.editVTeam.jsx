@@ -1,7 +1,7 @@
 import Content2 from "Content2"
 import FormControls from "FormControls"
 import Btn from "Btn"
-import {closeSidePage} from "SidePage"
+import { closeSidePage } from "SidePage"
 
 class ManageEditVTeam extends React.Component {
     render() {
@@ -10,12 +10,14 @@ class ManageEditVTeam extends React.Component {
 
         return (
             <Content2 tabs={tabs} key="content2_userEdit">
-                <FormControls label="组织编码" ctrl="input" ref="input1" txt={detail.code} onChange={this.onChangeByCode.bind(this) }/>
-                <FormControls label="组织名称" ctrl="input" ref="input2" txt={detail.name} onChange={this.onChangeByName.bind(this) }/>
-                <FormControls label="组织简介" ctrl="textarea" ref="input3" txt={detail.note} onChange={this.onChangeByNote.bind(this) }/>
-                <div style={{ marginLeft: "70px", paddingTop: "5px" }}>
-                    <Btn type="cancel" txt="取消" href={this.goBack.bind(this) } style={{ float: "left", marginRight: "10px" }} />
-                    <Btn type="check" txt="确定" href={this.editVTeamInfo.bind(this) } style={{ float: "left" }}  />
+                <div>
+                    <FormControls label="组织编码" ctrl="input" ref="input1" value="editVTeamInfo.code"/>
+                    <FormControls label="组织名称" ctrl="input" ref="input2" value="editVTeamInfo.name"/>
+                    <FormControls label="组织简介" ctrl="textarea" ref="input3" value="editVTeamInfo.note"/>
+                    <div className="formControl-btn">
+                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} style={{ float: "left", marginRight: "10px" }} />
+                        <Btn type="check" txt="确定" href={this.editVTeamInfo.bind(this)} style={{ float: "left" }} />
+                    </div>
                 </div>
             </Content2>
         )
@@ -23,19 +25,21 @@ class ManageEditVTeam extends React.Component {
 
     goBack() {
         closeSidePage();
+        this.props.backBreadNav()
     }
 
     editVTeamInfo() {
-        const {sidePageInfo, userId, detail, data, successMsg, errorMsg, teamId, addSubVTeamData, preventSubmit} = this.props
+        const {sidePageInfo, userId, editInfo, data, successMsg, errorMsg, teamId, addSubVTeamData, preventSubmit} = this.props
 
         let _this = this
         let operType,
             _teamId = "",
-            Ids = teamId.split("-"),
-            upperId = Ids.length > 1 ? Ids[Ids.length - 2] : Ids[0]
+            //Ids = teamId.split("-"),
+            upperId = sidePageInfo.gateWay.deep.length > 1 ? sidePageInfo.gateWay.deep[sidePageInfo.gateWay.deep.length - 2] : Ids[0]
         if (sidePageInfo.status == "editMenu") {
             operType = "U"
-            _teamId = Ids.length > 1 ? Ids[Ids.length - 1] : Ids[0]
+            _teamId = sidePageInfo.gateWay.id
+            //Ids.length > 1 ? Ids[Ids.length - 1] : Ids[0]
         }
         else {
             operType = "A"
@@ -53,9 +57,9 @@ class ManageEditVTeam extends React.Component {
             "uid": userId,
             "team_id": _teamId,
             "upper_team_id": upperId,
-            "team_code": detail.code,
-            "team_name": detail.name,
-            "team_note": detail.note,
+            "team_code": editInfo.editVTeamInfo.code,
+            "team_name": editInfo.editVTeamInfo.name,
+            "team_note": editInfo.editVTeamInfo.note,
             "team_icon": "",
             "sort": "999",
             "state": "1",
@@ -63,14 +67,14 @@ class ManageEditVTeam extends React.Component {
             "opertype": operType
         }, function (result) {
             if (result.code == 0) {
-                _this.updateData(data, teamId.split("-"), addSubVTeamData, 0, {
-                    id: operType == "A" ? result.datas[0] : detail.id,
-                    code: detail.code,
-                    name: detail.name,
-                    note: detail.note,
-                    num: operType == "A" ? "0" : detail.num
+                _this.updateData(data, sidePageInfo.gateWay.deep.split("-"), addSubVTeamData, 0, {
+                    id: operType == "A" ? result.datas[0] : editInfo.editVTeamInfo.id,
+                    code: editInfo.editVTeamInfo.code,
+                    name: editInfo.editVTeamInfo.name,
+                    note: editInfo.editVTeamInfo.note,
+                    num: operType == "A" ? "0" : editInfo.editVTeamInfo.num
                 }, operType)
-                closeSidePage()
+                _this.goBack()
                 successMsg("虚拟组" + (operType == "A" ? "新增" : "编辑") + "成功")
             }
             else {
@@ -155,5 +159,6 @@ export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
     userId: "publicInfo.userInfo.userId",
     teamId: "manages.detail.relateId",
-    data: "manages.data"
+    data: "manages.data",
+    editInfo:"formControlInfo.data"
 }, ManageEditVTeam)

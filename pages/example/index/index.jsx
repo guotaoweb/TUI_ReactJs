@@ -6,17 +6,28 @@ import Container from "./container"
 import TipTool from "TipTool"
 import Dialog from "Dialog"
 import ModalDialog from "ModalDialog"
-import Loading from "Loading"  
-import FormControls from "FormControls"  
+import Loading from "Loading"
+import FormControls from "FormControls"
+import Btn from "Btn"
+
 class Index extends React.Component {
   render() {
-    const {children} = this.props
+    const {children, sideContentTest} = this.props
+
+    let _sideContentTest = []
+
+    for (var i = 0; i < sideContentTest.length; i++) {
+      _sideContentTest.push(<FormControls key={"sideContentTest" + i} ctrl="input" style={{ margin: "10px" }} />)
+    }
 
     return (
       <div className="t-page">
         <Side />
         <SideContent>
-          <FormControls ctrl="input" value="test.val" style={{margin:"10px"}}/>
+          <div>
+            <Btn txt="添加" href={this.addTest.bind(this)} style={{margin:"10px"}} />
+            {_sideContentTest}
+          </div>
         </SideContent>
         <Container>
           {children}
@@ -29,10 +40,18 @@ class Index extends React.Component {
     )
   }
 
+  addTest() {
+    this.props.addSideContent({ "name": "1" })
+  }
+
+  componentDidMount() {
+
+  }
 }
 
 export default TUI._connect({
-  pageStatus: "manages.pageStatus"
+  pageStatus: "manages.pageStatus",
+  sideContentTest: "sideContentTest.test"
 }, Index)
 
 

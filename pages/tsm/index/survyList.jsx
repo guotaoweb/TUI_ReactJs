@@ -7,20 +7,21 @@ import { openDialog, closeDialog } from "Dialog"
 import Pager from "Pager"
 import EditSurvy from "./survyList.edit"
 import SurvyBindCourse from "./survyList.bindCourse"
-
+import { openLoading, closeLoading } from "Loading"
 
 class SurvyList extends React.Component {
     render() {
         const {
             survyList,
+            courseList,
             errorMsg,
             sidePageInfo,
             pageInfo,
-            addCourseData
+            addCourseList
         } = this.props
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "名称", "name3": "创建时间", "name4": "操作" },
+            "thead": { "name1": "序号", "name2": "名称", "name3": "描述", "name4": "创建时间", "name5": "操作" },
             "tbody": []
         }
         for (var i = 0; i < survyList.length; i++) {
@@ -29,12 +30,13 @@ class SurvyList extends React.Component {
             tblContent.tbody.push({
                 "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
                 "value2": _d.Name,
-                "value3": _d.UpdateTime,
+                "value3": _d.Desp,
+                "value4": _d.UpdateTime,
                 "fns": [{
                     "name": "编辑",
-                    "fn": function() {
+                    "fn": function () {
                         openContentLoading()
-                        TUI.platform.get("/Vote/" + _d.Id, function(result) {
+                        TUI.platform.get("/Vote/" + _d.Id, function (result) {
                             if (result.code == 0) {
                                 var _d = result.datas[0]
                                 updateEditInfo({
@@ -47,7 +49,7 @@ class SurvyList extends React.Component {
                                 errorMsg(Config.ERROR_INFO[result.code]);
                             }
                             openSidePage(_this, {
-                                id:"survyEdit",
+                                id: "survyEdit",
                                 status: "editSurvy"
                             })
                             closeContentLoading()
@@ -55,35 +57,37 @@ class SurvyList extends React.Component {
                     }
                 }, {
                     "name": "绑定",
-                    "fn": function() {
+                    "fn": function () {
                         openContentLoading()
-                        TUI.platform.get("/Course", function(result) {
-                            if (result.code == 0) {
-                                addCourseData(result.datas)
-                            }
-                            else {
-                                errorMsg(Config.ERROR_INFO[result.code]);
-                            }
-                            openSidePage(_this,{
-                                id:"bindCourse",
-                                status: "survyBindCourse",
-                                width: "400"
+                        if (courseList.length == 0) {
+                            TUI.platform.get("/Course", function (result) {
+                                if (result.code == 0) {
+                                    addCourseList(result.datas)
+                                }
+                                else {
+                                    errorMsg(Config.ERROR_INFO[result.code]);
+                                }
+                                openSidePage(_this, {
+                                    id: "bindCourse",
+                                    status: "survyBindCourse",
+                                    width: "400"
+                                })
+                                closeContentLoading()
                             })
-                            closeContentLoading()
-                        })
+                        }
 
                     }
                 }, {
                     "name": "删除",
-                    "fn": function() {
-                        var delFetch = function() {
+                    "fn": function () {
+                        var delFetch = function () {
                             TUI.platform.post("/projectteam/team", {
                                 "uid": userId,
                                 "team_id": _d.team_id,
                                 "upper_team_id": "-1",
                                 "del_flag": "y",
                                 "opertype": "U"
-                            }, function(result) {
+                            }, function (result) {
                                 if (result.code == 0) {
                                     delTeamList(_d.team_id)
                                 }
@@ -102,30 +106,31 @@ class SurvyList extends React.Component {
         return (
             <div>
                 <Content txt="问卷列表" addHref={this.addSurvy.bind(this)}>
-                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,220,180" />
+                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,300,0,220,180" />
                     <Pager fn={this.pageFn.bind(this)} />
                 </Content>
                 <SidePage id="survyEdit">
-                    <EditSurvy key="survyedit" />
+                    <div></div>
                 </SidePage>
-                <SidePage id="bindCourse" title="绑定科目" href={this.bindCourse.bind(this)}>
-                    <SurvyBindCourse key="survyBindCourse" />
+                <SidePage id="bindCourse" title="绑定科目" addHref={this.bindCourse.bind(this)}>
+                    <div><SurvyBindCourse key="survyBindCourse" /></div>
                 </SidePage>
             </div>
         )
     }
+    //<EditSurvy key="survyedit" />
 
-    bindCourse(){
+    bindCourse() {
         let selected = [],
-        courseList = document.getElementsByClassName("t-c_checkbox")
+            courseList = document.getElementsByClassName("t-c_checkbox")
         for (var i = 0; i < courseList.length; i++) {
             var $c = courseList[i];
-            if($c.getAttribute("data-status")=="selected"){
+            if ($c.getAttribute("data-status") == "selected") {
                 selected.push($c.getAttribute("data-id"))
             }
         }
         closeSidePage({
-            id:"bindCourse"
+            id: "bindCourse"
         })
         console.info(selected)
     }
@@ -133,7 +138,7 @@ class SurvyList extends React.Component {
     pageFn(index) {
         openDialog()
         const {pageInfo, updateSurvyList, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.url.replace("{0}", index), function(result) {
+        TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
             if (result.code == 0) {
                 updateSurvyList(result.datas)
                 updatePageInfo({
@@ -167,15 +172,10 @@ class SurvyList extends React.Component {
         // }, 500)
         //获取虚拟组织列表
         //if (!vteamList) {
-        TUI.platform.get("/Vote", function(result) {
+        openLoading()
+        TUI.platform.get("/Survy", function (result) {
             if (result.code == 0) {
                 addSurvyList(result.datas)
-                updatePageInfo({
-                    index: 1,
-                    size: 7,
-                    sum: 10,
-                    url: ""
-                })
             }
             else if (result.code == 9) {
                 addSurvyList([])
@@ -183,6 +183,13 @@ class SurvyList extends React.Component {
             else {
                 errorMsg(TUI.ERROR_INFO[result.code]);
             }
+            closeLoading()
+            updatePageInfo({
+                index: 1,
+                size: 7,
+                sum: 10,
+                url: ""
+            })
         })
     }
 
@@ -197,6 +204,7 @@ class SurvyList extends React.Component {
 
 export default TUI._connect({
     survyList: "survyList.list",
+    courseList: "courseList.list",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo"
 }, SurvyList)

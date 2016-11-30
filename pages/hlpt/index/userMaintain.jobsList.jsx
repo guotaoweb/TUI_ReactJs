@@ -49,7 +49,7 @@ class UserMaintainJobsList extends React.Component {
                             else {
                                 errorMsg(result.message);
                             }
-                            closeSidePage()
+                            _this._closeSidePage()
                         })
                     }
                 }, {
@@ -72,7 +72,7 @@ class UserMaintainJobsList extends React.Component {
         }
         return (
             <div>
-                <div className="t-content_t" style={{ marginTop: "-20px" }}>
+                <div className="t-content_t">
                     <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />职位列表</span>
                 </div>
                 <Table id="userMaintainJobsListTable" num="10" tblContent={tblContent} width="50,200,0,0,100,80" />

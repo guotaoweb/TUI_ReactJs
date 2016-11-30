@@ -95,10 +95,10 @@ export default function manageReducers(state = initState, action) {
         case "UPDATE_SUB_VTEAM_USER_TO_LIST":
             for (var i = 0; i < state.users.length; i++) {
                 var $user = state.users[i]
-                if ($user.id == state.userDetail.id) {
-                    $user.user_note = state.userDetail.role
-                    $user.user_type = state.userDetail.admin
-                    $user.sort = state.userDetail.sort
+                if ($user.id == action.data.id) {
+                    $user.user_note = action.data.user_note
+                    $user.user_type = action.data.user_type
+                    $user.sort = action.data.sort
                 }
             }
             return Object.assign({}, state, {

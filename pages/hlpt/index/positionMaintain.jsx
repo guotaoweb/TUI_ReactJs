@@ -1,7 +1,3 @@
-import ReactIScroll from 'react-iscroll'
-import iScroll from 'iscroll'
-
-
 //图片
 import minus from "!url!../../../components/MultyMenu/img/minus.png"
 import singleLeft from "!url!./img/singleLeft.png"
@@ -71,10 +67,6 @@ class PositionMaintain extends React.Component {
                                     if (result.code == 0) {
                                         let _data = result.data
                                         let newData = []
-                                        newData.push({
-                                            id: "-1",
-                                            name: "请选择"
-                                        })
                                         for (var i = 0; i < _data.length; i++) {
                                             var $d = _data[i];
                                             newData.push({
@@ -143,16 +135,10 @@ class PositionMaintain extends React.Component {
         return (
             <div>
                 <Content3>
-                    <ReactIScroll iScroll={iScroll} options={{
-                        mouseWheel: true,
-                        scrollbars: hasVerticalScroll
-                    }} onRefresh={this.onScrollRefresh.bind(this)}>
-                        <div>
-                            <MultyMenu data={odata} type="nocheck" lastdeep="6" color="white" clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
-                            <br />
-                        </div>
-                    </ReactIScroll>
-
+                    <div>
+                        <MultyMenu data={odata} type="nocheck" lastdeep="6" color="white" clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
+                        <br />
+                    </div>
                     <div></div>
                     <div className="t-content_t">
                         <span>职位维护列表</span>
@@ -183,14 +169,10 @@ class PositionMaintain extends React.Component {
         )
     }
 
-    onScrollRefresh(iScrollInstance, $this) {
-        this.props.setCanVerticallyScroll(iScrollInstance.hasVerticalScroll)
-    }
-
     _searchPositionMaintain(val) {
         let {searchInfo, addPositionMaintain, updatePageInfo, errorMsg} = this.props
-        val = "/positions?unitId=" + searchInfo.key + "&positionName=" + val + "&from=0&limit=10"
-        TUI.platform.get(val, function (result) {
+        val = "/positions?unitId=" + searchInfo.key + "&positionName=" + val + "&from={0}&limit=10"
+        TUI.platform.get(val.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 addPositionMaintain(result.data)
             }
@@ -204,7 +186,7 @@ class PositionMaintain extends React.Component {
                 index: 1,
                 size: 10,
                 sum: result._page ? result._page.total : 1,
-                url: "/positions?positionName=" + val + "&from={0}&limit=10"
+                url: val
             })
         })
     }
@@ -292,10 +274,7 @@ class PositionMaintain extends React.Component {
             if (result.code == 0) {
                 let _data = result.data
                 let newData = []
-                newData.push({
-                    id: "-1",
-                    name: "请选择"
-                })
+
                 for (var i = 0; i < _data.length; i++) {
                     var $d = _data[i];
                     newData.push({
@@ -345,7 +324,7 @@ class PositionMaintain extends React.Component {
             infoName: "rolesInfo",
             status: "list"
         })
-        this.props.addBreadNav({name:"职位维护"})
+        this.props.addBreadNav({ name: "职位维护" })
     }
 
     addPositionMaintainBtn() {

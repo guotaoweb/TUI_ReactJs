@@ -1,6 +1,3 @@
-import ReactIScroll from 'react-iscroll'
-import iScroll from 'iscroll'
-
 import Btn from "Btn"
 import { closeSidePage } from "SidePage"
 import MultyMenu from "MultyMenu"
@@ -18,37 +15,30 @@ class DataPrivilegesDataMenu extends React.Component {
                     <Btn style={{ float: "right" }} txt="保存" href={this.saveOrgnizationSelected.bind(this)} />
                 </div>
                 <div ref="scrollContent">
-                    <ReactIScroll iScroll={iScroll} options={{
-                        mouseWheel: true,
-                        scrollbars: hasVerticalScroll
-                    }} onRefresh={this.onScrollRefresh.bind(this)}>
+               
                         <div>
                             <MultyMenu data={odata} sdata={osdata} openSubMenu={this.openSubMenu.bind(this)} type="allcheck" lastdeep="5" color="dark" style={{ marginTop: "10px" }} />
                             <br />
                         </div>
-                    </ReactIScroll>
+           
                 </div>
             </div>
         )
     }
 
     componentDidMount() {
-        let $scrollContent = ReactDOM.findDOMNode(this.refs.scrollContent)
-        let header = document.querySelector(".t-header")
-        header = header ? header.offsetHeight : 0
-        let contentTitle = document.querySelector(".t-content_t")
-        contentTitle = contentTitle ? contentTitle.offsetHeight : 0
-        $scrollContent.style.height = document.documentElement.clientHeight - header - contentTitle + "px"
+        // let $scrollContent = ReactDOM.findDOMNode(this.refs.scrollContent)
+        // let header = document.querySelector(".t-header")
+        // header = header ? header.offsetHeight : 0
+        // let contentTitle = document.querySelector(".t-content_t")
+        // contentTitle = contentTitle ? contentTitle.offsetHeight : 0
+        // $scrollContent.style.height = document.documentElement.clientHeight - header - contentTitle + "px"
     }
 
     _closeSidePage() {
         const {clearOSData} = this.props
         clearOSData()
         closeSidePage()
-    }
-
-    onScrollRefresh(iScrollInstance, $this) {
-        this.props.setCanVerticallyScroll(iScrollInstance.hasVerticalScroll)
     }
 
     saveOrgnizationSelected() {

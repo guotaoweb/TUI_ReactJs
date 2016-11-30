@@ -1,11 +1,13 @@
 import '!style!css!postcss!sass!./style.scss'
 
+import ScrollArea from 'react-scrollbar';
+
 import Btn from "Btn"
 import loading from "!url!./img/loading.png"
 
-class Content extends React.Component {
+class Content3 extends React.Component {
   render() {
-    const {tabs, side} = this.props
+    const {tabs, side, hasVerticalScroll} = this.props
     let tabsArry = []
     if (this.props.tabs) {
       for (var index = 0; index < tabs.length; index++) {
@@ -22,7 +24,18 @@ class Content extends React.Component {
     return (
       <div className="t-content3" ref="tContent3">
         <div className="t-content3_side" ref="tContent3Side">
-          {this.props.children[0]}
+          <ScrollArea
+            className="area"
+            contentClassName="content"
+            speed={Config.SCROLL.speed}
+            smoothScrolling={Config.SCROLL.smoothScrolling}
+            minScrollSize={Config.SCROLL.minScrollSize}
+            verticalScrollbarStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+            verticalContainerStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+            ref={(component) => { this.scrollAreaSideComponent = component } }
+            >
+            {this.props.children[0]}
+          </ScrollArea>
         </div>
         <div className="t-content3_c">
 
@@ -33,13 +46,26 @@ class Content extends React.Component {
                 <img src={loading} />
               </div>
             </div>
-            {this.props.children[2]}
-            {this.props.children[3]}
-            {this.props.children[4]}
+            <ScrollArea
+              className="area"
+              contentClassName="content"
+              speed={Config.SCROLL.speed}
+              smoothScrolling={Config.SCROLL.smoothScrolling}
+              minScrollSize={Config.SCROLL.minScrollSize}
+              verticalScrollbarStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+              verticalContainerStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+              ref={(component) => { this.scrollAreaComponent = component } }
+              >
+              <div>
+                {this.props.children[2]}
+                {this.props.children[3]}
+                {this.props.children[4]}
+              </div>
+            </ScrollArea>
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   componentDidMount() {
@@ -50,11 +76,24 @@ class Content extends React.Component {
 
     let tip = ReactDOM.findDOMNode(this.refs.tblContent).previousSibling.offsetHeight
     tip = tip > 0 ? tip + 30 : 20;
+
     ReactDOM.findDOMNode(this.refs.tblContent).style.height = (allHeight - headerHeight - tip) + "px"
+
+    this.scrollAreaSideComponent.wrapper.style.height = (allHeight - headerHeight) + "px"
+    if (this.scrollAreaSideComponent) {
+      this.scrollAreaSideComponent.scrollArea.refresh()
+    }
+
+    this.scrollAreaComponent.wrapper.style.height = (allHeight - headerHeight - tip) + "px"
+    if (this.scrollAreaComponent) {
+      this.scrollAreaComponent.scrollArea.refresh()
+    }
   }
 };
 
-export default Content;
+export default TUI._connect({
+  hasVerticalScroll: "publicInfo.hasVerticalScroll"
+}, Content3)
 
 export function openContentLoading() {
   let sidepage = document.querySelector(".t-content-loading")

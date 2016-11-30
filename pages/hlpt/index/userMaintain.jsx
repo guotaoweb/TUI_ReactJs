@@ -1,5 +1,3 @@
-import ReactIScroll from 'react-iscroll'
-import iScroll from 'iscroll'
 
 //图片
 import minus from "!url!../../../components/MultyMenu/img/minus.png"
@@ -39,10 +37,10 @@ class UserMaintain extends React.Component {
 
                 "fns": [{
                     "name": "编辑",
-                    "fn": function() {
+                    "fn": function () {
                         openContentLoading()
 
-                        TUI.platform.get("/staff/" + _d.staffId, function(result) {
+                        TUI.platform.get("/staff/" + _d.staffId, function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
                                 addEditInfo({
@@ -67,7 +65,7 @@ class UserMaintain extends React.Component {
                                 })
 
 
-                                TUI.platform.get("/staff/unit/" + _d.staffId, function(result) {
+                                TUI.platform.get("/staff/unit/" + _d.staffId, function (result) {
                                     if (result.code == 0) {
                                         _this.props.addDefaultUnit(result.data)
                                     }
@@ -90,9 +88,9 @@ class UserMaintain extends React.Component {
                     }
                 }, {
                     "name": "删除",
-                    "fn": function() {
-                        let delFetch = function() {
-                            TUI.platform.patch("/staff/" + _d.staffId, function(result) {
+                    "fn": function () {
+                        let delFetch = function () {
+                            TUI.platform.patch("/staff/" + _d.staffId, function (result) {
                                 if (result.code == 0) {
                                     _this.props.successMsg("用户删除成功")
                                     _this.props.deleteUserMaintain(_d.staffId)
@@ -117,15 +115,12 @@ class UserMaintain extends React.Component {
         return (
             <div>
                 <Content3>
-                    <ReactIScroll iScroll={iScroll} options={{
-                        mouseWheel: true,
-                        scrollbars: hasVerticalScroll
-                    }} onRefresh={this.onScrollRefresh.bind(this)}>
+  
                         <div>
                             <MultyMenu data={odata} type="nocheck" lastdeep="6" color="white" clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
                             <br />
                         </div>
-                    </ReactIScroll>
+               
 
                     <div></div>
                     <div className="t-content_t">
@@ -144,20 +139,19 @@ class UserMaintain extends React.Component {
                     </div>
                 </Content3>
                 <SidePage>
-                    <UserMaintainEdit key="userMaintain_edit" />
+                    <div>
+                        <UserMaintainEdit key="userMaintain_edit" />
+                    </div>
                 </SidePage>
             </div >
         )
     }
 
-    onScrollRefresh(iScrollInstance, $this) {
-        this.props.setCanVerticallyScroll(iScrollInstance.hasVerticalScroll)
-    }
 
     _searchUserMaintain(val) {
         let {searchInfo, addUserMaintain, updatePageInfo, errorMsg} = this.props
         val = "/staffs?loginName=" + val + "&unitId=" + searchInfo.key + "&from=0&limit=10"
-        TUI.platform.get(val, function(result) {
+        TUI.platform.get(val, function (result) {
             if (result.code == 0) {
                 addUserMaintain(result.data)
             }
@@ -183,7 +177,7 @@ class UserMaintain extends React.Component {
         this.props.refreshTable()
         openLoading()
         //获取组织根节点,且默认展开第一个父节点
-        TUI.platform.get("/units/tree/0", function(result) {
+        TUI.platform.get("/units/tree/0", function (result) {
             if (result.code == 0) {
                 let node = []
                 for (let index = 0; index < result.data.length; index++) {
@@ -211,7 +205,7 @@ class UserMaintain extends React.Component {
                 _this.loadUser(firtNodeId);
 
                 //展开第一个节点的一级子节点
-                TUI.platform.get("/units/tree/" + firtNodeId, function(result) {
+                TUI.platform.get("/units/tree/" + firtNodeId, function (result) {
                     if (result.code == 0) {
 
                         for (var i = 0; i < _this.props.odata.length; i++) {
@@ -298,7 +292,7 @@ class UserMaintain extends React.Component {
     loadUser(id) {
         const {errorMsg, addUserMaintain, updatePageInfo, clearPageInfo, updateSearchInfo} = this.props
         let url = id ? "/staffs?unitId=" + id + "&from={0}&limit=10" : "/staffs?from={0}&limit=10"
-        TUI.platform.get(url.replace("{0}", "0"), function(result) {
+        TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addUserMaintain(result.data)
             }
@@ -418,7 +412,7 @@ class UserMaintain extends React.Component {
             let d = _data[index]
 
             if (d.id == id) {
-                TUI.platform.get("/units/tree/" + id, function(result) {
+                TUI.platform.get("/units/tree/" + id, function (result) {
                     if (result.code == 0) {
                         let children = []
                         let _deep = parseInt(deep) + 1
@@ -435,7 +429,7 @@ class UserMaintain extends React.Component {
                             })
                         }
                         d.children = children
-                        setTimeout(function() { loadComplete() }, 1000)
+                        setTimeout(function () { loadComplete() }, 1000)
                     }
                 })
                 break
@@ -446,7 +440,7 @@ class UserMaintain extends React.Component {
 
     pageFn(index, loadComplete) {
         const {pageInfo, addUserMaintain, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function(result) {
+        TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
             if (result.code == 0) {
                 addUserMaintain(result.data)
                 updatePageInfo({

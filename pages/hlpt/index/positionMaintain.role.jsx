@@ -95,7 +95,7 @@ class PositionMaintainRole extends React.Component {
         }
         return (
             <div>
-                <div style={{ borderBottom: "1px solid #ebebeb", height: "60px", lineHeight: "60px", marginTop: "-20px" }}>
+                <div style={{ borderBottom: "1px solid #ebebeb", height: "50px", lineHeight: "50px",marginTop:"-10px"}}>
                     <span style={{ float: "left", fontSize: "20px" }}>
                         <img src={back} onClick={this.goBack.bind(this)} style={{ width: "25px", height: "25px", verticalAlign: "middle", marginTop: "-3px", cursor: "pointer" }} />
                         角色列表

@@ -12,3 +12,9 @@ export const ERROR_INFO = {
 }    
 export const DEFAULT_OPEN_SIDE = [0,0]
 export const VERSION = "Version 1.0.0(20161103)"
+export const SCROLL = {
+    speed:0.8,
+    smoothScrolling:true,
+    minScrollSize:40,
+    scrollRadius:5
+}

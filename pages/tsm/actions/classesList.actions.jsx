@@ -1,42 +1,34 @@
 //添加班级列表数据【1】
-export function addClassesData(data){
+export function addClassesList(data){
     return {
-        type:"ADD_CLASSES_DATA",
+        type:"ADD_CLASSES_LIST",
         data
     }
 }
 
 //根据ID删除班级【2】
-export function delClassesList(id){
+export function deleteClassesList(id){
     return {
-        type:"DELETE_CLASSES_BYID",
+        type:"DELETE_CLASSES_List",
         id
     } 
 }
 
 //更新班级【3】
-export function updateClassesData(data){
+export function updateClassesList(data){
     return {
-        type:"UPDATE_CLASSES_DATA",
+        type:"UPDATE_CLASSES_LIST",
         data
     } 
 }
 
-//更新班级实体信息【6】
-export function updateClassesInfo(data){
+export function loadClassesList(data){
     return {
-        type:"UPDATE_CLASSES_INFO",
+        type:"LOAD_CLASSES_LIST",
         data
     } 
 }
 
-//清除班级实体信息【7】
-export function clearClassesInfo(data){
-    return {
-        type:"CLEAR_CLASSES_INFO",
-        data
-    } 
-}
 
 
 

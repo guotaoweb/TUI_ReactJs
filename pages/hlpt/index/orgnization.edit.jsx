@@ -59,7 +59,7 @@ class OrgnizationEdit extends React.Component {
                 "unitName": editInfo.orgnizationInfo.unitName,
                 "ext2": editInfo.orgnizationInfo.ext2,
                 "bizType": editInfo.orgnizationInfo.bizType,
-                "kind": editInfo.orgnizationInfo.kind,
+                "kind": editInfo.orgnizationInfo.kind=="-1"?"":editInfo.orgnizationInfo.kind,
                 "status": editInfo.orgnizationInfo.status,
                 "areaCode": editInfo.orgnizationInfo.areaCode,
                 "email": editInfo.orgnizationInfo.email,
@@ -73,7 +73,7 @@ class OrgnizationEdit extends React.Component {
 
             TUI.platform.post("/unit", postJson, function (result) {
                 if (result.code == 0) {
-                    closeSidePage()
+                    _this.goBack()
                     _this.props.successMsg("新增组织成功")
                     postJson.unitId = result.data.unitId
                     postJson.unitCode = result.data.unitCode
@@ -116,7 +116,7 @@ class OrgnizationEdit extends React.Component {
 
             TUI.platform.put("/unit", postJson, function (result) {
                 if (result.code == 0) {
-                    closeSidePage()
+                    _this.goBack()
                     _this.props.successMsg("编辑组织成功");
                     postJson["statusName"] = editInfo.orgnizationInfo.statusName
                     //实时更新组织

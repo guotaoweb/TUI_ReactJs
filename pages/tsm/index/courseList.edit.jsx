@@ -15,18 +15,25 @@ class EditCourse extends React.Component {
     else {
       tabs.push({ name: "新增科目信息" })
     }
-    console.info(survyList)
+   let _survyList = []
+   for (var i = 0; i < survyList.length; i++) {
+     var $s = survyList[i];
+     _survyList.push({
+       name:$s.Name,
+       id:$s.Id
+     })
+   }
     return (
       <div>
         <Content2 tabs={tabs}>
           <div>
             <FormControls label="科目名称" ctrl="input" value="courseInfo.Name" />
-            <FormControls label="绑定问卷" ctrl="select" options={survyList} value="courseInfo.survyId" />
+            <FormControls label="绑定问卷" ctrl="select" options={_survyList} value="courseInfo.SurvyId" />
             <div className="formControl-btn">
               <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
               <Btn type="submit" txt="确定" href={this.editCourseInfo.bind(this)} />
             </div>
-          </div>
+          </div>  
         </Content2>
       </div>
     )
@@ -38,19 +45,24 @@ class EditCourse extends React.Component {
       editInfo,
       sidePageInfo,
       successMsg,
-      errorMsg
+      errorMsg,
+      updateCourseList,
+      addCourseList
     } = this.props
 
     let _this = this,
       jsonParam = {
-        Name: editInfo.courseInfo.Name
+        Name: editInfo.courseInfo.Name,
+        SurvyId: editInfo.courseInfo.SurvyId
       }
 
 
-    if (sidePageInfo.status == "editCourse") {
-      TUI.platform.put("/Course/" + _id, jsonParam, function (result) {
+    if (sidePageInfo.status == "addCourse") {
+      TUI.platform.post("/Course", jsonParam, function (result) {
         if (result.code == 0) {
-          setTimeout(function () { successMsg("虚拟组新增成功") }, 800)
+          jsonParam["Id"] =result.datas
+          addCourseList(jsonParam)
+          successMsg("新增成功")
           _this.goBack()
         }
         else {
@@ -60,10 +72,12 @@ class EditCourse extends React.Component {
     }
     else {
       let _id = editInfo.courseInfo.Id
-      TUI.platform.post("/Course", jsonParam, function (result) {
+      TUI.platform.put("/Course/"+_id, jsonParam, function (result) {
         if (result.code == 0) {
-          setTimeout(function () { successMsg("虚拟组编辑成功") }, 800)
-
+          jsonParam["Id"] =_id
+          jsonParam["Survy"] =editInfo.courseInfo.SurvyIdName
+          successMsg("编辑成功")
+          updateCourseList(jsonParam)
           _this.goBack()
         }
         else {
@@ -90,5 +104,5 @@ export default TUI._connect({
   userId: "publicInfo.userInfo.id",
   sidePageInfo: "publicInfo.sidePageInfo",
   editInfo: "formControlInfo.data",
-  survyList:"courseList.survyList"
+  survyList:"survyList.list"
 }, EditCourse)

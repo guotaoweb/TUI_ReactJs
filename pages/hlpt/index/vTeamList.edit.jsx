@@ -1,7 +1,7 @@
 import Content2 from "Content2"
 import Btn from "Btn"
 import FormControls from "FormControls"
-import {closeSidePage} from "SidePage"
+import { closeSidePage } from "SidePage"
 
 
 class EditVTeam extends React.Component {
@@ -20,12 +20,12 @@ class EditVTeam extends React.Component {
       <div>
         <Content2 tabs={tabs}>
           <div>
-            <FormControls label="组织编码" ctrl="input" value="VTeamInfo.code"/>
-            <FormControls label="组织名称" ctrl="input" value="VTeamInfo.name"/>
-            <FormControls label="组织简介" ctrl="textarea" value="VTeamInfo.note"/>
+            <FormControls label="组织编码" ctrl="input" value="VTeamInfo.code" />
+            <FormControls label="组织名称" ctrl="input" value="VTeamInfo.name" />
+            <FormControls label="组织简介" ctrl="textarea" value="VTeamInfo.note" />
             <div className="formControl-btn">
-              <Btn type="cancel" txt="取消" href={this.goPrevPage.bind(this) } style={{ float: "left", marginRight: "10px" }} />
-              <Btn type="check" txt="确定" href={this.editVTeamInfo.bind(this) } style={{ float: "left" }}  />
+              <Btn type="cancel" txt="取消" href={this.goPrevPage.bind(this)} style={{ float: "left", marginRight: "10px" }} />
+              <Btn type="check" txt="确定" href={this.editVTeamInfo.bind(this)} style={{ float: "left" }} />
             </div>
           </div>
         </Content2>
@@ -35,7 +35,7 @@ class EditVTeam extends React.Component {
 
 
   editVTeamInfo() {
-    const {editInfo, sidePageInfo, userId, successMsg, errorMsg, updateVTeamListByID, updateVTeamData, preventSubmit,waiteMsg} = this.props
+    const {editInfo, sidePageInfo, userId, successMsg, errorMsg, updateVTeamListByID, updateVTeamData, preventSubmit, waiteMsg} = this.props
 
     let _this = this,
       operType,
@@ -63,22 +63,22 @@ class EditVTeam extends React.Component {
       "opertype": operType
     }, function (result) {
       if (result.code == 0) {
+        let _addData = {
+          team_id: teamId,
+          team_code: editInfo.VTeamInfo.code,
+          team_name: editInfo.VTeamInfo.name,
+          team_note: editInfo.VTeamInfo.note,
+          admins: {}
+        }
         if (operType == "U") {
-          setTimeout(function(){successMsg("虚拟组编辑成功")},800)
+          setTimeout(function () { successMsg("虚拟组编辑成功") }, 800)
+          updateVTeamListByID(_addData)
         }
         else {
-          setTimeout(function(){successMsg("虚拟组新增成功")},800)
-          let _addData = {
-            team_id: result.datas[0],
-            team_code: editInfo.VTeamInfo.code,
-            team_name: editInfo.VTeamInfo.name,
-            team_note: editInfo.VTeamInfo.note,
-            admins: {} 
-          }
- 
+          _addData.team_id =result.datas[0]
+          setTimeout(function () { successMsg("虚拟组新增成功") }, 800)
           updateVTeamData(_addData)
         }
-        updateVTeamListByID(teamId)
         _this.goPrevPage()
       }
       else {
@@ -90,8 +90,8 @@ class EditVTeam extends React.Component {
   goPrevPage() {
     const {clearEditInfo} = this.props
     setTimeout(function () {
-      clearEditInfo({ 
-        infoName:"VTeamInfo"
+      clearEditInfo({
+        infoName: "VTeamInfo"
       })
       closeSidePage()
     }, 0)

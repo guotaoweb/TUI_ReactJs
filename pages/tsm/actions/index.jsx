@@ -4,7 +4,8 @@ import * as teacherList from './teacherList.actions'
 import * as courseList from './courseList.actions'
 import * as classesList from './classesList.actions'
 import * as survyList from './survyList.actions'
-
+import * as voteList from './voteList.actions'
+import * as gradeList from './gradeList.actions'
 
 export default {
     ...teacherList,
@@ -12,5 +13,7 @@ export default {
     ...classesList,
     ...survyList,
     ...publicActions,
-    ...fromControl
+    ...fromControl,
+    ...voteList,
+    ...gradeList
 }

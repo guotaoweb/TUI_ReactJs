@@ -1,66 +1,52 @@
 import 'babel-polyfill'
 
 const initState = {
-    data: "",
-    detail: {
-        id: "",
-        name: "",
-    }
+    list: ""
 }
 
 export default function classesListReducers(state = initState, action) {
     switch (action.type) {
-        case "ADD_CLASSES_DATA":
-            return Object.assign({}, state, { data: action.data })
-        case "UPDATE_CLASSES_DATA":
-            if (state.data) {
-                state.data.push(action.data)
+        case "ADD_CLASSES_LIST":
+            if (state.list.length == 0) {
+                return Object.assign({}, state, { list: action.data })
+            } else {
+                state
+                    .list
+                    .push(action.data)
+                return Object.assign({}, state, {
+                    list: JSON.parse(JSON.stringify(state.list))
+                })
             }
-            return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
-        case "UPDATE_CLASSES_INFO":
+        case "LOAD_CLASSES_LIST":
             return Object.assign({}, state, {
-                detail: {
-                    id: action.data.id ? action.data.id : state.detail.id,
-                    name: action.data.name? action.data.name : state.detail.name
-                }
+                list: JSON.parse(JSON.stringify(action.data))
             })
-        case "CLEAR_CLASSES_INFO":
+        case "DELETE_CLASSES_LIST":
+            for (let i = 0; i < state.list.length; i++) {
+                let $d = state.list[i]
+                if ($d.Id == action.id) {
+                    state
+                        .list
+                        .splice(i, 1)
+                }
+            }
             return Object.assign({}, state, {
-                detail: {
-                    id: state.detail.id,
-                    name: ""
-                }
+                list: eval(JSON.stringify(state.list))
             })
-        case "UPDATE_CLASSES_ID":
-            return Object.assign({}, state, {
-                detail: {
-                    id: action.id,
-                    name: ""
-                }
-            })
+        case "UPDATE_CLASSES_LIST":
+            for (let i = 0; i < state.list.length; i++) {
+                let $d = state.list[i]
 
-        case "UPDATE_CLASSES_LIST_BYID":
-            for (var i = 0; i < state.data.length; i++) {
-                var _d = state.data[i]
-                if (_d.id == state.detail.id) {
-                    _d.name = state.detail.name
-                    break
-                }
-            }
-
-            return Object.assign({}, state, {
-                data: eval(JSON.stringify(state.data))
-            })
-        case "DELETE_CLASSES_BYID":
-            for (var i = 0; i < state.data.length; i++) {
-                var _d = state.data[i]
-                if (_d.id == action.id) {
-                    state.data.splice(i, 1)
+                if ($d.Id == action.data.Id) {
+                    $d.Name = action.data.Name
+                    $d.Grade = action.data.Grade
+                    $d.Number = action.data.Number
                 }
             }
             return Object.assign({}, state, {
-                data: eval(JSON.stringify(state.data))
+                list: eval(JSON.stringify(state.list))
             })
-        default: return state
+        default:
+            return state
     }
 }

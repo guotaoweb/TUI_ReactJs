@@ -1,4 +1,4 @@
-import Content2 from "Content2"
+import Content2,{openContentLoading,closeContentLoading} from "Content2"
 import FormControls from "FormControls"
 import Btn from "Btn"
 import { closeSidePage } from "SidePage"
@@ -49,6 +49,7 @@ class PositionMaintainEdit extends React.Component {
                     {userEditStatus}
                     <FormControls label="中文名" ctrl="input" value="userMaintainInfo.name" required="required" />
                     <FormControls label="员工号" ctrl="input" value="userMaintainInfo.staffCode" />
+                    <FormControls label="岗位编码" ctrl="input" value="userMaintainInfo.empNumber" />
                     <FormControls label="默认组织" ctrl="select" options={defaultUnit} value="userMaintainInfo.ext5" />
                     <FormControls label="员工类型" ctrl="select" options={kind} value="userMaintainInfo.kind" />
                     <FormControls label="账户状态" ctrl="select" options={userStatus} value="userMaintainInfo.status" />
@@ -96,6 +97,7 @@ class PositionMaintainEdit extends React.Component {
                 sort: editInfo.userMaintainInfo.sort ? editInfo.userMaintainInfo.sort : "9999",//排序号
                 ext2: editInfo.userMaintainInfo.isShow ? editInfo.userMaintainInfo.isShow : 1,//是否显示
                 staffCode: editInfo.userMaintainInfo.staffCode,
+                empNumber: editInfo.userMaintainInfo.empNumber,
                 kind: editInfo.userMaintainInfo.kind,
                 ext5: editInfo.userMaintainInfo.ext5
             }
@@ -103,7 +105,7 @@ class PositionMaintainEdit extends React.Component {
         if (sidePageInfo.status == "addUserMaintain") {
             TUI.platform.post("/staff", postJson, function (result) {
                 if (result.code == 0) {
-                    closeSidePage()
+                    _this.goBack()
                     successMsg("新增用户成功")
                     postJson.positionNames = result.data.positionNames //职位
                     postJson.unitName = result.data.unitExt2 //默认组织
@@ -119,7 +121,7 @@ class PositionMaintainEdit extends React.Component {
             postJson.delFlag = "n"
             TUI.platform.put("/staff", postJson, function (result) {
                 if (result.code == 0) {
-                    closeSidePage()
+                    _this.goBack()
                     successMsg("编辑用户成功");
                     postJson.ext5Name = editInfo.userMaintainInfo.ext5Name
                     updateUserMaintain(postJson)
@@ -171,6 +173,7 @@ class PositionMaintainEdit extends React.Component {
         const {errorMsg, addUserMaintainJobsList, editInfo, updatePageInfo} = _this.props
         let id = editInfo.userMaintainInfo.uId
         let _url = "/dutys?staffId=" + id + "&from={0}&limit=10"
+        openContentLoading()
         TUI.platform.get(_url.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 addUserMaintainJobsList(result.data)
@@ -185,6 +188,7 @@ class PositionMaintainEdit extends React.Component {
             else {
                 errorMsg(result.message);
             }
+            closeContentLoading()
         })
 
     }

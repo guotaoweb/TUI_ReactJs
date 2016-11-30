@@ -21,10 +21,7 @@ export default function manageReducers(state = initState, action) {
                 let $d = state.data[i]
                 if ($d.positionId == action.data.positionId) {
                     $d.positionName = action.data.positionName
-                    $d.kindName = action.data.kindName
-                    $d.unitShortName = action.data.unitShortName
                     $d.statusName = action.data.statusName
-                    $d.staffing = action.data.staffing
                     $d.staffing = action.data.staffing
                 }
             }

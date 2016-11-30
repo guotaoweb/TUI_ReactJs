@@ -202,5 +202,11 @@ export function clearBreadNav(data){
     } 
 }
 
+export function setCanVerticallyScroll(data) {
+    return {
+        type: "SET_CANVERTICALLYSCROLL",
+        data
+    }
+}
 
 

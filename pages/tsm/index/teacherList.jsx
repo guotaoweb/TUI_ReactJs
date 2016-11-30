@@ -5,35 +5,36 @@ import singleLeft from "!url!./img/singleLeft.png"
 import Content from "Content"
 import Btn from "Btn"
 import Table from "Table"
-import MultyMenu, { clearCheckBox, updateCheckBoxStatus } from "MultyMenu"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import { openDialog, closeDialog } from "Dialog"
 import Pager, { pageLoadCompelte } from "Pager"
 import EditTeacher from "./teacherList.edit"
-
+import TeacherInClasses from "./teacherList.inClasses"
+import { openLoading, closeLoading } from "Loading"
 
 class TeacherList extends React.Component {
   render() {
     const {
       teacherList,
+      courseList,
       errorMsg,
-      updateSidePageInfo,
-      userId, 
-      history,
       sidePageInfo,
       addEditInfo,
-      pageInfo
+      pageInfo,
+      addCourseList,
+      addTeacherInClasses,
+      deleteTeacherList
     } = this.props
 
     let _this = this
 
-    let SidePageContent
-    if (sidePageInfo.status == "editTeacher" || sidePageInfo.status == "addTeacher") {
-      SidePageContent = <EditTeacher key="teacherListedit" />
-    }
+    // let SidePageContent
+    // if (sidePageInfo.status == "editTeacher" || sidePageInfo.status == "addTeacher") {
+    //   SidePageContent = <EditTeacher key="teacherListedit" />
+    // }
 
     let tblContent = {
-      "thead": { "name1": "序号", "name2": "名称", "name3": "科目", "name4": "班级", "name5": "操作" },
+      "thead": { "name1": "序号", "name2": "名称", "name3": "科目", "name4": "更新时间", "name5": "操作" },
       "tbody": []
     }
 
@@ -43,8 +44,8 @@ class TeacherList extends React.Component {
       tblContent.tbody.push({
         "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
         "value2": _d.Name,
-        "value3": _d.Course,
-        "value4": _d.Classes,
+        "value3": _d.Courses,
+        "value4": _d.UpdateTime,
         "fns": [{
           "name": "编辑",
           "fn": function () {
@@ -53,14 +54,14 @@ class TeacherList extends React.Component {
                 var _r = result.datas[0]
 
                 addEditInfo({
-                  infoName:"teacherInfo",
+                  infoName: "teacherInfo",
                   Id: _r.Id,
                   Name: _r.Name,
-                  CourseId: _r.CourseId,
-                  ClassesId: _r.ClassesId
+                  CourseId: _r.CourseId
                 })
-                openSidePage(_this,{
-                  status:"editTeacher"
+                openSidePage(_this, {
+                  id: "editTeacher",
+                  status: "editTeacher"
                 })
               }
               else {
@@ -69,9 +70,25 @@ class TeacherList extends React.Component {
             })
           }
         }, {
-          "name": "管理",
+          "name": "详细信息",
           "fn": function () {
-            history.push(Config.ROOTPATH + "manage/" + _d.team_id)
+            TUI.platform.get("/TeacherInClasses/" + _d.Id, function (result) {
+              if (result.code == 0) {
+                var _r = result.datas
+                addTeacherInClasses(_r)
+              }
+              else {
+                errorMsg(Config.ERROR_INFO[result.code]);
+              }
+              openSidePage(_this, {
+                id: "teacherInClasses",
+                status: "teacherInClasses",
+                width: "500",
+                gateWay:{
+                  Name:_d.Name
+                }
+              })
+            })
           }
         }, {
           "name": "删除",
@@ -79,14 +96,14 @@ class TeacherList extends React.Component {
             var delFetch = function () {
               TUI.platform.delete("/Teacher/" + _d.Id, function (result) {
                 if (result.code == 0) {
-                  delTeacher(_d.team_id)
+                  deleteTeacherList(_d.Id)
                 }
                 else {
                   errorMsg(Config.ERROR_INFO[result.code]);
                 }
               })
             }
-            openDialog(_this,"是否确定删除【" + _d.team_name + "】",delFetch)
+            openDialog(_this, "是否确定删除【" + _d.Name + "】", delFetch)
           }
         }]
       })
@@ -95,12 +112,17 @@ class TeacherList extends React.Component {
     return (
       <div>
         <Content txt="教师列表" addHref={this.addTeacherList.bind(this)}>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,120,120,120" />
+          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,250,250,180" />
           <Pager fn={this.pageFn.bind(this)} />
         </Content>
-        <SidePage>
+        <SidePage id="editTeacher">
           <div>
-            {SidePageContent}
+            <EditTeacher />
+          </div>
+        </SidePage>
+        <SidePage id="teacherInClasses" title="教师任教列表">
+          <div>
+            <TeacherInClasses />
           </div>
         </SidePage>
       </div>
@@ -109,75 +131,69 @@ class TeacherList extends React.Component {
 
   pageFn(index) {
     const {pageInfo, updateVTeamData, updatePageInfo} = this.props
-    TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
-      if (result.code == 0) {
-        updateVTeamData(result.datas)
-        updatePageInfo({
-          index: index,
-          size: 7,
-          sum: parseInt(result.pagertotal),
-          url: pageInfo.url
-        })
-      }
-      else {
-        updateVTeamData([])
-      }
-    })
+    // TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
+    //   if (result.code == 0) {
+    //     updateVTeamData(result.datas)
+    //     updatePageInfo({
+    //       index: index,
+    //       size: 7,
+    //       sum: parseInt(result.pagertotal),
+    //       url: pageInfo.url
+    //     })
+    //   }
+    //   else {
+    //     updateVTeamData([])
+    //   }
+    // })
   }
 
   componentDidMount() {
-    const {addTeacherData, alertMsg, teacherList, updatePageInfo, addClassesData, addCourseData} = this.props
-
+    const {addTeacherList, errorMsg, teacherList, updatePageInfo, addCourseList, courseList} = this.props
+    openLoading()
     //获取教师列表
     TUI.platform.get("/Teacher", function (result) {
       if (result.code == 0) {
-        addTeacherData(result.datas)
+        addTeacherList(result.datas)
         updatePageInfo({
           index: 1,
           size: 7,
-          sum: result.pagertotal,
-          url: "/projectteam/teams/all/{0}/7"
+          sum: 10,
+          url: "/Teacher"
         })
       }
       else if (result.code == 1) {
-        addTeacherData([])
+        addTeacherList([])
       }
       else {
         errorMsg(Config.ERROR_INFO[result.code]);
       }
+      closeLoading()
     })
 
-    //获取班级列表
-    TUI.platform.get("/Classes", function (result) {
-      if (result.code == 0) {
-        var _d = result.datas
-        addClassesData(_d)
-      }
-      else {
-        errorMsg(Config.ERROR_INFO[result.code]);
-      }
-    })
+    if (courseList.length == 0) {
+      //获取科目列表
+      TUI.platform.get("/Course", function (result) {
+        if (result.code == 0) {
+          var _d = result.datas
+          addCourseList(_d)
+        }
+        else {
+          errorMsg(Config.ERROR_INFO[result.code]);
+        }
+      })
+    }
 
-    //获取科目列表
-    TUI.platform.get("/Course", function (result) {
-      if (result.code == 0) {
-        var _d = result.datas
-        addCourseData(_d)
-      }
-      else {
-        errorMsg(Config.ERROR_INFO[result.code]);
-      }
-    })
+
   }
 
   addTeacherList() {
     const {clearEditInfo} = this.props
 
     clearEditInfo({
-      infoName:"teacherInfo"
+      infoName: "teacherInfo"
     })
 
-    openSidePage(this,{
+    openSidePage(this, {
       status: "addTeacher",
       width: ""
     })
@@ -186,8 +202,8 @@ class TeacherList extends React.Component {
 
 
 export default TUI._connect({
-  teacherList: "teacherList.data",
-  userId: "publicInfo.userInfo.userId",
+  teacherList: "teacherList.list",
+  courseList: "courseList.list",
   sidePageInfo: "publicInfo.sidePageInfo",
   pageInfo: "publicInfo.pageInfo"
 }, TeacherList)

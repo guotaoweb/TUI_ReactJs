@@ -5,6 +5,7 @@ import Container from "./container"
 import TipTool from "TipTool"
 import Dialog from "Dialog"
 import ModalDialog from "ModalDialog"
+import Loading from "Loading"
 
 class Index extends React.Component {
   render() {
@@ -19,6 +20,7 @@ class Index extends React.Component {
         <TipTool/> 
         <Dialog/>
         <ModalDialog/>
+        <Loading />
       </div>
     )
   }
