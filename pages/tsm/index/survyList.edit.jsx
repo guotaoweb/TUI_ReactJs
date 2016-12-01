@@ -50,6 +50,7 @@ class EditSurvy extends React.Component {
 
     goBack() {
         closeSidePage()
+        this.props.backBreadNav()
     }
 
     componentDidMount() {

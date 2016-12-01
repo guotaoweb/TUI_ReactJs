@@ -171,6 +171,7 @@ class PositionMaintainEdit extends React.Component {
         if (jobsData) {
             this.getPositionMaintainJobs()
         }
+
         if (editInfo.jobsInfo.status == "edit" || editInfo.jobsInfo.status == "add") {
             this.props.backBreadNav()
             this.props.updateEditInfo({

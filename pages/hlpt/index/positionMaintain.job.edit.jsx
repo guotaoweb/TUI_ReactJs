@@ -112,13 +112,14 @@ class PositionMaintainEdit extends React.Component {
     }
 
     goBack() {
+        this.props.clearEditInfo({
+            infoName:"jobsInfo"
+        })
         this.props.updateEditInfo({
             infoName:"jobsInfo",
             status: "list"
         })
-        this.props.clearEditInfo({
-            infoName:"jobsInfo"
-        })
+
         this.props.backBreadNav()
     }
 

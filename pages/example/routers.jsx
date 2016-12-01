@@ -30,7 +30,7 @@ class Routers extends React.Component {
         return (
             <Router history={history}>
                 <Route path={Config.ROOTPATH} component={Index}>
-                    <IndexRoute component={Input} />
+                    <IndexRoute component={_Slide} />
                     <Route path={Config.ROOTPATH + "layout1"} component={Layout1} />
                     <Route path={Config.ROOTPATH + "layout2"} component={Layout2} />
                     <Route path={Config.ROOTPATH + "layout3"} component={Layout3} />

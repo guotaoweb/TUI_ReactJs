@@ -6,7 +6,7 @@ import { closeSidePage } from "SidePage"
 
 class EditCourse extends React.Component {
   render() {
-    const {sidePageInfo,survyList} = this.props
+    const {sidePageInfo, survyList} = this.props
     let tabs = []
 
     if (sidePageInfo.status == "editCourse") {
@@ -15,14 +15,14 @@ class EditCourse extends React.Component {
     else {
       tabs.push({ name: "新增科目信息" })
     }
-   let _survyList = []
-   for (var i = 0; i < survyList.length; i++) {
-     var $s = survyList[i];
-     _survyList.push({
-       name:$s.Name,
-       id:$s.Id
-     })
-   }
+    let _survyList = []
+    for (var i = 0; i < survyList.length; i++) {
+      var $s = survyList[i];
+      _survyList.push({
+        name: $s.Name,
+        id: $s.Id
+      })
+    }
     return (
       <div>
         <Content2 tabs={tabs}>
@@ -33,7 +33,7 @@ class EditCourse extends React.Component {
               <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
               <Btn type="submit" txt="确定" href={this.editCourseInfo.bind(this)} />
             </div>
-          </div>  
+          </div>
         </Content2>
       </div>
     )
@@ -60,7 +60,9 @@ class EditCourse extends React.Component {
     if (sidePageInfo.status == "addCourse") {
       TUI.platform.post("/Course", jsonParam, function (result) {
         if (result.code == 0) {
-          jsonParam["Id"] =result.datas
+          jsonParam["Id"] = result.datas
+          jsonParam["Survy"] = editInfo.courseInfo.SurvyIdName
+          jsonParam["UpdateTime"] = TUI.fn.currentTime()
           addCourseList(jsonParam)
           successMsg("新增成功")
           _this.goBack()
@@ -72,10 +74,10 @@ class EditCourse extends React.Component {
     }
     else {
       let _id = editInfo.courseInfo.Id
-      TUI.platform.put("/Course/"+_id, jsonParam, function (result) {
+      TUI.platform.put("/Course/" + _id, jsonParam, function (result) {
         if (result.code == 0) {
-          jsonParam["Id"] =_id
-          jsonParam["Survy"] =editInfo.courseInfo.SurvyIdName
+          jsonParam["Id"] = _id
+          jsonParam["Survy"] = editInfo.courseInfo.SurvyIdName
           successMsg("编辑成功")
           updateCourseList(jsonParam)
           _this.goBack()
@@ -90,12 +92,13 @@ class EditCourse extends React.Component {
   }
 
   goBack() {
-    const {clearEditInfo} = this.props
+    const {clearEditInfo, backBreadNav} = this.props
 
     clearEditInfo({
       infoName: "courseInfo"
     })
     closeSidePage()
+    backBreadNav()
   }
 }
 
@@ -104,5 +107,5 @@ export default TUI._connect({
   userId: "publicInfo.userInfo.id",
   sidePageInfo: "publicInfo.sidePageInfo",
   editInfo: "formControlInfo.data",
-  survyList:"survyList.list"
+  survyList: "survyList.list"
 }, EditCourse)

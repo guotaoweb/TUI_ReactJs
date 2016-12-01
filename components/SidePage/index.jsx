@@ -68,9 +68,10 @@ class SidePage extends React.Component {
             sidePageInfo: sidePageInfo,
             content3SideWidth: document.querySelector(".t-content3_side") ? document.querySelector(".t-content3_side").offsetWidth : 0
         }
-
-        this.scrollAreaSidePageComponent.wrapper.style.height = ($obj.allHeight-60) + "px"
- 
+        let _scrollWrapper = this.scrollAreaSidePageComponent.wrapper
+        let _scrollContent = this.scrollAreaSidePageComponent.content
+        _scrollWrapper.style.height = ($obj.allHeight) + "px"
+        _scrollContent.style.height = ($obj.allHeight) + "px"
         if (this.scrollAreaSidePageComponent) {
             this.scrollAreaSidePageComponent.scrollArea.refresh()
         }
@@ -149,7 +150,7 @@ export function openSidePage(_this, params) {
     _this
         .props
         .updateSidePageInfo({ status: params.status, width: params.width, gateWay: params.gateWay, type: params.type, id: params.id })
-    setTimeout(function() {
+    setTimeout(function () {
         let $sidepage = document.querySelector(".t-sidepage")
         let $sidepagemin = document.querySelector(".t-sidepage_min")
         if (params.id) {

@@ -51,6 +51,7 @@ class TipTool extends React.Component {
 
     setTimeout(function () {
       alertMsg("")
+      $tipTool.style.display = "none"
     }, hideTime+300)
   }
   render() {

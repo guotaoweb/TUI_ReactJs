@@ -97,12 +97,6 @@ class _Side extends React.Component {
                 name: "breadNav",
                 url: Config.ROOTPATH + "breadNav"
             }]
-        }, {
-            id: "3",
-            name: "常用插件",
-            url: "breadNav",
-            icon: xnzz,
-            sicon: xnzzs
         }]
         this.props.addSide(list)
     }

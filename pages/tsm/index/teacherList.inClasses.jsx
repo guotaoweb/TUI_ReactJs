@@ -25,8 +25,8 @@ class TeacherInClasses extends React.Component {
          <h2 style={{
            width:"100%",
            height:"50px",
-           lineHeight:"50px",
-           padding:"10px",
+           lineHeight:"40px",
+           paddingLeft:"5px",
            borderBottom: "1px solid #ebebeb"
           }}>
            {sidePageInfo.gateWay?sidePageInfo.gateWay.Name:"空"}

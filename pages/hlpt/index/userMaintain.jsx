@@ -61,7 +61,9 @@ class UserMaintain extends React.Component {
                                     isShow: _data.ext2,//是否显示
                                     kind: _data.kind,
                                     staffCode: _data.staffCode,
-                                    ext5: _data.ext5
+                                    ext5: _data.ext5,
+                                    ext5Name:_d.unitName,
+                                    empNumber:_data.empNumber
                                 })
 
 

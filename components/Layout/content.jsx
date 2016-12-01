@@ -64,10 +64,14 @@ class Content extends React.Component {
         let marginTop = 15
         let _height = allHeight - headerHeight - marginTop * 2
         ReactDOM.findDOMNode(this.refs.tContent).style.height = _height + "px"
-        
-        this.scrollAreaComponent.wrapper.style.height = (allHeight - headerHeight - 80) + "px"
         ReactDOM.findDOMNode(this.refs.tContent).style.marginTop = marginTop + "px"
-
+        let _scrollWrapper = this.scrollAreaComponent.wrapper
+        let _scrollContent = this.scrollAreaComponent.content
+        _scrollWrapper.style.height = (allHeight - headerHeight - 80) + "px"
+     
+        if(_scrollContent.offsetHeight<_scrollWrapper.offsetHeight){
+            _scrollContent.style.height = (allHeight - headerHeight - 80) + "px"
+        }
         if (this.scrollAreaComponent) {
             this.scrollAreaComponent.scrollArea.refresh()
         }

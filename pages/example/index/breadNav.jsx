@@ -8,12 +8,14 @@ class _BreadNav extends React.Component {
         const {breadNav} = this.props
         return (
             <Content txt="面包屑">
-                <BreadNav data={breadNav} />
-                <br />
-                <div className="formControl-btn" style={{ marginLeft: "0px" }}>
-                    <Btn type="add" txt="pushBreadnav" href={this._pushBreadNav.bind(this)} />
-                    <Btn type="add" txt="backBreadnav" href={this._backBreadnav.bind(this)} />
-                    <Btn type="add" txt="clearBreadnav" href={this._clearBreadnav.bind(this)} />
+                <div className="t-content-padding">
+                    <BreadNav data={breadNav} />
+                    <br />
+                    <div className="formControl-btn" style={{ marginLeft: "0px" }}>
+                        <Btn type="add" txt="pushBreadnav" href={this._pushBreadNav.bind(this)} />
+                        <Btn type="add" txt="backBreadnav" href={this._backBreadnav.bind(this)} />
+                        <Btn type="add" txt="clearBreadnav" href={this._clearBreadnav.bind(this)} />
+                    </div>
                 </div>
             </Content>
         )

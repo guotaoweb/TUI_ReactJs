@@ -40,7 +40,7 @@ export default function teacherListReducers(state = initState, action) {
 
                 if ($d.Id == action.data.Id) {
                     $d.Name = action.data.Name
-                    $d.Coures = action.data.Coures
+                    $d.Courses = action.data.Courses
                 }
             }
             return Object.assign({}, state, {

@@ -29,6 +29,13 @@ export function loadClassesList(data){
     } 
 }
 
+export function bindVote(data){
+    return {
+        type:"CLASSES_BIND_VOTE",
+        data
+    } 
+}
+
 
 
 

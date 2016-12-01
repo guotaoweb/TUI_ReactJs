@@ -19,7 +19,8 @@ class CourseList extends React.Component {
       sidePageInfo,
       pageInfo,
       delCourse,
-      addEditInfo
+      addEditInfo,
+      pushBreadNav
     } = this.props
 
     let SidePageContent,
@@ -38,7 +39,7 @@ class CourseList extends React.Component {
       let _d = courseList[i]
 
       tblContent.tbody.push({
-        "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
+        "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
         "value2": _d.Name,
         "value3": _d.Survy,
         "value4": _d.UpdateTime,
@@ -56,6 +57,7 @@ class CourseList extends React.Component {
                   SurvyId: _r.SurvyId,
                   SurvyIdName: _d.Survy
                 })
+                pushBreadNav({name:_d.Name})
               }
               else {
                 errorMsg(config.ERROR_INFO[result.code]);
@@ -104,33 +106,34 @@ class CourseList extends React.Component {
 
   pageFn(index) {
     const {pageInfo, updateCourseData, updatePageInfo} = this.props
-    // TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
-    //   if (result.code == 0) {
-    //     updateCourseData(result.datas)
-    //     updatePageInfo({
-    //       index: index,
-    //       size: 7,
-    //       sum: 10,
-    //       url: pageInfo.url
-    //     })
-    //   }
-    //   else {
-    //     updateCourseData([])
-    //   }
-    // })
+    TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
+      if (result.code == 0) {
+        updateCourseData(result.datas)
+        updatePageInfo({
+          index: index,
+          size: 7,
+          sum: result.total,
+          url: pageInfo.index.url
+        })
+      }
+      else {
+        updateCourseData([])
+      }
+    })
   }
 
   componentDidMount() {
-    const {addCourseList, updatePageInfo, addSurvyList} = this.props
-
+    const {addCourseList, updatePageInfo, addSurvyList,addBreadNav,survyList} = this.props
+    addBreadNav({name:"科目列表"})
     openLoading()
 
     //获取科目列表
-    TUI.platform.get("/Course", function (result) {
+    let _url = "/Course?pageIndex={0}&pageSize=10"
+    TUI.platform.get(_url.replace("{0}", 1), function (result) {
       if (result.code == 0) {
         addCourseList(result.datas)
       }
-      else if (result.code == 9) {
+      else if (result.code == 1) {
         addCourseList([])
       }
       else {
@@ -138,37 +141,43 @@ class CourseList extends React.Component {
       }
       updatePageInfo({
         index: 1,
-        size: 7,
-        sum: 10,
-        url: "/Course"
+        size: 10,
+        sum: result.total,
+        url: _url
       })
       closeLoading()
     })
 
-    //获取问卷列表
-    TUI.platform.get("/Survy", function (result) {
-      if (result.code == 0) {
-        addSurvyList(result.datas)
-      }
-      else if (result.code == 9) {
-        addSurvyList([])
-      }
-      else {
-        errorMsg(Config.ERROR_INFO[result.code]);
-      }
-    })
+    if (survyList.length == 0) {
+      //获取问卷列表
+      TUI.platform.get("/Survy", function (result) {
+        if (result.code == 0) {
+          addSurvyList(result.datas)
+        }
+        else if (result.code == 1) {
+          addSurvyList([])
+        }
+        else {
+          errorMsg(Config.ERROR_INFO[result.code]);
+        }
+      })
+    }
   }
 
   addCourseList() {
+    const {pushBreadNav} = this.props
     openSidePage(this, {
       status: "addCourse"
     })
+
+    pushBreadNav({name:"新增科目"})
   }
 }
 
 
 export default TUI._connect({
   courseList: "courseList.list",
+  survyList: "survyList.list",
   sidePageInfo: "publicInfo.sidePageInfo",
   pageInfo: "publicInfo.pageInfo"
 }, CourseList) 

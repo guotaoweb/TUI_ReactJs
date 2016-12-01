@@ -36,7 +36,7 @@ class Content2 extends React.Component {
                     let id = tabs[i] ? tabs[i].id : "none_children_" + i
                     children.push(React.cloneElement($c, { style: { display: i > 0 ? "none" : "block" }, key: id, className: id + " t_contemt_c" }))
                 }
-                //setTimeout(function () { bindEvent(_this) }, 500)
+                setTimeout(function () { bindEvent(_this) }, 500)
 
             }
         }
@@ -52,13 +52,13 @@ class Content2 extends React.Component {
                     </ul>
                     <div ref="tContent2SubDiv">
                         <ScrollArea
-                    className="area"
-                    contentClassName="content"
-                    speed={Config.SCROLL.speed}
-                    smoothScrolling={Config.SCROLL.smoothScrolling}
-                    minScrollSize={Config.SCROLL.minScrollSize}
-                    verticalScrollbarStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
-                    verticalContainerStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+                            className="area"
+                            contentClassName="content"
+                            speed={Config.SCROLL.speed}
+                            smoothScrolling={Config.SCROLL.smoothScrolling}
+                            minScrollSize={Config.SCROLL.minScrollSize}
+                            verticalScrollbarStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+                            verticalContainerStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
                             ref={(component) => { this.scrollAreaComponent = component } }
                             >
                             <div>
@@ -102,36 +102,38 @@ export function bindEvent($this) {
 
 
     //let bodyScrollHeight = document.documentElement.scrollHeight
+    let _fn = function () {
+        console.info("====++++")
+        let _this = this
+        let tabId = this.getAttribute("data-bind")
+        let nodes = TUI.fn.siblingsElem(tabId)
+        document.querySelector(".t-contetn2_tab--active").className = "t-content2_tab"
+        _this.className = _this.className + " " + "t-contetn2_tab--active"
+        for (var index = 0; index < nodes.length; index++) {
+            var $n = nodes[index];
+            $n.style.display = "none"
+        }
 
+        let _content = document.querySelector("." + tabId)
+        _content.style.display = "block"
+        _content.style.paddingBottom = "10px"
+        if (_content.offsetHeight > _content.parentNode.parentNode.parentNode.offsetHeight) {
+            $this.props.setCanVerticallyScroll(true)
+        }
+        else {
+            $this.props.setCanVerticallyScroll(false)
+        }
+    }
+    
     //为tabs绑定事件
     let contentTabs = document.getElementsByClassName("t-content2_tab")
     for (var i = 0; i < contentTabs.length; i++) {
         var $t = contentTabs[i]
 
-        $t.addEventListener("click", function() {
-            let _this = this
-            let tabId = this.getAttribute("data-bind")
-            let nodes = TUI.fn.siblingsElem(tabId)
-            document.querySelector(".t-contetn2_tab--active").className = "t-content2_tab"
-            _this.className = _this.className + " " + "t-contetn2_tab--active"
-            for (var index = 0; index < nodes.length; index++) {
-                var $n = nodes[index];
-                $n.style.display = "none"
-            }
-
-            let _content = document.querySelector("." + tabId)
-            _content.style.display = "block"
-            _content.style.paddingBottom = "10px"
-            if (_content.offsetHeight > _content.parentNode.parentNode.parentNode.offsetHeight) {
-                $this.props.setCanVerticallyScroll(true)
-            }
-            else {
-                $this.props.setCanVerticallyScroll(false)
-            }
-        })
+        //console.info($t)
+        $t.removeEventListener("click", _fn)
+        $t.addEventListener("click", _fn)
     }
-
-
 }
 
 export function getContentIndex(index) {
@@ -167,11 +169,11 @@ export function openContentLoading() {
 }
 
 export function closeContentLoading() {
-    setTimeout(function() {
+    setTimeout(function () {
         let sidepage = document.querySelector(".t-content-loading")
         sidepage.style["transition"] = "opacity 200ms ease"
         sidepage.style.opacity = "0"
-        setTimeout(function() {
+        setTimeout(function () {
             sidepage.style.display = "none"
         }, 201)
     }, 500)

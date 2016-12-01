@@ -38,8 +38,8 @@ class PositionMaintainRoleEdit extends React.Component {
     }
 
     editPositionMaintainRole() {
-        const {updatePositionMaintainRoles,tips, sidePageInfo, errorMsg, successMsg, editInfo, pushPositionMaintainRoles, jobsSelectedData} = this.props
-  
+        const {updatePositionMaintainRoles, tips, sidePageInfo, errorMsg, successMsg, editInfo, pushPositionMaintainRoles, jobsSelectedData} = this.props
+
         let _positionId = [],
             _this = this
         for (let i = 0; i < tips.length; i++) {
@@ -137,13 +137,14 @@ class PositionMaintainRoleEdit extends React.Component {
     }
 
     goBack() {
+        this.props.clearEditInfo({
+            infoName: "rolesInfo"
+        })
         this.props.updateEditInfo({
             infoName: "rolesInfo",
             status: "list"
         })
-        this.props.clearEditInfo({
-            infoName: "rolesInfo"
-        })
+
         this.props.clearTip()
         closeSidePage({
             id: "PositionMaintainRoleEdit"

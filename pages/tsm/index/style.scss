@@ -41,3 +41,24 @@
         margin-right: 5px;
     }
 }
+
+.voteBindClassesStatusBar{
+    width:100%;
+    height:30px;
+    border-bottom:1px solid #ebebeb;
+    li{
+        float:left;
+        width:50%;
+        height:30px;
+        line-height: 30px;
+        text-align: center;
+        background-color:#ebebeb;
+        cursor:pointer;
+    }
+    li:first-child{
+        border-right:1px solid #ebebeb;
+    }
+    li.activity{
+        background-color:white;
+    }
+}

@@ -28,7 +28,7 @@ class EditClasses extends React.Component {
     let courseInput = []
     for (let i = 0; i < courseList.length; i++) {
       let $c = courseList[i];
-      courseInput.push(<FormControls key={"course_"+i} label={$c.Name} ctrl="input" value={"classesInfo.CourseName"+i} />)
+      courseInput.push(<FormControls key={"course_"+i} label={$c.Name} ctrl="input" type="select" value={"classesInfo.CourseName"+i} />)
     }
 
     return (
@@ -57,7 +57,8 @@ class EditClasses extends React.Component {
       jsonParam = {
         Name: editInfo.classesInfo.Name,
         Number: editInfo.classesInfo.Number,
-        GradeId: editInfo.classesInfo.GradeId
+        GradeId: editInfo.classesInfo.GradeId,
+        ClassesRelated:[]
       }
 
     if (sidePageInfo.status == "addClasses") {
@@ -96,7 +97,7 @@ class EditClasses extends React.Component {
     clearEditInfo({
       infoName: "classesInfo"
     })
-    closeSidePage()
+    closeSidePage({id:"editClass"})
   }
 }
 

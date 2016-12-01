@@ -5,6 +5,7 @@ import Table from "Table"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import { openDialog, closeDialog } from "Dialog"
 import Pager from "Pager"
+import { openLoading, closeLoading } from "Loading"
 import EditVote from "./voteList.edit"
 import VoteBindClasses from "./voteList.bindClasses"
 
@@ -19,7 +20,8 @@ class VoteList extends React.Component {
             updateEditInfo,
             deleteVoteList,
             successMsg,
-            classesList
+            classesList,
+            pushBreadNav
         } = this.props
         let _this = this
         let tblContent = {
@@ -39,7 +41,7 @@ class VoteList extends React.Component {
             tblContent
                 .tbody
                 .push({
-                    "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
+                    "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                     "value2": _d.Name,
                     "value3": _d.VotedNumber,
                     "value4": _d.IsStart == 0
@@ -51,49 +53,57 @@ class VoteList extends React.Component {
                             "name": "编辑",
                             "fn": function () {
                                 openContentLoading()
-                                TUI
-                                    .platform
-                                    .get("/Vote/" + _d.Id, function (result) {
-                                        if (result.code == 0) {
-                                            var _d = result.datas[0]
-                                            updateEditInfo({
-                                                infoName: "voteInfo",
-                                                Name: _d.Name,
-                                                IsStart: _d.IsStart == "0"
-                                                    ? "是"
-                                                    : "否",
-                                                IsStartindex: _d.IsStart,
-                                                Id: _d.Id
-                                            })
-                                        } else {
-                                            errorMsg(Config.ERROR_INFO[result.code]);
-                                        }
+                                TUI.platform.get("/Vote/" + _d.Id, function (result) {
+                                    if (result.code == 0) {
+                                        var _d = result.datas[0]
+                                        updateEditInfo({
+                                            infoName: "voteInfo",
+                                            Name: _d.Name,
+                                            IsStart: _d.IsStart,
+                                            Id: _d.Id
+                                        })
                                         openSidePage(_this, {
                                             id: "survyEdit",
                                             status: "editVote"
                                         })
-                                        closeContentLoading()
-                                    })
+                                        pushBreadNav({ name: _d.Name })
+                                    } else {
+                                        errorMsg(Config.ERROR_INFO[result.code]);
+                                    }
+
+                                    closeContentLoading()
+
+                                })
                             }
                         }, {
                             "name": "绑定班级",
                             "fn": function () {
-                                if (classesList.length == 0) {
+                                //if (classesList.length == 0) {
                                     openContentLoading()
                                     TUI.platform.get("/Classes", function (result) {
                                         if (result.code == 0) {
                                             addClassesList(result.datas)
+                                            openSidePage(_this, {
+                                                id: "bindClasses",
+                                                status: "bindClasses",
+                                                width: "400",
+                                                gateWay:{
+                                                    Id: _d.Id
+                                                }
+                                            })
                                         } else {
                                             errorMsg(Config.ERROR_INFO[result.code]);
                                         }
                                         closeContentLoading()
                                     })
-                                }
-                                openSidePage(_this, {
-                                    id: "bindClasses",
-                                    status: "bindClasses",
-                                    width: "400"
-                                })
+                                // }
+                                // else {
+                                //     openSidePage(_this, {
+                                //         id: "bindClasses",
+                                //         status: "bindClasses",
+                                //         width: "400"
+                                //     })
+                                // }
                             }
                         }, {
                             "name": "删除",
@@ -121,7 +131,7 @@ class VoteList extends React.Component {
         return (
             <div>
                 <Content
-                    txt="问卷列表"
+                    txt="投票列表"
                     addHref={this
                         .addVote
                         .bind(this)}>
@@ -141,7 +151,7 @@ class VoteList extends React.Component {
                     addHrefTxt="一键绑定"
                     editHref={this.bindClasses.bind(this)}
                     editHrefTxt="绑定">
-                    <VoteBindClasses key="bindClasses" />
+                    <div><VoteBindClasses key="bindClasses" /></div>
                 </SidePage>
             </div>
         )
@@ -172,45 +182,51 @@ class VoteList extends React.Component {
     }
 
     pageFn(index) {
-        openDialog()
         const {pageInfo, updateVoteList, updatePageInfo} = this.props
-        TUI
-            .platform
-            .get(pageInfo.url.replace("{0}", index), function (result) {
-                if (result.code == 0) {
-                    updateVoteList(result.datas)
-                    updatePageInfo({ index: index, size: 7, sum: 10, url: pageInfo.url })
-                } else {
-                    updateVoteList([])
-                }
-            })
-    }
-
-    componentDidMount() {
-        const {addVoteList, errorMsg, updatePageInfo} = this.props
-        let _this = this
-
-        TUI.platform.get("/Vote", function (result) {
+        TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
             if (result.code == 0) {
-                addVoteList(result.datas)
-                updatePageInfo({ index: 1, size: 7, sum: 10, url: "" })
-            } else if (result.code == 9) {
-                addVoteList([])
-            } else {
+                updateVoteList(result.datas)
+                updatePageInfo({ index: index, size: 10, sum: result.total, url: pageInfo.index.url })
+            }
+            else if (result.code == 1) { }
+            else {
                 errorMsg(TUI.ERROR_INFO[result.code]);
             }
         })
     }
 
+    componentDidMount() {
+        const {addVoteList, errorMsg, updatePageInfo, addBreadNav} = this.props
+
+        addBreadNav({ name: "投票列表" })
+        openLoading()
+
+        let _this = this
+        let _url = "/Vote?pageIndex={0}&pageSize=10"
+        TUI.platform.get(_url.replace("{0}", 1), function (result) {
+            if (result.code == 0) {
+                addVoteList(result.datas)
+                updatePageInfo({ index: 1, size: 10, sum: result.total, url: _url })
+            } else if (result.code == 9) {
+                addVoteList([])
+            } else {
+                errorMsg(TUI.ERROR_INFO[result.code]);
+            }
+            closeLoading()
+        })
+    }
+
     addVote() {
+        const {addEditInfo, pushBreadNav} = this.props
         openSidePage(this, {
             status: "addVote",
             width: ""
         })
 
         //更新slide组件后,可以删除
-        this.props
-            .addEditInfo({ infoName: "voteInfo", IsStart: "是", IsStartindex: "0" })
+        //addEditInfo({ infoName: "voteInfo", IsStart: "是", IsStartindex: "0" })
+
+        pushBreadNav({ name: "新增投票" })
     }
 }
 

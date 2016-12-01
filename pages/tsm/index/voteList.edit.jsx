@@ -6,7 +6,7 @@ import {closeSidePage} from 'SidePage'
 
 class EditVote extends React.Component {
     render() {
-        const {sidePageInfo} = this.props
+        const {sidePageInfo,editInfo} = this.props
             let tabs = [
                     {
                         name: sidePageInfo.status == "addVote"
@@ -58,10 +58,10 @@ class EditVote extends React.Component {
         }
 
         goBack() {
+            const {clearEditInfo,backBreadNav} = this.props
             closeSidePage()
-            this
-                .props
-                .clearEditInfo({infoName: "voteInfo"})
+            clearEditInfo({infoName: "voteInfo"})
+            backBreadNav()
         }
 
         editVoteList() {
@@ -78,14 +78,12 @@ class EditVote extends React.Component {
 
             let jsonParam = {
                 Name: editInfo.voteInfo.Name,
-                IsStart: parseInt(editInfo.voteInfo.IsStartindex)
+                IsStart: parseInt(editInfo.voteInfo.IsStart)
             },
             _this = this
 
             if (sidePageInfo.status == "addVote") {
-                TUI
-                    .platform
-                    .post("/Vote", jsonParam, function (result) {
+                TUI.platform.post("/Vote", jsonParam, function (result) {
                         if (result.code == 0) {
                             jsonParam["Id"] = result.datas
                             jsonParam["VotedNumber"] = 0

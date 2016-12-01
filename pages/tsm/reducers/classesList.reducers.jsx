@@ -46,6 +46,17 @@ export default function classesListReducers(state = initState, action) {
             return Object.assign({}, state, {
                 list: eval(JSON.stringify(state.list))
             })
+        case "CLASSES_BIND_VOTE":
+            for (let i = 0; i < state.list.length; i++) {
+                let $d = state.list[i]
+                if ($d.Id == action.data.classesId) {
+                    $d.Vote = action.data.VoteName
+                }
+            }
+            return Object.assign({}, state, {
+                list: eval(JSON.stringify(state.list))
+            })
+            
         default:
             return state
     }

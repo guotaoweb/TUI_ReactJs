@@ -9,20 +9,22 @@ import Table from "Table"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import { openDialog, closeDialog } from "Dialog"
 import Pager, { pageLoadCompelte } from "Pager"
-import EditClasses from "./classesList.edit"
 import MultyMenu from "MultyMenu"
 import { openLoading, closeLoading } from "Loading"
+
+import EditClasses from "./classesList.edit"
+import BindVote from "./classesList.bindVote"
 
 class ClassesList extends React.Component {
     render() {
         const {
             errorMsg,
             classesList,
-            courseList,
             gradeList,
+            voteList,
             pageInfo,
             updateEditInfo,
-            addCourseList
+            addVoteList
         } = this.props
 
 
@@ -38,16 +40,16 @@ class ClassesList extends React.Component {
             let _d = classesList[i]
 
             tblContent.tbody.push({
-                "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
+                "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                 "value2": _d.Name,
                 "value3": _d.Number,
                 "value4": _d.Grade,
                 "value5": _d.Vote,
                 "fns": [{
                     "name": "编辑",
-                    "fn": function() {
-
-                        TUI.platform.get("/Classes/" + _d.Id, function(result) {
+                    "fn": function () {
+                        openContentLoading()
+                        TUI.platform.get("/Classes/" + _d.Id, function (result) {
                             if (result.code == 0) {
                                 var _d_ = result.datas[0]
                                 updateEditInfo({
@@ -58,10 +60,8 @@ class ClassesList extends React.Component {
                                     GradeId: _d_.GradeId,
                                     GradeIdName: _d.Grade
                                 })
-                                openSidePage(_this, {
-                                    status: "editClasses",
-                                    width: ""
-                                })
+                                _this._openSidePage("editClass")
+                                closeContentLoading()
                             }
                             else {
                                 errorMsg(config.ERROR_INFO[result.code]);
@@ -69,10 +69,31 @@ class ClassesList extends React.Component {
                         })
                     }
                 }, {
+                    "name": "绑定",
+                    "fn": function () {
+                        if (voteList.length > 0) {
+                            _this._openSidePage("bindVote",_d.Id)
+                        }
+                        else {
+                            openContentLoading()
+                            TUI.platform.get("/Vote", function (result) {
+                                if (result.code == 0) {
+                                    var _v = result.datas
+                                    addVoteList(_v)
+                                    _this._openSidePage("bindVote",_d.Id)
+                                    closeContentLoading()
+                                }
+                                else {
+                                    errorMsg(config.ERROR_INFO[result.code]);
+                                }
+                            })
+                        }
+                    }
+                }, {
                     "name": "删除",
-                    "fn": function() {
-                        var delFetch = function() {
-                            TUI.platform.delete("/Grade/" + _d.Id, function(result) {
+                    "fn": function () {
+                        var delFetch = function () {
+                            TUI.platform.delete("/Grade/" + _d.Id, function (result) {
                                 if (result.code == 0) {
                                     deleteClassesList(_d.Id)
                                 }
@@ -111,7 +132,7 @@ class ClassesList extends React.Component {
                     deep: 0
                 })
             }
-            setTimeout(function() {
+            setTimeout(function () {
                 let $clickMenu = document.getElementsByClassName("clickmenu")[0]
                 $clickMenu.style.backgroundColor = "rgba(250,250,250,0.5)"
                 $clickMenu.style.borderRadius = "3px"
@@ -122,27 +143,7 @@ class ClassesList extends React.Component {
             }, 300)
         }
 
-        if (courseList.length == 0) {
-            TUI.platform.get("/Course", function(result) {
-                if (result.code == 0) {
-                    addCourseList(result.datas)
-                    updatePageInfo({
-                        index: 1,
-                        size: 7,
-                        sum: 10,
-                        url: "/Course"
-                    })
 
-
-                }
-                else if (result.code == 9) {
-                    addCourseList([])
-                }
-                else {
-                    errorMsg(TUI.ERROR_INFO[result.code]);
-                }
-            })
-        }
 
         return (
             <div>
@@ -160,11 +161,43 @@ class ClassesList extends React.Component {
                         <Pager fn={this.pageFn.bind(this)} />
                     </div>
                 </Content3>
-                <SidePage>
-                    <EditClasses key="editClass" />
+                <SidePage id="editClass">
+                    <div>
+                        <EditClasses key="editClass" />
+                    </div>
+                </SidePage>
+                <SidePage id="bindVote" title="绑定投票" addHref={this.bindVote.bind(this)}>
+                    <div>
+                        <BindVote key="bindVote" />
+                    </div>
+                </SidePage>
+                <SidePage id="selecteTeacher">
+                    <div>
+                        <EditClasses key="editClass" />
+                    </div>
                 </SidePage>
             </div>
         )
+    }
+
+    _openSidePage(sidePageid,_id) {
+        if (sidePageid == "bindVote") {
+            openSidePage(this, { 
+                id: "bindVote",
+                status: "editClasses",
+                width: "400",
+                gateWay:{
+                    classesId:_id
+                }
+            })
+        }
+        else {
+            openSidePage(this, {
+                id: "editClass",
+                status: "editClasses",
+                width: ""
+            })
+        }
     }
 
     _clickMenu($m) {
@@ -173,41 +206,55 @@ class ClassesList extends React.Component {
         this.getClassesInGrade(id)
     }
 
-    pageFn(index) {
+    bindVote(){
+        const {sidePageInfo,bindVote} = this.props
+        let $radio = document.getElementsByClassName("t-c_radio")
+        let voteId = "",
+        voteName = ""
+        for (var i = 0;  i< $radio.length; i++) {
+            var $r = $radio[i];
+            if($r.getAttribute("data-status")=="selected"){
+                voteId = $r.getAttribute("data-value")
+                voteName = $r.innerText
+            }
+        }
+        closeSidePage({
+            id:"bindVote"
+        })
 
-        // openDialog()
-        // const {pageInfo, updateVTeamData, updatePageInfo} = this.props
-        // TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
-        //     if (result.code == 0) {
-        //         updateVTeamData(result.datas)
-        //         updatePageInfo({
-        //             index: index,
-        //             size: 7,
-        //             sum: parseInt(result.pagertotal),
-        //             url: pageInfo.url
-        //         })
-        //     }
-        //     else {
-        //         updateVTeamData([])
-        //     }
-        // })
+        //bindVote()
+        console.info({
+            classesId:sidePageInfo.gateWay.classesId,
+            voteId:voteId,
+            voteName:voteName
+        })
+    }
+
+    pageFn(index) {
+        const {pageInfo, updateVTeamData, updatePageInfo} = this.props
+        TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
+            if (result.code == 0) {
+                updateVTeamData(result.datas)
+                updatePageInfo({
+                    index: index,
+                    size: 7,
+                    sum: result.total,
+                    url: pageInfo.index.url
+                })
+            }
+            else {
+                updateVTeamData([])
+            }
+        })
     }
 
     componentDidMount() {
-        const {addGradeList, updatePageInfo, errorMsg} = this.props
+        const {addGradeList, updatePageInfo, errorMsg, courseList, addCourseList} = this.props
         let _this = this
         openLoading()
-        TUI.platform.get("/Grade", function(result) {
+        TUI.platform.get("/Grade", function (result) {
             if (result.code == 0) {
                 addGradeList(result.datas)
-                updatePageInfo({
-                    index: 1,
-                    size: 7,
-                    sum: result.pagertotal,
-                    url: "/Grade"
-                })
-
-
             }
             else if (result.code == 9) {
                 addGradeList([])
@@ -217,21 +264,37 @@ class ClassesList extends React.Component {
             }
         })
 
-        _this.getClassesInGrade()
+        _this.getClassesInGrade(0)
+
+
+        if (courseList.length == 0) {
+            TUI.platform.get("/Course", function (result) {
+                if (result.code == 0) {
+                    addCourseList(result.datas)
+                }
+                else if (result.code == 1) {
+                    addCourseList([])
+                }
+                else {
+                    errorMsg(TUI.ERROR_INFO[result.code]);
+                }
+            })
+        }
 
     }
 
     getClassesInGrade(gradeId) {
         const {loadClassesList, updatePageInfo, errorMsg} = this.props
-        let _url = gradeId ? "/GetClassesByGradeId/gradeId" : "/Classes"
 
-        TUI.platform.get(_url, function(result) {
+        let _url = gradeId != 0 ? "/ClassesInGrade/" + gradeId + "?pageIndex={0}&pageSize=10" : "/Classes?pageIndex={0}&pageSize=10"
+
+        TUI.platform.get(_url.replace("{0}", 1), function (result) {
             if (result.code == 0) {
                 loadClassesList(result.datas)
                 updatePageInfo({
                     index: 1,
-                    size: 7,
-                    sum: 10,
+                    size: 10,
+                    sum: result.total,
                     url: _url
                 })
 
@@ -260,6 +323,7 @@ export default TUI._connect({
     classesList: "classesList.list",
     gradeList: "gradeList.list",
     courseList: "courseList.list",
+    voteList: "voteList.list",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo"
 }, ClassesList)

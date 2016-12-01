@@ -25,7 +25,7 @@ class FormControls extends React.Component {
 
         if (ctrl == "input") {
             bindElem = <CTRL_INPUT label={label} labelWidth={labelWidth} type={type} value={value} onFocus={this.props.onFocus} onBlur={this.props.onBlur} style={this.props.style} disabled={this.props.disabled} addFn={this.props.addEditInfo
-            } required={this.props.required} data={data} bind={bind} selectFn={selectFn} />
+            } required={this.props.required} data={data} bind={bind} selectFn={selectFn} editFn={this.props.updateEditInfo} />
         }
         else if (ctrl == "textarea") {
             bindElem = <CTRL_TEXTAREA label={label} labelWidth={labelWidth} value={value} tyle={this.props.style} onFocus={this.props.onFocus} onBlur={this.props.onBlur} style={this.props.style} required={this.props.required} addFn={this.props.addEditInfo
@@ -50,7 +50,7 @@ class FormControls extends React.Component {
         }
         else if (ctrl == "slide") {
             bindElem = <CTRL_SLIDE label={label} labelWidth={labelWidth} value={value} style={this.props.style} addFn={this.props.addEditInfo
-            } options={this.props.options} data={data} bind={bind} />
+            } options={this.props.options} data={data} bind={bind} editFn={this.props.updateEditInfo} selected={this.props.selected} />
         }
 
         return (
@@ -101,9 +101,9 @@ class CTRL_INPUT extends React.Component {
         if (type == "select") {
             _input.push(
                 <div key={"formcontrol-input-search" + data} className="formcontrol-input-select">
-                    <input className={required} type="text" onFocus={onFocus} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} readOnly />
+                    <input className={required} ref="formcontrolInputSelect" type="text" onFocus={onFocus} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} readOnly />
                     <img src={search} onClick={this._selectFn.bind(this)} />
-                    <img src={chag} className="chachag" />
+                    {_value ? <img src={chag} onClick={this._clearSelect.bind(this)} className="chachag" /> : ""}
                 </div>
             )
         }
@@ -119,18 +119,28 @@ class CTRL_INPUT extends React.Component {
         )
     }
     _selectFn() {
-        const {selectFn, bind,addFn,value} = this.props
+        const {selectFn, bind, addFn, value} = this.props
         if (this.props.selectFn) {
             let _object = value.split(".")
             let _info = {
                 infoName: _object[0]
             }
-            for(let key in bind){
+            for (let key in bind) {
                 _info[key] = bind[key]
             }
             addFn(_info)
             selectFn(_info)
         }
+    }
+    _clearSelect(e) {
+        const {value, editFn} = this.props
+        let _object = value.split(".")
+        let _info = {
+            infoName: _object[0]
+        }
+        _info[_object[1]] = ""
+        if (editFn) { editFn(_info) }
+        this.refs.formcontrolInputSelect.value = ""
     }
     _onChange(e) {
         const {value, addFn, data, bind} = this.props
@@ -497,7 +507,8 @@ class CTRL_SLIDE extends React.Component {
             value,
             data,
             bind,
-            options
+            options,
+            selected
         } = this.props
 
         let _label
@@ -511,22 +522,28 @@ class CTRL_SLIDE extends React.Component {
             _label = <label style={_style}>{label}: </label>
         }
 
-        let _value = options[0].name
+
+        let _value = ""
         if (value && data[value.split(".")[0]]) {
             _value = data[value.split(".")[0]][value.split(".")[1]]
         }
+        // if(selected){
+        //     _value = options[_value].name
+        // }
+
         let _object = value.split(".")
         let _index = 0
         if (data[_object[0]]) {
-            _index = data[_object[0]][_object[1] + "index"] == 0 ? 1 : 0
+            _index = data[_object[0]][_object[1]]
         }
+
         let _activity = _index == 0 ? 't-slide t-slide_activity' : "t-slide"
 
         return (
             <div className="t-formControls">
                 {_label}
                 <div className={_activity} onClick={this._onClick.bind(this)}>
-                    <span>{_value}</span>
+                    <span>{options ? options[_index].name : ""}</span>
                     <b></b>
                 </div>
             </div>
@@ -534,15 +551,25 @@ class CTRL_SLIDE extends React.Component {
     }
 
     componentDidMount() {
-        const {value, addFn, data, options} = this.props
+        const {value, addFn, data, options, selected} = this.props
         let _object = value.split(".")
-        let _info = {
-            infoName: _object[0]
+        if (data[_object[0]]) {
+            let _info = {
+                infoName: _object[0]
+            }
+            _info[_object[1]] = selected ? selected : 0
+            _info[_object[1] + "Name"] = options[selected ? selected : 0].name
+            editFn(_info)
         }
+        else {
+            let _info = {
+                infoName: _object[0]
+            }
 
-        _info[_object[1]] = options[0].name
-        _info[_object[1] + "index"] = 0
-        addFn(_info)
+            _info[_object[1]] = selected ? selected : 0
+            _info[_object[1] + "Name"] = options[selected ? selected : 0].name
+            addFn(_info)
+        }
     }
 
     _onClick() {
@@ -558,10 +585,10 @@ class CTRL_SLIDE extends React.Component {
             }
         }
 
-        let _index = data[_object[0]][_object[1] + "index"] == 0 ? 1 : 0
+        let _index = data[_object[0]][_object[1]] == 0 ? 1 : 0
 
-        _info[_object[1]] = options[_index].name
-        _info[_object[1] + "index"] = _index
+        _info[_object[1]] = _index
+        _info[_object[1] + "Name"] = options[_index].name
         addFn(_info)
     }
 }

@@ -8,15 +8,17 @@ class _select extends React.Component {
         return (
             <div>
                 <Content txt="下拉选择框">
-                    <FormControls label="选择列表" ctrl="select" options={options} value="3" />
-                    <FormControls label="选择日期" ctrl="datepicker" value="3" />
+                    <div className="t-content-padding">
+                        <FormControls label="选择列表" ctrl="select" options={options} value="3" />
+                        <FormControls label="选择日期" ctrl="datepicker" value="3" />
+                    </div>
                 </Content>
             </div>
         )
     }
 
-    componentDidMount(){
-        this.props.addBreadNav([{name:"Select"}])
+    componentDidMount() {
+        this.props.addBreadNav([{ name: "Select" }])
     }
 
 }

@@ -29,10 +29,10 @@ class _Header extends React.Component {
     let USER_ID = TUI.fn.requestParam("uId")
     let _this = this
     //获取当前用户信息
-    TUI.platform.get("/workgroup/userinfo/" + USER_ID, function (result) {
+    TUI.platform.get("/userInfo/" + USER_ID, function (result) {
       if (result.code == 0) {
-        let _d = result.datas[0]
-        updateUserInfo({ id: _d.uid, name: _d.username, photo: _d.photocrc })
+        let _d = result.data
+        updateUserInfo({ id: _d.userId, name: _d.userName, photo: _d.photocrc })
       }
       else if (result.code == 404) {
         updateUserInfo({})

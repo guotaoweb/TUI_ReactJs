@@ -8,12 +8,6 @@ class VoteBindClasses extends React.Component {
         const {
             voteList,
             errorMsg,
-            sidePageInfo,
-            pageInfo,
-            addClassesData,
-            updateEditInfo,
-            deleteVoteList,
-            successMsg,
             classesList
         } = this.props
         let _this = this,
@@ -23,35 +17,92 @@ class VoteBindClasses extends React.Component {
                 height: "40px",
                 lineHeight: "40px",
                 paddingLeft: "10px",
+                position: "relative",
                 borderBottom: "1px solid #ebebeb"
+            },
+            bStyle = {
+                backgroundColor: "#F74C4E",
+                position: "absolute",
+                padding: "0px 10px",
+                color: "white",
+                borderRadius: "3px",
+                height: "30px",
+                lineHeight: "30px",
+                top: "5px",
+                right: "3px",
+                fontWeight: "lighter",
+                cursor:"pointer"
             }
         for (var i = 0; i < classesList.length; i++) {
             var $c = classesList[i];
-            _list.push(<FormControls key={"fc-votelist-" + i} ctrl="checkbox" txt={$c.Name} />)
+            _list.push(
+                <div key={"voteBindClasses" + i} style={listStyle}>
+                    <FormControls key={"fc-votelist-" + i} id={$c.Id}  ctrl="checkbox" txt={$c.Name} />
+                    <b style={bStyle}>解绑</b>
+                </div>
+            )
         }
         return (
-            <div style={listStyle}>
+            <div>
+                <ul className="voteBindClassesStatusBar">
+                    <li ref="voteUnbind" onClick={this.unBind.bind(this)} className="activity">未绑定</li>
+                    <li ref="voteBinded" onClick={this.binded.bind(this)}>已绑定</li>
+                </ul>
+                <br style={{ clear: "both" }} />
                 {_list}
             </div>
         )
     }
 
     componentDidMount() {
-        // const {addVoteList, errorMsg, updatePageInfo} = this.props
-        // let _this = this
-
-        // TUI.platform.get("/Vote", function (result) {
-        //         if (result.code == 0) {
-        //             addVoteList(result.datas)
-        //             updatePageInfo({ index: 1, size: 7, sum: 10, url: "" })
-        //         } else if (result.code == 9) {
-        //             addVoteList([])
-        //         } else {
-        //             errorMsg(TUI.ERROR_INFO[result.code]);
-        //         }
-        //     })
+        document.querySelector(".voteBindClassesStatusBar").parentNode.parentNode.parentNode.style.paddingTop = "0px"
     }
 
+    unBind(e) {
+        // TUI.platform.get("/Classes", function (result) {
+        //     if (result.code == 0) {
+        //         addClassesList(result.datas)
+        //     } else {
+        //         errorMsg(Config.ERROR_INFO[result.code]);
+        //     }
+        // })
+
+        var $currentLi = ReactDOM.findDOMNode(this.refs.voteUnbind)
+        if ($currentLi.getAttribute("class") != "activiry") {
+            $currentLi.setAttribute("class", "activity")
+            $currentLi.nextSibling.setAttribute("class", "")
+        }
+
+        document.getElementById("bindClasses")
+            .querySelector(".t-content_t")
+            .getElementsByTagName("div")[0].style.display = "block"
+        document.getElementById("bindClasses")
+            .querySelector(".t-content_t")
+            .getElementsByTagName("div")[1].style.display = "block"
+        
+    }
+    binded(e) {
+        // TUI.platform.get("/Classes", function (result) {
+        //     if (result.code == 0) {
+        //         addClassesList(result.datas)
+        //     } else {
+        //         errorMsg(Config.ERROR_INFO[result.code]);
+        //     }
+        // })
+
+        var $currentLi = ReactDOM.findDOMNode(this.refs.voteBinded)
+        if ($currentLi.getAttribute("class") != "activiry") {
+            $currentLi.setAttribute("class", "activity")
+            $currentLi.previousSibling.setAttribute("class", "")
+        }
+
+        document.getElementById("bindClasses")
+            .querySelector(".t-content_t")
+            .getElementsByTagName("div")[0].style.display = "none"
+        document.getElementById("bindClasses")
+            .querySelector(".t-content_t")
+            .getElementsByTagName("div")[1].style.display = "none"
+    }
 }
 
 export default TUI._connect({

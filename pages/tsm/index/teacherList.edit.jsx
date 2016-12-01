@@ -27,7 +27,7 @@ class EditTeacher extends React.Component {
       <div>
         <Content2 tabs={tabs}>
           <div>
-            <FormControls label="教师姓名" ctrl="input" value="teacherInfo.Name" />
+            <FormControls label="教师姓名" ctrl="input" value="teacherInfo.Name" required="required" />
             <FormControls label="所属科目" ctrl="select" options={course} value="teacherInfo.CourseId" />
             <div className="formControl-btn">
               <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
@@ -92,7 +92,7 @@ class EditTeacher extends React.Component {
   }
 
   goBack() {
-    const {clearEditInfo} = this.props
+    const {clearEditInfo,backBreadNav} = this.props
     clearEditInfo({
       infoName: "editTeacher"
     })
@@ -100,6 +100,8 @@ class EditTeacher extends React.Component {
     closeSidePage({
       id:"editTeacher"
     })
+
+    backBreadNav()
   }
 }
 

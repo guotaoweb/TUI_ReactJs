@@ -1,4 +1,4 @@
-export const IMGPATH1="http://10.158.134.45:8280/mig-manager/fileService/showPic?fileId="
+﻿export const IMGPATH1="http://10.158.134.45:8280/mig-manager/fileService/showPic?fileId="
 export const INTERFACE = "/InfoMG/services"
 export const INTERFACE1 = "/SUPM/i-v1.0"
 export const ROOTPATH = "/SUPM/"
@@ -10,7 +10,7 @@ export const ERROR_INFO = {
     "404":"没有找到数据"
 }    
 export const DEFAULT_OPEN_SIDE = [0,0]
-export const VERSION = "Version 2.6.8(20161129)"
+export const VERSION = "Version 2.6.9(20161130)"
 export const SCROLL = {
     speed:0.8,
     smoothScrolling:true,

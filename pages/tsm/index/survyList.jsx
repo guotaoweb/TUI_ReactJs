@@ -28,7 +28,7 @@ class SurvyList extends React.Component {
             let _d = survyList[i]
 
             tblContent.tbody.push({
-                "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
+                "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                 "value2": _d.Name,
                 "value3": _d.Desp,
                 "value4": _d.UpdateTime,
@@ -41,17 +41,19 @@ class SurvyList extends React.Component {
                                 var _d = result.datas[0]
                                 updateEditInfo({
                                     infoName: "editSurvy",
+                                    Id: _d.Id,
                                     Name: _d.Name,
                                     Desp: _d.Desp
+                                })
+                                openSidePage(_this, {
+                                    id: "survyEdit",
+                                    status: "editSurvy"
                                 })
                             }
                             else {
                                 errorMsg(Config.ERROR_INFO[result.code]);
                             }
-                            openSidePage(_this, {
-                                id: "survyEdit",
-                                status: "editSurvy"
-                            })
+
                             closeContentLoading()
                         })
                     }
@@ -70,12 +72,24 @@ class SurvyList extends React.Component {
                                 openSidePage(_this, {
                                     id: "bindCourse",
                                     status: "survyBindCourse",
-                                    width: "400"
+                                    width: "400",
+                                    gateWay: {
+                                        Id: _d.Id
+                                    }
                                 })
                                 closeContentLoading()
                             })
                         }
-
+                        else {
+                            openSidePage(_this, {
+                                id: "bindCourse",
+                                status: "survyBindCourse",
+                                width: "400",
+                                gateWay: {
+                                    Id: _d.Id
+                                }
+                            })
+                        }
                     }
                 }, {
                     "name": "删除",
@@ -112,13 +126,34 @@ class SurvyList extends React.Component {
                 <SidePage id="survyEdit">
                     <div></div>
                 </SidePage>
-                <SidePage id="bindCourse" title="绑定科目" addHref={this.bindCourse.bind(this)}>
+                <SidePage
+                    id="bindCourse"
+                    title="绑定科目"
+                    addHref={this.bindAllCourse.bind(this)}
+                    addHrefTxt="一键绑定"
+                    editHref={this.bindCourse.bind(this)}
+                    editHrefTxt="绑定"
+                    >
                     <div><SurvyBindCourse key="survyBindCourse" /></div>
                 </SidePage>
             </div>
         )
     }
     //<EditSurvy key="survyedit" />
+    bindAllCourse() {
+        let selected = [],
+            courseList = document.getElementsByClassName("t-c_checkbox")
+        for (var i = 0; i < courseList.length; i++) {
+            var $c = courseList[i];
+            if ($c.getAttribute("data-status") == "selected") {
+                selected.push($c.getAttribute("data-id"))
+            }
+        }
+        closeSidePage({
+            id: "bindCourse"
+        })
+        console.info(selected)
+    }
 
     bindCourse() {
         let selected = [],
@@ -136,16 +171,15 @@ class SurvyList extends React.Component {
     }
 
     pageFn(index) {
-        openDialog()
         const {pageInfo, updateSurvyList, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
+        TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
             if (result.code == 0) {
                 updateSurvyList(result.datas)
                 updatePageInfo({
                     index: index,
-                    size: 7,
-                    sum: 10,
-                    url: pageInfo.url
+                    size: 10,
+                    sum: result.total,
+                    url: pageInfo.index.url
                 })
             }
             else {
@@ -155,41 +189,29 @@ class SurvyList extends React.Component {
     }
 
     componentDidMount() {
-        const {addSurvyList, errorMsg, updatePageInfo} = this.props
+        const {addSurvyList, errorMsg, updatePageInfo, addBreadNav} = this.props
         let _this = this
-        // setTimeout(function () {
-        //     openSidePage(_this, {
-        //         status: "editAdmin"
-        //     })
-
-        //     // openDialog(_this, { placeholder: "请输入数字", value: "这是内容" }, function () {
-        //     //     alert("a")
-        //     // })
-        //     // let _test = function(){
-        //     //     _this.test()
-        //     // }
-        //     // openDialog(_this,{title:"创建问题",data:[{name:"第一个",fn:_test},{name:"第二个",url:"2"},{name:"第三个",url:"3"},{name:"第三个",url:"3"},{name:"第三个",url:"3"}]})
-        // }, 500)
-        //获取虚拟组织列表
-        //if (!vteamList) {
+        addBreadNav({ name: "问卷列表" })
         openLoading()
-        TUI.platform.get("/Survy", function (result) {
+        let _url = "/Survy?pageIndex={0}&pageSize=10"
+        TUI.platform.get(_url.replace("{0}", 1), function (result) {
             if (result.code == 0) {
                 addSurvyList(result.datas)
+                updatePageInfo({
+                    index: 1,
+                    size: 10,
+                    sum: result.total,
+                    url: _url
+                })
             }
-            else if (result.code == 9) {
+            else if (result.code == 1) {
                 addSurvyList([])
             }
             else {
                 errorMsg(TUI.ERROR_INFO[result.code]);
             }
             closeLoading()
-            updatePageInfo({
-                index: 1,
-                size: 7,
-                sum: 10,
-                url: ""
-            })
+
         })
     }
 
@@ -198,6 +220,7 @@ class SurvyList extends React.Component {
             status: "addSurvy",
             width: ""
         })
+        addBreadNav({ name: "新增问卷" })
     }
 }
 

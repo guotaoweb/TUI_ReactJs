@@ -23,7 +23,8 @@ class TeacherList extends React.Component {
       pageInfo,
       addCourseList,
       addTeacherInClasses,
-      deleteTeacherList
+      deleteTeacherList,
+      pushBreadNav
     } = this.props
 
     let _this = this
@@ -42,7 +43,7 @@ class TeacherList extends React.Component {
       let _d = teacherList[i]
 
       tblContent.tbody.push({
-        "value1": (pageInfo.index - 1) * pageInfo.size + (i + 1),
+        "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
         "value2": _d.Name,
         "value3": _d.Courses,
         "value4": _d.UpdateTime,
@@ -52,7 +53,7 @@ class TeacherList extends React.Component {
             TUI.platform.get("/Teacher/" + _d.Id, function (result) {
               if (result.code == 0) {
                 var _r = result.datas[0]
-
+                pushBreadNav({name:_d.Name})
                 addEditInfo({
                   infoName: "teacherInfo",
                   Id: _r.Id,
@@ -131,34 +132,36 @@ class TeacherList extends React.Component {
 
   pageFn(index) {
     const {pageInfo, updateVTeamData, updatePageInfo} = this.props
-    // TUI.platform.get(pageInfo.url.replace("{0}", index), function (result) {
-    //   if (result.code == 0) {
-    //     updateVTeamData(result.datas)
-    //     updatePageInfo({
-    //       index: index,
-    //       size: 7,
-    //       sum: parseInt(result.pagertotal),
-    //       url: pageInfo.url
-    //     })
-    //   }
-    //   else {
-    //     updateVTeamData([])
-    //   }
-    // })
+    TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
+      if (result.code == 0) {
+        updateVTeamData(result.datas)
+        updatePageInfo({
+          index: index,
+          size: 7,
+          sum: result.total,
+          url: pageInfo.index.url
+        })
+      }
+      else {
+        updateVTeamData([])
+      }
+    })
   }
 
   componentDidMount() {
-    const {addTeacherList, errorMsg, teacherList, updatePageInfo, addCourseList, courseList} = this.props
+    const {addTeacherList, errorMsg, teacherList, updatePageInfo, addCourseList, courseList,addBreadNav} = this.props
     openLoading()
+    addBreadNav({name:"教师列表"})
     //获取教师列表
-    TUI.platform.get("/Teacher", function (result) {
+    let _url = "/Teacher?pageIndex={0}&pageSize=10"
+    TUI.platform.get(_url.replace("{0}",1), function (result) {
       if (result.code == 0) {
         addTeacherList(result.datas)
         updatePageInfo({
           index: 1,
-          size: 7,
-          sum: 10,
-          url: "/Teacher"
+          size: 10,
+          sum: result.ttotal,
+          url: _url
         })
       }
       else if (result.code == 1) {
@@ -187,7 +190,7 @@ class TeacherList extends React.Component {
   }
 
   addTeacherList() {
-    const {clearEditInfo} = this.props
+    const {clearEditInfo,pushBreadNav} = this.props
 
     clearEditInfo({
       infoName: "teacherInfo"
@@ -197,6 +200,8 @@ class TeacherList extends React.Component {
       status: "addTeacher",
       width: ""
     })
+
+    pushBreadNav({name:"新增教师"})
   }
 }
 

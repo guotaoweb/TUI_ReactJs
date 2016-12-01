@@ -15,7 +15,7 @@ class Layout1 extends React.Component {
                         <FormControls label="多行输入(3)" labelWidth="100" ctrl="textarea" required="required" value="InputInfo.comment" />
                         <FormControls label="非必填(4)" labelWidth="100" ctrl="input" value="InputInfo1.age" />
                         <FormControls label="数字" labelWidth="100" ctrl="input" type="number" value="InputInfo1.age1" />
-                        <FormControls label="选择" labelWidth="100" bind={{courseId:"8282",id:"gt"}} ctrl="input" type="select" value="InputInfo1.age2"
+                        <FormControls label="选择" labelWidth="100" bind={{courseId:"这是CourseId",TeacherId:"这是教师Id"}} ctrl="input" type="select" value="InputInfo1.age2"
                             selectFn={this._selectFn.bind(this)} />
                         <div className="formControl-btn" style={{ marginLeft: "110px" }}>
                             <Btn type="add" txt="清除数据" href={this.clearData.bind(this)} />
@@ -69,6 +69,7 @@ class Layout1 extends React.Component {
                     infoName:"InputInfo1"
                 }
                 _info[sidePageInfo.gateWay.Id] = $r.getAttribute("data-value")
+                _info["age2"] = $r.innerText
                 updateEditInfo(_info)
             }
         }
