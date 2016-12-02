@@ -1,5 +1,5 @@
 import '!style!css!postcss!sass!./style.scss'
-
+import { Link } from 'react-router'
 import add from "!url!./img/add.png"
 import cancel from "!url!./img/cancel.png"
 import edit from "!url!./img/edit.png"
@@ -28,16 +28,20 @@ class Btn extends React.Component {
     }
     else { }
 
-    let btnElem
+    let btnElem,
+    btnStyle = { padding: "10px " + width + "px" }
+    if(this.props.style){
+      btnStyle = this.props.style
+    }
 
     if (href && typeof href == "string") {
-      btnElem = <Link to={href} className={"t-btn t-btn--" + type} style={{ padding: "10px " + width + "px" }}>
+      btnElem = <Link to={href} className={"t-btn t-btn--" + type} style={btnStyle}>
         {icon}
         {txt}
       </Link>
     }
     else {
-      btnElem = <a href="javascript:void(0);" className={"t-btn t-btn--" + type}  style={{ padding: "10px " + width + "px" }} onClick={this._onClick.bind(this) }>
+      btnElem = <a href="javascript:void(0);" className={"t-btn t-btn--" + type}  style={btnStyle} onClick={this._onClick.bind(this) }>
         {icon}
         {txt}
       </a>

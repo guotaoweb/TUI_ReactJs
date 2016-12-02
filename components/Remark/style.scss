@@ -1,8 +1,41 @@
-.t-remark{
-    width:98%;
-    margin:auto;
-    border:1px solid #ddd;
-    background-color:#ebebeb;
-    color:#999;
-    padding:10px;
+.t-remark {
+    width: 98%;
+    margin: auto;
+    border: 1px solid #ddd;
+    background-color: #ebebeb;
+    color: #999;
+    padding: 10px;
+    position: relative;
+    .rightk,
+    .leftk{
+        width: 20px;
+        height: 20px;
+        position: absolute;
+    }
+    .rightk {
+        bottom: 0px;
+        right: 5px;
+    }
+    .leftk {
+        top: 5px;
+        left: 5px;
+    }
+    .warningk {
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top: 10px;
+        left: 15px;
+    }
+}
+
+.remark-warning {
+    padding: 5px 60px;
+    padding-right: 10px;
+    background-color: #F74C4E;
+    color: white;
+}
+
+.remark-note {
+    padding: 5px 40px;
 }

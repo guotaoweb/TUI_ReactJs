@@ -2,6 +2,7 @@ import '!style!css!postcss!sass!./style.scss'
 import singleLeft from "!url!./img/singleLeft.png"
 import Btn from "Btn"
 import ScrollArea from 'react-scrollbar'
+import loading from "!url!./img/loading.png"
 
 class SidePage extends React.Component {
     render() {
@@ -13,17 +14,18 @@ class SidePage extends React.Component {
                     src={singleLeft}
                     onClick={this._closeSidePage.bind(this)} />{title}</span>
                 {addHref ?
-                    <Btn style={{ float: "right" }} txt={editHrefTxt ? editHrefTxt : "保存"} href={addHref} />
+                    <Btn style={{ float: "right" }} txt={addHrefTxt ? addHrefTxt : "保存"} href={addHref} />
                     : ""
                 }
                 {editHref ?
-                    <Btn style={{ float: "right", marginRight: "10px" }} txt={addHrefTxt ? addHrefTxt : "编辑"} href={editHref} />
+                    <Btn style={{ float: "right", marginRight: "10px" }} txt={editHrefTxt ? editHrefTxt : "编辑"} href={editHref} />
                     : ""
                 }
             </div>
         }
         return (
             <div>
+
                 <div id={this.props.id} className="t-sidepage" ref="sidePage">
                     {_title}
                     <ScrollArea
@@ -38,6 +40,11 @@ class SidePage extends React.Component {
                         >
                         {this.props.children.length ? this.props.children[1] : this.props.children}
                     </ScrollArea>
+                    <div className="t-sidePageCover">
+                        <div className="t_loading_img">
+                            <img src={loading} />
+                        </div>
+                    </div>
                 </div>
                 <div id={this.props.id + "_min"} className="t-sidepage_min" ref="sidePageMin">
                     {this.props.children.length > 1
@@ -205,4 +212,22 @@ export function closeSidePage(params) {
         sidepagemin.style["transition"] = "left 200ms ease"
         sidepagemin.style.left = "-2000px"
     }
+}
+
+export function openSidePageLoading() {
+    let sidepage = document.querySelector(".t-sidePageCover")
+    sidepage.style["transition"] = "opacity 200ms ease"
+    sidepage.style.opacity = "1"
+    sidepage.style.display = "block"
+}
+
+export function closeSidePageLoading() {
+    setTimeout(function () {
+        let sidepage = document.querySelector(".t-sidePageCover")
+        sidepage.style["transition"] = "opacity 200ms ease"
+        sidepage.style.opacity = "0"
+        setTimeout(function () {
+            sidepage.style.display = "none"
+        }, 201)
+    }, 500)
 }

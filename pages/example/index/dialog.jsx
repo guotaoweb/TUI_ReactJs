@@ -7,10 +7,11 @@ class _Dialog extends React.Component {
         return (
             <div>
                 <Content txt="Dialog">
-                    <Btn type="add" txt="弹出Dialog【text】" href={this._openDialog1.bind(this) } style={{ padding: "10px" }}/>
-                    <Btn type="add" txt="弹出Dialog【confirm】" href={this._openDialog2.bind(this) } style={{ padding: "10px" }}/>
-                    <Btn type="add" txt="弹出Dialog【prompt】" href={this._openDialog3.bind(this) } style={{ padding: "10px" }}/>
-                    <Btn type="add" txt="弹出Dialog【list】" href={this._openDialog4.bind(this) } style={{ padding: "10px" }}/>
+                <br/>
+                    <Btn type="add" txt="弹出Dialog【text】" href={this._openDialog1.bind(this) } style={{ padding: "10px" }}/><br/>
+                    <Btn type="add" txt="弹出Dialog【confirm】" href={this._openDialog2.bind(this) } style={{ padding: "10px" }}/><br/>
+                    <Btn type="add" txt="弹出Dialog【prompt】" href={this._openDialog3.bind(this) } style={{ padding: "10px" }}/><br/>
+                    <Btn type="add" txt="弹出Dialog【list】" href={this._openDialog4.bind(this) } style={{ padding: "10px" }}/><br/>
                 </Content>
             </div>
         )

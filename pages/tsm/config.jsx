@@ -8,9 +8,10 @@ export const IMGPATH = "http://tam.hngytobacco.com/service/fileService/showPic?f
 export const ANIMATE_TIME = 50000
 //异常信息
 export const ERROR_INFO = {
-    "9":"没有找到数据",
+    1001:"班级升级失败,已经达到最大级别",
+    1000:"年级级别已存在",
     999:"系统异常",
-    "404":"没有找到数据"
+    998:"删除项下面绑定了其他数据,禁止删除"
 }    
 
 export const DEFAULT_OPEN_SIDE = [0,0]

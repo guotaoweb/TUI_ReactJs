@@ -8,16 +8,13 @@ class _Slide extends React.Component {
         const {editInfo} = this.props
         let _options = [{ name: "是", id: "0" }, { name: "否", id: "1" }]
         return (
-            <div className="t-content-padding">
-                <Content txt="标签">
-                    <div className="t-content-padding">
-                        <FormControls label="Slide" ctrl="input" value="slideInfo.val1" />
-                        <FormControls label="Slide" ctrl="slide" options={_options} selected="0" value="slideInfo.val" />
-                        <span style={{ marginLeft: "45px" }}>当前的选择内容:{editInfo.slideInfo ? editInfo.slideInfo.val : ""}</span><br />
-                        <span style={{ marginLeft: "45px" }}>当前的选择ID:{editInfo.slideInfo ? editInfo.slideInfo.valindex : ""}</span>
-                    </div>
-                </Content>
-            </div>
+            <Content txt="标签">
+                <div className="t-content-padding">
+                    <FormControls label="Slide" ctrl="slide" options={_options} selected="0" value="slideInfo.val" />
+                    <span style={{ marginLeft: "45px" }}>当前的选择内容:{editInfo.slideInfo ? editInfo.slideInfo.valName : ""}</span><br />
+                    <span style={{ marginLeft: "45px" }}>当前的选择ID:{editInfo.slideInfo ? editInfo.slideInfo.val : ""}</span>
+                </div>
+            </Content>
         )
     }
 }

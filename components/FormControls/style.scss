@@ -1,100 +1,106 @@
-.t-formControls{
-    width:100%;
-    margin-bottom:10px;
-    label{
-        min-width:80px;
+.t-formControls {
+    width: 100%;
+    margin-bottom: 10px;
+    label {
+        min-width: 80px;
         display: inline-block;
-        margin-right:10px;
+        margin-right: 10px;
         text-align: right;
     }
-    input,textarea,select{
-        width:70%;
-        height:35px;
-        border:1px solid #ebebeb;
+    input,
+    textarea,
+    select {
+        width: 70%;
+        height: 35px;
+        border: 1px solid #ebebeb;
         border-radius: 3px;
-        padding-left:5px;
+        padding-left: 5px;
     }
-    textarea{
-        min-height:80px;
-        padding-top:5px;
-        outline:none;
-        resize:none;
+    input:focus,
+    textarea:focus {
+        border:1px solid #999;
     }
-    .formcontrol-input-select{
-        display:inline;
-        img{
-            display:inline;
+    textarea {
+        min-height: 80px;
+        padding-top: 5px;
+        outline: none;
+        resize: none;
+    }
+    .formcontrol-input-select {
+        display: inline;
+        img {
+            display: inline;
             vertical-align: middle;
-            margin-left:5px;
-            width:28px;
-            height:28px;
+            margin-left: 5px;
+            width: 28px;
+            height: 28px;
             cursor: pointer;
         }
-        img.chachag{
-            width:22px;
-            height:22px;
+        img.chachag {
+            width: 22px;
+            height: 22px;
         }
     }
 }
 
-.t-c_radio,.t-c_checkbox{
-    cursor:pointer;
-    img{
-        width:18px;
-        height:18px;
+.t-c_radio,
+.t-c_checkbox {
+    cursor: pointer;
+    img {
+        width: 18px;
+        height: 18px;
         vertical-align: middle;
-        margin-top:-4px;
-        margin-right:5px;
+        margin-top: -4px;
+        margin-right: 5px;
     }
 }
 
-.t-c_checkbox{
-    img{
-        width:18px;
-        height:18px;
+.t-c_checkbox {
+    img {
+        width: 18px;
+        height: 18px;
     }
 }
 
-
-.t_c_tip{
-     span{
-        position:relative;
-        background-color:black;
-        color:white;
+.t_c_tip {
+    span {
+        position: relative;
+        background-color: black;
+        color: white;
         border-radius: 3px;
-        padding:8px 10px;
-        padding-right:25px;
-        float:left;
-        margin-right:5px;
+        padding: 8px 10px;
+        padding-right: 25px;
+        float: left;
+        margin-right: 5px;
     }
-    span:hover b{
+    span:hover b {
         //display:block;
     }
-    b{
+    b {
         //display:none;
-        cursor:pointer;
+        cursor: pointer;
     }
-    img{
-        position:absolute;
-        right:5px;
-        top:12px;
-        width:14px;
-        height:14px;
+    img {
+        position: absolute;
+        right: 5px;
+        top: 12px;
+        width: 14px;
+        height: 14px;
     }
-    .t-btn{
-        float:left;
+    .t-btn {
+        float: left;
     }
 }
 
-.t-slide{
-    cursor:pointer;
+.t-slide {
+    cursor: pointer;
     display: inline-block;
     width: 80px;
     height: 30px;
     background-color: #ddd;
     border-radius: 3px;
     position: relative;
-    span{
+    span {
         position: absolute;
         width: 100%;
         height: 30px;
@@ -103,7 +109,7 @@
         text-align: right;
         padding-right: 15%;
     }
-    b{
+    b {
         background-color: white;
         display: inline-block;
         width: 50%;
@@ -112,20 +118,19 @@
         margin: 2px;
         text-align: center;
         border-radius: 3px;
-        position:absolute;
+        position: absolute;
         box-shadow: -1px 1px 3px #454545;
     }
 }
 
-.t-slide_activity{
-    background-color:rgb(76, 134, 220);
-    span{
+.t-slide_activity {
+    background-color: rgb(76, 134, 220);
+    span {
         text-align: left;
         padding-left: 15%;
-        color:white;
+        color: white;
     }
-    b{
+    b {
         right: 0px;
-        
     }
 }

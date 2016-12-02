@@ -24,30 +24,34 @@ class TablePage extends React.Component {
                 "value4": $t.name,
                 "fns": [{
                     "name": "编辑",
-                    "fn": function() {
+                    "fn": function () {
                         openDialog(_this, "这是编辑按钮")
                     }
                 }, {
                     "name": "删除",
-                    "fn": function() {
+                    "fn": function () {
                         openDialog(_this, "这是删除按钮")
                     }
                 }]
             })
         }
-
+        //     <Btn txt="修改Table内容(无效果)" href={this.editTableContent2.bind(this)} />
         return (
             <div>
                 <Content txt="Table表格">
-                    <div className="formControl-btn" style={{ margin: "5px" }} >
-                        <Btn txt="多表格" href={this.multyTable.bind(this)} />
-                        <Btn txt="修改Table内容" href={this.editTableContent1.bind(this)} />
-                        <Btn txt="修改Table内容(无效果)" href={this.editTableContent2.bind(this)} />
+                    <div className="t-content-padding">
+                        <div className="formControl-btn" style={{ margin: "5px" }} >
+                            <Btn txt="多表格" href={this.multyTable.bind(this)} />
+                            <Btn txt="修改Table内容" href={this.editTableContent1.bind(this)} />
+
+                        </div><br /><br />
+                        <Table id="table1" tblContent={tblContent} width="50,200,0,0,180" />
                     </div>
-                    <Table id="table1" tblContent={tblContent} width="50,200,0,0,180" />
                 </Content>
                 <SidePage id="tableSidePage" title="多表格测试">
-                    <Table id="table2" num="6" tblContent={tblContent} width="50,200,0,0,180" />
+                    <div>
+                        <Table id="table2" num="6" tblContent={tblContent} width="50,200,0,0,180" />
+                    </div>
                 </SidePage>
             </div>
         )

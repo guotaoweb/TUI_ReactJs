@@ -22,6 +22,19 @@ export function updateCourseList(data){
     } 
 }
 
+export function loadCourseList(data){
+    return {
+        type:"LOAD_COURSE_LIST",
+        data
+    } 
+}
+
+export function updateCourseBindSurvy(courseId){
+    return {
+        type:"UPDATE_COURSE_BIND_SURVY",
+        courseId
+    } 
+}
 
 
 

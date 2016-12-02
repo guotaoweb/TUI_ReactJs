@@ -18,8 +18,13 @@ export const platform = {
         }
 
         fetch(_interface + url, {
+            credentials: 'include',//fetch默认不带cookie,此操作能让request header请求带上cookie
             method: "get",
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            headers: { 
+                'Accept': 'application/json', 
+                'Content-Type': 'application/json'
+            },
+            
         }).then(function (res) {
             if (res.ok) {
                 res.json().then(function (obj) {
@@ -36,8 +41,9 @@ export const platform = {
         }
 
         fetch(_interface + url, {
+            credentials: 'include',
             method: "post",
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json;charset=UTF-8' },
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json;charset=UTF-8'},
             body: JSON.stringify(params)
         }).then(function (res) {
             if (res.ok) {
@@ -53,8 +59,9 @@ export const platform = {
             _interface = config.INTERFACE
         }
         fetch(_interface + url, {
+            credentials: 'include',
             method: "PATCH",
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json;charset=UTF-8' }
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json;charset=UTF-8'}
         }).then(function (res) {
             if (res.ok) {
                 res.json().then(function (obj) {
@@ -69,8 +76,9 @@ export const platform = {
             _interface = config.INTERFACE
         }
         fetch(_interface + url, {
+            credentials: 'include',
             method: "DELETE",
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json;charset=UTF-8' }
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json;charset=UTF-8'}
         }).then(function (res) {
             if (res.ok) {
                 res.json().then(function (obj) {
@@ -85,8 +93,9 @@ export const platform = {
             _interface = config.INTERFACE
         }
         fetch(_interface + url, {
+            credentials: 'include',
             method: "PUT",
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json;charset=UTF-8' },
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json;charset=UTF-8'},
             body: JSON.stringify(params)
         }).then(function (res) {
             if (res.ok) {
@@ -95,6 +104,9 @@ export const platform = {
                 })
             }
         })
+    },
+    getCookie:function(){
+        return document.cookie
     },
     versions: function () {
         var u = navigator.userAgent, app = navigator.appVersion;

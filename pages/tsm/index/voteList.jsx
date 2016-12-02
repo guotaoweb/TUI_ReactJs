@@ -78,32 +78,23 @@ class VoteList extends React.Component {
                         }, {
                             "name": "绑定班级",
                             "fn": function () {
-                                //if (classesList.length == 0) {
-                                    openContentLoading()
-                                    TUI.platform.get("/Classes", function (result) {
-                                        if (result.code == 0) {
-                                            addClassesList(result.datas)
-                                            openSidePage(_this, {
-                                                id: "bindClasses",
-                                                status: "bindClasses",
-                                                width: "400",
-                                                gateWay:{
-                                                    Id: _d.Id
-                                                }
-                                            })
-                                        } else {
-                                            errorMsg(Config.ERROR_INFO[result.code]);
-                                        }
-                                        closeContentLoading()
-                                    })
-                                // }
-                                // else {
-                                //     openSidePage(_this, {
-                                //         id: "bindClasses",
-                                //         status: "bindClasses",
-                                //         width: "400"
-                                //     })
-                                // }
+                                openContentLoading()
+                                TUI.platform.get("/ClassesInVote/" + _d.Id + "?status=unbind", function (result) {
+                                    if (result.code == 0) {
+                                        addClassesList(result.datas)
+                                        openSidePage(_this, {
+                                            id: "bindClasses",
+                                            status: "bindClasses",
+                                            width: "400",
+                                            gateWay: {
+                                                Id: _d.Id
+                                            }
+                                        })
+                                    } else {
+                                        errorMsg(Config.ERROR_INFO[result.code]);
+                                    }
+                                    closeContentLoading()
+                                })
                             }
                         }, {
                             "name": "删除",
@@ -158,27 +149,57 @@ class VoteList extends React.Component {
     }
 
     bindAllClasses() {
+        const {sidePageInfo, updateCourseBindSurvy, errorMsg, waiteMsg, successMsg} = this.props
         let selected = [],
             courseList = document.getElementsByClassName("t-c_checkbox")
         for (var i = 0; i < courseList.length; i++) {
             var $c = courseList[i];
-            selected.push($c.getAttribute("data-id"))
+            selected.push({
+                VoteId: sidePageInfo.gateWay.Id,
+                ClassesId: $c.getAttribute("data-id")
+            })
         }
         closeSidePage({ id: "bindCourse" })
-        console.info(selected)
+        if (selected.length > 0) {
+            waiteMsg("数据提交中,请稍等...")
+            TUI.platform.post("/VoteBindClasses", selected, function (result) {
+                if (result.code == 0) {
+                    updateCourseBindSurvy(selected)
+                    successMsg("保存成功")
+                }
+                else {
+                    errorMsg(Config.ERROR_INFO[result.code]);
+                }
+            })
+        }
     }
 
     bindClasses() {
+        const {sidePageInfo, updateCourseBindSurvy, errorMsg, waiteMsg, successMsg} = this.props
         let selected = [],
             courseList = document.getElementsByClassName("t-c_checkbox")
         for (var i = 0; i < courseList.length; i++) {
             var $c = courseList[i];
             if ($c.getAttribute("data-status") == "selected") {
-                selected.push($c.getAttribute("data-id"))
+                selected.push({
+                    VoteId: sidePageInfo.gateWay.Id,
+                    ClassesId: $c.getAttribute("data-id")
+                })
             }
         }
         closeSidePage({ id: "bindCourse" })
-        console.info(selected)
+        if (selected.length > 0) {
+            waiteMsg("数据提交中,请稍等...")
+            TUI.platform.post("/SurvyeBindCours", selected, function (result) {
+                if (result.code == 0) {
+                    updateCourseBindSurvy(selected)
+                    successMsg("保存成功")
+                }
+                else {
+                    errorMsg(Config.ERROR_INFO[result.code]);
+                }
+            })
+        }
     }
 
     pageFn(index) {

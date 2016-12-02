@@ -8,14 +8,14 @@ class Layout1 extends React.Component {
             <div>
                 <Content2 tabs={tabs}>
                     <div>
-                        <Btn type="add" style={{ padding: "10px" }} txt="新增" />
-                        <Btn type="edit" style={{ padding: "10px" }} txt="编辑" />
-                        <Btn type="cancel" style={{ padding: "10px" }} txt="取消" />
-                        <Btn type="back" style={{ padding: "10px" }} txt="返回" />
-                        <Btn type="submit" style={{ padding: "10px" }} txt="保存" />
+                        <Btn type="add" style={{ padding: "10px" }} txt="新增" /><br/>
+                        <Btn type="edit" style={{ padding: "10px" }} txt="编辑" /><br/>
+                        <Btn type="cancel" style={{ padding: "10px" }} txt="取消" /><br/>
+                        <Btn type="back" style={{ padding: "10px" }} txt="返回" /><br/>
+                        <Btn type="submit" style={{ padding: "10px" }} txt="保存" /><br/>
                     </div>
                     <div>
-                        <Btn style={{ padding: "10px" }} txt="保存" />
+                        <Btn style={{ padding: "10px" }} txt="保存" /><br/>
                         <Btn style={{ padding: "10px" }} width="100" txt="保存" />
                     </div>
                 </Content2>

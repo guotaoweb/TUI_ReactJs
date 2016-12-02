@@ -3,7 +3,7 @@ import Btn from "Btn"
 import FormControls from "FormControls"
 import { closeSidePage } from "SidePage"
 
-
+let COURSE_BIND_SURVY_STATUS = "UNBIND"
 class SurvyBindCourse extends React.Component {
     render() {
         const {sidePageInfo, courseList} = this.props
@@ -32,14 +32,24 @@ class SurvyBindCourse extends React.Component {
                 fontWeight: "lighter",
                 cursor: "pointer"
             }
-        for (var i = 0; i < courseList.length; i++) {
-            var $c = courseList[i];
-            _list.push(
-                <div key={"voteBindClasses" + i} style={listStyle}>
-                    <FormControls key={"fc-votelist-" + i} id={$c.Id} ctrl="checkbox" txt={$c.Name} />
-                    <b style={bStyle}>解绑</b>
-                </div>
-            )
+        for (let i = 0; i < courseList.length; i++) {
+            let $c = courseList[i]
+            if (COURSE_BIND_SURVY_STATUS == "BIND") {
+                _list.push(
+                    <div key={"voteBindClasses" + i} style={listStyle}>
+                        <span>{$c.Name}</span>
+                        <b style={bStyle} data-id={$c.Id} onClick={this.removeBind.bind(this)}>解绑</b>
+                    </div>
+                )
+            }
+            else {
+                _list.push(
+                    <div key={"voteBindClasses" + i} style={listStyle}>
+                        <FormControls key={"fc-votelist-" + i} id={$c.Id} ctrl="checkbox" txt={$c.Name} />
+                    </div>
+                )
+            }
+
         }
 
         return (
@@ -59,13 +69,15 @@ class SurvyBindCourse extends React.Component {
     }
 
     unBind(e) {
-        // TUI.platform.get("/Classes", function (result) {
-        //     if (result.code == 0) {
-        //         addClassesList(result.datas)
-        //     } else {
-        //         errorMsg(Config.ERROR_INFO[result.code]);
-        //     }
-        // })
+        const {sidePageInfo, loadCourseList, errorMsg} = this.props
+        COURSE_BIND_SURVY_STATUS = "UNBIND"
+        TUI.platform.get("/CourseInSurvy/" + sidePageInfo.gateWay.Id + "?status=unbind", function (result) {
+            if (result.code == 0) {
+                loadCourseList(result.datas)
+            } else {
+                loadCourseList([])
+            }
+        })
 
         var $currentLi = ReactDOM.findDOMNode(this.refs.courseUnbind)
         if ($currentLi.getAttribute("class") != "activiry") {
@@ -82,13 +94,15 @@ class SurvyBindCourse extends React.Component {
 
     }
     binded(e) {
-        // TUI.platform.get("/Classes", function (result) {
-        //     if (result.code == 0) {
-        //         addClassesList(result.datas)
-        //     } else {
-        //         errorMsg(Config.ERROR_INFO[result.code]);
-        //     }
-        // })
+        const {sidePageInfo, loadCourseList, errorMsg} = this.props
+        COURSE_BIND_SURVY_STATUS = "BIND"
+        TUI.platform.get("/CourseInSurvy/" + sidePageInfo.gateWay.Id + "?status=bind", function (result) {
+            if (result.code == 0) {
+                loadCourseList(result.datas)
+            } else {
+                loadCourseList([])
+            }
+        })
 
         var $currentLi = ReactDOM.findDOMNode(this.refs.courseBinded)
         if ($currentLi.getAttribute("class") != "activiry") {
@@ -102,6 +116,18 @@ class SurvyBindCourse extends React.Component {
         document.getElementById("bindCourse")
             .querySelector(".t-content_t")
             .getElementsByTagName("div")[1].style.display = "none"
+    }
+
+    removeBind(e) {
+        const {updateCourseBindSurvy,errorMsg} = this.props
+        var courseId = e.currentTarget.getAttribute("data-id")
+        TUI.platform.delete("/CourseInSurvy/" + courseId, function (result) {
+            if (result.code == 0) {
+                updateCourseBindSurvy(courseId)
+            } else {
+                errorMsg(Config.ERROR_INFO[result.code]);
+            }
+        })
     }
 }
 

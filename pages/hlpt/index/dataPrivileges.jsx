@@ -142,7 +142,7 @@ class DataPrivileges extends React.Component {
         let {searchInfo, addDataPrivileges, updatePageInfo, errorMsg} = this.props
 
 
-        val = val ? "/staffs/?isData=1&from={0}&limit=10&loginName=" + val : "/staffs/?isData=1&from={0}&limit=10"
+        val = val ? "/staffs/?from={0}&limit=10&loginName=" + val : "/staffs/?isData=1&from={0}&limit=10"
         TUI.platform.get(val.replace("{0}",0), function (result) {
             if (result.code == 0) {
                 addDataPrivileges(result.data)

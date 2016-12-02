@@ -23,7 +23,7 @@ class UserMaintainJobsList extends React.Component {
 
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "部门", "name3": "职位", "name4": "角色", "name5": "兼职类型", "name6": "操作" },
+            "thead": { "name1": "序号", "name2": "部门", "name3": "职位", "name4": "角色", "name5": "是否主职", "name6": "操作" },
             "tbody": []
         }
 
@@ -35,12 +35,12 @@ class UserMaintainJobsList extends React.Component {
                 "value2": _d.unitName,
                 "value3": _d.positionName,
                 "value4": _d.roleName,
-                "value5": _d.dutyType == 1 ? "主职" : "兼职",
+                "value5": _d.isDefault == 1 ? "是" : "否", 
                 "fns": [{
                     "name": "设为主职",
                     "fn": function () {
                         waiteMsg("正在提交,请稍等...")
-                        TUI.platform.put("/duty/dutyType", {
+                        TUI.platform.put("/duty/isDefault", {
                             "poid": _d.poid
                         }, function (result) {
                             if (result.code == 0) {

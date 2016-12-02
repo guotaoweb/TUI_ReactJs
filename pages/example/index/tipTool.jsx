@@ -7,9 +7,10 @@ class _TipTool extends React.Component {
         return (
             <div>
                 <Content txt="TipTool">
-                    <Btn type="add" txt="成功" style={{ padding: "10px" }} href={this.successTheMsg.bind(this) } />
-                    <Btn type="cancel" txt="失败" style={{ padding: "10px" }} href={this.errorTheMsg.bind(this) } />
-                    <Btn type="check" txt="等待" style={{ padding: "10px" }} href={this.waiteTheMsg.bind(this) } />
+                <br/>
+                    <Btn type="add" txt="成功" style={{ padding: "10px" }} href={this.successTheMsg.bind(this) } /><br/>
+                    <Btn type="cancel" txt="失败" style={{ padding: "10px" }} href={this.errorTheMsg.bind(this) } /><br/>
+                    <Btn type="check" txt="等待" style={{ padding: "10px" }} href={this.waiteTheMsg.bind(this) } /><br/>
                 </Content>
             </div>
         )

@@ -3,6 +3,7 @@ import Content, { openContentLoading, closeContentLoading } from "Content"
 import Btn from "Btn"
 import FormControls from "FormControls"
 
+let COURSE_BIND_SURVY_STATUS = "UNBIND"
 class VoteBindClasses extends React.Component {
     render() {
         const {
@@ -31,16 +32,25 @@ class VoteBindClasses extends React.Component {
                 top: "5px",
                 right: "3px",
                 fontWeight: "lighter",
-                cursor:"pointer"
+                cursor: "pointer"
             }
-        for (var i = 0; i < classesList.length; i++) {
-            var $c = classesList[i];
-            _list.push(
-                <div key={"voteBindClasses" + i} style={listStyle}>
-                    <FormControls key={"fc-votelist-" + i} id={$c.Id}  ctrl="checkbox" txt={$c.Name} />
-                    <b style={bStyle}>解绑</b>
-                </div>
-            )
+        for (let i = 0; i < classesList.length; i++) {
+            let $c = classesList[i]
+            if (COURSE_BIND_SURVY_STATUS == "BIND") {
+                _list.push(
+                    <div key={"voteBindClasses" + i} style={listStyle}>
+                        <span>{$c.Classes}</span>
+                        <b style={bStyle} data-id={$c.Id} onClick={this.removeBind.bind(this)}>解绑</b>
+                    </div>
+                )
+            }
+            else {
+                _list.push(
+                    <div key={"voteBindClasses" + i} style={listStyle}>
+                        <FormControls key={"fc-votelist-" + i} id={$c.Id} ctrl="checkbox" txt={$c.Classes} />
+                    </div>
+                )
+            }
         }
         return (
             <div>
@@ -59,13 +69,15 @@ class VoteBindClasses extends React.Component {
     }
 
     unBind(e) {
-        // TUI.platform.get("/Classes", function (result) {
-        //     if (result.code == 0) {
-        //         addClassesList(result.datas)
-        //     } else {
-        //         errorMsg(Config.ERROR_INFO[result.code]);
-        //     }
-        // })
+        const {sidePageInfo, loadClassesList, errorMsg} = this.props
+        COURSE_BIND_SURVY_STATUS = "UNBIND"
+        TUI.platform.get("/ClassesInVote/" + sidePageInfo.gateWay.Id + "?status=unbind", function (result) {
+            if (result.code == 0) {
+                loadClassesList(result.datas)
+            } else {
+                loadClassesList([])
+            }
+        })
 
         var $currentLi = ReactDOM.findDOMNode(this.refs.voteUnbind)
         if ($currentLi.getAttribute("class") != "activiry") {
@@ -79,16 +91,18 @@ class VoteBindClasses extends React.Component {
         document.getElementById("bindClasses")
             .querySelector(".t-content_t")
             .getElementsByTagName("div")[1].style.display = "block"
-        
+
     }
     binded(e) {
-        // TUI.platform.get("/Classes", function (result) {
-        //     if (result.code == 0) {
-        //         addClassesList(result.datas)
-        //     } else {
-        //         errorMsg(Config.ERROR_INFO[result.code]);
-        //     }
-        // })
+        const {sidePageInfo, loadClassesList, errorMsg} = this.props
+        COURSE_BIND_SURVY_STATUS = "BIND"
+        TUI.platform.get("/ClassesInVote/" + sidePageInfo.gateWay.Id + "?status=bind", function (result) {
+            if (result.code == 0) {
+                loadClassesList(result.datas)
+            } else {
+                loadClassesList([])
+            }
+        })
 
         var $currentLi = ReactDOM.findDOMNode(this.refs.voteBinded)
         if ($currentLi.getAttribute("class") != "activiry") {
@@ -102,6 +116,17 @@ class VoteBindClasses extends React.Component {
         document.getElementById("bindClasses")
             .querySelector(".t-content_t")
             .getElementsByTagName("div")[1].style.display = "none"
+    }
+    removeBind(e) {
+        const {updateCourseBindSurvy, errorMsg} = this.props
+        var classesId = e.currentTarget.getAttribute("data-id")
+        TUI.platform.delete("/VoteBindClasses/" + classesId, function (result) {
+            if (result.code == 0) {
+                updateCourseBindSurvy(classesId)
+            } else {
+                errorMsg(Config.ERROR_INFO[result.code]);
+            }
+        })
     }
 }
 

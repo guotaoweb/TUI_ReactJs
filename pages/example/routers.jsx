@@ -1,8 +1,7 @@
 import { Router, Route, IndexRoute } from 'react-router' // 路由
 
-
+import Login from './index/login'
 import Index from './index/index'
-
 import Table from './index/Table'
 import Btn from './index/Btn'
 import Input from './index/Input'
@@ -29,8 +28,9 @@ class Routers extends React.Component {
         const {history} = this.props
         return (
             <Router history={history}>
+                <Route path={Config.ROOTPATH+"manage"} component={Login} />
                 <Route path={Config.ROOTPATH} component={Index}>
-                    <IndexRoute component={_Slide} />
+                    <IndexRoute component={_SidePage} />
                     <Route path={Config.ROOTPATH + "layout1"} component={Layout1} />
                     <Route path={Config.ROOTPATH + "layout2"} component={Layout2} />
                     <Route path={Config.ROOTPATH + "layout3"} component={Layout3} />
@@ -54,7 +54,6 @@ class Routers extends React.Component {
                     <Route path={Config.ROOTPATH + "slide"} component={_Slide} />
 
                     <Route path={Config.ROOTPATH + "search"} component={_Serach} />
-
                 </Route>
             </Router>
         )
