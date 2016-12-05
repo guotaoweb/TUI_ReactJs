@@ -29,7 +29,9 @@ class ClassesList extends React.Component {
             pageInfo,
             updateEditInfo,
             addVoteList,
-            deleteClassesList
+            deleteClassesList,
+            deleteVoteBindClasses,
+            upClassesLevel
         } = this.props
 
         let tblContent = {
@@ -63,11 +65,11 @@ class ClassesList extends React.Component {
                                         GradeIdName: _d.Grade
                                     })
                                     _this._openSidePage("editClass")
-                                    closeContentLoading()
                                 }
                                 else {
-                                    errorMsg(config.ERROR_INFO[result.code]);
+                                    errorMsg(Config.ERROR_INFO[result.code]);
                                 }
+                                closeContentLoading()
                             })
                         }
                     }, {
@@ -75,19 +77,21 @@ class ClassesList extends React.Component {
                         "fn": function () {
                             var delFetch = function () {
                                 openContentLoading()
-                                TUI.platform.get("/UpClassesLevel/" + _d.Id, function (result) {
+                                TUI.platform.post("/UpClassesLevel/" + _d.Id, {}, function (result) {
                                     if (result.code == 0) {
-                                        var _d_ = result.datas[0]
-                                        closeContentLoading()
+                                        var _d_ = result.datas
+                                        upClassesLevel({
+                                            Id: _d.Id,
+                                            Grade: _d_
+                                        })
                                     }
                                     else {
-                                        errorMsg(config.ERROR_INFO[result.code]);
+                                        errorMsg(Config.ERROR_INFO[result.code]);
                                     }
+                                    closeContentLoading()
                                 })
                             }
-
                             openDialog(_this, "是否确定升级【" + _d.Name + "】", delFetch)
-
                         }
                     }, {
                         "name": "绑定",
@@ -103,11 +107,12 @@ class ClassesList extends React.Component {
                                         var _v = result.datas
                                         addVoteList(_v)
                                         _this._openSidePage("bindVote", _d.Id)
-                                        closeContentLoading()
+
                                     }
                                     else {
-                                        errorMsg(config.ERROR_INFO[result.code]);
+                                        errorMsg(Config.ERROR_INFO[result.code]);
                                     }
+                                    closeContentLoading()
                                 })
                             }
                         }
@@ -118,13 +123,14 @@ class ClassesList extends React.Component {
                     "name": "解绑",
                     "fn": function () {
                         var delFetch = function () {
-                            TUI.platform.delete("/VoteBindClasses/" + _d.Id, function (result) {
+                            let _id = _d.Id
+                            TUI.platform.delete("/VoteBindClasses/" + _id, function (result) {
                                 if (result.code == 0) {
                                     var _v = result.datas
-                                    deleteVoteBindClasses(_d.Id)
+                                    deleteVoteBindClasses(_id)
                                 }
                                 else {
-                                    errorMsg(config.ERROR_INFO[result.code]);
+                                    errorMsg(Config.ERROR_INFO[result.code]);
                                 }
                             })
                         }
@@ -138,7 +144,7 @@ class ClassesList extends React.Component {
                     "name": "删除",
                     "fn": function () {
                         var delFetch = function () {
-                            TUI.platform.delete("/Grade/" + _d.Id, function (result) {
+                            TUI.platform.delete("/Classes/" + _d.Id, function (result) {
                                 if (result.code == 0) {
                                     deleteClassesList(_d.Id)
                                 }
@@ -184,7 +190,7 @@ class ClassesList extends React.Component {
                         <BindVote key="bindVote" />
                     </div>
                 </SidePage>
-                <SidePage id="selectTeacher" title="教师列表" href={this.bindTeacher.bind(this)}>
+                <SidePage id="selectTeacher" title="教师列表" addHref={this.bindTeacher.bind(this)}>
                     <div>
                         <SelectTeacher key="selectTeacher" />
                     </div>
@@ -198,8 +204,32 @@ class ClassesList extends React.Component {
         )
     }
 
-    bindTeacher(){
-        
+    bindTeacher() {
+        const {sidePageInfo, updateEditInfo, editInfo} = this.props
+        let $radio = document.getElementsByClassName("t-c_radio")
+        let teacherId = []
+
+        for (var i = 0; i < $radio.length; i++) {
+            var $r = $radio[i];
+            if ($r.getAttribute("data-status") == "selected") {
+                let _info = {
+                    infoName: "courseInfo"
+                },
+                    _courseIndex = editInfo.courseInfo.CourseIndex
+
+                _info["ClassesRelated" + _courseIndex] = {
+                    CourseId: editInfo.courseInfo.CourseId,
+                    TeacherId: $r.getAttribute("data-value")
+                }
+                _info["TeacherName" + _courseIndex] = $r.innerText
+                updateEditInfo(_info)
+            }
+        }
+
+        console.info(this.props.editInfo)
+        closeSidePage({
+            id: "selectTeacher"
+        })
     }
 
     _openSidePage(sidePageid, _id) {
@@ -224,7 +254,7 @@ class ClassesList extends React.Component {
 
 
     bindVote() {
-        const {sidePageInfo, updateClassesList} = this.props
+        const {sidePageInfo, updateClassesList, errorMsg} = this.props
         let $radio = document.getElementsByClassName("t-c_radio")
         let voteId = "",
             voteName = ""
@@ -329,7 +359,8 @@ class ClassesList extends React.Component {
     addClasses() {
         openSidePage(this, {
             status: "addClasses",
-            width: ""
+            width: "",
+            gateWay:{}
         })
     }
 }
@@ -341,5 +372,6 @@ export default TUI._connect({
     courseList: "courseList.list",
     voteList: "voteList.list",
     sidePageInfo: "publicInfo.sidePageInfo",
-    pageInfo: "publicInfo.pageInfo"
+    pageInfo: "publicInfo.pageInfo",
+    editInfo: "formControlInfo.data"
 }, ClassesList)

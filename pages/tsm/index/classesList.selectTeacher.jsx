@@ -9,6 +9,7 @@ import MultyMenu from "MultyMenu"
 import { openLoading, closeLoading } from "Loading"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import { openContentLoading, closeContentLoading } from 'Content'
+import FormControls from 'FormControls'
 
 
 class ClassesGrade extends React.Component {
@@ -34,7 +35,7 @@ class ClassesGrade extends React.Component {
                 var $t = teacherList[i];
                 _list.push(
                     <div style={_listStyle}>
-                        <FormControls ctrl="radio" txt={$t.Name} groupName="teacherList" value={"teacherInfo.Name" + i} />
+                        <FormControls ctrl="radio" txt={$t.Name} groupName="teacherList" value={$t.Id} />
                     </div>
                 )
             }

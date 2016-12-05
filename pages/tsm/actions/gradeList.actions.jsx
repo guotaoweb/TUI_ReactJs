@@ -9,7 +9,7 @@ export function addGradeList(data){
 //根据ID删除年级【2】
 export function deleteGradeList(id){
     return {
-        type:"DELETE_GRADE_List",
+        type:"DELETE_GRADE_LIST",
         id
     } 
 }

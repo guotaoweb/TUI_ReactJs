@@ -50,8 +50,6 @@ export default function teacherListReducers(state = initState, action) {
             return Object.assign({}, state, {
                 teacherInClasses: JSON.parse(JSON.stringify(action.data))
             })
-
-            
         default:
             return state
     }

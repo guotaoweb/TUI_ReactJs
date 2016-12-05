@@ -9,7 +9,7 @@ export function addClassesList(data){
 //根据ID删除班级【2】
 export function deleteClassesList(id){
     return {
-        type:"DELETE_CLASSES_List",
+        type:"DELETE_CLASSES_LIST",
         id
     } 
 }
@@ -42,6 +42,14 @@ export function updateClassesBindVote(data){
         data
     } 
 }
+
+export function upClassesLevel(data){
+    return {
+        type:"UP_CLASSES_LEVEL",
+        data
+    } 
+}
+
 
 
 

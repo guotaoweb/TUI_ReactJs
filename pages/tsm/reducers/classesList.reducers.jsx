@@ -46,7 +46,7 @@ export default function classesListReducers(state = initState, action) {
         case "DELETE_VOTE_BIND_CLASSES":
             for (let i = 0; i < state.list.length; i++) {
                 let $d = state.list[i]
-                if ($d.Id == action.data.Id) {
+                if ($d.Id == action.id) {
                     $d.Vote = null
                 }
             }
@@ -59,7 +59,7 @@ export default function classesListReducers(state = initState, action) {
                 if (typeof action.data == "string") {
                     if ($d.Id == action.data) {
                         state.list.splice(i, 1)
-                        $d.VotedNumber = parseInt($d.VotedNumber)-1
+                        $d.VotedNumber = parseInt($d.VotedNumber) - 1
                     }
                 }
                 else {
@@ -67,9 +67,19 @@ export default function classesListReducers(state = initState, action) {
                         var $a = action.data[j];
                         if ($d.Id == $a.ClassesId) {
                             state.list.splice(i, 1)
-                            $d.VotedNumber = parseInt($d.VotedNumber)+1
+                            $d.VotedNumber = parseInt($d.VotedNumber) + 1
                         }
                     }
+                }
+            }
+            return Object.assign({}, state, {
+                list: eval(JSON.stringify(state.list))
+            })
+        case "UP_CLASSES_LEVEL":
+            for (let i = 0; i < state.list.length; i++) {
+                let $d = state.list[i]
+                if ($d.Id == action.data.Id) {
+                    $d.Grade = action.data.Grade
                 }
             }
             return Object.assign({}, state, {

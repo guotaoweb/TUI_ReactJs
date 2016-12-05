@@ -102,7 +102,7 @@ class CTRL_INPUT extends React.Component {
         if (type == "select") {
             _input.push(
                 <div key={"formcontrol-input-search" + data} className="formcontrol-input-select">
-                    <input className={required} ref="formcontrolInputSelect" type="text" onFocus={onFocus} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} readOnly />
+                    <input className={required} ref="formcontrolInputSelect" type="text" onClick={this._selectFn.bind(this)} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} readOnly />
                     <img src={search} onClick={this._selectFn.bind(this)} />
                     {_value ? <img src={chag} onClick={this._clearSelect.bind(this)} className="chachag" /> : ""}
                 </div>
@@ -327,12 +327,14 @@ class CTRL_RADIO extends React.Component {
         for (var i = 0; i < $radios.length; i++) {
             var $e = $radios[i];
             if ($e.getAttribute("data-groupName") == groupName) {
-                $e.getElementsByTagName("img")[0].setAttribute("src", "unselect")
+                $e.setAttribute("data-status", "unselect")
                 $e.getElementsByTagName("img")[0].setAttribute("src", unRadio)
             }
         }
+
         $elem.parentNode.setAttribute("data-status", "selected")
         $elem.setAttribute("src", isRadio)
+
     }
 }
 

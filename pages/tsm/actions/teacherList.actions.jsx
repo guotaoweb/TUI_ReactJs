@@ -29,6 +29,13 @@ export function addTeacherInClasses(data){
     } 
 }
 
+export function loadTeacherList(data){
+    return {
+        type:"LOAD_TEACHER_LIST",
+        data
+    } 
+}
+
 
 
 

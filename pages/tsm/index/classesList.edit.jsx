@@ -34,9 +34,9 @@ class EditClasses extends React.Component {
                     label={$c.Name}
                     ctrl="input"
                     type="select"
-                    value={"classesInfo.CourseName" + i}
+                    value={"courseInfo.TeacherName" + i}
                     selectFn={this._selectFn.bind(this)}
-                    bind={{ CourseId: $c.Id, ClassesId: sidePageInfo.gateWay ? sidePageInfo.gateWay.classesId : "" }}
+                    bind={{ CourseIndex:i,CourseId: $c.Id, ClassesId: sidePageInfo.gateWay ? sidePageInfo.gateWay.classesId : "" }}
                     />)
         }
 
@@ -50,7 +50,7 @@ class EditClasses extends React.Component {
                         {courseInput}
                         <div className="formControl-btn">
                             <Btn type="cancel" txt="取消" href={this._goBack.bind(this)} />
-                            <Btn type="submit" txt="确定" href={this.selectSave.bind(this)} />
+                            <Btn type="submit" txt="确定" href={this.editClassesInfo.bind(this)} />
                         </div>
                     </div>
                 </Content2>
@@ -59,49 +59,31 @@ class EditClasses extends React.Component {
     }
 
     _selectFn(bind) {
-        const {addTeacherList, errorMsg} = this.props
+        const {loadTeacherList, errorMsg,sidePageInfo} = this.props
         let _this = this
 
         TUI.platform.get("/TeacherInCourse/" + bind.CourseId, function(result) {
             if (result.code == 0) {
-                addTeacherList(_addData)
+                loadTeacherList(result.datas)
             }
             if (result.code == 1) {
-                addTeacherList([])
+                loadTeacherList([])
             }
             else {
-                errorMsg(config.ERROR_INFO[result.code]);
+                errorMsg(Config.ERROR_INFO[result.code]);
             }
             openSidePage(_this, {
                 id: "selectTeacher",
                 status: "selectTeacher",
                 width: "400",
                 gateWay: {
-                    Id: bind.CourseId
+                    Id: bind.CourseId,
+                    preStatus:sidePageInfo.gateWay.preStatus?sidePageInfo.gateWay.preStatus:sidePageInfo.status
                 }
             })
         })
 
 
-    }
-
-    selectSave() {
-        const {sidePageInfo, updateEditInfo} = this.props
-        let $radio = document.getElementsByClassName("t-c_radio")
-        let teacherId = []
-        for (var i = 0; i < $radio.length; i++) {
-            var $r = $radio[i];
-            if ($r.getAttribute("data-status") == "selected") {
-                let _info = {
-                    infoName: "InputInfo1"
-                }
-                _info[sidePageInfo.gateWay.Id] = $r.getAttribute("data-value")
-                _info["age2"] = $r.innerText
-                updateEditInfo(_info)
-            }
-        }
-        closeSidePage()
-        console.info(this.props.editInfo)
     }
 
     editClassesInfo() {
@@ -114,16 +96,23 @@ class EditClasses extends React.Component {
                 GradeId: editInfo.classesInfo.GradeId,
                 ClassesRelated: []
             }
+        
+        for (let key in editInfo.courseInfo) {
+            if(key.indexOf("ClassesRelated")>-1){
+                jsonParam.ClassesRelated.push(editInfo.courseInfo[key])
+            }
+        }
 
-        if (sidePageInfo.status == "addClasses") {
+        if (sidePageInfo.gateWay.preStatus == "addClasses") {
             TUI.platform.post("/Classes", jsonParam, function(result) {
                 if (result.code == 0) {
                     successMsg("新增成功")
                     jsonParam["Id"] = result.datas
-                    addClassesList(_addData)
+                    jsonParam["Grade"] = editInfo.classesInfo.GradeIdName,
+                    addClassesList(jsonParam)
                 }
                 else {
-                    errorMsg(config.ERROR_INFO[result.code]);
+                    errorMsg(Config.ERROR_INFO[result.code]);
                 }
                 _this._goBack()
             })
@@ -139,7 +128,7 @@ class EditClasses extends React.Component {
                     updateClassesList(jsonParam)
                 }
                 else {
-                    errorMsg(config.ERROR_INFO[result.code]);
+                    errorMsg(Config.ERROR_INFO[result.code]);
                 }
                 _this._goBack()
             })

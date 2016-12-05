@@ -88,7 +88,7 @@ class ClassesGrade extends React.Component {
 
         this._goBack()
     }
-    
+
     _goBack() {
         this.props.clearEditInfo({
             infoName: "gradeInfo"
@@ -137,16 +137,19 @@ class ClassesGrade extends React.Component {
     }
 
     _delMenu($m) {
-        const {deleteGradeList} = this.props
+        const {deleteGradeList, errorMsg} = this.props
         let _this = this
-        TUI.platform.delete("/Grade/" + $m.id, function (result) {
-            if (result.code == 0) {
-                deleteGradeList($m.id)
-            }
-            else {
-                errorMsg(TUI.ERROR_INFO[result.code]);
-            }
-        })
+        let delFetch = function () {
+            TUI.platform.delete("/Grade/" + $m.id, function (result) {
+                if (result.code == 0) {
+                    deleteGradeList($m.id)
+                }
+                else {
+                    errorMsg(TUI.ERROR_INFO[result.code]);
+                }
+            })
+        }
+        openDialog(_this, "是否确定删除", delFetch)
     }
 
     componentDidMount() {

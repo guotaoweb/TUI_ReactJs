@@ -20,7 +20,7 @@ class ClassesGrade extends React.Component {
                 <div className="t-content-padding">
                     <FormControls label="名称" ctrl="input" value="gradeInfo.Name" />
                     <FormControls label="短名" ctrl="input" value="gradeInfo.ShortName" />
-                    <FormControls label="等级" ctrl="input" value="gradeInfo.Level" />
+                    <FormControls label="等级" ctrl="input" type="number" value="gradeInfo.Level" />
                     <div className="formControl-btn">
                         <Btn type="cancel" txt="取消" href={this._goBack.bind(this)} />
                         <Btn type="submit" txt="提交" href={this.editGrade.bind(this)} />

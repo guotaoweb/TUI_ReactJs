@@ -20,10 +20,9 @@ export default function gradeListReducers(state = initState, action) {
         case "DELETE_GRADE_LIST":
             for (let i = 0; i < state.list.length; i++) {
                 let $d = state.list[i]
+                console.info($d.Id +","+ action.id)
                 if ($d.Id == action.id) {
-                    state
-                        .list
-                        .splice(i, 1)
+                    state.list.splice(i, 1)
                 }
             }
             return Object.assign({}, state, {
