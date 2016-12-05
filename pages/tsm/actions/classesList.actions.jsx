@@ -29,12 +29,20 @@ export function loadClassesList(data){
     } 
 }
 
-export function bindVote(data){
+export function deleteVoteBindClasses(id){
     return {
-        type:"CLASSES_BIND_VOTE",
+        type:"DELETE_VOTE_BIND_CLASSES",
+        id
+    }
+}
+
+export function updateClassesBindVote(data){
+    return {
+        type:"UPDATE_CLASSES_BIND_VOTE",
         data
     } 
 }
+
 
 
 

@@ -8,7 +8,7 @@ export default function manageReducers(state = initState, action) {
     switch (action.type) {
         case "ADD_VOTE_LIST":
             if (state.list.length == 0) {
-                return Object.assign({}, state, {list: action.data})
+                return Object.assign({}, state, { list: action.data })
             } else {
                 state
                     .list
@@ -32,7 +32,7 @@ export default function manageReducers(state = initState, action) {
         case "UPDATE_VOTE_LIST":
             for (let i = 0; i < state.list.length; i++) {
                 let $d = state.list[i]
-               
+
                 if ($d.Id == action.data.Id) {
                     $d.Name = action.data.Name
                     $d.IsStart = action.data.IsStart

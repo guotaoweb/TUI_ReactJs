@@ -3,7 +3,7 @@ import Content, { openContentLoading, closeContentLoading } from "Content"
 import Btn from "Btn"
 import FormControls from "FormControls"
 
-class VoteUnBindClasses extends React.Component {
+class VoteBindClasses extends React.Component {
     render() {
         const {
             voteList,
@@ -38,8 +38,7 @@ class VoteUnBindClasses extends React.Component {
                 let $c = classesList[i]
                 _list.push(
                     <div key={"voteBindClasses" + i} style={listStyle}>
-                        <span>{$c.Classes}</span>
-                        <b style={bStyle} data-id={$c.Id} onClick={this.removeBind.bind(this)}>解绑</b>
+                        <FormControls key={"fc-votelist-" + i} id={$c.Id} ctrl="checkbox" txt={$c.Classes} />
                     </div>
                 )
             }
@@ -47,35 +46,22 @@ class VoteUnBindClasses extends React.Component {
         else {
             _list.push(
                 <div style={{
-                    width: "100%",
-                    height: "40px",
-                    lineHeight: "40px",
-                    marginTop: "30px",
-                    textAlign: "center",
+                    width:"100%",
+                    height:"40px",
+                    lineHeight:"40px",
+                    marginTop:"30px",
+                    textAlign:"center",
                     color:"#999"
                 }}>
-                    未找到任何已绑定的班级
+                    未找到任何未绑定的班级
                 </div>
             )
         }
         return (
             <div>
-
                 {_list}
             </div>
         )
-    }
-
-    removeBind(e) {
-        const {updateClassesBindVote, errorMsg} = this.props
-        var classesId = e.currentTarget.getAttribute("data-id")
-        TUI.platform.delete("/VoteBindClasses/" + classesId, function(result) {
-            if (result.code == 0) {
-                updateClassesBindVote(classesId)
-            } else {
-                errorMsg(Config.ERROR_INFO[result.code]);
-            }
-        })
     }
 }
 
@@ -84,4 +70,4 @@ export default TUI._connect({
     classesList: "classesList.list",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo"
-}, VoteUnBindClasses)
+}, VoteBindClasses)

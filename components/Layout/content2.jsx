@@ -103,7 +103,6 @@ export function bindEvent($this) {
 
     //let bodyScrollHeight = document.documentElement.scrollHeight
     let _fn = function () {
-        console.info("====++++")
         let _this = this
         let tabId = this.getAttribute("data-bind")
         let nodes = TUI.fn.siblingsElem(tabId)

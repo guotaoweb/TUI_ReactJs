@@ -71,20 +71,22 @@ class Content3 extends React.Component {
   componentDidMount() {
     let allHeight = document.documentElement.clientHeight
     let headerHeight = document.querySelector(".t-header") ? document.querySelector(".t-header").offsetHeight : 0
-    ReactDOM.findDOMNode(this.refs.tContent3).style.height = (allHeight - headerHeight) + "px"
-    ReactDOM.findDOMNode(this.refs.tContent3Side).style.height = (allHeight - headerHeight) + "px"
+    let baseHeight = allHeight - headerHeight
+    ReactDOM.findDOMNode(this.refs.tContent3).style.height = baseHeight + "px"
+    ReactDOM.findDOMNode(this.refs.tContent3Side).style.height = baseHeight + "px"
 
     let tip = ReactDOM.findDOMNode(this.refs.tblContent).previousSibling.offsetHeight
     tip = tip > 0 ? tip + 30 : 20;
 
-    ReactDOM.findDOMNode(this.refs.tblContent).style.height = (allHeight - headerHeight - tip) + "px"
+    ReactDOM.findDOMNode(this.refs.tblContent).style.height = (baseHeight - tip) + "px"
 
-    this.scrollAreaSideComponent.wrapper.style.height = (allHeight - headerHeight) + "px"
+    this.scrollAreaSideComponent.wrapper.style.height = baseHeight + "px"
+    this.scrollAreaSideComponent.content.style.height = baseHeight + "px"
     if (this.scrollAreaSideComponent) {
       this.scrollAreaSideComponent.scrollArea.refresh()
     }
 
-    this.scrollAreaComponent.wrapper.style.height = (allHeight - headerHeight - tip) + "px"
+    this.scrollAreaComponent.wrapper.style.height = (baseHeight - tip) + "px"
     if (this.scrollAreaComponent) {
       this.scrollAreaComponent.scrollArea.refresh()
     }

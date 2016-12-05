@@ -14,7 +14,6 @@ export function updateVoteList(data){
     }
 }
 
-
 //删除投票列表信息【3】
 export function deleteVoteList(id){
     return {
@@ -22,6 +21,8 @@ export function deleteVoteList(id){
         id
     }
 }
+
+
 
 
 

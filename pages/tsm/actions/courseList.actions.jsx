@@ -29,10 +29,10 @@ export function loadCourseList(data){
     } 
 }
 
-export function updateCourseBindSurvy(courseId){
+export function updateCourseBindSurvy(data){
     return {
         type:"UPDATE_COURSE_BIND_SURVY",
-        courseId
+        data
     } 
 }
 

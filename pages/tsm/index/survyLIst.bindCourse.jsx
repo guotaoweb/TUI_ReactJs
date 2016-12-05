@@ -3,8 +3,8 @@ import Btn from "Btn"
 import FormControls from "FormControls"
 import { closeSidePage } from "SidePage"
 
-let COURSE_BIND_SURVY_STATUS = "UNBIND"
-class SurvyBindCourse extends React.Component {
+
+class SurvyUnBindCourse extends React.Component {
     render() {
         const {sidePageInfo, courseList} = this.props
 
@@ -32,9 +32,10 @@ class SurvyBindCourse extends React.Component {
                 fontWeight: "lighter",
                 cursor: "pointer"
             }
-        for (let i = 0; i < courseList.length; i++) {
-            let $c = courseList[i]
-            if (COURSE_BIND_SURVY_STATUS == "BIND") {
+
+        if(courseList.length>0){
+            for (let i = 0; i < courseList.length; i++) {
+                let $c = courseList[i]
                 _list.push(
                     <div key={"voteBindClasses" + i} style={listStyle}>
                         <span>{$c.Name}</span>
@@ -42,84 +43,30 @@ class SurvyBindCourse extends React.Component {
                     </div>
                 )
             }
-            else {
-                _list.push(
-                    <div key={"voteBindClasses" + i} style={listStyle}>
-                        <FormControls key={"fc-votelist-" + i} id={$c.Id} ctrl="checkbox" txt={$c.Name} />
-                    </div>
-                )
-            }
-
         }
-
+        else {
+            _list.push(
+                <div style={{
+                    width: "100%",
+                    height: "40px",
+                    lineHeight: "40px",
+                    marginTop: "30px",
+                    textAlign: "center",
+                    color:"#999"
+                }}>
+                    未找到任何已绑定的科目
+                </div>
+            )
+        }
         return (
             <div>
-                <ul className="voteBindClassesStatusBar">
-                    <li ref="courseUnbind" onClick={this.unBind.bind(this)} className="activity">未绑定</li>
-                    <li ref="courseBinded" onClick={this.binded.bind(this)}>已绑定</li>
-                </ul>
-                <br style={{ clear: "both" }} />
                 {_list}
             </div>
         )
     }
 
-    componentDidMount() {
-        document.querySelector(".voteBindClassesStatusBar").parentNode.parentNode.parentNode.style.paddingTop = "0px"
-    }
-
-    unBind(e) {
-        const {sidePageInfo, loadCourseList, errorMsg} = this.props
-        COURSE_BIND_SURVY_STATUS = "UNBIND"
-        TUI.platform.get("/CourseInSurvy/" + sidePageInfo.gateWay.Id + "?status=unbind", function (result) {
-            if (result.code == 0) {
-                loadCourseList(result.datas)
-            } else {
-                loadCourseList([])
-            }
-        })
-
-        var $currentLi = ReactDOM.findDOMNode(this.refs.courseUnbind)
-        if ($currentLi.getAttribute("class") != "activiry") {
-            $currentLi.setAttribute("class", "activity")
-            $currentLi.nextSibling.setAttribute("class", "")
-        }
-
-        document.getElementById("bindCourse")
-            .querySelector(".t-content_t")
-            .getElementsByTagName("div")[0].style.display = "block"
-        document.getElementById("bindCourse")
-            .querySelector(".t-content_t")
-            .getElementsByTagName("div")[1].style.display = "block"
-
-    }
-    binded(e) {
-        const {sidePageInfo, loadCourseList, errorMsg} = this.props
-        COURSE_BIND_SURVY_STATUS = "BIND"
-        TUI.platform.get("/CourseInSurvy/" + sidePageInfo.gateWay.Id + "?status=bind", function (result) {
-            if (result.code == 0) {
-                loadCourseList(result.datas)
-            } else {
-                loadCourseList([])
-            }
-        })
-
-        var $currentLi = ReactDOM.findDOMNode(this.refs.courseBinded)
-        if ($currentLi.getAttribute("class") != "activiry") {
-            $currentLi.setAttribute("class", "activity")
-            $currentLi.previousSibling.setAttribute("class", "")
-        }
-
-        document.getElementById("bindCourse")
-            .querySelector(".t-content_t")
-            .getElementsByTagName("div")[0].style.display = "none"
-        document.getElementById("bindCourse")
-            .querySelector(".t-content_t")
-            .getElementsByTagName("div")[1].style.display = "none"
-    }
-
     removeBind(e) {
-        const {updateCourseBindSurvy,errorMsg} = this.props
+        const {updateCourseBindSurvy, errorMsg} = this.props
         var courseId = e.currentTarget.getAttribute("data-id")
         TUI.platform.delete("/CourseInSurvy/" + courseId, function (result) {
             if (result.code == 0) {
@@ -135,4 +82,4 @@ class SurvyBindCourse extends React.Component {
 export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
     courseList: "courseList.list"
-}, SurvyBindCourse)
+}, SurvyUnBindCourse)

@@ -7,6 +7,7 @@ import { openDialog, closeDialog } from "Dialog"
 import Pager from "Pager"
 import EditSurvy from "./survyList.edit"
 import SurvyBindCourse from "./survyList.bindCourse"
+import SurvyUnBindCourse from "./survyList.unBindCourse"
 import { openLoading, closeLoading } from "Loading"
 
 class SurvyList extends React.Component {
@@ -65,12 +66,40 @@ class SurvyList extends React.Component {
                             if (result.code == 0) {
                                 loadCourseList(result.datas)
                             }
+                            else if (result.code == 1) {
+                                loadCourseList([])
+                            }
+                            else {
+                                errorMsg(Config.ERROR_INFO[result.code]);
+                            }
+                            openSidePage(_this, {
+                                id: "unBindCourse",
+                                status: "unBindCourse",
+                                width: "400",
+                                gateWay: {
+                                    Id: _d.Id
+                                }
+                            })
+                            closeContentLoading()
+                        })
+                    }
+                }, {
+                    "name": "解绑",
+                    "fn": function () {
+                        openContentLoading()
+                        TUI.platform.get("/CourseInSurvy/" + _d.Id + "?status=bind", function (result) {
+                            if (result.code == 0) {
+                                loadCourseList(result.datas)
+                            }
+                            else if (result.code == 1) {
+                                loadCourseList([])
+                            }
                             else {
                                 errorMsg(Config.ERROR_INFO[result.code]);
                             }
                             openSidePage(_this, {
                                 id: "bindCourse",
-                                status: "survyBindCourse",
+                                status: "bindCourse",
                                 width: "400",
                                 gateWay: {
                                     Id: _d.Id
@@ -83,15 +112,9 @@ class SurvyList extends React.Component {
                     "name": "删除",
                     "fn": function () {
                         var delFetch = function () {
-                            TUI.platform.post("/projectteam/team", {
-                                "uid": userId,
-                                "team_id": _d.team_id,
-                                "upper_team_id": "-1",
-                                "del_flag": "y",
-                                "opertype": "U"
-                            }, function (result) {
+                            TUI.platform.delete("/Survy/" + _d.Id, function (result) {
                                 if (result.code == 0) {
-                                    delTeamList(_d.team_id)
+                                    deleteSurvyList(_d.Id)
                                 }
                                 else {
                                     errorMsg(TUI.ERROR_INFO[result.code]);
@@ -112,22 +135,27 @@ class SurvyList extends React.Component {
                     <Pager fn={this.pageFn.bind(this)} />
                 </Content>
                 <SidePage id="survyEdit">
-                    <div></div>
+                    <div>
+                        <EditSurvy key="editSurvy" />
+                    </div>
                 </SidePage>
                 <SidePage
-                    id="bindCourse"
+                    id="unBindCourse"
                     title="绑定科目"
                     addHref={this.bindAllCourse.bind(this)}
                     addHrefTxt="一键绑定"
                     editHref={this.bindCourse.bind(this)}
                     editHrefTxt="绑定"
                     >
-                    <div><SurvyBindCourse key="survyBindCourse" /></div>
+                    <div><SurvyUnBindCourse key="survyUnBindCourse" /></div>
+                </SidePage>
+                <SidePage id="bindCourse" title="解绑科目">
+                    <div><SurvyBindCourse key="bindCourse" /></div>
                 </SidePage>
             </div>
         )
     }
-    //<EditSurvy key="survyedit" />
+
     bindAllCourse() {
         const {sidePageInfo, updateCourseBindSurvy, errorMsg, waiteMsg, successMsg} = this.props
         let selected = [],
@@ -141,9 +169,7 @@ class SurvyList extends React.Component {
             })
 
         }
-        closeSidePage({
-            id: "bindCourse"
-        })
+        this._goBack()
 
         if (selected.length > 0) {
             waiteMsg("数据提交中,请稍等...")
@@ -174,9 +200,7 @@ class SurvyList extends React.Component {
                 successMsg("保存成功")
             }
         }
-        closeSidePage({
-            id: "bindCourse"
-        })
+        this._goBack()
 
         if (selected.length > 0) {
             TUI.platform.post("/SurvyeBindCours", selected, function (result) {
@@ -236,11 +260,18 @@ class SurvyList extends React.Component {
     }
 
     addSurvy() {
+        const {addBreadNav} = this.props
         openSidePage(this, {
             status: "addSurvy",
             width: ""
         })
-        addBreadNav({ name: "新增问卷" })
+        pushBreadNav({ name: "新增问卷" })
+    }
+
+    _goBack() {
+        closeSidePage({
+            id: "unBindCourse"
+        })
     }
 }
 

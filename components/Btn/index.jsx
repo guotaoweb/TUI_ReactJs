@@ -30,9 +30,12 @@ class Btn extends React.Component {
 
     let btnElem,
     btnStyle = { padding: "10px " + width + "px" }
-    if(this.props.style){
-      btnStyle = this.props.style
-    }
+    // if(this.props.style){
+    //   let _btnStyle = this.props.style
+    //   for (var key in _btnStyle) {
+    //     btnStyle[key] = _btnStyle[key]
+    //   }
+    // }
 
     if (href && typeof href == "string") {
       btnElem = <Link to={href} className={"t-btn t-btn--" + type} style={btnStyle}>

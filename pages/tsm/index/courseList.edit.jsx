@@ -64,7 +64,7 @@ class EditCourse extends React.Component {
           jsonParam["Survy"] = editInfo.courseInfo.SurvyIdName
           jsonParam["UpdateTime"] = TUI.fn.currentTime()
           addCourseList(jsonParam)
-          successMsg("新增成功")
+          setTimeout(function(){successMsg("新增成功")},300)
           _this.goBack()
         }
         else {
@@ -78,7 +78,7 @@ class EditCourse extends React.Component {
         if (result.code == 0) {
           jsonParam["Id"] = _id
           jsonParam["Survy"] = editInfo.courseInfo.SurvyIdName
-          successMsg("编辑成功")
+          setTimeout(function(){successMsg("编辑成功")},300)
           updateCourseList(jsonParam)
           _this.goBack()
         }

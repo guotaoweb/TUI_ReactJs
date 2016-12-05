@@ -46,9 +46,18 @@ export default function courseListReducers(state = initState, action) {
         case "UPDATE_COURSE_BIND_SURVY":
             for (let i = 0; i < state.list.length; i++) {
                 let $d = state.list[i]
-
-                if ($d.Id == action.courseId) {
-                    state.list.splice(i,1)
+                if (typeof action.data == "string") {
+                    if ($d.Id == action.data) {
+                        state.list.splice(i, 1)
+                    }
+                }
+                else {
+                    for (var j = 0; j < action.data.length; j++) {
+                        var $a = action.data[j];
+                        if ($d.Id == $a.CourseId) {
+                            state.list.splice(i, 1)
+                        }
+                    }
                 }
             }
             return Object.assign({}, state, {

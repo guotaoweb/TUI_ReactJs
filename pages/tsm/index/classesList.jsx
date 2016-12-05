@@ -14,6 +14,10 @@ import { openLoading, closeLoading } from "Loading"
 
 import EditClasses from "./classesList.edit"
 import BindVote from "./classesList.bindVote"
+import ClassesGrade from "./classesList.grade"
+import GradeEdit from "./classesList.gradeEdit"
+import SelectTeacher from "./classesList.selectTeacher"
+
 
 class ClassesList extends React.Component {
     render() {
@@ -24,10 +28,9 @@ class ClassesList extends React.Component {
             voteList,
             pageInfo,
             updateEditInfo,
-            addVoteList
+            addVoteList,
+            deleteClassesList
         } = this.props
-
-
 
         let tblContent = {
             "thead": { "name1": "序号", "name2": "名称", "name3": "人数", "name4": "所属年级", "name5": "绑定投票", "name6": "操作" },
@@ -37,50 +40,29 @@ class ClassesList extends React.Component {
             _this = this
 
         for (var i = 0; i < classesList.length; i++) {
-            let _d = classesList[i]
-
-            tblContent.tbody.push({
-                "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
-                "value2": _d.Name,
-                "value3": _d.Number,
-                "value4": _d.Grade,
-                "value5": _d.Vote,
-                "fns": [{
-                    "name": "编辑",
-                    "fn": function () {
-                        openContentLoading()
-                        TUI.platform.get("/Classes/" + _d.Id, function (result) {
-                            if (result.code == 0) {
-                                var _d_ = result.datas[0]
-                                updateEditInfo({
-                                    infoName: "classesInfo",
-                                    Id: _d_.Id,
-                                    Name: _d_.Name,
-                                    Number: _d_.Number,
-                                    GradeId: _d_.GradeId,
-                                    GradeIdName: _d.Grade
-                                })
-                                _this._openSidePage("editClass")
-                                closeContentLoading()
-                            }
-                            else {
-                                errorMsg(config.ERROR_INFO[result.code]);
-                            }
-                        })
-                    }
-                }, {
-                    "name": "绑定",
-                    "fn": function () {
-                        if (voteList.length > 0) {
-                            _this._openSidePage("bindVote",_d.Id)
-                        }
-                        else {
+            let _d = classesList[i],
+                _tr = {
+                    "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
+                    "value2": _d.Name,
+                    "value3": _d.Number,
+                    "value4": _d.Grade,
+                    "value5": _d.Vote,
+                    "fns": [{
+                        "name": "编辑",
+                        "fn": function () {
                             openContentLoading()
-                            TUI.platform.get("/Vote", function (result) {
+                            TUI.platform.get("/Classes/" + _d.Id, function (result) {
                                 if (result.code == 0) {
-                                    var _v = result.datas
-                                    addVoteList(_v)
-                                    _this._openSidePage("bindVote",_d.Id)
+                                    var _d_ = result.datas[0]
+                                    updateEditInfo({
+                                        infoName: "classesInfo",
+                                        Id: _d_.Id,
+                                        Name: _d_.Name,
+                                        Number: _d_.Number,
+                                        GradeId: _d_.GradeId,
+                                        GradeIdName: _d.Grade
+                                    })
+                                    _this._openSidePage("editClass")
                                     closeContentLoading()
                                 }
                                 else {
@@ -88,8 +70,71 @@ class ClassesList extends React.Component {
                                 }
                             })
                         }
+                    }, {
+                        "name": "升级",
+                        "fn": function () {
+                            var delFetch = function () {
+                                openContentLoading()
+                                TUI.platform.get("/UpClassesLevel/" + _d.Id, function (result) {
+                                    if (result.code == 0) {
+                                        var _d_ = result.datas[0]
+                                        closeContentLoading()
+                                    }
+                                    else {
+                                        errorMsg(config.ERROR_INFO[result.code]);
+                                    }
+                                })
+                            }
+
+                            openDialog(_this, "是否确定升级【" + _d.Name + "】", delFetch)
+
+                        }
+                    }, {
+                        "name": "绑定",
+                        "fn": function () {
+                            //如果存在VoteList,则直接显示,否则调用接口请求列表数据
+                            if (voteList.length > 0) {
+                                _this._openSidePage("bindVote", _d.Id)
+                            }
+                            else {
+                                openContentLoading()
+                                TUI.platform.get("/Vote", function (result) {
+                                    if (result.code == 0) {
+                                        var _v = result.datas
+                                        addVoteList(_v)
+                                        _this._openSidePage("bindVote", _d.Id)
+                                        closeContentLoading()
+                                    }
+                                    else {
+                                        errorMsg(config.ERROR_INFO[result.code]);
+                                    }
+                                })
+                            }
+                        }
+                    }]
+                }
+            if (_d.Vote != null) {
+                _tr.fns.push({
+                    "name": "解绑",
+                    "fn": function () {
+                        var delFetch = function () {
+                            TUI.platform.delete("/VoteBindClasses/" + _d.Id, function (result) {
+                                if (result.code == 0) {
+                                    var _v = result.datas
+                                    deleteVoteBindClasses(_d.Id)
+                                }
+                                else {
+                                    errorMsg(config.ERROR_INFO[result.code]);
+                                }
+                            })
+                        }
+                        openDialog(_this, "是否确定解绑【" + _d.Name + "】中的投票", delFetch)
                     }
-                }, {
+                })
+            }
+
+            _tr.fns.push(
+                {
                     "name": "删除",
                     "fn": function () {
                         var delFetch = function () {
@@ -103,54 +148,22 @@ class ClassesList extends React.Component {
                             })
                         }
 
-                        updateDialog("是否确定删除【" + _d.Name + "】")
-                        openDialog(delFetch)
+                        openDialog(_this, "是否确定删除【" + _d.Name + "】", delFetch)
                     }
-                }]
-            })
+                }
+            )
+
+            tblContent.tbody.push(_tr)
 
             if (i > 0) {
                 _tbContent.push(<div key={"d-sub" + i}></div>)
             }
         }
 
-        let tabs = [{
-            id: 0,
-            name: "年级列表",
-            isHadSub: 0,
-            deep: 1,
-            children: []
-        }]
-
-        if (gradeList.length > 0) {
-            for (var i = 0; i < gradeList.length; i++) {
-                var $g = gradeList[i];
-                tabs[0].children.push({
-                    id: $g.Id,
-                    name: $g.Name,
-                    isHadSub: 1,
-                    deep: 0
-                })
-            }
-            setTimeout(function () {
-                let $clickMenu = document.getElementsByClassName("clickmenu")[0]
-                $clickMenu.style.backgroundColor = "rgba(250,250,250,0.5)"
-                $clickMenu.style.borderRadius = "3px"
-                let $img = $clickMenu.getElementsByTagName("img")[1]
-                $img.setAttribute("data-status", "show")
-                $img.setAttribute("src", minus)
-                $clickMenu.nextSibling.style.display = "block"
-            }, 300)
-        }
-
-
-
         return (
             <div>
                 <Content3>
-                    <div style={{ paddingTop: "10px" }}>
-                        <MultyMenu data={tabs} type="nocheck" lastdeep="2" clickMenu={this._clickMenu.bind(this)} />
-                    </div>
+                    <ClassesGrade />
                     <div></div>
                     <div>
                         <div className="t-content_t">
@@ -171,23 +184,32 @@ class ClassesList extends React.Component {
                         <BindVote key="bindVote" />
                     </div>
                 </SidePage>
-                <SidePage id="selecteTeacher">
+                <SidePage id="selectTeacher" title="教师列表" href={this.bindTeacher.bind(this)}>
                     <div>
-                        <EditClasses key="editClass" />
+                        <SelectTeacher key="selectTeacher" />
+                    </div>
+                </SidePage>
+                <SidePage id="gradeEdit">
+                    <div>
+                        <GradeEdit />
                     </div>
                 </SidePage>
             </div>
         )
     }
 
-    _openSidePage(sidePageid,_id) {
+    bindTeacher(){
+        
+    }
+
+    _openSidePage(sidePageid, _id) {
         if (sidePageid == "bindVote") {
-            openSidePage(this, { 
+            openSidePage(this, {
                 id: "bindVote",
                 status: "editClasses",
                 width: "400",
-                gateWay:{
-                    classesId:_id
+                gateWay: {
+                    classesId: _id
                 }
             })
         }
@@ -200,33 +222,39 @@ class ClassesList extends React.Component {
         }
     }
 
-    _clickMenu($m) {
-        let id = $m.getAttribute("data-id")
-        openContentLoading()
-        this.getClassesInGrade(id)
-    }
 
-    bindVote(){
-        const {sidePageInfo,bindVote} = this.props
+    bindVote() {
+        const {sidePageInfo, updateClassesList} = this.props
         let $radio = document.getElementsByClassName("t-c_radio")
         let voteId = "",
-        voteName = ""
-        for (var i = 0;  i< $radio.length; i++) {
+            voteName = ""
+        for (var i = 0; i < $radio.length; i++) {
             var $r = $radio[i];
-            if($r.getAttribute("data-status")=="selected"){
+            if ($r.getAttribute("data-status") == "selected") {
                 voteId = $r.getAttribute("data-value")
                 voteName = $r.innerText
             }
         }
         closeSidePage({
-            id:"bindVote"
+            id: "bindVote"
         })
 
-        //bindVote()
-        console.info({
-            classesId:sidePageInfo.gateWay.classesId,
-            voteId:voteId,
-            voteName:voteName
+        let _jsonParam = [{
+            ClassesId: sidePageInfo.gateWay.classesId,
+            VoteId: voteId
+        }]
+        TUI.platform.post("/VoteBindClasses", _jsonParam, function (result) {
+            if (result.code == 0) {
+                let updateData = {
+                    Id: _jsonParam[0].ClassesId,
+                    Vote: voteName
+                }
+                updateClassesList(updateData)
+
+            }
+            else {
+                errorMsg(TUI.ERROR_INFO[result.code]);
+            }
         })
     }
 
@@ -252,18 +280,6 @@ class ClassesList extends React.Component {
         const {addGradeList, updatePageInfo, errorMsg, courseList, addCourseList} = this.props
         let _this = this
         openLoading()
-        TUI.platform.get("/Grade", function (result) {
-            if (result.code == 0) {
-                addGradeList(result.datas)
-            }
-            else if (result.code == 9) {
-                addGradeList([])
-            }
-            else {
-                errorMsg(TUI.ERROR_INFO[result.code]);
-            }
-        })
-
         _this.getClassesInGrade(0)
 
 
@@ -299,7 +315,7 @@ class ClassesList extends React.Component {
                 })
 
             }
-            else if (result.code == 9) {
+            else if (result.code == 1) {
                 loadClassesList([])
             }
             else {

@@ -154,9 +154,7 @@ export default TUI._connect({
 }, SidePage)
 
 export function openSidePage(_this, params) {
-    _this
-        .props
-        .updateSidePageInfo({ status: params.status, width: params.width, gateWay: params.gateWay, type: params.type, id: params.id })
+    _this.props.updateSidePageInfo({ status: params.status, width: params.width, gateWay: params.gateWay, type: params.type, id: params.id })
     setTimeout(function () {
         let $sidepage = document.querySelector(".t-sidepage")
         let $sidepagemin = document.querySelector(".t-sidepage_min")
@@ -214,20 +212,38 @@ export function closeSidePage(params) {
     }
 }
 
-export function openSidePageLoading() {
-    let sidepage = document.querySelector(".t-sidePageCover")
+export function openSidePageLoading(_this, params) {
+    let $sidepage = document.querySelector(".t-sidepage")
+    let $sidepagemin = document.querySelector(".t-sidepage_min")
+    if (params.id) {
+        $sidepage = document.getElementById(params.id)
+    }
+    if (params.id) {
+        $sidepagemin = document.getElementById(params.id + "_min")
+    }
+
+    let sidepage = $sidepage.querySelector(".t-sidePageCover")
     sidepage.style["transition"] = "opacity 200ms ease"
     sidepage.style.opacity = "1"
     sidepage.style.display = "block"
 }
 
-export function closeSidePageLoading() {
+export function closeSidePageLoading(_this, params) {
     setTimeout(function () {
-        let sidepage = document.querySelector(".t-sidePageCover")
+        let $sidepage = document.querySelector(".t-sidepage")
+        let $sidepagemin = document.querySelector(".t-sidepage_min")
+        if (params.id) {
+            $sidepage = document.getElementById(params.id)
+        }
+        if (params.id) {
+            $sidepagemin = document.getElementById(params.id + "_min")
+        }
+
+        let sidepage = $sidepage.querySelector(".t-sidePageCover")
         sidepage.style["transition"] = "opacity 200ms ease"
         sidepage.style.opacity = "0"
         setTimeout(function () {
             sidepage.style.display = "none"
         }, 201)
-    }, 500)
+    }, 200)
 }

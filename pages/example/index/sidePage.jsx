@@ -1,6 +1,6 @@
 import Content, { openContentLoading, closeContentLoading } from "Content"
 import Btn from "Btn"
-import SidePage, { openSidePage, closeSidePage,openSidePageLoading,closeSidePageLoading } from "SidePage"
+import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import Remark from 'Remark'
 
 class _SidePage extends React.Component {
@@ -17,6 +17,7 @@ class _SidePage extends React.Component {
                     <Remark type="warning">区分【多内容】和【多任务】的区别~可以再单击【自定义展开距离】后,分别单击【多内容】和【多任务】后看效果
                     区分【多内容】和【多任务】的区别~可以再单击【自定义展开距离】后,分别单击【多内容】和【多任务】后看效果
                     </Remark>
+                    <br/>
                     <Remark type="note">区分【多内容】和【多任务】的区别~可以再单击【自定义展开距离】后,分别单击【多内容】和【多任务】后看效果
                     区分【多内容】和【多任务】的区别~可以再单击【自定义展开距离】后,分别单击【多内容】和【多任务】后看效果
                     </Remark>
