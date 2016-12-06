@@ -1,4 +1,4 @@
-import Content2,{openContentLoading,closeContentLoading} from "Content2"
+import Content2, { openContentLoading, closeContentLoading } from "Content2"
 import FormControls from "FormControls"
 import Btn from "Btn"
 import { closeSidePage } from "SidePage"
@@ -66,7 +66,7 @@ class PositionMaintainEdit extends React.Component {
                         <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                         <Btn type="submit" txt="确定" href={this.editUserMaintain.bind(this)} />
                     </div>
-                  
+
                 </div>
                 <div>
                     <UserMaintainExtInfo />
@@ -80,7 +80,18 @@ class PositionMaintainEdit extends React.Component {
 
 
     editUserMaintain() {
-        const {successMsg, errorMsg, data, editInfo, sidePageInfo, orgnizationId, pushUserMaintain, updateUserMaintain} = this.props
+        const {
+            successMsg, 
+            errorMsg, 
+            data, 
+            editInfo, 
+            sidePageInfo, 
+            orgnizationId, 
+            pushUserMaintain, 
+            updateUserMaintain,
+            updatePageInfo,
+            pageInfo
+        } = this.props
 
         let _this = this,
             postJson = {
@@ -108,7 +119,14 @@ class PositionMaintainEdit extends React.Component {
                     successMsg("新增用户成功")
                     postJson.positionNames = result.data.positionNames //职位
                     postJson.unitName = result.data.unitExt2 //默认组织
+                    postJson.staffId = result.data.staffId
+
                     pushUserMaintain(result.data)
+
+                    updatePageInfo({
+                        id: "userMaintainPager",
+                        sum: parseInt(pageInfo.userMaintainPager.sum) + 1
+                    })
                 }
                 else {
                     errorMsg(result.message)
@@ -177,18 +195,21 @@ class PositionMaintainEdit extends React.Component {
         TUI.platform.get(_url.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 addUserMaintainJobsList(result.data)
-                updatePageInfo({
-                    id: "userMaintainJobsList",
-                    index: 1,
-                    size: 10 > result._page.total ? result._page.total : 10,
-                    sum: result._page.total,
-                    url: _url
-                })
+            }
+            else if (result.code == 404) {
+                addUserMaintainJobsList([])
             }
             else {
                 errorMsg(result.message);
             }
             closeContentLoading()
+            updatePageInfo({
+                id: "userMaintainJobsList",
+                index: 1,
+                size: 10,
+                sum: result._page ? result._page.total : 1,
+                url: _url
+            })
         })
 
     }
@@ -268,5 +289,6 @@ export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
     orgnizationId: "userMaintain.orgnizationId",
     editInfo: "formControlInfo.data",
-    defaultUnit: "userMaintain.defaultUnit"
+    defaultUnit: "userMaintain.defaultUnit",
+    pageInfo:"publicInfo.pageInfo"
 }, PositionMaintainEdit)

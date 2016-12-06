@@ -4,13 +4,13 @@ import { closeSidePage } from "SidePage"
 import Table from "Table"
 import Pager from "Pager"
 import { openDialog, closeDialog } from "Dialog"
-import Content,{openContentLoading,closeContentLoading} from "Content"
+import Content, { openContentLoading, closeContentLoading } from "Content"
 
 import back from "!url!./img/singleLeft.png"
 
 class PositionMaintainRole extends React.Component {
     render() {
-        const {sidePageInfo, rolesData, pageInfo} = this.props
+        const {sidePageInfo, rolesData, pageInfo, updatePageInfo} = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "角色名", "name3": "职责", "name4": "操作" },
@@ -60,7 +60,7 @@ class PositionMaintainRole extends React.Component {
                                         status: "edit",
                                         id: _d.roleId
                                     })
-                                    
+
                                 }
                                 else if (result.code == 404) {
                                     _this.props.updatePositionMaintainRolesInfo([])
@@ -80,6 +80,10 @@ class PositionMaintainRole extends React.Component {
                                     if (result.code == 0) {
                                         _this.props.successMsg("角色删除成功")
                                         _this.props.deletePositionMaintainRoles(_d.roleId)
+                                        updatePageInfo({
+                                            id: "positionMaintainRolePager",
+                                            sum: parseInt(pageInfo.positionMaintainRolePager.sum) + 1
+                                        })
                                     }
                                     else {
                                         errorMsg(result.errors)
@@ -95,19 +99,44 @@ class PositionMaintainRole extends React.Component {
         }
         return (
             <div>
-                <div style={{ borderBottom: "1px solid #ebebeb", height: "50px", lineHeight: "50px",marginTop:"-10px"}}>
+                <div style={{ borderBottom: "1px solid #ebebeb", height: "50px", lineHeight: "50px", marginTop: "-10px" }}>
                     <span style={{ float: "left", fontSize: "20px" }}>
                         <img src={back} onClick={this.goBack.bind(this)} style={{ width: "25px", height: "25px", verticalAlign: "middle", marginTop: "-3px", cursor: "pointer" }} />
                         角色列表
                     </span>
                     <Btn style={{ float: "right" }} txt="新增" type="add" href={this.addPositionMaintainRole.bind(this)} />
                 </div>
-                <Table id="positionMaintainRole" num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,200,0,100" />
-
+                <Table id="positionMaintainRole" bindPager="positionMaintainRolePager" tblContent={tblContent} width="50,200,0,100" />
+                <Pager id="positionMaintainRolePager" fn={this.pageFn2.bind(this)} />
             </div>
         )
     }
+    pageFn2(index, loadComplete) {
+        const {pageInfo, addPositionMaintainRoles, updatePageInfo} = this.props
 
+        let _pageSize = pageInfo["positionMaintainRolePager"] ? pageInfo["positionMaintainRolePager"].size : 10,
+            _url = pageInfo.positionMaintainRolePager.url,
+            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
+        TUI.platform.get(rUrl.replace("{0}", pageInfo.positionMaintainRolePager.size * (index - 1)), function (result) {
+            if (result.code == 0) {
+                addPositionMaintainRoles(result.data)
+            }
+            else if (result.code == 404) {
+                addPositionMaintainRoles([])
+            }
+            else {
+                errorMsg(result.message)
+            }
+            updatePageInfo({
+                id: "positionMaintainRolePager",
+                index: index,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
+                url: rUrl
+            })
+        })
+
+    }
     addPositionMaintainRole() {
         this.props.updateEditInfo({
             infoName: "rolesInfo",

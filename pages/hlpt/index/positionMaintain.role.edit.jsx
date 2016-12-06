@@ -38,7 +38,18 @@ class PositionMaintainRoleEdit extends React.Component {
     }
 
     editPositionMaintainRole() {
-        const {updatePositionMaintainRoles, tips, sidePageInfo, errorMsg, successMsg, editInfo, pushPositionMaintainRoles, jobsSelectedData} = this.props
+        const {
+            updatePositionMaintainRoles, 
+            tips, 
+            sidePageInfo, 
+            errorMsg, 
+            successMsg, 
+            editInfo, 
+            pushPositionMaintainRoles, 
+            jobsSelectedData,
+            updatePageInfo,
+            pageInfo
+        } = this.props
 
         let _positionId = [],
             _this = this
@@ -61,6 +72,10 @@ class PositionMaintainRoleEdit extends React.Component {
                     _this.goBack()
                     successMsg("新增角色成功")
                     pushPositionMaintainRoles(result.data)
+                    updatePageInfo({
+                        id: "positionMaintainRolePager",
+                        sum: parseInt(pageInfo.positionMaintainRolePager.sum) + 1
+                    })
                 }
                 else {
                     errorMsg(result.message)
@@ -174,5 +189,6 @@ export default TUI._connect({
     rolesInfo: "positionMaintain.rolesInfo",
     jobsSelectedData: "positionMaintain.jobsSelectedData",
     tips: "publicInfo.tips",
-    editInfo: "formControlInfo.data"
+    editInfo: "formControlInfo.data",
+    pageInfo:"publicInfo.pageInfo"
 }, PositionMaintainRoleEdit)

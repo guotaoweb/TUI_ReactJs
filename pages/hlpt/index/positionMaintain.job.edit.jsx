@@ -10,12 +10,12 @@ class PositionMaintainEdit extends React.Component {
     render() {
         return (
             <div>
-                <FormControls label="职责名称" ctrl="input" value="jobsInfo.name" required="required"/>
-                <FormControls label="职责描述" ctrl="textarea" value="jobsInfo.remark"/>
+                <FormControls label="职责名称" ctrl="input" value="jobsInfo.name" required="required" />
+                <FormControls label="职责描述" ctrl="textarea" value="jobsInfo.remark" />
                 <FormControls label="考核标准" ctrl="textarea" value="jobsInfo.standard" />
                 <div className="formControl-btn">
-                    <Btn type="cancel" txt="取消" href={this.goBack.bind(this)}/>
-                    <Btn type="submit" txt="确定" href={this.editPositionMaintainJob.bind(this)}/>
+                    <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
+                    <Btn type="submit" txt="确定" href={this.editPositionMaintainJob.bind(this)} />
                 </div>
                 <br /><br /><br />
             </div>
@@ -24,7 +24,16 @@ class PositionMaintainEdit extends React.Component {
 
 
     editPositionMaintainJob() {
-        const {errorMsg, editInfo, pushPositionMaintainJobs, updatePositionMaintainJobs,positionId,sidePageInfo} = this.props
+        const {
+            errorMsg, 
+            editInfo, 
+            pushPositionMaintainJobs, 
+            updatePositionMaintainJobs, 
+            positionId, 
+            sidePageInfo,
+            updatePageInfo,
+            pageInfo
+        } = this.props
 
         let _this = this,
             postJson = {
@@ -41,6 +50,10 @@ class PositionMaintainEdit extends React.Component {
                     _this.goBack()
                     _this.props.successMsg("新增职位成功")
                     pushPositionMaintainJobs(result.data)
+                    updatePageInfo({
+                        id: "positionMaintainJobPager",
+                        sum: parseInt(pageInfo.positionMaintainJobPager.sum) + 1
+                    })
                 }
                 else {
                     errorMsg(result.message)
@@ -113,10 +126,10 @@ class PositionMaintainEdit extends React.Component {
 
     goBack() {
         this.props.clearEditInfo({
-            infoName:"jobsInfo"
+            infoName: "jobsInfo"
         })
         this.props.updateEditInfo({
-            infoName:"jobsInfo",
+            infoName: "jobsInfo",
             status: "list"
         })
 
@@ -126,7 +139,7 @@ class PositionMaintainEdit extends React.Component {
     goClose() {
         closeSidePage()
         this.props.clearEditInfo({
-            infoName:"jobsInfo"
+            infoName: "jobsInfo"
         })
     }
 }
@@ -135,6 +148,7 @@ class PositionMaintainEdit extends React.Component {
 export default TUI._connect({
     jobsInfo: "positionMaintain.jobsInfo",
     sidePageInfo: "publicInfo.sidePageInfo.gateWay",
-    positionId:"positionMaintain.editId",
-    editInfo:"formControlInfo.data"
+    positionId: "positionMaintain.editId",
+    editInfo: "formControlInfo.data",
+    pageInfo:"publicInfo.pageInfo"
 }, PositionMaintainEdit)

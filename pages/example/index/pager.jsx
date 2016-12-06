@@ -41,8 +41,8 @@ class _Pager extends Component {
         return (
             <div>
                 <Content txt="Pager">
-                    <Table id="table1" tblContent={tblContent} width="50,200,0,0,180" />
-                    <Pager fn={this.theFn.bind(this)} />
+                    <Table id="table1" bindPager="tblPager" tblContent={tblContent} width="50,200,0,0,180" />
+                    <Pager id="tblPager" fn={this.theFn.bind(this)} />
                     <div className="formControl-btn" style={{ marginLeft: "10px" }}>
                         <Btn
                             type="add"
@@ -58,6 +58,7 @@ class _Pager extends Component {
                     <div className="formControl-btn" style={{ marginLeft: "10px" }}>
                         总数量:{this.props.pageInfo.index.sum}
                     </div>
+                   
                 </Content>
                 <SidePage id="pager-sidePage" title="多Pager">
                     <div>
@@ -76,8 +77,11 @@ class _Pager extends Component {
             name: "==>这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
         })
         updatePageInfo({
-            sum: parseInt(pageInfo.index.sum) + 1
+            id:"tblPager",
+            sum: parseInt(pageInfo.tblPager.sum) + 1
         })
+
+        console.info(pageInfo)
     }
     _openSidePage() {
         openSidePage(this, {
@@ -100,6 +104,7 @@ class _Pager extends Component {
         }])
 
         this.props.updatePageInfo({
+            id:"tblPager",
             index: 1,
             size: 5,
             sum: 5,

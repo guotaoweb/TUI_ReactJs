@@ -2,7 +2,7 @@ import '!style!css!postcss!sass!./style.scss'
 
 class Table extends React.Component {
   render() {
-    const {tblContent, width,num} = this.props
+    const {tblContent, width, num, bindPager, pageInfo} = this.props
     let tbl_thead = [],
       tbl_tbody = []
 
@@ -18,7 +18,24 @@ class Table extends React.Component {
     }
 
     let _width = width ? width : w
-    for (let i = 0; i < (num?num:tblContent.tbody.length); i++) {
+
+    let tbodyLength = tblContent.tbody.length
+    let pagerNumber = pageInfo[bindPager] ? pageInfo[bindPager].size : pageInfo["index"].size
+
+    let _length = 0
+    if (num) {
+      if (pagerNumber > num) {
+        _length = pagerNumber
+      }
+      else {
+        _length = num
+      }
+    }
+    else {
+      _length = pagerNumber
+    }
+
+    for (let i = 0; i < _length; i++) {
       let _td = tblContent.tbody[i]
 
       let _tds = []
@@ -87,7 +104,7 @@ class Table extends React.Component {
 
     setTimeout(function () {
       let styleWidth = $tlb.parentNode.style.width
-      let tblWidth = styleWidth?styleWidth.substring(0,styleWidth.length-2):$tlb.parentNode.offsetWidth,
+      let tblWidth = styleWidth ? styleWidth.substring(0, styleWidth.length - 2) : $tlb.parentNode.offsetWidth,
         $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
         autoLength = 0
 
@@ -117,6 +134,7 @@ class Table extends React.Component {
 
 
 export default TUI._connect({
-    isRefreshTable: "publicInfo.isRefreshTable",
-    pageLoadStatus: "publicInfo.pageLoadStatus"
+  isRefreshTable: "publicInfo.isRefreshTable",
+  pageLoadStatus: "publicInfo.pageLoadStatus",
+  pageInfo: "publicInfo.pageInfo"
 }, Table)

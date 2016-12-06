@@ -26,7 +26,8 @@ class Orgnization extends React.Component {
             subList,
             successMsg,
             delSubList,
-            errorMsg
+            errorMsg,
+            updatePageInfo
         } = _this.props
 
         let tblContent = {
@@ -44,7 +45,7 @@ class Orgnization extends React.Component {
                 "value6": _d.statusName,
                 "fns": [{
                     "name": "编辑",
-                    "fn": function() {
+                    "fn": function () {
                         //获取单击的组织详情
                         openContentLoading()
                         _this.editMenu({ id: _d.unitId, deep: "0-" + _d.unitId })
@@ -53,9 +54,9 @@ class Orgnization extends React.Component {
                     }
                 }, {
                     "name": "删除",
-                    "fn": function() {
-                        let delFetch = function() {
-                            TUI.platform.patch("/unit/" + _d.unitId, function(result) {
+                    "fn": function () {
+                        let delFetch = function () {
+                            TUI.platform.patch("/unit/" + _d.unitId, function (result) {
                                 if (result.code == 0) {
                                     //删除列表中的组织
                                     delSubList({
@@ -67,6 +68,10 @@ class Orgnization extends React.Component {
                                     _this.deleteData(_this.props.odata, _deep.split("-"))
 
                                     successMsg("组织删除成功")
+                                    updatePageInfo({
+                                        id: "orgnizationPager",
+                                        sum: parseInt(pageInfo.orgnizationPager.sum) - 1
+                                    })
                                 }
                                 else {
                                     errorMsg(result.message)
@@ -92,7 +97,6 @@ class Orgnization extends React.Component {
                         <MultyMenu data={odata} type="edit" lastdeep="6" color="white" addMenu={this.addMenu.bind(this)} editMenu={this.editMenu.bind(this)} delMenu={this.delMenu.bind(this)} clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
                         <br />
                     </div>
-
                     <div></div>
                     <div className="t-content_t">
                         <span>组织信息列表</span>
@@ -105,8 +109,8 @@ class Orgnization extends React.Component {
                             width: "98%",
                             margin: "auto"
                         }} fn={this._searchOrgnization.bind(this)} />
-                        <Table num="10" tblContent={tblContent} width="50,140,0,80,0,80,80" />
-                        <Pager fn={this.pageFn.bind(this)} style={{ float: "right"}} />
+                        <Table bindPager="orgnizationPager" tblContent={tblContent} width="50,140,0,80,0,80,80" />
+                        <Pager id="orgnizationPager" fn={this.pageFn.bind(this)} />
                     </div>
                 </Content3>
                 <SidePage>
@@ -118,6 +122,20 @@ class Orgnization extends React.Component {
         )
     }
 
+    // componentDidUpdate(nextProps) {
+    //     let thisProps = this.props.pageInfo
+    //     for (let key in thisProps) {
+    //         let _thisProps = thisProps[key]
+    //         if (_thisProps[key].size != nextProps.pageInfo[key].size) {
+
+    //             return true
+
+    //         }
+    //         else {
+    //             return false
+    //         }
+    //     }
+    // }
 
     componentDidMount() {
         let _this = this;
@@ -125,7 +143,7 @@ class Orgnization extends React.Component {
         const {addData, errorMsg, addUnitBizTypes, addPositionTypes, addStatus, addCity, addSubList, updatePageInfo, addUnitKind} = this.props
         openLoading()
         //获取组织根节点,且默认展开第一个父节点
-        TUI.platform.get("/units/tree/0", function(result) {
+        TUI.platform.get("/units/tree/0", function (result) {
             if (result.code == 0) {
                 let node = []
                 for (let index = 0; index < result.data.length; index++) {
@@ -158,7 +176,7 @@ class Orgnization extends React.Component {
                 })
 
                 //展开第一个节点的一级子节点
-                TUI.platform.get("/units/tree/" + firtNodeId, function(result) {
+                TUI.platform.get("/units/tree/" + firtNodeId, function (result) {
                     if (result.code == 0) {
 
                         for (var i = 0; i < _this.props.odata.length; i++) {
@@ -198,7 +216,7 @@ class Orgnization extends React.Component {
         })
 
         //获取业务类型
-        TUI.platform.get("/unitbiztypes/dict", function(result) {
+        TUI.platform.get("/unitbiztypes/dict", function (result) {
             if (result.code == 0) {
                 addUnitBizTypes(result.data)
             }
@@ -209,7 +227,7 @@ class Orgnization extends React.Component {
 
 
         //获取机构类别
-        TUI.platform.get("/codeinfos/dict/unitKind", function(result) {
+        TUI.platform.get("/codeinfos/dict/unitKind", function (result) {
             if (result.code == 0) {
                 addUnitKind(result.data)
             }
@@ -219,7 +237,7 @@ class Orgnization extends React.Component {
         })
 
         //获取状态
-        TUI.platform.get("/codeinfos/dict/unitStatus", function(result) {
+        TUI.platform.get("/codeinfos/dict/unitStatus", function (result) {
             if (result.code == 0) {
                 addStatus(result.data)
             }
@@ -229,7 +247,7 @@ class Orgnization extends React.Component {
         })
 
         //获取地区
-        TUI.platform.get("/codeinfos/dict/city", function(result) {
+        TUI.platform.get("/codeinfos/dict/city", function (result) {
             if (result.code == 0) {
                 addCity(result.data)
             }
@@ -246,7 +264,7 @@ class Orgnization extends React.Component {
 
 
     _searchOrgnization(val) {
-        let {searchInfo, addSubList, updatePageInfo, errorMsg} = this.props
+        let {searchInfo, addSubList, updatePageInfo, errorMsg, pageInfo} = this.props
         //uid=" + searchInfo.key + "&
         let params = ["", ""]
         var _val = val.split(",")
@@ -260,9 +278,9 @@ class Orgnization extends React.Component {
                 params[1] = $v
             }
         }
-
-        val = val ? "/units?from={0}&limit=10&unitName=" + params[0] + "&unitCode=" + params[1] : "/units?from={0}&limit=10"
-        TUI.platform.get(val.replace("{0}",0), function(result) {
+        let _pageSize = pageInfo["orgnizationPager"] ? pageInfo["orgnizationPager"].size : 10
+        val = val ? "/units?unitName=" + params[0] + "&unitCode=" + params[1] + "from={0}&limit=" + _pageSize : "/units?from={0}&limit=" + _pageSize
+        TUI.platform.get(val.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 addSubList(result.data)
             }
@@ -273,9 +291,10 @@ class Orgnization extends React.Component {
                 errorMsg(result.message)
             }
             updatePageInfo({
+                id: "orgnizationPager",
                 index: 1,
-                size: 10,
-                sum: result._page ? result._page.total : 1,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
                 url: val
             })
         })
@@ -296,7 +315,7 @@ class Orgnization extends React.Component {
             infoName: "orgnizationInfo"
         })
 
-        setTimeout(function() {
+        setTimeout(function () {
             openSidePage(_this, {
                 status: "addOrgnization",
                 gateWay: params
@@ -313,7 +332,7 @@ class Orgnization extends React.Component {
         })
         closeSidePage()
 
-        setTimeout(function() {
+        setTimeout(function () {
             openSidePage(_this, {
                 status: "addOrgnization",
                 gateWay: sidePageInfo.gateWay
@@ -328,7 +347,7 @@ class Orgnization extends React.Component {
         const {addEditInfo} = _this.props
 
         closeSidePage()
-        setTimeout(function() {
+        setTimeout(function () {
             openSidePage(_this, {
                 status: "editOrgnization",
                 gateWay: params
@@ -341,7 +360,7 @@ class Orgnization extends React.Component {
             relateId: _this.props.relateId + "-" + ids[ids.length - 1],//级联的关系ID
         })
 
-        TUI.platform.get("/unit/" + ids[ids.length - 1], function(result) {
+        TUI.platform.get("/unit/" + ids[ids.length - 1], function (result) {
             if (result.code == 0) {
                 var _d = result.data
                 addEditInfo({
@@ -370,12 +389,11 @@ class Orgnization extends React.Component {
         })
     }
 
-
     delMenu(params) {
         let _this = this
 
-        let delFetch = function() {
-            TUI.platform.patch("/unit/" + params.id, function(result) {
+        let delFetch = function () {
+            TUI.platform.patch("/unit/" + params.id, function (result) {
                 if (result.code == 0) {
                     _this.props.successMsg("组织删除成功")
                     _this.props.delSubList({
@@ -422,18 +440,13 @@ class Orgnization extends React.Component {
     }
 
     loadSubOrgnization(id) {
-        const {addSubList, updatePageInfo, clearPageInfo, updateSearchInfo} = this.props
-        let url = id ? "/units?uid=" + id + "&from={0}&limit=10" : "/units?from={0}&limit=10"
-        TUI.platform.get(url.replace("{0}", "0"), function(result) {
+        const {addSubList, updatePageInfo, clearPageInfo, updateSearchInfo, pageInfo} = this.props
+        let _pageSize = pageInfo["orgnizationPager"] ? pageInfo["orgnizationPager"].size : 10
+        let url = id ? "/units?uid=" + id + "&from={0}&limit=" + _pageSize : "/units?from={0}&limit=" + _pageSize
+
+        TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addSubList(result.data)
-
-                updatePageInfo({
-                    index: 1,
-                    size: 10,
-                    sum: result._page.total,
-                    url: url
-                })
                 //更新搜索信息
                 updateSearchInfo({
                     key: id,
@@ -446,6 +459,13 @@ class Orgnization extends React.Component {
                 clearPageInfo()
             }
             closeContentLoading()
+            updatePageInfo({
+                id: "orgnizationPager",
+                index: 1,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
+                url: url
+            })
         })
     }
 
@@ -513,14 +533,13 @@ class Orgnization extends React.Component {
         }
     }
 
-
     //展开树子节点方法
     openSubMenu(_data, id, deep, loadComplete) {
         const {addData, odata, errorMsg} = this.props
         for (let index = 0; index < _data.length; index++) {
             let d = _data[index]
             if (d.id == id) {
-                TUI.platform.get("/units/tree/" + id, function(result) {
+                TUI.platform.get("/units/tree/" + id, function (result) {
                     if (result.code == 0) {
                         let children = []
                         let _deep = parseInt(deep) + 1
@@ -545,23 +564,23 @@ class Orgnization extends React.Component {
                         errorMsg(result.message)
                     }
 
-                    setTimeout(function() { loadComplete() }, 1000)
+                    setTimeout(function () { loadComplete() }, 1000)
                 })
                 break
             }
         }
     }
 
-
-    //翻页方法
+    //翻页方法,显示每页数量的方法
     pageFn(index, loadComplete) {
         const {pageInfo, addSubList, updatePageInfo, errorMsg} = this.props
-        TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function(result) {
+        let _pageSize = pageInfo["orgnizationPager"] ? pageInfo["orgnizationPager"].size : 10,
+            _url = pageInfo.orgnizationPager.url,
+            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
+
+        TUI.platform.get(rUrl.replace("{0}", pageInfo.orgnizationPager.size * (index - 1)), function (result) {
             if (result.code == 0) {
                 addSubList(result.data)
-                updatePageInfo({
-                    index: index
-                })
                 loadComplete()
             }
             else if (result.code == 404) {
@@ -570,6 +589,13 @@ class Orgnization extends React.Component {
             else {
                 errorMsg(result.message)
             }
+            updatePageInfo({
+                id: "orgnizationPager",
+                index: index,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
+                url: rUrl
+            })
         })
     }
 }

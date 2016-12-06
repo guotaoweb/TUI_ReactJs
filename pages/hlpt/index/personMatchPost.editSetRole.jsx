@@ -4,6 +4,7 @@ import FormControls from "FormControls"
 import Btn from "Btn"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import Search from "Search"
+import Pager from "Pager"
 
 import singleLeft from "!url!./img/singleLeft.png"
 
@@ -67,15 +68,46 @@ class PersonMatchPostEditSetRole extends React.Component {
                         width: "98%",
                         margin: "auto"
                     }} fn={this._searchPersonMachPostSetRole.bind(this)} />
-                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,150,0,80" />
+                    <Table bindPager="personMatchPostSetRolePager" tblContent={tblContent} width="50,150,0,80" />
+                    <Pager id="personMatchPostSetRolePager" fn={this.pageFn1.bind(this)} />
                 </div>
             </div>
         )
     }
+    pageFn1(index, loadComplete) {
+        const {pageInfo, addPersonMatchPostSetRoleData, updatePageInfo} = this.props
+        let _pageSize = pageInfo["personMatchPostPager"] ? pageInfo["personMatchPostPager"].size : 10,
+            _url = pageInfo.personMatchPostPager.url,
+            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
 
+
+        TUI.platform.get(rUrl.replace("{0}", "0"), function (result) {
+            if (result.code == 0) {
+                let _data = result.data
+                addPersonMatchPostSetRoleData(_data)
+                loadComplete()
+            }
+            else if (result.code == 404) {
+                addPersonMatchPostSetRoleData([])
+            }
+            else {
+                errorMsg(result.message)
+            }
+            updatePageInfo({
+                id: "personMatchPostSetRolePager",
+                index: index,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
+                url: rUrl
+            })
+
+        })
+    }
     _searchPersonMachPostSetRole(val) {
-        const {addPersonMatchPostSetRoleData, errorMsg,updatePageInfo,searchInfo} =this.props
-        TUI.platform.get("/roles?positionId=" + searchInfo.key.positionId + "&roleName=" + val, function (result) {
+        const {addPersonMatchPostSetRoleData, errorMsg, updatePageInfo, searchInfo,pageInfo} = this.props
+        let _pageSize = pageInfo["personMatchPostSetRolePager"] ? pageInfo["personMatchPostSetRolePager"].size : 10
+        let _url = "/roles?positionId=" + searchInfo.key.positionId + "&roleName=" + val+"&from={0}&limit="+_pageSize
+        TUI.platform.get(_url.replace("{0}","0"), function (result) {
             if (result.code == 0) {
                 let _data = result.data
                 addPersonMatchPostSetRoleData(_data)
@@ -86,6 +118,13 @@ class PersonMatchPostEditSetRole extends React.Component {
             else {
                 errorMsg(result.message)
             }
+            updatePageInfo({
+                id: "personMatchPostSetRolePager",
+                index: 1,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
+                url: _url
+            })
         })
     }
 
@@ -117,5 +156,6 @@ class PersonMatchPostEditSetRole extends React.Component {
 export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
     setRoleData: "personMatchPost.setRoleData",
-    searchInfo: "publicInfo.searchInfo"
+    searchInfo: "publicInfo.searchInfo",
+    pageInfo: "publicInfo.pageInfo"
 }, PersonMatchPostEditSetRole)

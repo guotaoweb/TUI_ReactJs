@@ -19,12 +19,21 @@ import Search from "Search"
 class PositionMaintain extends React.Component {
 
     render() {
-        const {errorMsg, odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo} = this.props
+        const {
+            errorMsg, 
+            odata, 
+            pageInfo, 
+            sidePageStatus, 
+            data, 
+            sidePageInfo,
+            updatePageInfo
+        } = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "职位代码", "name3": "职位名称", "name4": "职位类别", "name5": "所属组织", "name6": "状态", "name7": "编制", "name8": "操作" },
             "tbody": []
         }
+
         for (var i = 0; i < data.length; i++) {
             let _d = data[i]
             tblContent.tbody.push({
@@ -104,6 +113,10 @@ class PositionMaintain extends React.Component {
                                 if (result.code == 0) {
                                     _this.props.successMsg("职位删除成功")
                                     _this.props.deletePositionMaintain(_d.positionId)
+                                    updatePageInfo({
+                                        id: "positionMaintainPager",
+                                        sum: parseInt(pageInfo.positionMaintainPager.sum) + 1
+                                    })
                                 }
                                 else {
                                     errorMsg(result.errors)
@@ -151,8 +164,8 @@ class PositionMaintain extends React.Component {
                             width: "98%",
                             margin: "auto"
                         }} fn={this._searchPositionMaintain.bind(this)} />
-                        <Table id="positionMaintain" num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,100,0,120,0,70,70,100" />
-                        <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+                        <Table id="positionMaintain" bindPager="positionMaintainPager" tblContent={tblContent} width="50,100,0,120,0,70,70,100" />
+                        <Pager id="positionMaintainPager" fn={this.pageFn.bind(this)} />
                     </div>
                 </Content3>
                 <SidePage id="PositionMaintain">
@@ -170,8 +183,9 @@ class PositionMaintain extends React.Component {
     }
 
     _searchPositionMaintain(val) {
-        let {searchInfo, addPositionMaintain, updatePageInfo, errorMsg} = this.props
-        val = "/positions?unitId=" + searchInfo.key + "&positionName=" + val + "&from={0}&limit=10"
+        let {searchInfo, addPositionMaintain, updatePageInfo, errorMsg, pageInfo} = this.props
+        let _pageSize = pageInfo["positionMaintainPager"] ? pageInfo["positionMaintainPager"].size : 10
+        val = "/positions?unitId=" + searchInfo.key + "&positionName=" + val + "&from={0}&limit=" + _pageSize
         TUI.platform.get(val.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 addPositionMaintain(result.data)
@@ -183,8 +197,9 @@ class PositionMaintain extends React.Component {
                 errorMsg(result.message)
             }
             updatePageInfo({
+                id: "positionMaintainPager",
                 index: 1,
-                size: 10,
+                size: _pageSize,
                 sum: result._page ? result._page.total : 1,
                 url: val
             })
@@ -337,25 +352,29 @@ class PositionMaintain extends React.Component {
     }
 
     loadPosition(id) {
-        const {addPositionMaintain, updatePageInfo, clearPageInfo, updateSearchInfo} = this.props
-        let url = id ? "/positions?unitId=" + id + "&from={0}&limit=10" : "/positions?unitCode=0&from={0}&limit=10"
+        const {addPositionMaintain, updatePageInfo, clearPageInfo, updateSearchInfo, pageInfo} = this.props
+        let _pageSize = pageInfo["positionMaintainPager"] ? pageInfo["positionMaintainPager"].size : 10
+        console.info(_pageSize)
+        let url = id ? "/positions?unitId=" + id + "&from={0}&limit=" + _pageSize : "/positions?unitCode=0&from={0}&limit=" + _pageSize
         TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addPositionMaintain(result.data)
             }
             else if (result.code == 404) {
                 addPositionMaintain([])
-                //clearPageInfo()
             }
             else {
                 errorMsg(result.message)
             }
+
             updatePageInfo({
+                id: "positionMaintainPager",
                 index: 1,
-                size: 10,
-                sum: result._page ? result._page.total : 1,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
                 url: url
             })
+  
             //更新搜索信息
             updateSearchInfo({
                 key: id,
@@ -496,17 +515,28 @@ class PositionMaintain extends React.Component {
 
     pageFn(index, loadComplete) {
         const {pageInfo, addPositionMaintain, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
+
+        let _pageSize = pageInfo["positionMaintainPager"] ? pageInfo["positionMaintainPager"].size : 10,
+            _url = pageInfo.positionMaintainPager.url,
+            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
+        TUI.platform.get(rUrl.replace("{0}", pageInfo.positionMaintainPager.size * (index - 1)), function (result) {
             if (result.code == 0) {
                 addPositionMaintain(result.data)
-                updatePageInfo({
-                    index: index
-                })
                 loadComplete()
+            }
+            else if (result.code == 404) {
+                addPositionMaintain([])
             }
             else {
                 addPositionMaintain([])
             }
+            updatePageInfo({
+                id: "positionMaintainPager",
+                index: index,
+                size: _pageSize,
+                sum: pageInfo.positionMaintainPager.sum,
+                url: rUrl
+            })
         })
 
     }
@@ -517,7 +547,6 @@ export default TUI._connect({
     data: "positionMaintain.data",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo",
-    hasVerticalScroll: "orgnizationManage.hasVerticalScroll",
     searchInfo: "publicInfo.searchInfo",
     eidtId: "positionMaintain.editId",
     eidtInfo: "formControlInfo.data"

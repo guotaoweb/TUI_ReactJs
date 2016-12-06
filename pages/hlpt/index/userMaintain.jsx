@@ -1,4 +1,3 @@
-
 //图片
 import minus from "!url!../../../components/MultyMenu/img/minus.png"
 import singleLeft from "!url!./img/singleLeft.png"
@@ -18,7 +17,15 @@ import Search from 'Search'
 
 class UserMaintain extends React.Component {
     render() {
-        const {odata, pageInfo, sidePageStatus, hasVerticalScroll, data, addEditInfo, errorMsg} = this.props
+        const {
+            odata,
+            pageInfo,
+            sidePageStatus,
+            data,
+            addEditInfo,
+            errorMsg,
+            updatePageInfo
+        } = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "默认组织", "name5": "职位", "name6": "手机", "name7": "排序号", "name9": "操作" },
@@ -62,8 +69,8 @@ class UserMaintain extends React.Component {
                                     kind: _data.kind,
                                     staffCode: _data.staffCode,
                                     ext5: _data.ext5,
-                                    ext5Name:_d.unitName,
-                                    empNumber:_data.empNumber
+                                    ext5Name: _d.unitName,
+                                    empNumber: _data.empNumber
                                 })
 
 
@@ -96,6 +103,10 @@ class UserMaintain extends React.Component {
                                 if (result.code == 0) {
                                     _this.props.successMsg("用户删除成功")
                                     _this.props.deleteUserMaintain(_d.staffId)
+                                    updatePageInfo({
+                                        id: "userMaintainPager",
+                                        sum: parseInt(pageInfo.orgnizationPager.sum) - 1
+                                    })
                                 }
                                 else {
                                     errorMsg(result.errors)
@@ -117,13 +128,10 @@ class UserMaintain extends React.Component {
         return (
             <div>
                 <Content3>
-  
-                        <div>
-                            <MultyMenu data={odata} type="nocheck" lastdeep="6" color="white" clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
-                            <br />
-                        </div>
-               
-
+                    <div>
+                        <MultyMenu data={odata} type="nocheck" lastdeep="6" color="white" clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
+                        <br />
+                    </div>
                     <div></div>
                     <div className="t-content_t">
                         <span>用户信息维护列表</span>
@@ -136,8 +144,8 @@ class UserMaintain extends React.Component {
                             width: "98%",
                             margin: "auto"
                         }} fn={this._searchUserMaintain.bind(this)} />
-                        <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,100,100,0,0,120,70,80" />
-                        <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+                        <Table id="userMaintain" bindPager="userMaintainPager" tblContent={tblContent} width="50,100,100,0,0,120,70,80" />
+                        <Pager id="userMaintainPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                     </div>
                 </Content3>
                 <SidePage>
@@ -151,9 +159,10 @@ class UserMaintain extends React.Component {
 
 
     _searchUserMaintain(val) {
-        let {searchInfo, addUserMaintain, updatePageInfo, errorMsg} = this.props
-        val = "/staffs?loginName=" + val + "&unitId=" + searchInfo.key + "&from=0&limit=10"
-        TUI.platform.get(val, function (result) {
+        let {searchInfo, addUserMaintain, updatePageInfo, errorMsg, pageInfo} = this.props
+        let _pageSize = pageInfo["userMaintainPager"] ? pageInfo["userMaintainPager"].size : 10
+        val = "/staffs?loginName=" + val + "&unitId=" + searchInfo.key + "&from={0}&limit=10"
+        TUI.platform.get(val.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addUserMaintain(result.data)
             }
@@ -164,10 +173,11 @@ class UserMaintain extends React.Component {
                 errorMsg(result.message)
             }
             updatePageInfo({
+                id: "userMaintainPager",
                 index: 1,
-                size: 10,
-                sum: result._page ? result._page.total : 1,
-                url: "/staffs?loginName=" + val + "&from={0}&limit=10"
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
+                url: val
             })
         })
     }
@@ -294,21 +304,22 @@ class UserMaintain extends React.Component {
     loadUser(id) {
         const {errorMsg, addUserMaintain, updatePageInfo, clearPageInfo, updateSearchInfo} = this.props
         let url = id ? "/staffs?unitId=" + id + "&from={0}&limit=10" : "/staffs?from={0}&limit=10"
+
         TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addUserMaintain(result.data)
             }
             else if (result.code == 404) {
                 addUserMaintain([])
-                //clearPageInfo()
             }
             else {
                 errorMsg(result.message)
             }
             updatePageInfo({
+                id: "userMaintainPager",
                 index: 1,
                 size: 10,
-                sum: result._page ? result._page.total : 1,
+                sum: result._page ? result._page.total : 0,
                 url: url
             })
             //更新搜索信息
@@ -442,17 +453,24 @@ class UserMaintain extends React.Component {
 
     pageFn(index, loadComplete) {
         const {pageInfo, addUserMaintain, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
+        let _pageSize = pageInfo["userMaintainPager"] ? pageInfo["userMaintainPager"].size : 10,
+            _url = pageInfo.userMaintainPager.url,
+            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
+        TUI.platform.get(rUrl.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
             if (result.code == 0) {
                 addUserMaintain(result.data)
-                updatePageInfo({
-                    index: index
-                })
                 loadComplete()
             }
             else {
                 addUserMaintain([])
             }
+            updatePageInfo({
+                id: "userMaintainPager",
+                index: index,
+                size: _pageSize,
+                sum: pageInfo.userMaintainPager?pageInfo.userMaintainPager.sum:0,
+                url: rUrl
+            })
         })
 
     }
@@ -471,7 +489,6 @@ export default TUI._connect({
     data: "userMaintain.data",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo",
-    hasVerticalScroll: "orgnizationManage.hasVerticalScroll",
     searchInfo: "publicInfo.searchInfo",
     orgnizationId: "userMaintain.orgnizationId"
 }, UserMaintain)

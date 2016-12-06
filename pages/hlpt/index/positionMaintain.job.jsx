@@ -4,13 +4,13 @@ import Table from "Table"
 import { closeSidePage } from "SidePage"
 import { openDialog } from "Dialog"
 import Pager from "Pager"
-import Content,{openContentLoading,closeContentLoading} from "Content"
+import Content, { openContentLoading, closeContentLoading } from "Content"
 
 import back from "!url!./img/singleLeft.png"
 
 class PositionMaintainJob extends React.Component {
     render() {
-        const {jobsData, pageInfo, errorMsg} = this.props
+        const {jobsData, pageInfo, errorMsg,updatePageInfo} = this.props
 
         let _this = this
         let tblContent = {
@@ -45,7 +45,7 @@ class PositionMaintainJob extends React.Component {
                                 else {
                                     errorMsg(result.message)
                                 }
-                                _this.props.pushBreadNav({name:_data.jobName})
+                                _this.props.pushBreadNav({ name: _data.jobName })
                             })
 
                         }
@@ -57,6 +57,10 @@ class PositionMaintainJob extends React.Component {
                                     if (result.code == 0) {
                                         _this.props.successMsg("职位职责删除成功")
                                         _this.props.deletePositionMaintainJobs(_d.jobId)
+                                        updatePageInfo({
+                                            id: "positionMaintainJobPager",
+                                            sum: parseInt(pageInfo.positionMaintainJobPager.sum) - 1
+                                        })
                                     }
                                     else {
                                         errorMsg(result.errors)
@@ -72,16 +76,45 @@ class PositionMaintainJob extends React.Component {
         }
         return (
             <div>
-                <div style={{ borderBottom: "1px solid #ebebeb", height: "50px", lineHeight: "50px",marginTop:"-10px"}}>
+                <div style={{ borderBottom: "1px solid #ebebeb", height: "50px", lineHeight: "50px", marginTop: "-10px" }}>
                     <span style={{ float: "left", fontSize: "20px" }}>
                         <img src={back} onClick={this.goBack.bind(this)} style={{ width: "25px", height: "25px", verticalAlign: "middle", marginTop: "-3px", cursor: "pointer" }} />
                         职位职责列表
                     </span>
                     <Btn style={{ float: "right" }} txt="新增" type="add" href={this.addPositionMaintainJob.bind(this)} />
                 </div>
-                <Table id="positionMaintainJob" num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,1000,100"/>
+                <Table id="positionMaintainJob" bindPager="positionMaintainJobPager" tblContent={tblContent} width="50,1000,100" />
+                <Pager id="positionMaintainJobPager" fn={this.pageFn1.bind(this)} />
             </div>
         )
+    }
+
+    pageFn1(index, loadComplete) {
+        const {pageInfo, addPositionMaintainJobs, searchPositionMaintainJobs, updatePageInfo} = this.props
+
+        let _pageSize = pageInfo["positionMaintainJobPager"] ? pageInfo["positionMaintainJobPager"].size : 10,
+            _url = pageInfo.positionMaintainJobPager.url,
+            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
+        TUI.platform.get(rUrl.replace("{0}", pageInfo.positionMaintainJobPager.size * (index - 1)), function (result) {
+            if (result.code == 0) {
+                addPositionMaintainJobs(result.data)
+                searchPositionMaintainJobs(eval(JSON.stringify(result.data)))
+            }
+            else if (result.code == 404) {
+                addPositionMaintainJobs([])
+            }
+            else {
+                errorMsg(result.message)
+            }
+            updatePageInfo({
+                id: "positionMaintainJobPager",
+                index: index,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
+                url: rUrl
+            })
+        })
+
     }
 
     addPositionMaintainJob() {
@@ -90,7 +123,7 @@ class PositionMaintainJob extends React.Component {
             status: "add"
         })
 
-        this.props.pushBreadNav({name:"新增职位职责"})
+        this.props.pushBreadNav({ name: "新增职位职责" })
     }
 
 

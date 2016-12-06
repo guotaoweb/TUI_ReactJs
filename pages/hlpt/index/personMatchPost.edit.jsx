@@ -20,7 +20,8 @@ class PersonMatchPostEdit extends React.Component {
             addPersonMatchPostSetRoleData,
             updatePersonMatchPostNumber,
             updateSearchInfo,
-            errorMsg
+            errorMsg,
+            updatePageInfo
         } = this.props
 
         let _this = this
@@ -40,7 +41,8 @@ class PersonMatchPostEdit extends React.Component {
                     "name": "设置角色",
                     "fn": function () {
                         openContentLoading()
-                        TUI.platform.get("/roles?positionId=" + _d.positionId, function (result) {
+                        let url = "/roles?positionId=" + _d.positionId+"&from={0}&limit=10"
+                        TUI.platform.get(url.replace("{0}","0"), function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
                                 addPersonMatchPostSetRoleData(_data)
@@ -51,6 +53,14 @@ class PersonMatchPostEdit extends React.Component {
                             else {
                                 errorMsg(result.message)
                             }
+                            updatePageInfo({
+                                id: "personMatchPostSetRolePager",
+                                index: 1,
+                                size: 10,
+                                sum: result._page ? result._page.total : 0,
+                                url: url
+                            })
+
 
                             openSidePage(_this, {
                                 status: "personMatchPostEditSetRole",
@@ -71,7 +81,7 @@ class PersonMatchPostEdit extends React.Component {
                             closeContentLoading()
 
                             _this.props.pushBreadNav({
-                                name:_d.cnName
+                                name: _d.cnName
                             })
                         })
                     }
@@ -147,6 +157,10 @@ class PersonMatchPostEdit extends React.Component {
                                         positionId: _d.positionId,
                                         type: "sub"
                                     })
+                                    updatePageInfo({
+                                        id: "personMatchPostEditPager",
+                                        sum: parseInt(pageInfo.personMatchPostEditPager.sum) - 1
+                                    })
                                 }
                                 else {
                                     errorMsg(result.errors)
@@ -180,20 +194,20 @@ class PersonMatchPostEdit extends React.Component {
                         width: "98%",
                         margin: "auto"
                     }} fn={this._searchPersonMachPostEdit.bind(this)} />
-                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,150,150,100,220" />
+                    <Table bindPager="personMatchPostEditPager" tblContent={tblContent} width="50,0,150,150,100,220" />
                     <Pager id="personMatchPostEditPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                 </Content>
             </div>
         )
     }
     _searchPersonMachPostEdit(val) {
-        const {addPersonMatchPostRole,updatePageInfo,errorMsg}= this.props
-        let _url = "/dutys/?positionId=" + this.props.sidePageInfo.gateWay.positionId + "&loginUid="+val+"&from={0}&limit=10"
+        const {addPersonMatchPostRole, updatePageInfo, errorMsg, pageInfo} = this.props
+        let _pageSize = pageInfo["personMatchPostEditPager"] ? pageInfo["personMatchPostEditPager"].size : 10
+        let _url = "/dutys/?positionId=" + this.props.sidePageInfo.gateWay.positionId + "&loginUid=" + val + "&from={0}&limit=" + _pageSize
         TUI.platform.get(_url.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 let _data = result.data
                 addPersonMatchPostRole(_data)
-                //_this.props.refreshTable()
             }
             else if (result.code == 404) {
                 addPersonMatchPostRole([])
@@ -204,7 +218,7 @@ class PersonMatchPostEdit extends React.Component {
             updatePageInfo({
                 id: "personMatchPostEditPager",
                 index: 1,
-                size: 10,
+                size: _pageSize,
                 sum: result._page ? result._page.total : 1,
                 url: _url
             })
@@ -281,21 +295,24 @@ class PersonMatchPostEdit extends React.Component {
 
     pageFn(index, loadComplete) {
         const {pageInfo, addPersonMatchPostRole, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.personMatchPostEditPager.url.replace("{0}", pageInfo.personMatchPostEditPager.size * (index - 1)), function (result) {
+        let _pageSize = pageInfo["personMatchPostEditPager"] ? pageInfo["personMatchPostEditPager"].size : 10,
+            _url = pageInfo.personMatchPostEditPager.url,
+            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
+        TUI.platform.get(rUrl.replace("{0}", pageInfo.personMatchPostEditPager.size * (index - 1)), function (result) {
             if (result.code == 0) {
                 addPersonMatchPostRole(result.data)
-                updatePageInfo({
-                    id: "personMatchPostEditPager",
-                    index: index,
-                    size: 10,
-                    sum: result._page.total,
-                    url: pageInfo.personMatchPostEditPager.url
-                })
                 loadComplete()
             }
             else {
                 addPersonMatchPostRole([])
             }
+            updatePageInfo({
+                id: "personMatchPostEditPager",
+                index: index,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
+                url: rUrl
+            })
         })
 
     }

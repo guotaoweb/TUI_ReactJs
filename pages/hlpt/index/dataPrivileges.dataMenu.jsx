@@ -86,7 +86,7 @@ class DataPrivilegesDataMenu extends React.Component {
             let d = _data[index]
 
             if (d.id == id) {
-                TUI.platform.get("/units/tree/" + id, function (result) {
+                TUI.platform.get("/units/treeCode/" + id, function (result) {
                     if (result.code == 0) {
                         let children = []
                         let _deep = parseInt(deep) + 1

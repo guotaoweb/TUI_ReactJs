@@ -68,6 +68,21 @@ class Content3 extends React.Component {
     )
   }
 
+  componentDidUpdate(nextProps) {
+    let _scrollContent = this.scrollAreaComponent.content
+    let thisProps = this.props.pageInfo
+    for (let key in thisProps) {
+      let _thisProps = thisProps[key]
+      if (_thisProps[key].size != nextProps.pageInfo[key].size) {
+        _scrollContent.style.height = "auto"
+        return true
+      }
+      else {
+        return false
+      }
+    }
+  }
+
   componentDidMount() {
     let allHeight = document.documentElement.clientHeight
     let headerHeight = document.querySelector(".t-header") ? document.querySelector(".t-header").offsetHeight : 0
@@ -81,7 +96,7 @@ class Content3 extends React.Component {
     ReactDOM.findDOMNode(this.refs.tblContent).style.height = (baseHeight - tip) + "px"
 
     this.scrollAreaSideComponent.wrapper.style.height = baseHeight + "px"
-    this.scrollAreaSideComponent.content.style.height = baseHeight + "px"
+    //this.scrollAreaSideComponent.content.style.height = baseHeight + "px"
     if (this.scrollAreaSideComponent) {
       this.scrollAreaSideComponent.scrollArea.refresh()
     }
@@ -94,7 +109,7 @@ class Content3 extends React.Component {
 };
 
 export default TUI._connect({
-  hasVerticalScroll: "publicInfo.hasVerticalScroll"
+  pageInfo: "publicInfo.pageInfo"
 }, Content3)
 
 export function openContentLoading() {

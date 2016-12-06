@@ -103,7 +103,7 @@ export default function manageReducers(state = initState, action) {
                 state.pageInfo[_id] = {
                     index: action.data.index ? action.data.index : state.pageInfo[_id].index,
                     size: action.data.size ? action.data.size : state.pageInfo[_id].size,
-                    sum: action.data.sum ? action.data.sum : state.pageInfo[_id].sum,
+                    sum: (action.data.sum || action.data.sum==0) ? action.data.sum : state.pageInfo[_id].sum,
                     url: action.data.url ? action.data.url : state.pageInfo[_id].url
                 }
                 return Object.assign({}, state, {

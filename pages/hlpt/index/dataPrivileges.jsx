@@ -126,8 +126,8 @@ class DataPrivileges extends React.Component {
                         width: "98%",
                         margin: "auto"
                     }} fn={this._searchOrgnization.bind(this)} />
-                    <Table num="10" tblContent={tblContent} width="50,150,150,0,80" />
-                    <Pager fn={this.pageFn.bind(this)} />
+                    <Table bindPager="dataPrivilegesPager" tblContent={tblContent} width="50,150,150,0,80" />
+                    <Pager id="dataPrivilegesPager" fn={this.pageFn.bind(this)} />
                 </Content>
                 <SidePage>
                     <div>
@@ -139,11 +139,11 @@ class DataPrivileges extends React.Component {
     }
 
     _searchOrgnization(val) {
-        let {searchInfo, addDataPrivileges, updatePageInfo, errorMsg} = this.props
+        let {searchInfo, addDataPrivileges, updatePageInfo, errorMsg, pageInfo} = this.props
 
-
-        val = val ? "/staffs/?from={0}&limit=10&loginName=" + val : "/staffs/?isData=1&from={0}&limit=10"
-        TUI.platform.get(val.replace("{0}",0), function (result) {
+        let _pageSize = pageInfo["dataPrivilegesPager"] ? pageInfo["dataPrivilegesPager"].size : 10
+        val = val ? "/staffs/?from={0}&limit=10&loginName=" + val : "/staffs/?isData=1&from={0}&limit=" + _pageSize
+        TUI.platform.get(val.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 addDataPrivileges(result.data)
             }
@@ -155,7 +155,7 @@ class DataPrivileges extends React.Component {
             }
             updatePageInfo({
                 index: 1,
-                size: 10,
+                size: _pageSize,
                 sum: result._page ? result._page.total : 1,
                 url: val
             })
@@ -164,7 +164,11 @@ class DataPrivileges extends React.Component {
 
     pageFn(index, loadComplete) {
         const {pageInfo, addDataPrivileges, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.index.url.replace("{0}", index * pageInfo.index.size), function (result) {
+        let _pageSize = pageInfo["dataPrivilegesPager"] ? pageInfo["dataPrivilegesPager"].size : 10,
+            _url = pageInfo.dataPrivilegesPager.url,
+            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
+
+        TUI.platform.get(rUrl.replace("{0}", index * pageInfo.dataPrivilegesPager.size), function (result) {
             if (result.code == 0) {
                 addDataPrivileges(result.data)
                 updatePageInfo({
@@ -175,23 +179,34 @@ class DataPrivileges extends React.Component {
             else {
                 addDataPrivileges([])
             }
+            updatePageInfo({
+                id: "dataPrivilegesPager",
+                index: index,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
+                url: rUrl
+            })
         })
     }
 
     componentDidMount() {
-        const {addDataPrivileges, updateOData, orgnization, updatePageInfo, updateSearchInfo, userId, errorMsg} = this.props
-        this.props.addBreadNav({name:"权限管理"})
+        const {
+            addDataPrivileges, 
+            updateOData, 
+            orgnization, 
+            updatePageInfo, 
+            updateSearchInfo, 
+            userId, 
+            errorMsg
+        } = this.props
+        this.props.addBreadNav({ name: "权限管理" })
         //获取数据权限列表
         openLoading()
-        TUI.platform.get("/staffs/?isData=1&from=0&limit=10", function (result) {
+        let url = "/staffs/?isData=1&from={0}&limit=10"
+        TUI.platform.get(url.replace("{0}","0"), function (result) {
             if (result.code == 0) {
                 addDataPrivileges(result.data)
-                updatePageInfo({
-                    index: 1,
-                    size: 10,
-                    sum: result._page.total,
-                    url: "/staffs/?isData=1&from={0}&limit=10"
-                })
+
                 //更新搜索信息
                 updateSearchInfo({
                     key: "",
@@ -207,10 +222,17 @@ class DataPrivileges extends React.Component {
             else {
                 errorMsg(result.message)
             }
+            updatePageInfo({
+                id:"dataPrivilegesPager",
+                index: 1,
+                size: 10,
+                sum: result._page ? result._page.total : 0,
+                url: url
+            })
         }, this)
 
         //获取组织机构
-        TUI.platform.get("/units/tree/0", function (result) {
+        TUI.platform.get("/units/treeCode/0", function (result) {
             if (result.code == 0) {
                 let _d = []
                 for (var i = 0; i < result.data.length; i++) {

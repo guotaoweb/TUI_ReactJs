@@ -35,13 +35,13 @@ class Content extends React.Component {
                 </div>
                 <div ref="tContentDiv">
                     <ScrollArea
-                    className="area"
-                    contentClassName="content"
-                    speed={Config.SCROLL.speed}
-                    smoothScrolling={Config.SCROLL.smoothScrolling}
-                    minScrollSize={Config.SCROLL.minScrollSize}
-                    verticalScrollbarStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
-                    verticalContainerStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+                        className="area"
+                        contentClassName="content"
+                        speed={Config.SCROLL.speed}
+                        smoothScrolling={Config.SCROLL.smoothScrolling}
+                        minScrollSize={Config.SCROLL.minScrollSize}
+                        verticalScrollbarStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
+                        verticalContainerStyle={{ borderRadius: Config.SCROLL.scrollRadius }}
                         ref={(component) => { this.scrollAreaComponent = component } }
                         >
                         <div>
@@ -58,6 +58,22 @@ class Content extends React.Component {
         );
     }
 
+    componentDidUpdate(nextProps) {
+        let _scrollContent = this.scrollAreaComponent.content
+        let thisProps = this.props.pageInfo
+        for (let key in thisProps) {
+            let _thisProps = thisProps[key]
+            if (_thisProps[key].size != nextProps.pageInfo[key].size) {
+                _scrollContent.style.height ="auto"
+                return true
+
+            }
+            else {
+                return false
+            }
+        }
+    }
+
     componentDidMount() {
         let allHeight = document.documentElement.clientHeight
         let headerHeight = document.querySelector(".t-header").offsetHeight
@@ -68,8 +84,8 @@ class Content extends React.Component {
         let _scrollWrapper = this.scrollAreaComponent.wrapper
         let _scrollContent = this.scrollAreaComponent.content
         _scrollWrapper.style.height = (allHeight - headerHeight - 80) + "px"
-     
-        if(_scrollContent.offsetHeight<_scrollWrapper.offsetHeight){
+
+        if (_scrollContent.offsetHeight < _scrollWrapper.offsetHeight) {
             _scrollContent.style.height = (allHeight - headerHeight - 80) + "px"
         }
         if (this.scrollAreaComponent) {
@@ -83,7 +99,7 @@ class Content extends React.Component {
 };
 
 export default TUI._connect({
-    hasVerticalScroll: "publicInfo.hasVerticalScroll"
+    pageInfo: "publicInfo.pageInfo"
 }, Content)
 
 export function openContentLoading() {

@@ -25,9 +25,9 @@ export default function manageReducers(state = initState, action) {
             }
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
         case "PUSH_USERMAINTAIN_DATA":
-            if (state.data) {
-                state.data.push(action.data)
-            }
+        console.info(state.data)
+            state.data.push(action.data)
+            console.info(action.data)
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
         case "DELETE_USERMAINTAIN_DATA":
             for (let i = 0; i < state.data.length; i++) {

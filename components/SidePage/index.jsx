@@ -55,6 +55,23 @@ class SidePage extends React.Component {
         )
     }
 
+    // componentDidUpdate(nextProps) {
+    //     let _scrollContent = this.scrollAreaComponent.content
+    //     let thisProps = this.props.pageInfo
+    //     for (let key in thisProps) {
+    //         let _thisProps = thisProps[key]
+    //         if (_thisProps[key].size != nextProps.pageInfo[key].size) {
+    //             _scrollContent.style.height = "auto"
+    //             return true
+
+    //         }
+    //         else {
+    //             return false
+    //         }
+    //     }
+    // }
+
+
     componentDidUpdate() {
         const {sidePageInfo, sideStatus} = this.props
         let $obj = {
@@ -78,7 +95,7 @@ class SidePage extends React.Component {
         let _scrollWrapper = this.scrollAreaSidePageComponent.wrapper
         let _scrollContent = this.scrollAreaSidePageComponent.content
         _scrollWrapper.style.height = ($obj.allHeight) + "px"
-        _scrollContent.style.height = ($obj.allHeight) + "px"
+       // _scrollContent.style.height = ($obj.allHeight) + "px"
         if (this.scrollAreaSidePageComponent) {
             this.scrollAreaSidePageComponent.scrollArea.refresh()
         }

@@ -5,6 +5,7 @@ import next from "!url!./img/next.png"
 import first from "!url!./img/first.png"
 import last from "!url!./img/last.png"
 
+
 //Math.ceil 向上舍入
 //Math.floor 向下舍入
 import loading from "!url!./img/loading.png"
@@ -28,7 +29,7 @@ class Pager extends React.Component {
             let pageInfo = _pageInfo[_id]
             pageCIndex = pageInfo.index
             pageSize = pageInfo.size
-            pageSum = pageInfo.sum
+            pageSum = pageInfo.sum==0?1:pageInfo.sum
 
 
             let _pageSum = Math.ceil(pageSum / pageSize)//总页数
@@ -72,11 +73,22 @@ class Pager extends React.Component {
 
 
         return (
-    
-            <div style={{ display: (pagerLength == 1 ? "none" : "block") }}>
+
+            <div>
                 <div className="t-pager" style={this.props.style}>
-                    <span>总条数: {pageSum} </span>{loadStatusImg}
-                    <ul>
+                    <span style={{ display: (pageSum == 1 ? "none" : "inline") }}>
+                        显示数:&nbsp;
+                        <select onChange={this.pagerSizeChange.bind(this)}>
+                            <option>10</option>
+                            <option>20</option>
+                            <option>30</option>
+                            <option>40</option>
+                            <option>50</option>
+                        </select>&nbsp;&nbsp;&nbsp;
+                    </span>
+                    <span style={{ display: (pageSum == 1 ? "none" : "inline") }}>总数量: {pageSum} </span>
+                    {loadStatusImg}
+                    <ul style={{ display: (pagerLength == 1 ? "none" : "block") }}>
                         <li className='first' onClick={this.clickFirst.bind(this)}><a href='javascript:void(0);'><img src={first} /></a></li>
                         {pagerLi}
                         <li className='last' onClick={this.clickLast.bind(this)}><a href='javascript:void(0);'><img src={last} /></a></li>
@@ -87,8 +99,23 @@ class Pager extends React.Component {
 
     }
 
+    pagerSizeChange(e) {
+        const {fn,updatePageInfo,pageLoadComplete} = this.props
+
+        let _param = {
+            size: e.currentTarget.value
+        }
+        let _id = this.props.id
+        if (_id) {
+            _param["id"] = _id
+        }
+        updatePageInfo(_param)
+
+        fn(1,pageLoadComplete)
+    }
+
     clickpage(e) {
-        const {fn, updatePageInfo, _pageInfo, pageLoading, pageLoadComplete,id} = this.props
+        const {fn, updatePageInfo, _pageInfo, pageLoading, pageLoadComplete, id} = this.props
         let _id = id ? id : "index"
 
         let pageInfo = _pageInfo[_id]
@@ -106,10 +133,10 @@ class Pager extends React.Component {
         })
         fn(parseInt(obj.innerText), pageLoadComplete)
         pageLoading()
-     
+
     }
     clickPrev(e) {
-        const {_pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete,id} = this.props
+        const {_pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete, id} = this.props
         let _id = id ? id : "index"
         let pageInfo = _pageInfo[_id]
         if (pageInfo.index == 1) { return false }
@@ -120,7 +147,7 @@ class Pager extends React.Component {
         pageLoading()
     }
     clickNext(e) {
-        const {_pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete,id} = this.props
+        const {_pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete, id} = this.props
         let _id = id ? id : "index"
         let pageInfo = _pageInfo[_id]
         if (pageInfo.index == Math.ceil(pageInfo.sum / pageInfo.size)) { return false }
@@ -139,7 +166,7 @@ class Pager extends React.Component {
         pageLoading()
     }
     clickLast(e) {
-        const {_pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete,id} = this.props
+        const {_pageInfo, fn, updatePageInfo, pageLoading, pageLoadComplete, id} = this.props
         let _id = id ? id : "index"
         let pageInfo = _pageInfo[_id]
         updatePageInfo({

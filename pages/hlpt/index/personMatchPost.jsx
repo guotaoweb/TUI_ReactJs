@@ -21,7 +21,18 @@ import Search from "Search"
 class PersonMatchPost extends React.Component {
 
     render() {
-        const {clearPageInfo, errorMsg, updatePageInfo, odata, pageInfo, sidePageStatus, hasVerticalScroll, data, sidePageInfo, addPersonMatchPostRole, updateSearchInfo} = this.props
+        const {
+            clearPageInfo,
+            errorMsg,
+            updatePageInfo,
+            odata,
+            pageInfo,
+            sidePageStatus,
+            data,
+            sidePageInfo,
+            addPersonMatchPostRole,
+            updateSearchInfo
+        } = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "职位", "name3": "人数", "name4": "编制数量", "name5": "操作" },
@@ -104,12 +115,10 @@ class PersonMatchPost extends React.Component {
         return (
             <div>
                 <Content3>
-                  
-                        <div>
-                            <MultyMenu data={odata} type="nocheck" lastdeep="6" color="white" clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
-                            <br />
-                        </div>
-              
+                    <div>
+                        <MultyMenu data={odata} type="nocheck" lastdeep="6" color="white" clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
+                        <br />
+                    </div>
 
                     <div></div>
                     <div className="t-content_t">
@@ -122,8 +131,8 @@ class PersonMatchPost extends React.Component {
                             width: "98%",
                             margin: "auto"
                         }} fn={this._searchPersonMachPost.bind(this)} />
-                        <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,150,150,100" />
-                        <Pager fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+                        <Table bindPager="personMatchPostPager" tblContent={tblContent} width="50,0,150,150,100" />
+                        <Pager id="personMatchPostPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                     </div>
                 </Content3>
                 <SidePage id="PersonMatchPostEdit">
@@ -141,15 +150,11 @@ class PersonMatchPost extends React.Component {
     }
 
 
-
-    onScrollRefresh(iScrollInstance, $this) {
-        this.props.setCanVerticallyScroll(iScrollInstance.hasVerticalScroll)
-    }
-
     _searchPersonMachPost(val) {
         let {errormsg, searchInfo, updatePageInfo, addPersonMatchPost} = this.props
-        let _url = "/positions/?unitId=" + searchInfo.key.unitId + "&positionName=" + val+"&from={0}&limit=10"
-        TUI.platform.get(_url.replace("{0}","0"), function (result) {
+        let _pageSize = pageInfo["personMatchPostPager"] ? pageInfo["personMatchPostPager"].size : 10
+        let _url = "/positions/?unitId=" + searchInfo.key.unitId + "&positionName=" + val + "&from={0}&limit="+_pageSize
+        TUI.platform.get(_url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 let _data = result.data
                 addPersonMatchPost(_data)
@@ -162,67 +167,11 @@ class PersonMatchPost extends React.Component {
             }
             updatePageInfo({
                 index: 1,
-                size: 10,
-                sum: result._page?result._page.total:1,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 1,
                 url: _url
             })
         })
-
-        // else if (searchInfo.key.type == "personMatchPostEdit_parttime" || searchInfo.key.type == "personMatchPostEdit_callin") {
-        //     if (val) {
-        //         val = "/staffs?loginName=" + val + "&from=0&limit=10"
-        //         TUI.platform.get(val, function (result) {
-        //             if (result.code == 0) {
-        //                 addPersonMatchPostSelectUserData(result.data)
-        //                 updatePageInfo({
-        //                     index: 1,
-        //                     size: 10,
-        //                     sum: result._page.total,
-        //                     url: val.replace("from=0", "from={0}")
-        //                 })
-        //             }
-        //             else if (result.code == 404) {
-        //                 addPersonMatchPostSelectUserData([])
-        //             }
-        //             else {
-        //                 errorMsg(result.message)
-        //             }
-        //         })
-        //     }
-        //     else {
-        //         //val = "/staffs?from=0&limit=10"
-        //         addPersonMatchPostSelectUserData([])
-        //     }
-
-        // }
-        // else if (searchInfo.key.type == "addPersonMatchPostSetRoleData") {
-        //     TUI.platform.get("/roles?positionId=" + searchInfo.key.positionId + "&roleName=" + val, function (result) {
-        //         if (result.code == 0) {
-        //             let _data = result.data
-        //             addPersonMatchPostSetRoleData(_data)
-        //         }
-        //         else if (result.code == 404) {
-        //             addPersonMatchPostSetRoleData([])
-        //         }
-        //         else {
-        //             errorMsg(result.message)
-        //         }
-        //     })
-        // }
-        // else {
-        //     let url = searchInfo.key.unitId ? "/positions?unitId=" + searchInfo.key.unitId + "&positionName=" + val + "&from={0}&limit=10" : "/positions?positionName=" + val + "&unitCode=0&from={0}&limit=10"
-        //     TUI.platform.get(url.replace("{0}", "0"), function (result) {
-        //         if (result.code == 0) {
-        //             addPersonMatchPost(result.data)
-        //         }
-        //         else if (result.code == 404) {
-        //             addPersonMatchPost([])
-        //         }
-        //         else {
-        //             errorMsg(result.message)
-        //         }
-        //     })
-        // }
     }
 
     componentDidMount() {
@@ -325,7 +274,7 @@ class PersonMatchPost extends React.Component {
         //关闭之后可能打开的SidePage
         closeSidePage({ id: "PersonMatchPostEdit" })
         closeSidePage({ id: "PersonMatchPostEditSelect" })
-        this.props.addBreadNav({name:"人职匹配"})
+        this.props.addBreadNav({ name: "人职匹配" })
     }
 
     addPositionMaintainBtn() {
@@ -336,9 +285,10 @@ class PersonMatchPost extends React.Component {
     }
 
     loadPosition(id) {
-        const {addPersonMatchPost, updatePageInfo, clearPageInfo, updateSearchInfo} = this.props
+        const {addPersonMatchPost, updatePageInfo, clearPageInfo, updateSearchInfo,pageInfo} = this.props
         clearPageInfo()
-        let url = id ? "/positions?unitId=" + id + "&from={0}&limit=10" : "/positions?unitCode=0&from={0}&limit=10"
+        let _pageSize = pageInfo["personMatchPostPager"] ? pageInfo["personMatchPostPager"].size : 10
+        let url = id ? "/positions?unitId=" + id + "&from={0}&limit="+_pageSize : "/positions?unitCode=0&from={0}&limit="+_pageSize
         TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addPersonMatchPost(result.data)
@@ -352,6 +302,7 @@ class PersonMatchPost extends React.Component {
                 clearPageInfo()
             }
             updatePageInfo({
+                id: "personMatchPostPager",
                 index: 1,
                 size: 10,
                 sum: result._page ? result._page.total : 1,
@@ -493,17 +444,24 @@ class PersonMatchPost extends React.Component {
 
     pageFn(index, loadComplete) {
         const {pageInfo, addPersonMatchPost, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
+        let _pageSize = pageInfo["personMatchPostPager"] ? pageInfo["personMatchPostPager"].size : 10,
+            _url = pageInfo.personMatchPostPager.url,
+            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
+        TUI.platform.get(rUrl.replace("{0}", pageInfo.personMatchPostPager.size * (index - 1)), function (result) {
             if (result.code == 0) {
                 addPersonMatchPost(result.data)
-                updatePageInfo({
-                    index: index
-                })
                 loadComplete()
             }
             else {
                 addPersonMatchPost([])
             }
+            updatePageInfo({
+                id:"personMatchPostPager",
+                index: index,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
+                url: rUrl
+            })
         })
 
     }
@@ -514,7 +472,6 @@ export default TUI._connect({
     data: "personMatchPost.data",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo",
-    hasVerticalScroll: "orgnizationManage.hasVerticalScroll",
     searchInfo: "publicInfo.searchInfo",
     eidtId: "personMatchPost.editId"
 }, PersonMatchPost)

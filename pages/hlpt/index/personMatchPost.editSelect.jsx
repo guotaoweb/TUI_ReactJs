@@ -9,7 +9,17 @@ import singleLeft from "!url!./img/singleLeft.png"
 
 class PersonMatchPostEditSelect extends React.Component {
     render() {
-        const {pageInfo, waiteMsg, successMsg, errorMsg, selectUserData, sidePageInfo, pushPersonMatchPostRole, updatePersonMatchPostNumber} = this.props
+        const {
+            pageInfo, 
+            waiteMsg, 
+            successMsg, 
+            errorMsg, 
+            selectUserData, 
+            sidePageInfo, 
+            pushPersonMatchPostRole, 
+            updatePersonMatchPostNumber,
+            updatePageInfo
+        } = this.props
 
         let _this = this
 
@@ -54,18 +64,20 @@ class PersonMatchPostEditSelect extends React.Component {
                         TUI.platform.post("/duty", jsonParma, function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
-                                // if(pageInfo.personMatchPostEditPager.sum+1>pageInfo.personMatchPostEditPager.size){
-                                //     //要更新sum
-                                // }
-                                // else{
+
                                 pushPersonMatchPostRole(_data)
-                                //}
+
                                 updatePersonMatchPostNumber({
                                     positionId: _positionId,
                                     type: "add"
                                 })
                                 _this._closeSidePage()
                                 successMsg("数据提交成功")
+
+                                updatePageInfo({
+                                    id: "personMatchPostEditPager",
+                                    sum: parseInt(pageInfo.personMatchPostEditPager.sum) + 1
+                                })
                             }
                             else {
                                 errorMsg(result.message)
@@ -96,10 +108,10 @@ class PersonMatchPostEditSelect extends React.Component {
     }
 
     _searchPersonMachPostEditSelect(val) {
-        const {addPersonMatchPostSelectUserData,errorMsg,updatePageInfo} = this.props
+        const {addPersonMatchPostSelectUserData, errorMsg, updatePageInfo} = this.props
         let _url = "/staffs?loginName=" + val + "&from={0}&limit=10"
         //positionId=" + this.props.sidePageInfo.gateWay.positionId + "
-        TUI.platform.get(_url.replace("{0}",0), function (result) {
+        TUI.platform.get(_url.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 addPersonMatchPostSelectUserData(result.data)
             }

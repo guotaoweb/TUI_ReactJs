@@ -9,14 +9,14 @@ import { openDialog, closeDialog } from "Dialog"
 import singleLeft from "!url!./img/singleLeft.png"
 
 class UserMaintainJobsList extends React.Component {
-    render() { 
+    render() {
         const {
-            errorMsg, 
-            waiteMsg, 
-            successMsg, 
-            sidePageInfo, 
-            jobsList, 
-            pageInfo, 
+            errorMsg,
+            waiteMsg,
+            successMsg,
+            sidePageInfo,
+            jobsList,
+            pageInfo,
             updatePageInfo,
             delUserMaintainJobsList
         } = this.props
@@ -35,7 +35,7 @@ class UserMaintainJobsList extends React.Component {
                 "value2": _d.unitName,
                 "value3": _d.positionName,
                 "value4": _d.roleName,
-                "value5": _d.isDefault == 1 ? "是" : "否", 
+                "value5": _d.isDefault == 1 ? "是" : "否",
                 "fns": [{
                     "name": "设为主职",
                     "fn": function () {
@@ -56,7 +56,7 @@ class UserMaintainJobsList extends React.Component {
                     "name": "删除",
                     "fn": function () {
                         var delFetch = function () {
-                            TUI.platform.patch("/duty/"+_d.poid,function (result) {
+                            TUI.platform.patch("/duty/" + _d.poid, function (result) {
                                 if (result.code == 0) {
                                     delUserMaintainJobsList(_d.poid)
                                 }
@@ -75,7 +75,7 @@ class UserMaintainJobsList extends React.Component {
                 <div className="t-content_t">
                     <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />职位列表</span>
                 </div>
-                <Table id="userMaintainJobsListTable" num="10" tblContent={tblContent} width="50,200,0,0,100,80" />
+                <Table id="userMaintainJobsListTable" bindPager="userMaintainJobsList" tblContent={tblContent} width="50,0,200,0,100,80" />
                 <Pager id="userMaintainJobsList" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
             </div>
         )
@@ -140,17 +140,26 @@ class UserMaintainJobsList extends React.Component {
 
     pageFn(index, loadComplete) {
         const {pageInfo, addUserMaintainJobsList, updatePageInfo} = this.props
-        TUI.platform.get(pageInfo.index.url.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
+        let _pageSize = pageInfo["userMaintainJobsList"] ? pageInfo["userMaintainJobsList"].size : 10,
+            _url = pageInfo.userMaintainJobsList.url,
+            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
+
+
+        TUI.platform.get(rUrl.replace("{0}", pageInfo.index.size * (index - 1)), function (result) {
             if (result.code == 0) {
                 addUserMaintainJobsList(result.data)
-                updatePageInfo({
-                    index: index
-                })
                 loadComplete()
             }
             else {
                 addUserMaintainJobsList([])
             }
+            updatePageInfo({
+                id:"userMaintainJobsList",
+                index: index,
+                size: _pageSize,
+                sum: pageInfo.userMaintainJobsList?pageInfo.userMaintainJobsList.sum:1,
+                url: rUrl
+            })
         })
     }
 

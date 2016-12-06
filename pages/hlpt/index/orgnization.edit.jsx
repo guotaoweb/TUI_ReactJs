@@ -42,7 +42,22 @@ class OrgnizationEdit extends React.Component {
     }
 
     editOrgization() {
-        const {errorMsg, data, editInfo, sidePageInfo, unitBizTypes, unitKind, status, city, updateSubList, relateId, unitCode, pushSubList} = this.props
+        const {
+            errorMsg, 
+            data, 
+            editInfo, 
+            sidePageInfo, 
+            unitBizTypes, 
+            unitKind, 
+            status, 
+            city, 
+            updateSubList, 
+            relateId, 
+            unitCode, 
+            pushSubList,
+            updatePageInfo,
+            pageInfo
+        } = this.props
 
         let _this = this,
             postJson
@@ -59,7 +74,7 @@ class OrgnizationEdit extends React.Component {
                 "unitName": editInfo.orgnizationInfo.unitName,
                 "ext2": editInfo.orgnizationInfo.ext2,
                 "bizType": editInfo.orgnizationInfo.bizType,
-                "kind": editInfo.orgnizationInfo.kind=="-1"?"":editInfo.orgnizationInfo.kind,
+                "kind": editInfo.orgnizationInfo.kind == "-1" ? "" : editInfo.orgnizationInfo.kind,
                 "status": editInfo.orgnizationInfo.status,
                 "areaCode": editInfo.orgnizationInfo.areaCode,
                 "email": editInfo.orgnizationInfo.email,
@@ -82,7 +97,7 @@ class OrgnizationEdit extends React.Component {
                     //实时新增组织
                     pushSubList(postJson)
 
-   
+
                     _this.addOrgnizationData(data, relateId.split("-"), {
                         id: result.data.unitId,
                         name: result.data.unitName,
@@ -90,7 +105,13 @@ class OrgnizationEdit extends React.Component {
                         deep: relateId.split("-").length,
                         unitCode: result.data.unitCode
                     })
-                    //_this.props.refreshTable()
+
+                    updatePageInfo({
+                        id: "orgnizationPager",
+                        sum: parseInt(pageInfo.orgnizationPager.sum) + 1
+                    })
+
+                    console.info(pageInfo)
                 }
                 else {
                     errorMsg(result.message)
@@ -164,8 +185,8 @@ class OrgnizationEdit extends React.Component {
             for (let i = 0; i < data.length; i++) {
                 if (data[i].id == deep) {
                     data[i].isHadSub = 0
-                    if(!data[i].children){
-                        data[i].children= []
+                    if (!data[i].children) {
+                        data[i].children = []
                     }
                     data[i].children.push(newData)
                     this.props.addData(this.props.data)
@@ -201,5 +222,6 @@ export default TUI._connect({
     city: "orgnizationManage.city",
     relateId: "orgnizationManage.relateId",
     unitCode: "orgnizationManage.unitCode",
-    editInfo: "formControlInfo.data"
+    editInfo: "formControlInfo.data",
+    pageInfo:"publicInfo.pageInfo"
 }, OrgnizationEdit)

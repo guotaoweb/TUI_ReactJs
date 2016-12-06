@@ -119,11 +119,11 @@ class PositionMaintainEdit extends React.Component {
 
     getPositionMaintainJobs() {
         const {sidePageInfo, addPositionMaintainJobs, searchPositionMaintainJobs, updatePageInfo, editInfo} = this.props
-        TUI.platform.get("/jobs?positionId=" + sidePageInfo.gateWay.positionId + "&from=0&limit=10", function (result) {
+        let url = "/jobs?positionId=" + sidePageInfo.gateWay.positionId + "&from={0}&limit=10"
+        TUI.platform.get(url.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 addPositionMaintainJobs(result.data)
                 searchPositionMaintainJobs(eval(JSON.stringify(result.data)))
-
             }
             else if (result.code == 404) {
                 addPositionMaintainJobs([])
@@ -132,10 +132,11 @@ class PositionMaintainEdit extends React.Component {
                 errorMsg(result.message)
             }
             updatePageInfo({
+                id: "positionMaintainJobPager",
                 index: 1,
                 size: 10,
-                sum: result._page ? result._page.total : 1,
-                url: "/jobs?positionId=" + sidePageInfo.gateWay.positionId + "&from={0}&limit=10"
+                sum: result._page ? result._page.total : 0,
+                url: url
             })
         })
 
@@ -149,7 +150,7 @@ class PositionMaintainEdit extends React.Component {
     }
 
     getPositionMaintainRoles() {
-        const {sidePageInfo, addPositionMaintainRoles, updatePageInfo, jobsData,editInfo} = this.props
+        const {sidePageInfo, addPositionMaintainRoles, updatePageInfo, jobsData, editInfo} = this.props
         TUI.platform.get("/roles?positionId=" + sidePageInfo.gateWay.positionId + "&from=0&limit=10", function (result) {
             if (result.code == 0) {
                 addPositionMaintainRoles(result.data)
@@ -161,9 +162,10 @@ class PositionMaintainEdit extends React.Component {
                 errorMsg(result.message)
             }
             updatePageInfo({
+                id:"positionMaintainRolePager",
                 index: 1,
                 size: 10,
-                sum: result._page ? result._page.total : 1,
+                sum: result._page ? result._page.total : 0,
                 url: "/roles?positionId=" + sidePageInfo.gateWay.positionId + "&from={0}&limit=10"
             })
         })
@@ -209,7 +211,17 @@ class PositionMaintainEdit extends React.Component {
     }
 
     editPositionMaintain() {
-        const {errorMsg, data, editInfo, sidePageInfo, editId, pushPositionMaintain, updatePositionMaintain} = this.props
+        const {
+            errorMsg, 
+            data, 
+            editInfo, 
+            sidePageInfo, 
+            editId, 
+            pushPositionMaintain, 
+            updatePositionMaintain,
+            updatePageInfo,
+            pageInfo
+        } = this.props
 
         let _this = this,
             postJson = {
@@ -227,6 +239,10 @@ class PositionMaintainEdit extends React.Component {
                     _this.goBack()
                     _this.props.successMsg("新增职位成功")
                     pushPositionMaintain(result.data)
+                    updatePageInfo({
+                        id: "positionMaintainPager",
+                        sum: parseInt(pageInfo.positionMaintainPager.sum) + 1
+                    })
                 }
                 else {
                     errorMsg(result.message)
@@ -343,5 +359,6 @@ export default TUI._connect({
     jobFamilys: "positionMaintain.jobFamilys",
     editId: "positionMaintain.editId",
     jobsData: "positionMaintain.jobsData",
-    editInfo: "formControlInfo.data"
+    editInfo: "formControlInfo.data",
+    pageInfo:"publicInfo.pageInfo"
 }, PositionMaintainEdit)

@@ -76,7 +76,22 @@ class Content2 extends React.Component {
         )
     }
 
+    componentDidUpdate(nextProps) {
+        let _scrollContent = this.scrollAreaComponent.content
+        let thisProps = this.props.pageInfo
+        for (let key in thisProps) {
+            let _thisProps = thisProps[key]
+            if (_thisProps[key].size != nextProps.pageInfo[key].size) {
+                _scrollContent.style.height = "auto"
+                return true
 
+            }
+            else {
+                return false
+            }
+        }
+    }
+    
     componentDidMount() {
         let allHeight = document.documentElement.clientHeight
         let headerHeight = document.querySelector(".t-header").offsetHeight
@@ -92,7 +107,7 @@ class Content2 extends React.Component {
 }
 
 export default TUI._connect({
-    hasVerticalScroll: "publicInfo.hasVerticalScroll"
+    pageInfo: "publicInfo.pageInfo"
 }, Content2)
 
 export function bindEvent($this) {
@@ -123,7 +138,7 @@ export function bindEvent($this) {
             $this.props.setCanVerticallyScroll(false)
         }
     }
-    
+
     //为tabs绑定事件
     let contentTabs = document.getElementsByClassName("t-content2_tab")
     for (var i = 0; i < contentTabs.length; i++) {
