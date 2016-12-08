@@ -2,6 +2,7 @@ import 'babel-polyfill'
 
 const initState = {
     data: [],
+    sideList:[],
     selectedInfo:[]
 }
 
@@ -37,7 +38,8 @@ export default function manageReducers(state = initState, action) {
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
         case "ADD_SELECTED_DATAPRIVILEGES_DATA":
             return Object.assign({}, state, { selectedInfo: action.data=="true"?"false":"true" })
-            
+        case "ADD_SIDE_DATA":
+            return Object.assign({}, state, { sideList: eval(JSON.stringify(action.data)) })
         default: return state
     }
 }

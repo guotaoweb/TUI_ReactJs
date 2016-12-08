@@ -1,6 +1,6 @@
 import Side from 'Side'
 import { browserHistory } from 'react-router'
-import {openLoading,closeLoading} from "Loading"
+import { openLoading, closeLoading } from "Loading"
 //图片
 import other from "!url!./img/other.png" //虚拟组织
 import others from "!url!./img/other-s.png" //虚拟组织
@@ -122,10 +122,10 @@ class _Side extends React.Component {
                             url = $c.url
                         }
                     }
-                    browserHistory.push(Config.ROOTPATH + url)
-                    closeLoading()
-                }
 
+                }
+                browserHistory.push(Config.ROOTPATH + url)
+                closeLoading()
 
                 addSide(list)
             }

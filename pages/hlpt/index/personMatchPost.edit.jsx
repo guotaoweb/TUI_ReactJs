@@ -190,14 +190,16 @@ class PersonMatchPostEdit extends React.Component {
                     backHref={this.goBackContent.bind(this)}
                     addTxt="调入"
                     editTxt="兼职">
-                    <Search placeholder="请输入关键字(用户名)搜索" style={{
-                        border: "none",
-                        borderBottom: "1px solid #ebebeb",
-                        width: "98%",
-                        margin: "auto"
-                    }} fn={this._searchPersonMachPostEdit.bind(this)} />
-                    <Table bindPager="personMatchPostEditPager" tblContent={tblContent} width="50,0,150,150,100,220" />
-                    <Pager id="personMatchPostEditPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+                    <div>
+                        <Search placeholder="请输入关键字(用户名)搜索" style={{
+                            border: "none",
+                            borderBottom: "1px solid #ebebeb",
+                            width: "98%",
+                            margin: "auto"
+                        }} fn={this._searchPersonMachPostEdit.bind(this)} />
+                        <Table bindPager="personMatchPostEditPager" tblContent={tblContent} width="50,0,150,150,100,220" />
+                        <Pager id="personMatchPostEditPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
+                    </div>
                 </Content>
             </div>
         )

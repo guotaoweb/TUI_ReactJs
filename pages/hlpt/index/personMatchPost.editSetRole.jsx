@@ -81,7 +81,7 @@ class PersonMatchPostEditSetRole extends React.Component {
             rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
 
 
-        TUI.platform.get(rUrl.replace("{0}", "0"), function (result) {
+        TUI.platform.get(rUrl.replace("{0}",_pageSize * (index - 1)), function (result) {
             if (result.code == 0) {
                 let _data = result.data
                 addPersonMatchPostSetRoleData(_data)

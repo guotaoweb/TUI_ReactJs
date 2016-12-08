@@ -34,8 +34,8 @@ class SurvyOption extends React.Component {
                     optionNo.push(<span key={"survy-no-" + i} style={{ float: "left", marginTop: "5px", marginRight: "10px" }}>{this.NumSwitchChar(j + 1)}、</span>)
                     optionBtns.push(
                         <ul key={"survy-o-" + j} className="optionbtns">
-                            <li onClick={this.addOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}><img src={addImg} /></li>
-                            <li onClick={this.deleteOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}><img src={deleteImg} /></li>
+                            <li onClick={this.addOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order} data-survyId={$o.SuryId}><img src={addImg} /></li>
+                            <li onClick={this.deleteOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order} data-Id={$o.Id}><img src={deleteImg} /></li>
                             <li onClick={this.upOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}><img src={upImg} /></li>
                             <li onClick={this.downOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}><img src={downImg} /></li>
                         </ul>
@@ -75,8 +75,9 @@ class SurvyOption extends React.Component {
             parent = $elem.getAttribute("data-parent"),
             order = $elem.getAttribute("data-order"),
             type = $elem.getAttribute("data-type"),
-            _options = []
-
+            survyId = $elem.getAttribute("data-survyId"),
+            _options = [],
+            _this = this
 
         for (let i = 0; i < survyData.length; i++) {
             let $m = survyData[i]
@@ -107,16 +108,38 @@ class SurvyOption extends React.Component {
                         }
                     }
                 }
-                _options[parseInt(order) + 1] = {
-                    Id: TUI.fn.newGuid(),
+
+
+                let newSurvyOption = {
                     Type: type,
                     ParentId: parent,
                     Name: "",
+                    SurvyId: survyId,
                     Order: parseInt(order) + 1
                 }
-                $m.Datas = _options
+
+
+
+                TUI.platform.post("/SurvyContent", newSurvyOption, function (result) {
+                    if (result.code == 0) {
+                        var _d = result.datas[0]
+                        newSurvyOption["Id"] = _d
+                        _options[parseInt(order) + 1] = newSurvyOption
+                        $m.Datas = _options
+
+                        updateSurvy(survyData)
+                    }
+                    else if (result.code == 1) {
+
+                    }
+                    else {
+                        errorMsg(Config.ERROR_INFO[result.code]);
+                    }
+                })
+
                 break
             }
+
         }
     }
 
@@ -124,21 +147,32 @@ class SurvyOption extends React.Component {
     deleteOption(e) {
         const {survyData, updateSurvy} = this.props
         let $elem = e.target.parentNode,
-            main = $elem.getAttribute("data-parent"),
+            Id = $elem.getAttribute("data-Id"),
+            parentId = $elem.getAttribute("data-parent"),
             sub = $elem.getAttribute("data-sub")
 
         for (let i = 0; i < survyData.length; i++) {
             let $m = survyData[i]
-            if (i == main) {
+            if ($m.Id == parentId) {
                 for (let j = 0; j < $m.Datas.length; j++) {
                     let $s = $m.Datas[j]
-                    if (j == sub) {
-                        $m.Datas.splice(j, 1)
+                    if ($s.Id == Id) {
+                        TUI.platform.delete("/SurvyContentById/" + $s.Id, function (result) {
+                            if (result.code == 0) {
+                                var _d = result.datas
+                                $m.Datas.splice(j, 1)
+                                updateSurvy(survyData)
+                            }
+                            else {
+                                errorMsg(Config.ERROR_INFO[result.code]);
+                            }
+                        })
+                        
                     }
                 }
             }
         }
-        updateSurvy(survyData)
+        
     }
 
     //题目升序

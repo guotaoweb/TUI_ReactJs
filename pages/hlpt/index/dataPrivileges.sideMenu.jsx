@@ -22,14 +22,48 @@ class DataPrivilegesSideMenu extends React.Component {
     }
 
     componentDidMount() {
-        // let $scrollContent = ReactDOM.findDOMNode(this.refs.scrollContent)
-        // let header = document.querySelector(".t-header")
-        // header = header ? header.offsetHeight : 0
-        // let contentTitle = document.querySelector(".t-content_t")
-        // contentTitle = contentTitle ? contentTitle.offsetHeight : 0
-        // $scrollContent.style.height = document.documentElement.clientHeight - header - contentTitle + "px"
-        //ReactDOM.findDOMNode(this.refs.dataPrivilegesDiv).style.height = "auto"
-        
+        const {addSideData,errorMsg} = this.props
+
+        TUI.platform.get("/menu/qxTree", function (result) {
+            if (result.code == 0) {
+                let list = []
+                for (var i = 0; i < result.data.length; i++) {
+                    var $s = result.data[i];
+                    list.push({
+                        id: $s.id,
+                        name: $s.name,
+                        isHadSub: $s.isleaf,
+                        type: $s.id,
+                        num: "",
+                        ext1: $s.url,
+                        deep: 1,
+                        sId: $s.id
+                    })
+                    list[i]["children"] = []
+                    for (var j = 0; j < $s.children.length; j++) {
+                        var $c = $s.children[j];
+                        list[i].children.push({
+                            id: $c.id,
+                            name: $c.name,
+                            isHadSub: $c.isleaf,
+                            type: $c.id,
+                            num: "",
+                            ext1: $c.url,
+                            deep: 2,
+                            sId: $c.id
+                        })
+                    }
+
+                }
+                addSideData(list)
+            }
+            else if (result.code == 404) {
+                addSideData("")
+            }
+            else {
+                errorMsg(result.message)
+            }
+        }, this)
     }
 
     _closeSidePage() {
@@ -57,7 +91,7 @@ class DataPrivilegesSideMenu extends React.Component {
         }
 
         if (additem.length > 0) {
-            
+
             TUI.platform.post("/menustaffs", {
                 "loginUid": cUserId,
                 "menustaffs": additem.join(",")
@@ -84,7 +118,7 @@ class DataPrivilegesSideMenu extends React.Component {
             let d = _data[index]
 
             if (d.id == id) {
-                TUI.platform.get("/menu/tree/" + id, function (result) {
+                TUI.platform.get("/menu/qxtree/" + id, function (result) {
                     if (result.code == 0) {
                         let children = []
                         let _deep = parseInt(deep) + 1
@@ -111,9 +145,8 @@ class DataPrivilegesSideMenu extends React.Component {
 }
 
 export default TUI._connect({
-    data: "sideList.data",
+    data: "dataPrivileges.sideList",
     sdata: "sideList.sdata",
     userId: "publicInfo.userInfo.id",
-    hasVerticalScroll: "orgnizationManage.hasVerticalScroll",
     cUserId: "publicInfo.sidePageInfo.gateWay"
 }, DataPrivilegesSideMenu)

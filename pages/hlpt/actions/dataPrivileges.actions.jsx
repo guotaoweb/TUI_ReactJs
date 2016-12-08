@@ -30,6 +30,13 @@ export function deleteDataPrivileges(data){
     }
 }
 
+export function addSideData(data){
+    return {
+        type:"ADD_SIDE_DATA",
+        data
+    }
+}
+
 export function addSelectedData(data){
     return {
         type:"ADD_SELECTED_DATAPRIVILEGES_DATA",

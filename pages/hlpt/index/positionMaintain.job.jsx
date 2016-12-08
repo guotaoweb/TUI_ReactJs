@@ -97,7 +97,7 @@ class PositionMaintainJob extends React.Component {
         let _pageSize = pageInfo["positionMaintainJobPager"] ? pageInfo["positionMaintainJobPager"].size : 10,
             _url = pageInfo.positionMaintainJobPager.url,
             rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
-        TUI.platform.get(rUrl.replace("{0}", pageInfo.positionMaintainJobPager.size * (index - 1)), function (result) {
+        TUI.platform.get(rUrl.replace("{0}", _pageSize * (index - 1)), function (result) {
             if (result.code == 0) {
                 addPositionMaintainJobs(result.data)
                 searchPositionMaintainJobs(eval(JSON.stringify(result.data)))

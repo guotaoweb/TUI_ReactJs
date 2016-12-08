@@ -22,7 +22,7 @@ class login extends React.Component {
                 <FormControls ctrl="input" placeholder="请输入用户账号" style={_inputStyle} />
                 <FormControls ctrl="input" placeholder="请输入用户密码" style={_inputStyle} />
                 <br />
-                <Btn txt="登陆" width="185" href={this._login.bind(this)} style={{
+                <Btn txt="登陆" width="180" href={this._login.bind(this)} style={{
                     display:"block",
                     fontSize:"20px",
                     textAlign:"center"

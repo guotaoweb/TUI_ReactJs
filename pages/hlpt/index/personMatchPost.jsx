@@ -449,7 +449,7 @@ class PersonMatchPost extends React.Component {
         let _pageSize = pageInfo["personMatchPostPager"] ? pageInfo["personMatchPostPager"].size : 10,
             _url = pageInfo.personMatchPostPager.url,
             rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
-        TUI.platform.get(rUrl.replace("{0}", pageInfo.personMatchPostPager.size * (index - 1)), function (result) {
+        TUI.platform.get(rUrl.replace("{0}", _pageSize * (index - 1)), function (result) {
             if (result.code == 0) {
                 addPersonMatchPost(result.data)
                 loadComplete()
