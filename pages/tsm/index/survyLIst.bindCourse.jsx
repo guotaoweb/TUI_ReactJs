@@ -4,7 +4,7 @@ import FormControls from "FormControls"
 import { closeSidePage } from "SidePage"
 
 
-class SurvyUnBindCourse extends React.Component {
+class SurvyBindCourse extends React.Component {
     render() {
         const {sidePageInfo, courseList} = this.props
 
@@ -46,7 +46,7 @@ class SurvyUnBindCourse extends React.Component {
         }
         else {
             _list.push(
-                <div style={{
+                <div key="voteBindClassesEmpty" style={{
                     width: "100%",
                     height: "40px",
                     lineHeight: "40px",
@@ -82,4 +82,4 @@ class SurvyUnBindCourse extends React.Component {
 export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
     courseList: "courseList.list"
-}, SurvyUnBindCourse)
+}, SurvyBindCourse)

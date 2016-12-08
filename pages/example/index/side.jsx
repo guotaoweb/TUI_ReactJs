@@ -1,6 +1,6 @@
 import Side from 'Side'
-
-
+import { browserHistory } from 'react-router'
+import {openLoading} from 'Loading'
 //图片
 import xnzz from "!url!./img/xnzz.png"
 import xnzzs from "!url!./img/xnzz-s.png"
@@ -99,6 +99,8 @@ class _Side extends React.Component {
             }]
         }]
         this.props.addSide(list)
+        browserHistory.push(Config.ROOTPATH + "table")
+        openLoading(1)
     }
 
     getImg(src) {

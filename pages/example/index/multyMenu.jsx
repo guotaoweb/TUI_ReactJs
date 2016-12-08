@@ -1,6 +1,7 @@
 import Content from "Content"
 import Btn from "Btn"
 import MultyMenu from "MultyMenu"
+import {openDialog} from "Dialog"
 
 class _MultyMenu extends React.Component {
     render() {
@@ -28,6 +29,10 @@ class _MultyMenu extends React.Component {
     clickMenu($m) {
         let $showTxt2 = ReactDOM.findDOMNode(this.refs.showTxt2)
         $showTxt2.innerHTML = $m.getAttribute("data-name")
+     
+        if($m.getAttribute("data-role")=="false"){
+            openDialog(this,"没有权限,请联系管理员")
+        }
     }
 
     addMenu(param) {
@@ -56,9 +61,10 @@ class _MultyMenu extends React.Component {
             ext1: "菜单一",
             children: [{
                 id: "11",
-                name: "项目一",
+                name: "项目一(无权限)",
                 deep: 2,
                 isHadSub: "1",
+                role:false,
                 ext1: "项目一"
             }, {
                     id: "12",
@@ -86,7 +92,7 @@ class _MultyMenu extends React.Component {
                 isHadSub: "0",
                 ext1: "菜单三"
             }]
-console.info(this.props)
+
         this.props.addMultyMenuData(multyMenuData)
     }
 }

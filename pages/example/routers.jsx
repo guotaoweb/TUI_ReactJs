@@ -24,13 +24,14 @@ import _Slide from './index/slide'
 import _Serach from './index/search'
 
 class Routers extends React.Component {
+    //
     render() {
         const {history} = this.props
         return (
             <Router history={history}>
                 <Route path={Config.ROOTPATH+"manage"} component={Login} />
                 <Route path={Config.ROOTPATH} component={Index}>
-                    <IndexRoute component={_Pager} />
+                    <IndexRoute component={_SidePage} />
                     <Route path={Config.ROOTPATH + "layout1"} component={Layout1} />
                     <Route path={Config.ROOTPATH + "layout2"} component={Layout2} />
                     <Route path={Config.ROOTPATH + "layout3"} component={Layout3} />

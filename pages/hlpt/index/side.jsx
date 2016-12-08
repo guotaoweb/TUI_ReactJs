@@ -1,6 +1,6 @@
 import Side from 'Side'
-import * as config from "config"
-
+import { browserHistory } from 'react-router'
+import {openLoading,closeLoading} from "Loading"
 //图片
 import other from "!url!./img/other.png" //虚拟组织
 import others from "!url!./img/other-s.png" //虚拟组织
@@ -17,53 +17,6 @@ class _Side extends React.Component {
     render() {
         const {data, sideStatus, userId} = this.props
 
-        // let list = [{
-        //   name: "组织管理",
-        //   url: "#",
-        //   icon: zzjg,
-        //   sicon: zzjgs,
-        //   sub: [{
-        //     name: "组织架构维护",
-        //     url: config.ROOTPATH + "orgnization"
-        //   }, {
-        //     name: "用户信息维护",
-        //     url: config.ROOTPATH + "userMaintain"
-        //   }]
-        // }, {
-        //   name: "职位管理",
-        //   url: "#",
-        //   icon: position,
-        //   sicon: positions,
-        //   sub: [{
-        //     name: "职位族维护",
-        //     url: config.ROOTPATH + "positionGroup"
-        //   }, {
-        //     name: "职位维护",
-        //     url: config.ROOTPATH + "positionMaintain"
-        //   }, {
-        //     name: "人职匹配",
-        //     url: config.ROOTPATH + "personMatchPost"
-        //   }]
-        // }, {
-        //   name: "权限管理",
-        //   url: "#",
-        //   icon: rote,
-        //   sicon: rotes,
-        //   sub: [{
-        //     name: "数据权限管理",
-        //     url: config.ROOTPATH + "dataPrivileges"
-        //   }]
-        // }, {
-        //   name: "其它",
-        //   url: "#",
-        //   icon: other,
-        //   sicon: others,
-        //   sub: [{
-        //     name: "虚拟组织管理",
-        //     url: config.ROOTPATH + "vteam"
-        //   }]
-        // }]
-
         let list = []
 
         for (let i = 0; i < data.length; i++) {
@@ -76,7 +29,7 @@ class _Side extends React.Component {
                     $s.push({
                         id: $c.id,
                         name: $c.name,
-                        url: config.ROOTPATH + $c.ext1
+                        url: Config.ROOTPATH + $c.ext1
                     })
                 }
             }
@@ -135,9 +88,11 @@ class _Side extends React.Component {
 
     componentDidMount() {
         const {addSide, errorMsg} = this.props
-        TUI.platform.get("/menu/tree", function(result) {
+        openLoading(1)
+        TUI.platform.get("/menu/tree", function (result) {
             if (result.code == 0) {
-                let list = []
+                let list = [],
+                    url = ""
                 for (var i = 0; i < result.data.length; i++) {
                     var $s = result.data[i];
                     list.push({
@@ -163,8 +118,12 @@ class _Side extends React.Component {
                             deep: 2,
                             sId: $c.id
                         })
-
+                        if (!url) {
+                            url = $c.url
+                        }
                     }
+                    browserHistory.push(Config.ROOTPATH + url)
+                    closeLoading()
                 }
 
 

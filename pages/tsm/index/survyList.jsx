@@ -18,16 +18,23 @@ class SurvyList extends React.Component {
             errorMsg,
             sidePageInfo,
             pageInfo,
-            loadCourseList
+            loadCourseList,
+            updateEditInfo
         } = this.props
         let _this = this
         let tblContent = {
             "thead": { "name1": "序号", "name2": "名称", "name3": "描述", "name4": "创建时间", "name5": "操作" },
             "tbody": []
         }
+
+        let _editSurvy = []
+        if(sidePageInfo.status=="survyEdit"){
+            _editSurvy.push(<EditSurvy key="editSurvy" />)
+        }
+
+
         for (var i = 0; i < survyList.length; i++) {
             let _d = survyList[i]
-
             tblContent.tbody.push({
                 "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                 "value2": _d.Name,
@@ -37,24 +44,26 @@ class SurvyList extends React.Component {
                     "name": "编辑",
                     "fn": function () {
                         openContentLoading()
-                        TUI.platform.get("/Vote/" + _d.Id, function (result) {
+                        TUI.platform.get("/Survy/" + _d.Id, function (result) {
                             if (result.code == 0) {
                                 var _d = result.datas[0]
                                 updateEditInfo({
-                                    infoName: "editSurvy",
+                                    infoName: "survyInfo",
                                     Id: _d.Id,
                                     Name: _d.Name,
                                     Desp: _d.Desp
                                 })
-                                openSidePage(_this, {
-                                    id: "survyEdit",
-                                    status: "editSurvy"
-                                })
+                            }
+                            else if(result.code==1){
+                                
                             }
                             else {
                                 errorMsg(Config.ERROR_INFO[result.code]);
                             }
-
+                            openSidePage(_this, {
+                                id: "survyEdit",
+                                status: "survyEdit"
+                            })
                             closeContentLoading()
                         })
                     }
@@ -136,7 +145,7 @@ class SurvyList extends React.Component {
                 </Content>
                 <SidePage id="survyEdit">
                     <div>
-                        <EditSurvy key="editSurvy" />
+                        {_editSurvy}
                     </div>
                 </SidePage>
                 <SidePage
@@ -150,7 +159,7 @@ class SurvyList extends React.Component {
                     <div><SurvyUnBindCourse key="survyUnBindCourse" /></div>
                 </SidePage>
                 <SidePage id="bindCourse" title="解绑科目">
-                    <div><SurvyBindCourse key="bindCourse" /></div>
+                    <div><SurvyBindCourse key="survyBindCourse" /></div>
                 </SidePage>
             </div>
         )

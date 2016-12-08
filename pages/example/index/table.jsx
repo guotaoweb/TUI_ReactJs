@@ -4,6 +4,7 @@ import Pager from "Pager"
 import { openDialog } from "Dialog"
 import SidePage, { openSidePage } from "SidePage"
 import Btn from "Btn"
+import { closeLoading } from "Loading"
 
 class TablePage extends React.Component {
     render() {
@@ -99,6 +100,11 @@ class TablePage extends React.Component {
         }, {
             name: "这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,这是一个超级超级长的问题,"
         }])
+
+
+        setTimeout(function(){
+            closeLoading()
+        },1000)
     }
 }
 

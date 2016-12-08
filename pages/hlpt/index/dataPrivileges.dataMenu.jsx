@@ -4,6 +4,8 @@ import MultyMenu from "MultyMenu"
 
 import singleLeft from "!url!./img/singleLeft.png"
 
+import uncheck from "!url!../../../components/MultyMenu/img/uncheck.png"
+
 class DataPrivilegesDataMenu extends React.Component {
     render() {
         const {odata, osdata, updateOData, hasVerticalScroll} = this.props
@@ -39,6 +41,16 @@ class DataPrivilegesDataMenu extends React.Component {
         const {clearOSData} = this.props
         clearOSData()
         closeSidePage()
+        let $checkbox = document.getElementsByClassName("menu_checkbox")
+     
+        for (let index = 0; index < $checkbox.length; index++) {
+            let c = $checkbox[index];
+            if (c.getAttribute("data-status") == "check") {
+                c.setAttribute("src",uncheck)
+                c.setAttribute("data-status","uncheck")
+            }
+
+        }
     }
 
     saveOrgnizationSelected() {
@@ -53,7 +65,7 @@ class DataPrivilegesDataMenu extends React.Component {
             if (c.getAttribute("data-status") == "check") {
                 let mid = c.getAttribute("data-mid")
                 let mtype = c.getAttribute("data-mtype")
-                additem.push(mtype)
+                additem.push(mid)
             }
 
         }
@@ -95,13 +107,14 @@ class DataPrivilegesDataMenu extends React.Component {
                             children.push({
                                 id: $s.id,
                                 name: $s.name,
-                                type: $s.unitCode,
                                 isHadSub: $s.isleaf,
                                 ext1: $s.unitLevel,
                                 deep: _deep,
-                                sId:$s.unitCode
+                                sId:$s.id
                             })
                         }
+                        //type: $s.unitCode,
+                        //sId:$s.unitCode
                         d.children = children
 
                         loadComplete()

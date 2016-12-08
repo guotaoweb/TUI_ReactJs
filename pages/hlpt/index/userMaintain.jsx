@@ -33,8 +33,10 @@ class UserMaintain extends React.Component {
         }
         for (var i = 0; i < data.length; i++) {
             let _d = data[i]
+            let _index = pageInfo.userMaintainPager ? pageInfo.userMaintainPager.index : 1
+            let _size = pageInfo.userMaintainPager ? pageInfo.userMaintainPager.size : 0
             tblContent.tbody.push({
-                "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
+                "value1": (_index - 1) * _size + (i + 1),
                 "value2": _d.cnName,
                 "value3": _d.loginUid,
                 "value4": _d.unitName,
@@ -468,7 +470,7 @@ class UserMaintain extends React.Component {
                 id: "userMaintainPager",
                 index: index,
                 size: _pageSize,
-                sum: pageInfo.userMaintainPager?pageInfo.userMaintainPager.sum:0,
+                sum: pageInfo.userMaintainPager ? pageInfo.userMaintainPager.sum : 0,
                 url: rUrl
             })
         })

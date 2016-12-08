@@ -142,7 +142,7 @@ class DataPrivileges extends React.Component {
         let {searchInfo, addDataPrivileges, updatePageInfo, errorMsg, pageInfo} = this.props
 
         let _pageSize = pageInfo["dataPrivilegesPager"] ? pageInfo["dataPrivilegesPager"].size : 10
-        val = val ? "/staffs/?from={0}&limit=10&loginName=" + val : "/staffs/?isData=1&from={0}&limit=" + _pageSize
+        val = val ? "/staffs/?loginName=" + val+"&from={0}&limit="+_pageSize : "/staffs/?isData=1&from={0}&limit=" + _pageSize
         TUI.platform.get(val.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 addDataPrivileges(result.data)
@@ -153,10 +153,12 @@ class DataPrivileges extends React.Component {
             else {
                 errorMsg(result.message)
             }
+
             updatePageInfo({
+                id:"dataPrivilegesPager",
                 index: 1,
                 size: _pageSize,
-                sum: result._page ? result._page.total : 1,
+                sum: result._page ? result._page.total : 0,
                 url: val
             })
         })
@@ -240,12 +242,12 @@ class DataPrivileges extends React.Component {
                     _d.push({
                         id: $d.id,
                         name: $d.name,
-                        type: $d.unitCode,
                         isHadSub: $d.isleaf,
                         deep: "1",
-                        sId: $d.unitCode
+                        sId: $d.id
                     })
                 }
+                //sId: $d.unitCode
                 updateOData(_d)
             }
             else {

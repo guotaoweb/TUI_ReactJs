@@ -19,8 +19,10 @@ class PositionMaintainRole extends React.Component {
         if (rolesData) {
             for (var i = 0; i < rolesData.length; i++) {
                 let _d = rolesData[i]
+                let _index = pageInfo.positionMaintainRolePager ? pageInfo.positionMaintainRolePager.index : 1
+                let _size = pageInfo.positionMaintainRolePager ? pageInfo.positionMaintainRolePager.size : 0
                 tblContent.tbody.push({
-                    "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
+                    "value1": (_index - 1) * _size + (i + 1),
                     "value2": _d.roleName,
                     "value3": _d.jobNames,
                     "fns": [{

@@ -1,5 +1,7 @@
 import '!style!css!postcss!sass!./style.scss'
 
+import close from "!url!./img/close.png"
+
 class Dialog extends React.Component {
   render() {
     const {txt, type} = this.props
@@ -41,6 +43,7 @@ class Dialog extends React.Component {
           txtObject.push(<div key={"dialog-type3" + i} onClick={this.dialogListFn.bind(this, $e.fn)} className="dialogList"><a href="#">{$e.name}</a></div>)
         }
       }
+      txtObject.push(<b className="t-closeDialog" onClick={this.closeDialog.bind(this)}><img src={close} /></b>) 
     }
     else {
       txtObject.push(<span key="dialog-typ1">{txt}</span>)
@@ -134,12 +137,6 @@ export function openDialog(_this, txt, fn) {
     $coverbg.style.display = "block"
     $coverbg.style.zIndex = "9999"
     $dialog.style["transform"] = "scale(1)"
-    // let _event = function () {
-    //   console.info(Math.random())
-    //   //if (fn) { fn() }
-    //   let d = new Dialog()
-    //   d.closeDialog()
-    // }
 
     if ($dialogOk) {
       _EVENT_FN = fn

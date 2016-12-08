@@ -31,8 +31,10 @@ class PersonMatchPostEdit extends React.Component {
         }
         for (var i = 0; i < roleData.length; i++) {
             let _d = roleData[i]
+            let _index = pageInfo.personMatchPostEditPager ? pageInfo.personMatchPostEditPager.index : 1
+            let _size = pageInfo.personMatchPostEditPager ? pageInfo.personMatchPostEditPager.size : 0
             tblContent.tbody.push({
-                "value1": (i + 1),
+                "value1": (_index - 1) * _size + (i + 1),
                 "value2": _d.cnName,
                 "value3": _d.loginUid,
                 "value4": _d.roleName,
@@ -41,8 +43,8 @@ class PersonMatchPostEdit extends React.Component {
                     "name": "设置角色",
                     "fn": function () {
                         openContentLoading()
-                        let url = "/roles?positionId=" + _d.positionId+"&from={0}&limit=10"
-                        TUI.platform.get(url.replace("{0}","0"), function (result) {
+                        let url = "/roles?positionId=" + _d.positionId + "&from={0}&limit=10"
+                        TUI.platform.get(url.replace("{0}", "0"), function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
                                 addPersonMatchPostSetRoleData(_data)

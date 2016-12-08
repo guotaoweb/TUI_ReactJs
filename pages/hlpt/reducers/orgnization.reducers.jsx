@@ -44,6 +44,8 @@ export default function orgnizationReducers(state = initState, action) {
                 return Object.assign({}, state, { osdata: [] })
             }
         case "CLEAR_OSDATA":
+            let clearData = []
+            Object.assign({}, state, { odata: "" })
             return Object.assign({}, state, { osdata: "" })
         case "UPDATE_ODATA":
             return Object.assign({}, state, { odata: eval(JSON.stringify(action.data ))})

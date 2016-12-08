@@ -43,7 +43,7 @@ class SurvyProblem extends React.Component {
             _survyProblem.push(
                 <div key={"survyProblem_" + i}>
                     <span style={{ float: "left", marginTop: "5px", marginRight: "10px" }}>{i + 1}、</span>
-                    <div style={{ float: "left", marginTop: "5px", marginLeft: "-15px" }}>{_editInfo ? _editInfo.value : "NULL"}</div>
+                    <div style={{ float: "left", marginTop: "5px", marginLeft: "-15px" }}>{_editInfo ? _editInfo.Name : "NULL"}</div>
                     <br className="clear" />
                     <SurvyOptions survyOptionsData={$s.Datas} i={i} action={action} type={$s.Type} parentId={$s.Id} />
                 </div>
@@ -75,7 +75,7 @@ class SurvyOptions extends React.Component {
                     _editInfo = action.props.editInfo["survyOptionInfo_" + $o.Id],
                     _type = this.props.type
                 if (_type != "textarea") {
-                    let _val = _editInfo ? this.NumSwitchChar(j + 1) + "、" + _editInfo.value : "NULL"
+                    let _val = _editInfo ? this.NumSwitchChar(j + 1) + "、" + _editInfo.Name : "NULL"
                     _options.push(<FormControls key={"options_type" + j} ctrl={_type} txt={_val} />)
                 }
                 else {

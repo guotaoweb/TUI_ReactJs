@@ -95,7 +95,7 @@ class SidePage extends React.Component {
         let _scrollWrapper = this.scrollAreaSidePageComponent.wrapper
         let _scrollContent = this.scrollAreaSidePageComponent.content
         _scrollWrapper.style.height = ($obj.allHeight) + "px"
-       // _scrollContent.style.height = ($obj.allHeight) + "px"
+        // _scrollContent.style.height = ($obj.allHeight) + "px"
         if (this.scrollAreaSidePageComponent) {
             this.scrollAreaSidePageComponent.scrollArea.refresh()
         }
@@ -172,7 +172,7 @@ export default TUI._connect({
 
 export function openSidePage(_this, params) {
     _this.props.updateSidePageInfo({ status: params.status, width: params.width, gateWay: params.gateWay, type: params.type, id: params.id })
-    setTimeout(function () {
+    setTimeout(function() {
         let $sidepage = document.querySelector(".t-sidepage")
         let $sidepagemin = document.querySelector(".t-sidepage_min")
         if (params.id) {
@@ -209,6 +209,14 @@ export function openSidePage(_this, params) {
                 $sidepage.style["transition"] = "all 300ms ease"
                 $sidepage.style.right = "0px"
             }
+
+            //背景颜色
+            if ($sidepage.getElementsByClassName("t-content-loading").length > 0) {
+                $sidepage.style.backgroundColor = "#F6F7F9"
+                if ($sidepage.getElementsByClassName("t-content")[0]) {
+                    $sidepage.getElementsByClassName("t-content")[0].style.width = "98%"
+                }
+            }
         }
     }, 0)
 }
@@ -226,6 +234,7 @@ export function closeSidePage(params) {
         sidepage.style.right = "-2000px"
         sidepagemin.style["transition"] = "left 200ms ease"
         sidepagemin.style.left = "-2000px"
+        sidepage.style.backgroundColor = "white"
     }
 }
 
@@ -246,7 +255,7 @@ export function openSidePageLoading(_this, params) {
 }
 
 export function closeSidePageLoading(_this, params) {
-    setTimeout(function () {
+    setTimeout(function() {
         let $sidepage = document.querySelector(".t-sidepage")
         let $sidepagemin = document.querySelector(".t-sidepage_min")
         if (params.id) {
@@ -259,7 +268,7 @@ export function closeSidePageLoading(_this, params) {
         let sidepage = $sidepage.querySelector(".t-sidePageCover")
         sidepage.style["transition"] = "opacity 200ms ease"
         sidepage.style.opacity = "0"
-        setTimeout(function () {
+        setTimeout(function() {
             sidepage.style.display = "none"
         }, 201)
     }, 200)

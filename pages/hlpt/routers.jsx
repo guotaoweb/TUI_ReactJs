@@ -22,7 +22,7 @@ class Routers extends React.Component {
         else {
             _route =
                 <Route path={config.ROOTPATH} component={Index}>
-                    <IndexRoute component={Orgnization} /> 
+                    
                     <Route path={config.ROOTPATH + "vteam"} component={VTeamList} />
                     <Route path={config.ROOTPATH + "manage/:id"} component={Manage} />
                     <Route path={config.ROOTPATH + "orgnization"} component={Orgnization} />
@@ -43,3 +43,4 @@ class Routers extends React.Component {
 }
 
 export default Routers
+//<IndexRoute component={Orgnization} /> 

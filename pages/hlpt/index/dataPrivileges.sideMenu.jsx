@@ -57,7 +57,7 @@ class DataPrivilegesSideMenu extends React.Component {
         }
 
         if (additem.length > 0) {
-
+            
             TUI.platform.post("/menustaffs", {
                 "loginUid": cUserId,
                 "menustaffs": additem.join(",")

@@ -20,11 +20,11 @@ class PositionMaintain extends React.Component {
 
     render() {
         const {
-            errorMsg, 
-            odata, 
-            pageInfo, 
-            sidePageStatus, 
-            data, 
+            errorMsg,
+            odata,
+            pageInfo,
+            sidePageStatus,
+            data,
             sidePageInfo,
             updatePageInfo
         } = this.props
@@ -36,8 +36,10 @@ class PositionMaintain extends React.Component {
 
         for (var i = 0; i < data.length; i++) {
             let _d = data[i]
+            let _index = pageInfo.positionMaintainPager ? pageInfo.positionMaintainPager.index : 1
+            let _size = pageInfo.positionMaintainPager ? pageInfo.positionMaintainPager.size : 0
             tblContent.tbody.push({
-                "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
+                "value1": (_index - 1) * _size + (i + 1),
                 "value2": _d.postId,
                 "value3": _d.positionName,
                 "value4": _d.kindName,
@@ -374,7 +376,7 @@ class PositionMaintain extends React.Component {
                 sum: result._page ? result._page.total : 0,
                 url: url
             })
-  
+
             //更新搜索信息
             updateSearchInfo({
                 key: id,

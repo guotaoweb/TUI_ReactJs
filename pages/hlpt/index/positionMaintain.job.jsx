@@ -10,7 +10,7 @@ import back from "!url!./img/singleLeft.png"
 
 class PositionMaintainJob extends React.Component {
     render() {
-        const {jobsData, pageInfo, errorMsg,updatePageInfo} = this.props
+        const {jobsData, pageInfo, errorMsg, updatePageInfo} = this.props
 
         let _this = this
         let tblContent = {
@@ -20,8 +20,10 @@ class PositionMaintainJob extends React.Component {
         if (jobsData) {
             for (var i = 0; i < jobsData.length; i++) {
                 let _d = jobsData[i]
+                let _index = pageInfo.positionMaintainJobPager ? pageInfo.positionMaintainJobPager.index : 1
+                let _size = pageInfo.positionMaintainJobPager ? pageInfo.positionMaintainJobPager.size : 0
                 tblContent.tbody.push({
-                    "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
+                    "value1": (_index - 1) * _size + (i + 1),
                     "value2": _d.jobName,
                     "fns": [{
                         "name": "编辑",

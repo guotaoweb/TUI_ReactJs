@@ -36,8 +36,10 @@ class Orgnization extends React.Component {
         }
         for (var i = 0; i < subList.length; i++) {
             let _d = subList[i]
+            let _index = pageInfo.orgnizationPager?pageInfo.orgnizationPager.index:1
+            let _size = pageInfo.orgnizationPager?pageInfo.orgnizationPager.size:0
             tblContent.tbody.push({
-                "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
+                "value1": (_index - 1) * _size + (i + 1),
                 "value2": _d.unitCode,
                 "value3": _d.unitName,
                 "value4": _d.sort,

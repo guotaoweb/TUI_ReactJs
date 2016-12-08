@@ -3,7 +3,7 @@ import Btn from "Btn"
 import FormControls from "FormControls"
 import { closeSidePage } from "SidePage"
 
-class SurvyBindCourse extends React.Component {
+class SurvyUnBindCourse extends React.Component {
     render() {
         const {sidePageInfo, courseList} = this.props
 
@@ -36,7 +36,7 @@ class SurvyBindCourse extends React.Component {
             for (let i = 0; i < courseList.length; i++) {
                 let $c = courseList[i]
                 _list.push(
-                    <div key={"voteBindClasses" + i} style={listStyle}>
+                    <div key={"voteUnBindClasses" + i} style={listStyle}>
                         <FormControls key={"fc-votelist-" + i} id={$c.Id} ctrl="checkbox" txt={$c.Name} />
                     </div>
                 )
@@ -44,7 +44,7 @@ class SurvyBindCourse extends React.Component {
         }
         else {
             _list.push(
-                <div style={{
+                <div key="voteUnBindClassesEmpty" style={{
                     width: "100%",
                     height: "40px",
                     lineHeight: "40px",
@@ -68,4 +68,4 @@ class SurvyBindCourse extends React.Component {
 export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
     courseList: "courseList.list"
-}, SurvyBindCourse)
+}, SurvyUnBindCourse)

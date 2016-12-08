@@ -40,8 +40,10 @@ class PersonMatchPost extends React.Component {
         }
         for (var i = 0; i < data.length; i++) {
             let _d = data[i]
+            let _index = pageInfo.personMatchPostPager ? pageInfo.personMatchPostPager.index : 1
+            let _size = pageInfo.personMatchPostPager ? pageInfo.personMatchPostPager.size : 0
             tblContent.tbody.push({
-                "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
+                "value1": (_index - 1) * _size + (i + 1),
                 "value2": _d.positionName,
                 "value3": _d.sumStaff,
                 "value4": _d.staffing ? _d.staffing : 0,
@@ -153,7 +155,7 @@ class PersonMatchPost extends React.Component {
     _searchPersonMachPost(val) {
         let {errormsg, searchInfo, updatePageInfo, addPersonMatchPost} = this.props
         let _pageSize = pageInfo["personMatchPostPager"] ? pageInfo["personMatchPostPager"].size : 10
-        let _url = "/positions/?unitId=" + searchInfo.key.unitId + "&positionName=" + val + "&from={0}&limit="+_pageSize
+        let _url = "/positions/?unitId=" + searchInfo.key.unitId + "&positionName=" + val + "&from={0}&limit=" + _pageSize
         TUI.platform.get(_url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 let _data = result.data
@@ -285,10 +287,10 @@ class PersonMatchPost extends React.Component {
     }
 
     loadPosition(id) {
-        const {addPersonMatchPost, updatePageInfo, clearPageInfo, updateSearchInfo,pageInfo} = this.props
+        const {addPersonMatchPost, updatePageInfo, clearPageInfo, updateSearchInfo, pageInfo} = this.props
         clearPageInfo()
         let _pageSize = pageInfo["personMatchPostPager"] ? pageInfo["personMatchPostPager"].size : 10
-        let url = id ? "/positions?unitId=" + id + "&from={0}&limit="+_pageSize : "/positions?unitCode=0&from={0}&limit="+_pageSize
+        let url = id ? "/positions?unitId=" + id + "&from={0}&limit=" + _pageSize : "/positions?unitCode=0&from={0}&limit=" + _pageSize
         TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addPersonMatchPost(result.data)
@@ -456,7 +458,7 @@ class PersonMatchPost extends React.Component {
                 addPersonMatchPost([])
             }
             updatePageInfo({
-                id:"personMatchPostPager",
+                id: "personMatchPostPager",
                 index: index,
                 size: _pageSize,
                 sum: result._page ? result._page.total : 0,

@@ -76,9 +76,9 @@ class Pager extends React.Component {
 
             <div>
                 <div className="t-pager" style={this.props.style}>
-                    <span style={{ display: (pageSum == 1 ? "none" : "inline") }}>
+                    <span style={{margin:"5px", display: (pageSum == 1 ? "none" : "inline-block") }}>
                         显示数:&nbsp;
-                        <select onChange={this.pagerSizeChange.bind(this)}>
+                        <select style={{color:"#999"}} onChange={this.pagerSizeChange.bind(this)}>
                             <option>10</option>
                             <option>20</option>
                             <option>30</option>
@@ -86,7 +86,7 @@ class Pager extends React.Component {
                             <option>50</option>
                         </select>&nbsp;&nbsp;&nbsp;
                     </span>
-                    <span style={{ display: (pageSum == 1 ? "none" : "inline") }}>总数量: {pageSum} </span>
+                    <span style={{ display: (pageSum == 1 ? "none" : "inline-block") }}>总数量: {pageSum} </span>
                     {loadStatusImg}
                     <ul style={{ display: (pagerLength == 1 ? "none" : "block") }}>
                         <li className='first' onClick={this.clickFirst.bind(this)}><a href='javascript:void(0);'><img src={first} /></a></li>
@@ -100,8 +100,8 @@ class Pager extends React.Component {
     }
 
     pagerSizeChange(e) {
-        const {fn,updatePageInfo,pageLoadComplete} = this.props
-
+        const {fn,updatePageInfo,pageLoadComplete,pageLoading} = this.props
+        
         let _param = {
             size: e.currentTarget.value
         }
@@ -110,7 +110,7 @@ class Pager extends React.Component {
             _param["id"] = _id
         }
         updatePageInfo(_param)
-
+        pageLoading()
         fn(1,pageLoadComplete)
     }
 

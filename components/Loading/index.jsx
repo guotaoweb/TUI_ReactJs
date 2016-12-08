@@ -17,16 +17,20 @@ class Loading extends React.Component {
 
 export default Loading
 
-export function openLoading() {
+export function openLoading(op) {
   let sidepage = document.querySelector(".t-loading")
   sidepage.style["transition"] = "opacity 200ms ease"
   sidepage.style.opacity = "1"
   sidepage.style.display = "block"
+  if (op == 1) {
+    sidepage.style.backgroundColor = "#999"
+  }
 }
 
 export function closeLoading() {
   setTimeout(function () {
     let sidepage = document.querySelector(".t-loading")
+    sidepage.style.backgroundColor = "rgba(0,0,0,0.6)"
     sidepage.style["transition"] = "opacity 200ms ease"
     sidepage.style.opacity = "0"
     setTimeout(function () {

@@ -8,6 +8,7 @@ export const IMGPATH = "http://tam.hngytobacco.com/service/fileService/showPic?f
 export const ANIMATE_TIME = 50000
 //异常信息
 export const ERROR_INFO = {
+    1002:"参数错误",
     1001:"班级升级失败,已经达到最大级别",
     1000:"年级级别已存在",
     999:"系统异常",

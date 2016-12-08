@@ -55,10 +55,7 @@ class _Pager extends Component {
                             href={this._openSidePage.bind(this)}
                             style={{ marginTop: "20px" }} />
                     </div> <br /><br />
-                    <div className="formControl-btn" style={{ marginLeft: "10px" }}>
-                        总数量:{this.props.pageInfo.index.sum}
-                    </div>
-                   
+                    <br /><br />
                 </Content>
                 <SidePage id="pager-sidePage" title="多Pager">
                     <div>
@@ -107,7 +104,7 @@ class _Pager extends Component {
             id:"tblPager",
             index: 1,
             size: 5,
-            sum: 5,
+            sum: 15,
             url: "#"
         })
 

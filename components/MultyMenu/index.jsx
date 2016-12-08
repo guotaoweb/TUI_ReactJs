@@ -114,13 +114,13 @@ class MultyMenu extends React.Component {
 
         initData.push(
           <li key={d.id} className="t-multyMenu_list_li">
-            <div className="clickmenu t-multyMenu_list_main" data-num={d.num} data-name={d.name} data-id={d.id} data-type={d.type} ref="mains1" onClick={clickFn.bind(this)} style={{ color: color == "dark" ? "black" : "white" }}>
+            <div className="clickmenu t-multyMenu_list_main" data-num={d.num} data-name={d.name} data-id={d.id} data-type={d.type} data-role={d.role} ref="mains1" onClick={clickFn.bind(this)} style={{ color: color == "dark" ? "black" : "white" }}>
               <a href="javascript:void(0);" title={d.name + num} style={{ color: color == "dark" ? "black" : "white" }}>{_more}{d.name}{num}{_moreBtn}</a>
             </div>
             <ul className="sub">
               {
                 d.children ? d.children.map(child => (
-                  <TreeNode type={type} lastdeep={lastdeep} key={child.id} data={child} deep={d.deep} mid={child.id} mname={child.name} ext1={child.ext1} mtype={child.type} id={d.id + "-" + child.id} color={color} editMenu={editMenu} addMenu={addMenu} delMenu={delMenu} clickMenu={clickMenu} openSubMenu={openSubMenu} isHadSub={child.isHadSub} btns={child.btns} sId={child.sId} />
+                  <TreeNode type={type} lastdeep={lastdeep} key={child.id} data={child} deep={d.deep} mid={child.id} mname={child.name} role={child.role} ext1={child.ext1} mtype={child.type} id={d.id + "-" + child.id} color={color} editMenu={editMenu} addMenu={addMenu} delMenu={delMenu} clickMenu={clickMenu} openSubMenu={openSubMenu} isHadSub={child.isHadSub} btns={child.btns} sId={child.sId} />
                 )) : null
               }
             </ul>
@@ -164,11 +164,11 @@ export default MultyMenu
 
 class TreeNode extends React.Component {
   render() {
-    const {sId, btns, isHadSub, data, color, deep, id, type, lastdeep, mid, mname, mtype, ext1, addMenu, editMenu, delMenu, clickMenu, openSubMenu} = this.props
+    const {sId, btns, isHadSub, data, color, deep, id, type, lastdeep, mid, mname, mtype, ext1, addMenu, editMenu, delMenu, clickMenu, openSubMenu,role} = this.props
     let subTree = null
     if (data.children) {
       subTree = data.children.map(child =>
-        <TreeNode key={child.id} data={child} type={type} lastdeep={lastdeep} deep={child.deep} mid={child.id} mname={child.name} mtype={child.type} id={id + "-" + child.id} color={color} addMenu={addMenu} editMenu={editMenu} delMenu={delMenu} openSubMenu={openSubMenu} clickMenu={clickMenu} isHadSub={child.isHadSub} btns={child.btns} sId={child.sId} />
+        <TreeNode key={child.id} data={child} type={type} lastdeep={lastdeep} deep={child.deep} mid={child.id} mname={child.name} mtype={child.type} id={id + "-" + child.id} color={color} addMenu={addMenu} editMenu={editMenu} delMenu={delMenu} openSubMenu={openSubMenu} clickMenu={clickMenu} isHadSub={child.isHadSub} btns={child.btns} sId={child.sId} role={role} />
       )
     }
 
@@ -187,12 +187,12 @@ class TreeNode extends React.Component {
         </div>
       )
       if (type == "allcheck") {
-        more.push(<img className="menu_checkbox" key={"img2_" + id} src={uncheck} data-deep={deep} data-status="uncheck" data-mid={mid} data-id={id} data-mtype={mtype} data-ext1={ext1} data-sid={sId} onClick={isCheck.bind(this)} />)
+        more.push(<img className="menu_checkbox" key={"img2_" + id} src={uncheck} data-deep={deep} data-status="uncheck" data-mid={mid} data-id={id} data-mtype={mtype} data-ext1={ext1} data-sid={sId} data-role={role} onClick={isCheck.bind(this)} />)
       }
     }
     else {
       if (type == "allcheck" || type == "lastcheck") {
-        more.push(<img className="menu_checkbox" key={"img2_" + id} src={uncheck} data-deep={deep} data-status="uncheck" data-mid={mid} data-mtype={mtype} data-id={id} data-ext1={ext1} data-sid={sId} onClick={isCheck.bind(this)} />)
+        more.push(<img className="menu_checkbox" key={"img2_" + id} src={uncheck} data-deep={deep} data-status="uncheck" data-mid={mid} data-mtype={mtype} data-id={id} data-role={role} data-ext1={ext1} data-sid={sId} onClick={isCheck.bind(this)} />)
       }
     }
 
@@ -255,7 +255,7 @@ class TreeNode extends React.Component {
 
     return (
       <li key={data.id}>
-        <div className={"clickmenu t-multyMenu_list_sub sub" + deep} data-num={data.num} data-id={data.id} data-name={data.name} data-type={data.type} data-deep={id} onClick={clickFn.bind(this)} style={{ color: color == "dark" ? "black" : "white" }}>
+        <div className={"clickmenu t-multyMenu_list_sub sub" + deep} data-num={data.num} data-id={data.id} data-name={data.name} data-type={data.type} data-deep={id} data-role={data.role} onClick={clickFn.bind(this)} style={{ color: color == "dark" ? "black" : "white" }}>
           <a href="javascript:void(0);" title={data.name + num} style={{ color: color == "dark" ? "black" : "white" }}>{more}{data.name}{num}{_moreBtn}</a>
         </div>
         <ul className="sub">
