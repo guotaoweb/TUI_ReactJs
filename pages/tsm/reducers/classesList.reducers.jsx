@@ -1,7 +1,8 @@
 import 'babel-polyfill'
 
 const initState = {
-    list: ""
+    list: "",
+    related:""
 }
 
 export default function classesListReducers(state = initState, action) {
@@ -84,6 +85,10 @@ export default function classesListReducers(state = initState, action) {
             }
             return Object.assign({}, state, {
                 list: eval(JSON.stringify(state.list))
+            })
+        case "ADD_CLASSES_RELATED":
+            return Object.assign({}, state, {
+                related: eval(JSON.stringify(action.data))
             })
         default:
             return state

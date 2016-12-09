@@ -50,6 +50,13 @@ export function upClassesLevel(data){
     } 
 }
 
+export function addClassesRelated(data){
+    return {
+        type:"ADD_CLASSES_RELATED",
+        data
+    } 
+}
+
 
 
 

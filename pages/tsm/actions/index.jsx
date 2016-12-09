@@ -7,6 +7,7 @@ import * as survyList from './survyList.actions'
 import * as voteList from './voteList.actions'
 import * as gradeList from './gradeList.actions'
 
+
 export default {
     ...teacherList,
     ...courseList,

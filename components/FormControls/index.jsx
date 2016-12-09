@@ -18,28 +18,107 @@ const onChange = (dateString, { dateMoment, timestamp }) => {
 
 class FormControls extends React.Component {
     render() {
-        const {ctrl, label, type, txt, labelWidth, data, value, onChangeFn, bind, selectFn} = this.props
+        const {
+            ctrl,
+            label,
+            labelTxt,
+            type,
+            txt,
+            labelWidth,
+            minWidth,
+            data,
+            value,
+            onChangeFn,
+            bind,
+            selectFn
+        } = this.props
         let bindElem
 
 
 
         if (ctrl == "input") {
-            bindElem = <CTRL_INPUT label={label} labelWidth={labelWidth} type={type} value={value} onFocus={this.props.onFocus} onBlur={this.props.onBlur} style={this.props.style} disabled={this.props.disabled} addFn={this.props.addEditInfo
-            } required={this.props.required} data={data} bind={bind} selectFn={selectFn} editFn={this.props.updateEditInfo} placeholder={this.props.placeholder} />
+            bindElem = <CTRL_INPUT
+                label={label}
+                labelWidth={labelWidth}
+                type={type}
+                value={value}
+                onFocus={this.props.onFocus}
+                onBlur={this.props.onBlur}
+                style={this.props.style}
+                disabled={this.props.disabled}
+                addFn={this.props.addEditInfo}
+                required={this.props.required}
+                data={data}
+                bind={bind}
+                selectFn={selectFn}
+                editFn={this.props.updateEditInfo}
+                placeholder={this.props.placeholder}
+                labelTxt={labelTxt}
+                minWidth={minWidth}
+                />
         }
         else if (ctrl == "textarea") {
-            bindElem = <CTRL_TEXTAREA label={label} labelWidth={labelWidth} value={value} tyle={this.props.style} onFocus={this.props.onFocus} onBlur={this.props.onBlur} style={this.props.style} required={this.props.required} addFn={this.props.addEditInfo
-            } required={this.props.required} data={data} bind={bind} />
+            bindElem = <CTRL_TEXTAREA
+                label={label}
+                labelWidth={labelWidth}
+                value={value}
+                tyle={this.props.style}
+                onFocus={this.props.onFocus}
+                onBlur={this.props.onBlur}
+                style={this.props.style}
+                required={this.props.required}
+                addFn={this.props.addEditInfo}
+                required={this.props.required}
+                data={data}
+                bind={bind}
+                labelTxt={labelTxt}
+                minWidth={minWidth}
+                />
         }
         else if (ctrl == "select") {
-            bindElem = <CTRL_SELECT label={label} labelWidth={labelWidth} value={value} options={this.props.options} style={this.props.style} required={this.props.required} addFn={this.props.addEditInfo
-            } data={data} onChangeFn={onChangeFn} bind={bind} />
+            bindElem = <CTRL_SELECT
+                label={label}
+                labelWidth={labelWidth}
+                value={value}
+                options={this.props.options}
+                style={this.props.style}
+                required={this.props.required}
+                addFn={this.props.addEditInfo}
+                data={data}
+                onChangeFn={onChangeFn}
+                bind={bind}
+                labelTxt={labelTxt}
+                minWidth={minWidth}
+                />
         }
         else if (ctrl == "radio") {
-            bindElem = <CTRL_RADIO label={label} labelWidth={labelWidth} txt={txt} style={this.props.style} disabled={this.props.disabled} groupName={this.props.groupName} selected={this.props.selected} value={this.props.value} />
+            bindElem = <CTRL_RADIO
+                label={label}
+                labelWidth={labelWidth}
+                txt={txt}
+                style={this.props.style}
+                disabled={this.props.disabled}
+                groupName={this.props.groupName}
+                selected={this.props.selected}
+                value={this.props.value}
+                labelTxt={labelTxt}
+                minWidth={minWidth}
+                />
         }
         else if (ctrl == "checkbox") {
-            bindElem = <CTRL_CHECKBOX label={label} labelWidth={labelWidth} txt={txt} style={this.props.style} disabled={this.props.disabled} selected={this.props.selected} value={this.props.value} fn={this.props.fn} id={this.props.id} />
+            bindElem = <CTRL_CHECKBOX
+                label={label}
+                labelWidth={labelWidth}
+                txt={txt}
+                style={this.props.style}
+                disabled={this.props.disabled}
+                selected={this.props.selected}
+                value={this.props.value}
+                fn={this.props.fn}
+                id={this.props.id}
+                labelTxt={labelTxt}
+                minWidth={minWidth}
+                />
         }
         else if (ctrl == "tip") {
             bindElem = <CTRL_TIP label={label} labelWidth={labelWidth} txt={txt} deleteFn={this.props.deleteFn} addFn={this.props.addFn} style={this.props.style} />
@@ -296,6 +375,7 @@ class CTRL_SELECT extends React.Component {
 
 class CTRL_RADIO extends React.Component {
     render() {
+        const {labelTxt, minWidth} = this.props
         let label
         if (this.props.label) {
             let _style = {
@@ -303,7 +383,10 @@ class CTRL_RADIO extends React.Component {
                 verticalAlign: "middle",
                 float: "left"
             }
-            label = <label style={_style}>{this.props.label}: </label>
+            if (minWidth) {
+                _style["minWidth"] = minWidth
+            }
+            label = <label style={_style}>{this.props.label}{labelTxt ? labelTxt : ":"} </label>
         }
 
         const {txt} = this.props
@@ -340,6 +423,7 @@ class CTRL_RADIO extends React.Component {
 
 class CTRL_CHECKBOX extends React.Component {
     render() {
+        const {labelTxt, minWidth} = this.props
         let label
         if (this.props.label) {
             let _style = {
@@ -347,7 +431,10 @@ class CTRL_CHECKBOX extends React.Component {
                 verticalAlign: "middle",
                 float: "left"
             }
-            label = <label style={_style}>{this.props.label}: </label>
+            if (minWidth) {
+                _style["minWidth"] = minWidth
+            }
+            label = <label style={_style}>{this.props.label}{labelTxt ? labelTxt : ":"} </label>
         }
         const {txt} = this.props
         return (
@@ -370,6 +457,8 @@ class CTRL_CHECKBOX extends React.Component {
 
 
         if ($elem.className == "t-c_checkbox") { return false }
+        console.info($elem.parentNode.getAttribute("data-status"))
+        console.info($elem.targetName)
         if ($elem.parentNode.getAttribute("data-status") == "selected") {
             $elem.parentNode.setAttribute("data-status", "unselect")
             $elem.setAttribute("src", unCheckbox)

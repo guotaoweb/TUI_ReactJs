@@ -1,6 +1,6 @@
 import { Router, Route, IndexRoute } from 'react-router' // 路由
 
-import Index from './manage/index'
+import Manage from './manage/index'
 
 import AdminList from './manage/adminList'
 import TeacherList from './manage/teacherList'
@@ -11,13 +11,17 @@ import ReportList from './manage/reportList'
 import VoteList from './manage/voteList'
 import Login from './manage/login'
 
+import Index from './index/index'
+
 class Routers extends React.Component {
     render() {
         const {history} = this.props
         return (
             <Router history={history}>
-                <Route path={Config.ROOTPATH} component={Login}>
-                    
+                <Route path={Config.ROOTPATH} component={Index} />
+                <Route path={Config.ROOTPATH + "login"} component={Login} />
+                <Route path={Config.ROOTPATH + "manage"} component={Manage}>
+
                     <Route path={Config.ROOTPATH + "teachers"} component={TeacherList} />
                     <Route path={Config.ROOTPATH + "courses"} component={CourseList} />
                     <Route path={Config.ROOTPATH + "admins"} component={AdminList} />
