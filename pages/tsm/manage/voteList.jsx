@@ -7,9 +7,7 @@ import { openDialog, closeDialog } from "Dialog"
 import Pager from "Pager"
 import { openLoading, closeLoading } from "Loading"
 import EditVote from "./voteList.edit"
-import VoteBindClasses from "./voteList.bindClasses"
-import VoteUnBindClasses from "./voteList.unBindClasses"
-
+import SelectSurvy from "./voteList.survyList"
 
 class VoteList extends React.Component {
     render() {
@@ -18,113 +16,88 @@ class VoteList extends React.Component {
             errorMsg,
             sidePageInfo,
             pageInfo,
-            addClassesList,
-            loadClassesList,
-            updateEditInfo,
+            addEditInfo,
             deleteVoteList,
             successMsg,
-            classesList,
-            pushBreadNav
+            pushBreadNav,
+            updateVoteList
         } = this.props
         let _this = this
         let tblContent = {
             "thead": {
                 "name1": "序号",
                 "name2": "名称",
-                "name3": "班级数",
-                "name4": "状态",
-                "name5": "创建时间",
-                "name6": "操作"
+                "name3": "已投班级数",
+                "name4": "类型",
+                "name5": "状态",
+                "name6": "创建时间",
+                "name7": "操作"
             },
             "tbody": []
         }
         for (var i = 0; i < voteList.length; i++) {
-            let _d = voteList[i]
-
+            let _d = voteList[i],
+                _isStartBtn = _d.IsStart == 0 ? "关闭" : "开启",
+                _type = _d.Type == 1 ? "科目类型" : "普通类型",
+                _isStart = _d.IsStart == 0 ? "开启" : "关闭"
             tblContent
                 .tbody
                 .push({
                     "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                     "value2": _d.Name,
                     "value3": _d.VotedNumber,
-                    "value4": _d.IsStart == 0
-                        ? "开启"
-                        : "关闭",
-                    "value5": _d.UpdateTime,
+                    "value4": _type,
+                    "value5": _isStart,
+                    "value6": _d.UpdateTime,
                     "fns": [
+                        {
+                            "name": _isStartBtn,
+                            fn: function () {
+                                openDialog(_this, "是否确定" + _isStartBtn + "此投票", function () {
+                                    let _action = _d.IsStart == 0 ? 1 : 0
+                                    TUI.platform.put("/IsStartVote/" + _d.Id+"?action="+_action,{}, function (result) {
+                                        if (result.code == 0) {
+                                            let jsonParam = {
+                                                Id: _d.Id,
+                                                IsStart:_action
+                                            }
+                                            updateVoteList(jsonParam)
+                                            successMsg("投票"+_isStartBtn+"成功")
+                                        } else {
+                                            errorMsg(Config.ERROR_INFO[result.code]);
+                                        }
+                                    })
+                                })
+                            }
+                        },
                         {
                             "name": "编辑",
                             "fn": function () {
                                 openContentLoading()
                                 TUI.platform.get("/Vote/" + _d.Id, function (result) {
                                     if (result.code == 0) {
-                                        var _d = result.datas[0]
-                                        updateEditInfo({
+                                        var _d = result.datas
+                                        addEditInfo({
                                             infoName: "voteInfo",
                                             Name: _d.Name,
                                             IsStart: _d.IsStart,
-                                            Id: _d.Id
+                                            Type: _d.Type,
+                                            Id: _d.Id,
+                                            voteRelated: _d.VoteRelated
                                         })
                                         openSidePage(_this, {
                                             id: "survyEdit",
-                                            status: "editVote"
+                                            status: "editVote",
+                                            gateWay: {
+                                                Id: _d.Id
+                                            }
                                         })
+                                        _this.addCourseList()
                                         pushBreadNav({ name: _d.Name })
+
                                     } else {
                                         errorMsg(Config.ERROR_INFO[result.code]);
                                     }
-
-                                    closeContentLoading()
-
-                                })
-                            }
-                        }, {
-                            "name": "绑定",
-                            "fn": function () {
-                                openContentLoading()
-                                TUI.platform.get("/ClassesInVote/" + _d.Id + "?status=unbind", function (result) {
-                                    if (result.code == 0) {
-                                        loadClassesList(result.datas)
-                                    }
-                                    else if (result.code == 1) {
-                                        loadClassesList([])
-                                    }
-                                    else {
-                                        errorMsg(Config.ERROR_INFO[result.code]);
-                                    }
-                                    openSidePage(_this, {
-                                        id: "unBindClasses",
-                                        status: "unBindClasses",
-                                        width: "400",
-                                        gateWay:{
-                                            Id:_d.Id
-                                        }
-                                    })
-                                    closeContentLoading()
-                                })
-                            }
-                        }, {
-                            "name": "解绑",
-                            "fn": function () {
-                                openContentLoading()
-                                TUI.platform.get("/ClassesInVote/" + _d.Id + "?status=bind", function (result) {
-                                    if (result.code == 0) {
-                                        loadClassesList(result.datas)
-                                    }
-                                    else if (result.code == 1) {
-                                        loadClassesList([])
-                                    }
-                                    else {
-                                        errorMsg(Config.ERROR_INFO[result.code]);
-                                    }
-                                    openSidePage(_this, {
-                                        id: "bindClasses",
-                                        status: "bindClasses",
-                                        width: "400",
-                                        gateWay:{
-                                            Id:_d.Id
-                                        }
-                                    })
                                     closeContentLoading()
                                 })
                             }
@@ -151,6 +124,13 @@ class VoteList extends React.Component {
                 })
         }
 
+        let _editPage = [],
+            _selectPage = []
+        if (sidePageInfo.status == "addVote" || sidePageInfo.status == "editVote" || sidePageInfo.status == "selectSurvy") {
+            _editPage.push(<EditVote key="survyedit" />)
+            _selectPage.push(<SelectSurvy key="selectSurvy" />)
+        }
+
         return (
             <div>
                 <Content
@@ -165,84 +145,96 @@ class VoteList extends React.Component {
                             .bind(this)} />
                 </Content>
                 <SidePage id="survyEdit">
-                    <EditVote key="survyedit" />
+                    <div>
+                        {_editPage}
+                    </div>
                 </SidePage>
-                <SidePage
-                    id="unBindClasses"
-                    title="绑定班级"
-                    addHref={this.bindAllClasses.bind(this)}
-                    addHrefTxt="一键绑定"
-                    editHref={this.bindClasses.bind(this)}
-                    editHrefTxt="绑定">
-                    <div><VoteUnBindClasses key="unBindClasses" /></div>
-                </SidePage>
-                <SidePage id="bindClasses" title="解绑班级">
-                    <div><VoteBindClasses key="bindClasses" /></div>
+                <SidePage id="selectSurvy" title="问卷列表" addHref={this.bindSurvy.bind(this)}>
+                    <div>
+                        {_selectPage}
+                    </div>
                 </SidePage>
             </div>
         )
     }
 
-    bindAllClasses() {
-        const {sidePageInfo, updateClassesBindVote, errorMsg, waiteMsg, successMsg} = this.props
-        let selected = [],
-            courseList = document.getElementsByClassName("t-c_checkbox"),
-            _this = this
-        for (var i = 0; i < courseList.length; i++) {
-            var $c = courseList[i];
-            selected.push({
-                VoteId: sidePageInfo.gateWay.Id,
-                ClassesId: $c.getAttribute("data-id")
-            })
-        }
-        _this._goback()
-        if (selected.length > 0) {
-            waiteMsg("数据提交中,请稍等...")
-            TUI.platform.post("/VoteBindClasses", selected, function (result) {
+    addCourseList() {
+        const {courseList, loadCourseList, errorMsg} = this.props
+        let _this = this
+        if (courseList) {
+            TUI.platform.get("/Course", function (result) {
                 if (result.code == 0) {
-                    updateClassesBindVote(selected)
-
-                    successMsg("保存成功")
+                    loadCourseList(result.datas)
                 }
-                else {
+                else if (result.code == 1) {
+                    loadCourseList([])
+                } else {
                     errorMsg(Config.ERROR_INFO[result.code]);
                 }
+                _this.updateEditVoteCourseInfo()
             })
         }
     }
 
-    bindClasses() {
-        const {sidePageInfo, updateClassesBindVote, errorMsg, waiteMsg, successMsg} = this.props
-        let selected = [],
-            courseList = document.getElementsByClassName("t-c_checkbox"),
-            _this = this
-        for (var i = 0; i < courseList.length; i++) {
-            var $c = courseList[i];
-            if ($c.getAttribute("data-status") == "selected") {
-                selected.push({
-                    VoteId: sidePageInfo.gateWay.Id,
-                    ClassesId: $c.getAttribute("data-id")
-                })
+    updateEditVoteCourseInfo() {
+        const {editInfo, updateEditInfo, courseList} = this.props
+        if (editInfo.voteInfo) {
+            let _param = { infoName: "voteInfo" },
+                isNew = false
+
+            for (let i = 0; i < courseList.length; i++) {
+                let $r = courseList[i]
+                if (editInfo.voteInfo.voteRelated) {
+                    isNew = true
+                    for (let j = 0; j < editInfo.voteInfo.voteRelated.length; j++) {
+                        let $e = editInfo.voteInfo.voteRelated[j];
+                        if ($r.Id == $e.CourseId) {
+                            _param["Survy" + $r.Id] = $e.Survy
+                            _param["VoteRelated" + $r.Id] = {
+                                VoteId: $e.VoteId,
+                                CourseId: $e.CourseId,
+                                SurvyId: $e.SurvyId
+                            }
+                        }
+                    }
+                }
+            }
+            if (isNew) {
+                //console.info(_param)
+                updateEditInfo(_param)
             }
         }
-        _this._goback()
-        if (selected.length > 0) {
-            waiteMsg("数据提交中,请稍等...")
-            TUI.platform.post("/VoteBindClasses", selected, function (result) {
-                if (result.code == 0) {
-                    updateClassesBindVote(selected)
-
-                    successMsg("保存成功")
-                }
-                else {
-                    errorMsg(Config.ERROR_INFO[result.code]);
-                }
-            })
-        }
-        else {
-            openDialog(this, "未选择任何班级")
-        }
     }
+
+    bindSurvy() {
+        const {sidePageInfo, updateEditInfo, editInfo} = this.props
+        let $radio = document.getElementsByClassName("t-c_radio")
+        let teacherId = []
+
+        for (var i = 0; i < $radio.length; i++) {
+            var $r = $radio[i];
+            if ($r.getAttribute("data-status") == "selected") {
+                let _info = {
+                    infoName: "voteInfo"
+                },
+                    _survyIndex = editInfo.voteInfo.SurvyIndex
+
+                _info["VoteRelated" + _survyIndex] = {
+                    CourseId: editInfo.voteInfo.CourseId,
+                    VoteId: editInfo.voteInfo.VoteId,
+                    SurvyId: $r.getAttribute("data-value")
+                }
+                _info["Survy" + _survyIndex] = $r.innerText
+                updateEditInfo(_info)
+            }
+        }
+
+        //console.info(this.props.editInfo)
+        closeSidePage({
+            id: "selectSurvy"
+        })
+    }
+
 
     pageFn(index) {
         const {pageInfo, updateVoteList, updatePageInfo} = this.props
@@ -286,9 +278,6 @@ class VoteList extends React.Component {
             width: ""
         })
 
-        //更新slide组件后,可以删除
-        //addEditInfo({ infoName: "voteInfo", IsStart: "是", IsStartindex: "0" })
-
         pushBreadNav({ name: "新增投票" })
     }
 
@@ -300,6 +289,8 @@ class VoteList extends React.Component {
 export default TUI._connect({
     voteList: "voteList.list",
     classesList: "classesList.list",
+    courseList: "courseList.list",
     sidePageInfo: "publicInfo.sidePageInfo",
-    pageInfo: "publicInfo.pageInfo"
+    pageInfo: "publicInfo.pageInfo",
+    editInfo: "formControlInfo.data"
 }, VoteList)

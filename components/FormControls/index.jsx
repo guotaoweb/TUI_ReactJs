@@ -121,15 +121,37 @@ class FormControls extends React.Component {
                 />
         }
         else if (ctrl == "tip") {
-            bindElem = <CTRL_TIP label={label} labelWidth={labelWidth} txt={txt} deleteFn={this.props.deleteFn} addFn={this.props.addFn} style={this.props.style} />
+            bindElem = <CTRL_TIP
+                label={label}
+                labelWidth={labelWidth}
+                txt={txt}
+                deleteFn={this.props.deleteFn}
+                addFn={this.props.addFn}
+                style={this.props.style} />
         }
         else if (ctrl == "datepicker") {
-            bindElem = <CTRL_DATE_PICKER label={label} labelWidth={labelWidth} value={value} style={this.props.style} addFn={this.props.addEditInfo
-            } required={this.props.required} data={data} bind={bind} />
+            bindElem = <CTRL_DATE_PICKER
+                label={label}
+                labelWidth={labelWidth}
+                value={value}
+                style={this.props.style}
+                addFn={this.props.addEditInfo}
+                required={this.props.required}
+                data={data}
+                bind={bind} />
         }
         else if (ctrl == "slide") {
-            bindElem = <CTRL_SLIDE label={label} labelWidth={labelWidth} value={value} style={this.props.style} addFn={this.props.addEditInfo
-            } options={this.props.options} data={data} bind={bind} editFn={this.props.updateEditInfo} selected={this.props.selected} />
+            bindElem = <CTRL_SLIDE
+                label={label}
+                labelWidth={labelWidth}
+                value={value}
+                style={this.props.style}
+                addFn={this.props.addEditInfo}
+                options={this.props.options}
+                data={data}
+                bind={bind}
+                editFn={this.props.updateEditInfo}
+                selected={this.props.selected} />
         }
 
         return (
@@ -594,6 +616,7 @@ class CTRL_SLIDE extends React.Component {
             label,
             labelWidth,
             type,
+            editFn,
             addFn,
             style,
             value,
@@ -643,7 +666,7 @@ class CTRL_SLIDE extends React.Component {
     }
 
     componentDidMount() {
-        const {value, addFn, data, options, selected} = this.props
+        const {value, addFn,editFn, data, options, selected} = this.props
         let _object = value.split(".")
         if (data[_object[0]]) {
             let _info = {
@@ -651,7 +674,7 @@ class CTRL_SLIDE extends React.Component {
             }
             _info[_object[1]] = selected ? selected : 0
             _info[_object[1] + "Name"] = options[selected ? selected : 0].name
-            editFn(_info)
+            if (editFn) { editFn(_info) }
         }
         else {
             let _info = {
@@ -660,7 +683,7 @@ class CTRL_SLIDE extends React.Component {
 
             _info[_object[1]] = selected ? selected : 0
             _info[_object[1] + "Name"] = options[selected ? selected : 0].name
-            addFn(_info)
+            if (addFn) { addFn(_info) }
         }
     }
 

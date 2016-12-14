@@ -49,7 +49,7 @@ class PositionMaintainEdit extends React.Component {
                     {userEditStatus}
                     <FormControls label="中文名" ctrl="input" value="userMaintainInfo.name" required="required" />
                     <FormControls label="员工号" ctrl="input" value="userMaintainInfo.empNumber" />
-                    <FormControls label="岗位编码" ctrl="input" value="userMaintainInfo.staffCode" />
+                    <FormControls label="内部编码" ctrl="input" value="userMaintainInfo.staffCode" />
                     <FormControls label="默认组织" ctrl="select" options={defaultUnit} value="userMaintainInfo.ext5" />
                     <FormControls label="员工类型" ctrl="select" options={kind} value="userMaintainInfo.kind" />
                     <FormControls label="账户状态" ctrl="select" options={userStatus} value="userMaintainInfo.status" />

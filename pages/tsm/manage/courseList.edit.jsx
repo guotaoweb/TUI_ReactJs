@@ -27,8 +27,7 @@ class EditCourse extends React.Component {
       <div>
         <Content2 tabs={tabs}>
           <div>
-            <FormControls label="科目名称" ctrl="input" value="courseInfo.Name" />
-            <FormControls label="绑定问卷" ctrl="select" options={_survyList} value="courseInfo.SurvyId" />
+            <FormControls label="科目名称" ctrl="input" value="courseInfo.Name" required="required" />
             <div className="formControl-btn">
               <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
               <Btn type="submit" txt="确定" href={this.editCourseInfo.bind(this)} />
@@ -52,8 +51,7 @@ class EditCourse extends React.Component {
 
     let _this = this,
       jsonParam = {
-        Name: editInfo.courseInfo.Name,
-        SurvyId: editInfo.courseInfo.SurvyId
+        Name: editInfo.courseInfo.Name
       }
 
 
@@ -61,14 +59,13 @@ class EditCourse extends React.Component {
       TUI.platform.post("/Course", jsonParam, function (result) {
         if (result.code == 0) {
           jsonParam["Id"] = result.datas
-          jsonParam["Survy"] = editInfo.courseInfo.SurvyIdName
           jsonParam["UpdateTime"] = TUI.fn.currentTime()
           addCourseList(jsonParam)
           setTimeout(function(){successMsg("新增成功")},300)
           _this.goBack()
         }
         else {
-          errorMsg(config.ERROR_INFO[result.code]);
+          errorMsg(Config.ERROR_INFO[result.code]);
         }
       })
     }
@@ -77,13 +74,12 @@ class EditCourse extends React.Component {
       TUI.platform.put("/Course/" + _id, jsonParam, function (result) {
         if (result.code == 0) {
           jsonParam["Id"] = _id
-          jsonParam["Survy"] = editInfo.courseInfo.SurvyIdName
           setTimeout(function(){successMsg("编辑成功")},300)
           updateCourseList(jsonParam)
           _this.goBack()
         }
         else {
-          errorMsg(config.ERROR_INFO[result.code]);
+          errorMsg(Config.ERROR_INFO[result.code]);
         }
       })
     }

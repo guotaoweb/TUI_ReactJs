@@ -42,23 +42,114 @@
     }
 }
 
-.voteBindClassesStatusBar{
-    width:100%;
-    height:30px;
-    border-bottom:1px solid #ebebeb;
-    li{
-        float:left;
-        width:50%;
-        height:30px;
+.voteBindClassesStatusBar {
+    width: 100%;
+    height: 30px;
+    border-bottom: 1px solid #ebebeb;
+    li {
+        float: left;
+        width: 50%;
+        height: 30px;
         line-height: 30px;
         text-align: center;
-        background-color:#ebebeb;
-        cursor:pointer;
+        background-color: #ebebeb;
+        cursor: pointer;
     }
-    li:first-child{
-        border-right:1px solid #ebebeb;
+    li:first-child {
+        border-right: 1px solid #ebebeb;
     }
-    li.activity{
-        background-color:white;
+    li.activity {
+        background-color: white;
+    }
+}
+
+.t-statistic {
+    width: 100%;
+    height: 100%;
+    margin-top:0px;
+}
+
+.t-s-votestatus
+{
+    width: 98%;
+    height: 70px;
+    margin: 1%;
+    margin-top:0px;
+    background-color: white;
+    border: 1px solid #ddd;
+    ul {
+        width: 100%;
+        margin-top: 10px;
+        li {
+            float: left;
+            width: 20%;
+            height: 50px;
+            text-align: center;
+            border-right: 1px solid #ddd;
+            p {
+                height: 30px;
+                line-height: 30px;
+            }
+        }
+        li:last-child {
+            border: none;
+        }
+    }
+}
+
+.t-s-noclassvote {
+    height: 70px;
+    line-height: 70px;
+    font-size: 20px;
+    color: #999;
+    text-align: center;
+}
+
+.t-s {
+    width: 98%;
+    height: 90px;
+    margin: 1%;
+    margin-top:0px;
+    ul li {
+        width: 25%;
+        height: 90px;
+        line-height: 35px;
+        float: left;
+        padding: 10px;
+        padding-left: 0px;
+        padding-bottom: 0px;
+        div {
+            height: 100%;
+            background-color: white;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        h3{
+            margin-top:5px;
+        }
+        p{
+            font-size:20px;
+        }
+    }
+    ul li:last-child {
+        padding-right: 0px;
+    }
+}
+
+.t-s-teacherlist,
+.t-s-classeslist {
+    width: 48%;
+    height: auto;
+    margin: 1%;
+    margin-top:0px;
+    background-color: white;
+    border: 1px solid #ddd;
+    float: left;
+    div{
+        width:100%;
+        height:40px;
+        line-height:40px;
+        border-bottom:1px solid #ddd;
+        padding-left:10px;
     }
 }

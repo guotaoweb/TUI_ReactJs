@@ -5,108 +5,71 @@ import Dialog from "Dialog"
 import Loading from "Loading"
 import Btn from "Btn"
 import logo from "!url!./img/logo.png"
-import classes from "!url!./img/classes.png"
+import votestart from "!url!./img/votestart.png"
+import login from "!url!./img/login.png"
 
 class Index extends React.Component {
-  render() {
-    const {children,related} = this.props
+    render() {
+        const {classes} = this.props
 
-    let _classesRelated = []
-    for (let i = 0; i < related.length; i++) {
-      let $e = related[i]
-      _classesRelated.push(<li><span className={i==0?"voting":""}>{i+1}</span>{$e.Course}【{$e.Teacher}】</li>)
+        let _classes = [],
+        _voteStartBtn = []
+        console.info(classes)
+        if (classes.length == 0) {
+            _classes.push(<div className="i-voting">正在获取准备投票的班级...</div>)
+        }
+        else if(classes=="no"){
+            _classes.push(<div className="i-voting">目前无班级投票</div>)
+        }
+        else {
+            _classes.push(<div className="i-voting">正准备投票的班级:C0601</div>)
+            _voteStartBtn.push(
+                <div className="i-startbtn">
+                    <img src={votestart} onClick={this.voteStart.bind(this)} />
+                </div>
+            )
+        }
+
+        return (
+            <div className="i-body">
+                <div className="i-header">
+                    <h3>长沙市实验中学教师评价系统<span>V3.0</span></h3>
+                    <p className="i-manage"><img src={login} onClick={this.login.bind(this)} /></p>
+                </div>
+                {_classes}
+                <div className="i-votedesp"></div>
+                {_voteStartBtn}
+            </div>
+        )
     }
 
-    return (
-      <div>
-        <div className="i-header">
-          <img src={logo} />
-          <span><img src={classes} />&nbsp;&nbsp;C1004</span>
-        </div>
-        <div className="i-container">
-          <div className="i-c-top"></div>
-          <div className="i-content">
-            <div className="i-c-title">
-              <h3>期末备考,是否断电</h3>
-              <p>期末将近。学工部近期收到同学们的意见，希望在备考期末阶段，寝室晚上不断电。故特此调查学生相关诉求，以方便同学们期末备考～</p>
-            </div>
-            <div className="i-c-content">
-              <div className="i-c-survy mustselect">
-                <div>
-                  <h3>1、对于期末是否断电,同学们有什么意见?</h3>
-                  <FormControls ctrl="checkbox" label="A" labelTxt="." minWidth="0" labelWidth="40" txt="希望断电,保证正常休息" />
-                  <FormControls ctrl="checkbox" label="B" labelTxt="." minWidth="0" labelWidth="40" txt="希望不断电,充分备考" />
-                  <FormControls ctrl="checkbox" label="C" labelTxt="." minWidth="0" labelWidth="40" txt="无所谓" />
-                </div>
-                <b>此题为必答题,请填写答案</b>
-              </div>
-              <div className="i-c-survy">
-                <div>
-                  <h3>2、对于期末是否断电,同学们有什么意见?<b>*</b></h3>
-                  <FormControls ctrl="radio" label="A" labelTxt="." minWidth="0" labelWidth="40" txt="希望断电,保证正常休息" />
-                  <FormControls ctrl="radio" label="B" labelTxt="." minWidth="0" labelWidth="40" txt="希望不断电,充分备考" />
-                  <FormControls ctrl="radio" label="C" labelTxt="." minWidth="0" labelWidth="40" txt="无所谓" />
-                </div>
-                <b>此题为必答题,请填写答案</b>
-              </div>
-              <div className="i-c-survy">
-                <div>
-                  <h3>2、对于期末是否断电,同学们有什么意见?<b>*</b></h3>
-                  <FormControls ctrl="radio" label="A" labelTxt="." minWidth="0" labelWidth="40" txt="希望断电,保证正常休息" />
-                  <FormControls ctrl="radio" label="B" labelTxt="." minWidth="0" labelWidth="40" txt="希望不断电,充分备考" />
-                  <FormControls ctrl="radio" label="C" labelTxt="." minWidth="0" labelWidth="40" txt="无所谓" />
-                </div>
-                <b>此题为必答题,请填写答案</b>
-              </div>
-              <br /><br />
-              <Btn txt="下一科目" style={{ margin: "auto", width: "100px" }} />
-              <br /><br />
-            </div>
+    login() {
 
-          </div>
-          <div className="i-footer">
-            POWSER BY TSM
-          </div>
-        </div>
+    }
 
-        <div className="i-list">
-          <p>投票科目列表</p>
-          <ul>
-            {_classesRelated}
-          </ul>
-        </div>
-      </div>
-    )
-  }
+    voteStart() {
+        console.info("开始投票")
+    }
 
-  componentDidMount() {
-    const {addClassesRelated,errorMsg} = this.props
+    componentDidMount() {
+        const {addVotingClasses, errorMsg} = this.props
 
-    let classesId = TUI.fn.requestParam("id")
-    TUI.platform.get("/ClassesRelated/" +classesId , function (result) {
-      if (result.code == 0) {
-        let _d = result.datas
-        addClassesRelated(_d)
-
-
-
-      }
-      if (result.code == 1) {
-        addClassesRelated([])
-      }
-      else {
-        errorMsg(Config.ERROR_INFO[result.code]);
-      }
-    })
-  }
-
-
-  getSurvy(courseId){
-    
-  }
-
+        let classesId = TUI.fn.requestParam("id")
+        TUI.platform.get("/VotingClassesSimple", function (result) {
+            if (result.code == 0) {
+                let _d = result.datas[0]
+                addVotingClasses(_d)
+            }
+            if (result.code == 1) {
+                addVotingClasses("no")
+            }
+            else {
+                errorMsg(Config.ERROR_INFO[result.code]);
+            }
+        })
+    }
 }
 
 export default TUI._connect({
-  related:"classesList.related"
+    classes: "voting.classes"
 }, Index)

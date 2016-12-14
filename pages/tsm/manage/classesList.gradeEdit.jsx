@@ -6,7 +6,7 @@ import FormControls from "FormControls"
 import { openLoading, closeLoading } from "Loading"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 
-class ClassesGrade extends React.Component {
+class EditGrade extends React.Component {
     render() {
         const {
             errorMsg,
@@ -91,4 +91,4 @@ export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo",
     editInfo:"formControlInfo.data"
-}, ClassesGrade)
+}, EditGrade)

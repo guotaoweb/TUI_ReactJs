@@ -34,9 +34,9 @@ class EditClasses extends React.Component {
                     label={$c.Name}
                     ctrl="input"
                     type="select"
-                    value={"courseInfo.TeacherName" + i}
+                    value={"classesInfo.TeacherName" + $c.Id}
                     selectFn={this._selectFn.bind(this)}
-                    bind={{ CourseIndex:i,CourseId: $c.Id, ClassesId: sidePageInfo.gateWay ? sidePageInfo.gateWay.classesId : "" }}
+                    bind={{ CourseIndex: $c.Id, CourseId: $c.Id, ClassesId: sidePageInfo.gateWay ? sidePageInfo.gateWay.classesId : "" }}
                     />)
         }
 
@@ -59,10 +59,10 @@ class EditClasses extends React.Component {
     }
 
     _selectFn(bind) {
-        const {loadTeacherList, errorMsg,sidePageInfo} = this.props
+        const {loadTeacherList, errorMsg, sidePageInfo} = this.props
         let _this = this
 
-        TUI.platform.get("/TeacherInCourse/" + bind.CourseId, function(result) {
+        TUI.platform.get("/TeacherInCourse/" + bind.CourseId, function (result) {
             if (result.code == 0) {
                 loadTeacherList(result.datas)
             }
@@ -77,8 +77,7 @@ class EditClasses extends React.Component {
                 status: "selectTeacher",
                 width: "400",
                 gateWay: {
-                    Id: bind.CourseId,
-                    preStatus:sidePageInfo.gateWay.preStatus?sidePageInfo.gateWay.preStatus:sidePageInfo.status
+                    Id: bind.CourseId
                 }
             })
         })
@@ -96,20 +95,20 @@ class EditClasses extends React.Component {
                 GradeId: editInfo.classesInfo.GradeId,
                 ClassesRelated: []
             }
-        
-        for (let key in editInfo.courseInfo) {
-            if(key.indexOf("ClassesRelated")>-1){
-                jsonParam.ClassesRelated.push(editInfo.courseInfo[key])
+
+        for (let key in editInfo.classesInfo) {
+            if (key.indexOf("ClassesRelated") > -1 && editInfo.classesInfo[key].length != 0) {
+                jsonParam.ClassesRelated.push(editInfo.classesInfo[key])
             }
         }
 
         if (sidePageInfo.gateWay.preStatus == "addClasses") {
-            TUI.platform.post("/Classes", jsonParam, function(result) {
+            TUI.platform.post("/Classes", jsonParam, function (result) {
                 if (result.code == 0) {
                     successMsg("新增成功")
                     jsonParam["Id"] = result.datas
                     jsonParam["Grade"] = editInfo.classesInfo.GradeIdName,
-                    addClassesList(jsonParam)
+                        addClassesList(jsonParam)
                 }
                 else {
                     errorMsg(Config.ERROR_INFO[result.code]);
@@ -119,7 +118,7 @@ class EditClasses extends React.Component {
         }
         else {
             let _id = editInfo.classesInfo.Id
-            TUI.platform.put("/Classes/" + _id, jsonParam, function(result) {
+            TUI.platform.put("/Classes/" + _id, jsonParam, function (result) {
                 if (result.code == 0) {
                     jsonParam["Id"] = _id
                     jsonParam["Grade"] = editInfo.classesInfo.GradeIdName

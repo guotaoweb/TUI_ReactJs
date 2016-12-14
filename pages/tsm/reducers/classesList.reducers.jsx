@@ -2,7 +2,9 @@ import 'babel-polyfill'
 
 const initState = {
     list: "",
-    related:""
+    related:"",
+    voting:"",
+    statistic:""
 }
 
 export default function classesListReducers(state = initState, action) {
@@ -20,6 +22,24 @@ export default function classesListReducers(state = initState, action) {
             return Object.assign({}, state, {
                 list: JSON.parse(JSON.stringify(action.data))
             })
+        case "ADD_VOTING_CLASSES":
+            return Object.assign({}, state, {
+                voting: JSON.parse(JSON.stringify(action.data))
+            })
+        case "ADD_STATISTIC":
+            return Object.assign({}, state, {
+                statistic: JSON.parse(JSON.stringify(action.data))
+            })
+        case "UPDATE_VOTING_CLASSES":
+            if(state.voting){
+                if(state.voting.Id==action.data.Id){
+                    state.voting.IsStart = action.data.IsStart
+                }
+                return Object.assign({}, state, {
+                    voting: JSON.parse(JSON.stringify([]))
+                })
+            }
+
         case "DELETE_CLASSES_LIST":
             for (let i = 0; i < state.list.length; i++) {
                 let $d = state.list[i]
@@ -38,7 +58,7 @@ export default function classesListReducers(state = initState, action) {
                     $d.Name = action.data.Name ? action.data.Name : $d.Name
                     $d.Grade = action.data.Grade ? action.data.Grade : $d.Grade
                     $d.Number = action.data.Number ? action.data.Number : $d.Number
-                    $d.Vote = action.data.Vote ? action.data.Vote : $d.Vote
+                    $d.IsStart = action.data.IsStart
                 }
             }
             return Object.assign({}, state, {

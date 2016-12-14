@@ -1,16 +1,17 @@
 //组件
 import Btn from "Btn"
+import { openDialog, closeDialog } from "Dialog"
 import { openLoading, closeLoading } from "Loading"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import { openContentLoading, closeContentLoading } from 'Content'
 import FormControls from 'FormControls'
 
 
-class SelectTeacher extends React.Component {
+class SelectSurvy extends React.Component {
     render() {
         const {
             errorMsg,
-            teacherList,
+            survyList,
             pageInfo,
             updateEditInfo
         } = this.props
@@ -24,19 +25,19 @@ class SelectTeacher extends React.Component {
         },
             _list = []
 
-        if (teacherList.length > 0) {
-            for (var i = 0; i < teacherList.length; i++) {
-                var $t = teacherList[i];
+        if (survyList.length > 0) {
+            for (var i = 0; i < survyList.length; i++) {
+                var $t = survyList[i];
                 _list.push(
-                    <div key={"selectTeacher"+i} style={_listStyle}>
-                        <FormControls ctrl="radio" txt={$t.Name} groupName="teacherList" value={$t.Id} />
+                    <div style={_listStyle} key={"selectSurvy"+i}>
+                        <FormControls ctrl="radio" txt={$t.Name} groupName="survyList" value={$t.Id} />
                     </div>
                 )
             }
         }
         else {
             _list.push(
-                <div key="selectTeacher0" style={{
+                <div key="voteList.survyList" style={{
                     width: "100%",
                     height: "40px",
                     lineHeight: "40px",
@@ -44,7 +45,7 @@ class SelectTeacher extends React.Component {
                     textAlign: "center",
                     color: "#999"
                 }}>
-                    科目下未找到任何教师
+                    未找到任何问卷
                 </div>
             )
         }
@@ -55,11 +56,28 @@ class SelectTeacher extends React.Component {
 
         )
     }
+
+    componentDidMount() {
+        const {survyList,addSurvyList, errorMsg} = this.props
+        if (survyList.length == 0) {
+            TUI.platform.get("/Survy", function (result) {
+                if (result.code == 0) {
+                    addSurvyList(result.datas)
+                }
+                else if (result.code == 1) {
+                    addSurvyList([])
+                } else {
+                    errorMsg(Config.ERROR_INFO[result.code]);
+                }
+            })
+        }
+    }
+
 }
 
 
 export default TUI._connect({
-    teacherList: "teacherList.list",
+    survyList: "survyList.list",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo"
-}, SelectTeacher)
+}, SelectSurvy)

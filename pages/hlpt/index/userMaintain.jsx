@@ -15,6 +15,8 @@ import { openDialog, closeDialog } from "Dialog"
 import { openLoading, closeLoading } from "Loading"
 import Search from 'Search'
 
+let USERMAINTAIN_ID = ""
+
 class UserMaintain extends React.Component {
     render() {
         const {
@@ -28,7 +30,7 @@ class UserMaintain extends React.Component {
         } = this.props
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "默认组织", "name5": "职位", "name6": "手机", "name7": "排序号", "name9": "操作" },
+            "thead": { "name1": "序号", "name2": "用户名-desc-cnName", "name3": "账号-desc-loginUid", "name4": "默认组织", "name5": "职位", "name6": "手机","name7":"内部编码-desc-staffCode","name8": "排序号", "name9": "操作" },
             "tbody": []
         }
         for (var i = 0; i < data.length; i++) {
@@ -42,7 +44,8 @@ class UserMaintain extends React.Component {
                 "value4": _d.unitName,
                 "value5": _d.positionNames,
                 "value6": _d.mobilePhone,
-                "value7": _d.sort,
+                "value7": _d.staffCode,
+                "value8": _d.sort,
 
                 "fns": [{
                     "name": "编辑",
@@ -140,13 +143,13 @@ class UserMaintain extends React.Component {
                         {addBtn}
                     </div>
                     <div>
-                        <Search placeholder="输入关键字(用户名称或账号)搜索" style={{
+                        <Search placeholder="输入关键字(用户名、账号、内部编码)搜索" style={{
                             border: "none",
                             borderBottom: "1px solid #ebebeb",
                             width: "98%",
                             margin: "auto"
                         }} fn={this._searchUserMaintain.bind(this)} />
-                        <Table id="userMaintain" bindPager="userMaintainPager" tblContent={tblContent} width="50,100,100,0,0,120,70,80" />
+                        <Table id="userMaintain" bindPager="userMaintainPager" tblContent={tblContent} width="50,100,100,0,0,120,100,70,80" sort={this.tblSort.bind(this)}/>
                         <Pager id="userMaintainPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                     </div>
                 </Content3>
@@ -157,6 +160,19 @@ class UserMaintain extends React.Component {
                 </SidePage>
             </div >
         )
+    }
+
+    tblSort(params){
+        console.info(params)
+        let sort = ""
+        if(params.sort=="desc"){
+            sort = "%2B"+params.filter
+        }
+        else{
+            sort = "-"+params.filter
+        }
+        
+        this.loadUser(USERMAINTAIN_ID,sort)
     }
 
 
@@ -216,6 +232,7 @@ class UserMaintain extends React.Component {
                 let firtNodeId = $clickMenu.getAttribute("data-id")
 
                 //获取用户列表
+                USERMAINTAIN_ID = firtNodeId
                 _this.loadUser(firtNodeId);
 
                 //展开第一个节点的一级子节点
@@ -289,6 +306,7 @@ class UserMaintain extends React.Component {
         })
         openContentLoading()
         this.loadUser(id)
+        USERMAINTAIN_ID = id
         closeSidePage()
         this.props.addBreadNav({ name: "用户信息维护" })
     }
@@ -303,9 +321,11 @@ class UserMaintain extends React.Component {
         })
     }
 
-    loadUser(id) {
-        const {errorMsg, addUserMaintain, updatePageInfo, clearPageInfo, updateSearchInfo} = this.props
-        let url = id ? "/staffs?unitId=" + id + "&from={0}&limit=10" : "/staffs?from={0}&limit=10"
+    loadUser(id,sort) {
+        const {errorMsg, addUserMaintain, updatePageInfo, clearPageInfo, updateSearchInfo,pageInfo} = this.props
+        let _pageSize = pageInfo["userMaintainPager"] ? pageInfo["userMaintainPager"].size : 10
+
+        let url = id ? "/staffs?unitId=" + id + "&sort="+(sort?sort:"")+"&from={0}&limit="+_pageSize : "/staffs?from={0}&limit="+_pageSize
 
         TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
@@ -320,7 +340,7 @@ class UserMaintain extends React.Component {
             updatePageInfo({
                 id: "userMaintainPager",
                 index: 1,
-                size: 10,
+                size: _pageSize,
                 sum: result._page ? result._page.total : 0,
                 url: url
             })

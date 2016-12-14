@@ -34,10 +34,11 @@ export default function manageReducers(state = initState, action) {
                 let $d = state.list[i]
 
                 if ($d.Id == action.data.Id) {
-                    $d.Name = action.data.Name
+                    $d.Name = action.data.Name?action.data.Name:$d.Name
                     $d.IsStart = action.data.IsStart
                 }
             }
+            console.info(state.list)
             return Object.assign({}, state, {
                 list: eval(JSON.stringify(state.list))
             })

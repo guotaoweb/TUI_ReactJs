@@ -31,7 +31,7 @@ class CourseList extends React.Component {
 
 
     let tblContent = {
-      "thead": { "name1": "序号", "name2": "名称", "name3": "问卷", "name4": "更新时间", "name5": "操作" },
+      "thead": { "name1": "序号", "name2": "名称","name3": "更新时间", "name4": "操作" },
       "tbody": []
     }
 
@@ -41,8 +41,7 @@ class CourseList extends React.Component {
       tblContent.tbody.push({
         "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
         "value2": _d.Name,
-        "value3": _d.Survy,
-        "value4": _d.UpdateTime,
+        "value3": _d.UpdateTime,
         "fns": [{
           "name": "编辑",
           "fn": function () {
@@ -92,7 +91,7 @@ class CourseList extends React.Component {
     return (
       <div>
         <Content txt="科目列表" addHref={this.addCourseList.bind(this)}>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,200,0,200,140" />
+          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,200,100" />
           <Pager fn={this.pageFn.bind(this)} />
         </Content>
         <SidePage>

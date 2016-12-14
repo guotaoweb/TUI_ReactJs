@@ -10,17 +10,19 @@ import ClassesList from './manage/classesList'
 import ReportList from './manage/reportList'
 import VoteList from './manage/voteList'
 import Login from './manage/login'
+import Statistic from './manage/statistic'
 
 import Index from './index/index'
+import Vote from './index/vote'
+import End from './index/end'
+
 
 class Routers extends React.Component {
     render() {
         const {history} = this.props
         return (
             <Router history={history}>
-                <Route path={Config.ROOTPATH} component={Index} />
-                <Route path={Config.ROOTPATH + "login"} component={Login} />
-                <Route path={Config.ROOTPATH + "manage"} component={Manage}>
+                <Route path={Config.ROOTPATH} component={Vote}> 
 
                     <Route path={Config.ROOTPATH + "teachers"} component={TeacherList} />
                     <Route path={Config.ROOTPATH + "courses"} component={CourseList} />
@@ -30,11 +32,16 @@ class Routers extends React.Component {
                     <Route path={Config.ROOTPATH + "votes"} component={VoteList} />
                     <Route path={Config.ROOTPATH + "classes"} component={ClassesList} />
                     <Route path={Config.ROOTPATH + "login"} component={Login} />
+                    <Route path={Config.ROOTPATH + "statistic"} component={Statistic} />
                 </Route>
-            </Router>
+            </Router >
         )
     }
 }
 
 export default Routers
-//<IndexRoute component={Login} />
+    //<IndexRoute component={Login} />
+
+
+    // < Route path= { Config.ROOTPATH + "login" } component= { Login } />
+    //     <Route path={Config.ROOTPATH + "manage"} component={Manage}>

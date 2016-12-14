@@ -78,6 +78,9 @@ class TeacherList extends React.Component {
                 var _r = result.datas
                 addTeacherInClasses(_r)
               }
+              else if(result.code==1){
+                addTeacherInClasses([])
+              }
               else {
                 errorMsg(Config.ERROR_INFO[result.code]);
               }

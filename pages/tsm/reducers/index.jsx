@@ -9,7 +9,7 @@ import classesList from './classesList.reducers'
 import survyList from './survyList.reducers'
 import voteList from './voteList.reducers'
 import gradeList from './gradeList.reducers'
-
+import voting from './voting.reducers'
 
 //使用redux的combineReducers方法将所有reducer打包起来
 const rootReducer = combineReducers({
@@ -21,6 +21,7 @@ const rootReducer = combineReducers({
 	formControlInfo,
 	voteList,
 	gradeList,
+	voting,
   	routing: routerReducer //整合路由 
 })
 

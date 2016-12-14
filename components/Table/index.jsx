@@ -1,4 +1,6 @@
 import '!style!css!postcss!sass!./style.scss'
+import sortDesc from "!url!./img/sort-desc.png"
+import sortAsc from "!url!./img/sort-asc.png"
 
 class Table extends React.Component {
   render() {
@@ -8,7 +10,21 @@ class Table extends React.Component {
 
     let w = ""
     for (let thead in tblContent.thead) {
-      tbl_thead.push(<td key={"tbl_thead_tr" + thead}>{tblContent.thead[thead]}</td>)
+      let _thead = tblContent.thead[thead].split("-")
+      if (_thead.length > 1) {
+        tbl_thead.push(
+          <td key={"tbl_thead_tr" + thead} style={{ cursor: "pointer" }} data-sort={_thead[1]} data-filter={_thead[2]} onClick={this.tblSort.bind(this)}>
+            {_thead[0]}
+            <img src={sortDesc} style={{
+              width: "20px",
+              verticalAlign: "middle"
+            }} />
+          </td>
+        )
+      }
+      else {
+        tbl_thead.push(<td key={"tbl_thead_tr" + thead}>{_thead[0]}</td>)
+      }
       if (w) {
         w += ",0"
       }
@@ -82,53 +98,82 @@ class Table extends React.Component {
     )
   }
 
-  shouldComponentUpdate(nextProps) {
-    // console.info(nextProps.isRefreshTable)
-    // if (nextProps.tblContent.tbody.length == this.props.tblContent.tbody.length && nextProps.isRefreshTable==0) {
-    //   console.info("不刷新")
-    //   return false
-    // }
-    // else {
-    //   console.clear()
-    //   console.info("刷新")
-    //   console.info(nextProps.tblContent)
-    //   return true
-    // }
-    return true
+  tblSort(e) {
+    const {sort} = this.props
+    let $elem = e.currentTarget
+    let params = {
+      sort: $elem.getAttribute("data-sort"),
+      filter: $elem.getAttribute("data-filter")
+    }
+
+
+    if (sort) {
+      sort(params)
+      if (params.sort == "desc") {
+        $elem.setAttribute("data-sort", "asc")
+        let $elemImg = $elem.getElementsByTagName("img")[0]
+        $elemImg.setAttribute("src",sortAsc)
+        $elemImg.style.marginTop="8px"
+        $elemImg.style.width="14px"
+      }
+      else{
+        $elem.setAttribute("data-sort", "desc")
+        let $elemImg = $elem.getElementsByTagName("img")[0]
+        $elemImg.setAttribute("src",sortDesc)
+        $elemImg.style.marginTop="0px"
+        $elemImg.style.width="20px"
+      }
+    }
   }
 
-  componentDidUpdate() {
-    let _this = this
-    const {width, id} = _this.props
-    let $tlb = _this.refs["t-tbl"]
 
-    setTimeout(function () {
-      let styleWidth = $tlb.parentNode.style.width
-      let tblWidth = styleWidth ? styleWidth.substring(0, styleWidth.length - 2) : $tlb.parentNode.offsetWidth,
-        $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
-        autoLength = 0
+shouldComponentUpdate(nextProps) {
+  // console.info(nextProps.isRefreshTable)
+  // if (nextProps.tblContent.tbody.length == this.props.tblContent.tbody.length && nextProps.isRefreshTable==0) {
+  //   console.info("不刷新")
+  //   return false
+  // }
+  // else {
+  //   console.clear()
+  //   console.info("刷新")
+  //   console.info(nextProps.tblContent)
+  //   return true
+  // }
+  return true
+}
 
-      let _width = width.split(",")
-      for (let i = 0; i < _width.length; i++) {
-        let $w = _width[i]
-        tblWidth -= $w
-        if ($w == 0) {
-          autoLength++
-        }
+componentDidUpdate() {
+  let _this = this
+  const {width, id} = _this.props
+  let $tlb = _this.refs["t-tbl"]
+
+  setTimeout(function () {
+    let styleWidth = $tlb.parentNode.style.width
+    let tblWidth = styleWidth ? styleWidth.substring(0, styleWidth.length - 2) : $tlb.parentNode.offsetWidth,
+      $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
+      autoLength = 0
+
+    let _width = width.split(",")
+    for (let i = 0; i < _width.length; i++) {
+      let $w = _width[i]
+      tblWidth -= $w
+      if ($w == 0) {
+        autoLength++
       }
+    }
 
-      for (let j = 0; j < $autoTblWidth.length; j++) {
-        let $a = $autoTblWidth[j]
-        $a.style.width = tblWidth / autoLength + "px"
-        $a.style.display = "block"
-        $a.style.overflow = "hidden"
-        $a.style.whiteSpace = "nowrap"
-        $a.style.textOverflow = "ellipsis"
-      }
+    for (let j = 0; j < $autoTblWidth.length; j++) {
+      let $a = $autoTblWidth[j]
+      $a.style.width = tblWidth / autoLength + "px"
+      $a.style.display = "block"
+      $a.style.overflow = "hidden"
+      $a.style.whiteSpace = "nowrap"
+      $a.style.textOverflow = "ellipsis"
+    }
 
-      _this.props.noRefreshTable()
-    }, 0)
-  }
+    _this.props.noRefreshTable()
+  }, 0)
+}
 }
 
 

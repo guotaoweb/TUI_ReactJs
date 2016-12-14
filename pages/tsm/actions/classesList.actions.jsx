@@ -57,6 +57,29 @@ export function addClassesRelated(data){
     } 
 }
 
+export function addVotingClasses(data){
+    return {
+        type:"ADD_VOTING_CLASSES",
+        data
+    } 
+}
+
+export function updateVotingClasses(data){
+    return {
+        type:"UPDATE_VOTING_CLASSES",
+        data
+    } 
+}
+
+export function addStatistic(data){
+    return {
+        type:"ADD_STATISTIC",
+        data
+    } 
+}
+
+
+
 
 
 
