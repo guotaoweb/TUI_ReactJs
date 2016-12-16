@@ -18,3 +18,24 @@ export function addVotingSurvy(data){
         data
     }
 }
+
+export function addVotingStatus(data){
+    return {
+        type:"ADD_VOTING_STATUS",
+        data
+    }
+}
+
+export function addVotedCourse(id){
+    return {
+        type:"ADD_VOTED_COURSE",
+        id
+    }
+}
+
+export function updateOperateStatus(data){
+    return {
+        type:"UPDATE_OPERATE_STATUS",
+        data
+    }
+}

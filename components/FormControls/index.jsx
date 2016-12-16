@@ -103,6 +103,7 @@ class FormControls extends React.Component {
                 value={this.props.value}
                 labelTxt={labelTxt}
                 minWidth={minWidth}
+                clickFn={this.props.clickFn}
                 />
         }
         else if (ctrl == "checkbox") {
@@ -118,6 +119,7 @@ class FormControls extends React.Component {
                 id={this.props.id}
                 labelTxt={labelTxt}
                 minWidth={minWidth}
+                clickFn={this.props.clickFn}
                 />
         }
         else if (ctrl == "tip") {
@@ -203,7 +205,7 @@ class CTRL_INPUT extends React.Component {
         if (type == "select") {
             _input.push(
                 <div key={"formcontrol-input-search" + data} className="formcontrol-input-select">
-                    <input className={required} ref="formcontrolInputSelect" type="text" onClick={this._selectFn.bind(this)} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} readOnly />
+                    <input className={required} ref="formcontrolInputSelect" type="text" onClick={this._selectFn.bind(this)} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style}  placeholder={placeholder}  readOnly />
                     <img src={search} onClick={this._selectFn.bind(this)} />
                     {_value ? <img src={chag} onClick={this._clearSelect.bind(this)} className="chachag" /> : ""}
                 </div>
@@ -439,7 +441,7 @@ class CTRL_RADIO extends React.Component {
 
         $elem.parentNode.setAttribute("data-status", "selected")
         $elem.setAttribute("src", isRadio)
-
+        if (this.props.clickFn) { this.props.clickFn(e) }
     }
 }
 
@@ -479,11 +481,10 @@ class CTRL_CHECKBOX extends React.Component {
 
 
         if ($elem.className == "t-c_checkbox") { return false }
-        console.info($elem.parentNode.getAttribute("data-status"))
-        console.info($elem.targetName)
+
         if ($elem.parentNode.getAttribute("data-status") == "selected") {
             $elem.parentNode.setAttribute("data-status", "unselect")
-            $elem.setAttribute("src", unCheckbox)
+            $elem.parentNode.getElementsByTagName("img")[0].setAttribute("src", unCheckbox)
             if (this.props.fn) {
                 this.props.fn("close", {
                     name: this.props.txt,
@@ -493,7 +494,7 @@ class CTRL_CHECKBOX extends React.Component {
         }
         else {
             $elem.parentNode.setAttribute("data-status", "selected")
-            $elem.setAttribute("src", isCheckbox)
+            $elem.parentNode.getElementsByTagName("img")[0].setAttribute("src", isCheckbox)
             if (this.props.fn) {
                 this.props.fn("open", {
                     name: this.props.txt,
@@ -501,7 +502,7 @@ class CTRL_CHECKBOX extends React.Component {
                 })
             }
         }
-
+        if (this.props.clickFn) { this.props.clickFn(e) }
     }
 }
 
@@ -666,7 +667,7 @@ class CTRL_SLIDE extends React.Component {
     }
 
     componentDidMount() {
-        const {value, addFn,editFn, data, options, selected} = this.props
+        const {value, addFn, editFn, data, options, selected} = this.props
         let _object = value.split(".")
         if (data[_object[0]]) {
             let _info = {
@@ -711,3 +712,12 @@ class CTRL_SLIDE extends React.Component {
 export default TUI._connect({
     data: "formControlInfo.data",
 }, FormControls)
+
+export function clearCtrlStatus() {
+    let $checkbox = document.getElementsByClassName("t-c_checkbox")
+    for (var i = 0; i < $checkbox.length; i++) {
+        var $c = $checkbox[i];
+        $c.getElementsByTagName("img")[0].setAttribute("src",unCheckbox)
+        $c.setAttribute("data-status","unselect")
+    }
+}

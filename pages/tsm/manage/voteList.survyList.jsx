@@ -26,11 +26,12 @@ class SelectSurvy extends React.Component {
             _list = []
 
         if (survyList.length > 0) {
-            for (var i = 0; i < survyList.length; i++) {
-                var $t = survyList[i];
+            for (let i = 0; i < survyList.length; i++) {
+                let $t = survyList[i]
+                let survyName = $t.Name + ($t.IsDefault==0?" (默认)":"")
                 _list.push(
                     <div style={_listStyle} key={"selectSurvy"+i}>
-                        <FormControls ctrl="radio" txt={$t.Name} groupName="survyList" value={$t.Id} />
+                        <FormControls ctrl="radio" txt={survyName} groupName="survyList" value={$t.Id} />
                     </div>
                 )
             }

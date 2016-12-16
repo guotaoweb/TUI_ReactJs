@@ -37,7 +37,7 @@ export default function courseListReducers(state = initState, action) {
 
                 if ($d.Id == action.data.Id) {
                     $d.Name = action.data.Name
-                    $d.Survy = action.data.Survy
+                    $d.Sort = action.data.Sort
                 }
             }
             return Object.assign({}, state, {

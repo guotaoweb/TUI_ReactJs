@@ -48,6 +48,7 @@ class EditVote extends React.Component {
                         type="select"
                         selectFn={this._selectFn.bind(this)}
                         value={"voteInfo.Survy" + $c.Id}
+                        placeholder="内容为空则绑定默认问卷"
                         />
                 )
             }
@@ -57,7 +58,7 @@ class EditVote extends React.Component {
                 <FormControls
                     key={"course0"}
                     label="问卷"
-                    bind={{ SurvyIndex: i, VoteId: sidePageInfo.gateWay ? sidePageInfo.gateWay.Id : "", CourseId: "" }}
+                    bind={{ SurvyIndex: 0, VoteId: sidePageInfo.gateWay ? sidePageInfo.gateWay.Id : "", CourseId: "" }}
                     ctrl="input"
                     type="select"
                     selectFn={this._selectFn.bind(this)}
@@ -65,7 +66,11 @@ class EditVote extends React.Component {
             )
         }
 
-
+                    // <FormControls
+                    //     label="是否启用"
+                    //     ctrl="slide"
+                    //     options={_slide}
+                    //     value="voteInfo.IsStart" />
         return (
             <Content2 tabs={tabs}>
                 <div>
@@ -74,11 +79,7 @@ class EditVote extends React.Component {
                         ctrl="input"
                         required="required"
                         value="voteInfo.Name" />
-                    <FormControls
-                        label="是否启用"
-                        ctrl="slide"
-                        options={_slide}
-                        value="voteInfo.IsStart" />
+
                     <FormControls
                         label="投票类型"
                         ctrl="select"
@@ -146,7 +147,8 @@ class EditVote extends React.Component {
 
         let jsonParam = {
             Name: editInfo.voteInfo.Name,
-            IsStart: parseInt(editInfo.voteInfo.IsStart)
+            IsStart: parseInt(editInfo.voteInfo.IsStart),
+            Type: parseInt(editInfo.voteInfo.Type)
         },
             _this = this
 
@@ -172,7 +174,7 @@ class EditVote extends React.Component {
                 } else if (result.code == 9) {
                     addVoteList([])
                 } else {
-                    errorMsg(TUI.ERROR_INFO[result.code]);
+                    errorMsg(Config.ERROR_INFO[result.code]);
                 }
                 _this.goBack()
             })
@@ -184,7 +186,7 @@ class EditVote extends React.Component {
                         updateVoteList(jsonParam)
                         successMsg("编辑成功")
                     } else {
-                        errorMsg(TUI.ERROR_INFO[result.code]);
+                        errorMsg(Config.ERROR_INFO[result.code]);
                     }
                     _this.goBack()
                 })

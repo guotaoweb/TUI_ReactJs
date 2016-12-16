@@ -36,6 +36,7 @@ export default function manageReducers(state = initState, action) {
                 if ($d.Id == action.data.Id) {
                     $d.Name = action.data.Name?action.data.Name:$d.Name
                     $d.IsStart = action.data.IsStart
+                    $d.Type = action.data.Type
                 }
             }
             console.info(state.list)

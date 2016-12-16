@@ -1,7 +1,7 @@
 import '!style!css!postcss!sass!./style.scss'
 
 import FormControls from "FormControls"
-import Dialog from "Dialog"
+import Dialog,{openDialog} from "Dialog"
 import Loading from "Loading"
 import Btn from "Btn"
 import logo from "!url!./img/logo.png"
@@ -13,12 +13,12 @@ class Index extends React.Component {
         const {classes} = this.props
 
         let _classes = [],
-        _voteStartBtn = []
+            _voteStartBtn = []
         console.info(classes)
         if (classes.length == 0) {
             _classes.push(<div className="i-voting">正在获取准备投票的班级...</div>)
         }
-        else if(classes=="no"){
+        else if (classes == "no") {
             _classes.push(<div className="i-voting">目前无班级投票</div>)
         }
         else {
@@ -39,8 +39,20 @@ class Index extends React.Component {
                 {_classes}
                 <div className="i-votedesp"></div>
                 {_voteStartBtn}
+                <p className="getip" onClick={this.getIp.bind(this)}>IP</p>
             </div>
+            
         )
+    }
+
+    getIp() {
+        let _this = this
+        TUI.platform.get("/MyIp", function (result) {
+            if (result.code == 0) {
+                let _d = result.datas
+                alert(_d)
+            }
+        })
     }
 
     login() {
@@ -59,6 +71,11 @@ class Index extends React.Component {
             if (result.code == 0) {
                 let _d = result.datas[0]
                 addVotingClasses(_d)
+                addVotingStatus({
+                    ClassesId: _d.Id,
+                    VoteId: _d.VoteId,
+                    GradeId: _d.GradeId
+                })
             }
             if (result.code == 1) {
                 addVotingClasses("no")

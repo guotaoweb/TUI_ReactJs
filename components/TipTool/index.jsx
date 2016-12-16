@@ -19,14 +19,15 @@ class TipTool extends React.Component {
       let $tipTool = document.querySelector(".t-tiptool")
       $tipTool.style.opacity = 0
       $tipTool.style.top = "-100px"
-      
+
       setTimeout(function () {
         $tipTool.style.display = "block"
         let tContent3Side = document.querySelector(".t-content3_side")
         let sideWidth = tContent3Side ? tContent3Side.offsetWidth : 0
 
         $tipTool.style.left = (document.body.offsetWidth - $tipTool.offsetWidth + sideWidth) / 2 + "px"
-        $tipTool.style.top = "80px"
+      
+        $tipTool.style.top = (parseInt(document.body.scrollTop) + 80) + "px"
         $tipTool.style.opacity = 1
         $tipTool.style["transition"] = "top 200ms ease"
         // $tipTool.style.bottom = document.documentElement.clientHeight / 2 + "px"
@@ -52,7 +53,7 @@ class TipTool extends React.Component {
     setTimeout(function () {
       alertMsg("")
       $tipTool.style.display = "none"
-    }, hideTime+300)
+    }, hideTime + 300)
   }
   render() {
     const {msgInfo} = this.props

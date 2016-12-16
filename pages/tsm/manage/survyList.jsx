@@ -19,11 +19,12 @@ class SurvyList extends React.Component {
             sidePageInfo,
             pageInfo,
             loadCourseList,
-            updateEditInfo
+            updateEditInfo,
+            updateSurvyIsDefault
         } = this.props
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "名称", "name3": "描述", "name4": "创建时间", "name5": "操作" },
+            "thead": { "name1": "序号", "name2": "名称", "name3": "描述", "name4": "是否默认","name5": "创建时间", "name6": "操作" },
             "tbody": []
         }
 
@@ -39,8 +40,25 @@ class SurvyList extends React.Component {
                 "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                 "value2": _d.Name,
                 "value3": _d.Desp,
-                "value4": _d.UpdateTime,
+                "value4": _d.IsDefault==0?"默认":"",
+                "value5": _d.UpdateTime,
                 "fns": [{
+                    "name":"设为默认",
+                    "fn":function(){
+                        var delFetch = function () {
+                            TUI.platform.put("/IsDefault/" + _d.Id,{}, function (result) {
+                                if (result.code == 0) {
+                                    updateSurvyIsDefault(_d.Id)
+                                }
+                                else {
+                                    errorMsg(Config.ERROR_INFO[result.code]);
+                                }
+                            })
+                        }
+
+                        openDialog(_this, "是否确定将【" + _d.Name + "】设置为默认?", delFetch)
+                    }
+                },{
                     "name": "编辑",
                     "fn": function () {
                         openContentLoading()
@@ -68,56 +86,6 @@ class SurvyList extends React.Component {
                         })
                     }
                 }, {
-                    "name": "绑定",
-                    "fn": function () {
-                        openContentLoading()
-                        TUI.platform.get("/CourseInSurvy/" + _d.Id + "?status=unbind", function (result) {
-                            if (result.code == 0) {
-                                loadCourseList(result.datas)
-                            }
-                            else if (result.code == 1) {
-                                loadCourseList([])
-                            }
-                            else {
-                                errorMsg(Config.ERROR_INFO[result.code]);
-                            }
-                            openSidePage(_this, {
-                                id: "unBindCourse",
-                                status: "unBindCourse",
-                                width: "400",
-                                gateWay: {
-                                    Id: _d.Id
-                                }
-                            })
-                            closeContentLoading()
-                        })
-                    }
-                }, {
-                    "name": "解绑",
-                    "fn": function () {
-                        openContentLoading()
-                        TUI.platform.get("/CourseInSurvy/" + _d.Id + "?status=bind", function (result) {
-                            if (result.code == 0) {
-                                loadCourseList(result.datas)
-                            }
-                            else if (result.code == 1) {
-                                loadCourseList([])
-                            }
-                            else {
-                                errorMsg(Config.ERROR_INFO[result.code]);
-                            }
-                            openSidePage(_this, {
-                                id: "bindCourse",
-                                status: "bindCourse",
-                                width: "400",
-                                gateWay: {
-                                    Id: _d.Id
-                                }
-                            })
-                            closeContentLoading()
-                        })
-                    }
-                }, {
                     "name": "删除",
                     "fn": function () {
                         var delFetch = function () {
@@ -126,7 +94,7 @@ class SurvyList extends React.Component {
                                     deleteSurvyList(_d.Id)
                                 }
                                 else {
-                                    errorMsg(TUI.ERROR_INFO[result.code]);
+                                    errorMsg(Config.ERROR_INFO[result.code]);
                                 }
                             })
                         }
@@ -140,7 +108,7 @@ class SurvyList extends React.Component {
         return (
             <div>
                 <Content txt="问卷列表" addHref={this.addSurvy.bind(this)}>
-                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,300,0,220,180" />
+                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,300,0,100,220,180" />
                     <Pager fn={this.pageFn.bind(this)} />
                 </Content>
                 <SidePage id="survyEdit">
@@ -148,79 +116,8 @@ class SurvyList extends React.Component {
                         {_editSurvy}
                     </div>
                 </SidePage>
-                <SidePage
-                    id="unBindCourse"
-                    title="绑定科目"
-                    addHref={this.bindAllCourse.bind(this)}
-                    addHrefTxt="一键绑定"
-                    editHref={this.bindCourse.bind(this)}
-                    editHrefTxt="绑定"
-                    >
-                    <div><SurvyUnBindCourse key="survyUnBindCourse" /></div>
-                </SidePage>
-                <SidePage id="bindCourse" title="解绑科目">
-                    <div><SurvyBindCourse key="survyBindCourse" /></div>
-                </SidePage>
             </div>
         )
-    }
-
-    bindAllCourse() {
-        const {sidePageInfo, updateCourseBindSurvy, errorMsg, waiteMsg, successMsg} = this.props
-        let selected = [],
-            courseList = document.getElementsByClassName("t-c_checkbox")
-
-        for (var i = 0; i < courseList.length; i++) {
-            var $c = courseList[i];
-            selected.push({
-                SurvyId: sidePageInfo.gateWay.Id,
-                CourseId: $c.getAttribute("data-id")
-            })
-
-        }
-        this._goBack()
-
-        if (selected.length > 0) {
-            waiteMsg("数据提交中,请稍等...")
-            TUI.platform.post("/SurvyeBindCours", selected, function (result) {
-                if (result.code == 0) {
-                    updateCourseBindSurvy(selected)
-                    successMsg("保存成功")
-                }
-                else {
-                    errorMsg(Config.ERROR_INFO[result.code]);
-                }
-            })
-        }
-    }
-
-    bindCourse() {
-        const {sidePageInfo, updateCourseBindSurvy, errorMsg, waiteMsg, successMsg} = this.props
-        let selected = [],
-            courseList = document.getElementsByClassName("t-c_checkbox")
-        waiteMsg("数据提交中,请稍等...")
-        for (var i = 0; i < courseList.length; i++) {
-            var $c = courseList[i];
-            if ($c.getAttribute("data-status") == "selected") {
-                selected.push({
-                    SurvyId: sidePageInfo.gateWay.Id,
-                    CourseId: $c.getAttribute("data-id")
-                })
-                successMsg("保存成功")
-            }
-        }
-        this._goBack()
-
-        if (selected.length > 0) {
-            TUI.platform.post("/SurvyeBindCours", selected, function (result) {
-                if (result.code == 0) {
-                    updateCourseBindSurvy(selected)
-                }
-                else {
-                    errorMsg(Config.ERROR_INFO[result.code]);
-                }
-            })
-        }
     }
 
     pageFn(index) {
@@ -261,7 +158,7 @@ class SurvyList extends React.Component {
                 addSurvyList([])
             }
             else {
-                errorMsg(TUI.ERROR_INFO[result.code]);
+                errorMsg(Config.ERROR_INFO[result.code]);
             }
             closeLoading()
 

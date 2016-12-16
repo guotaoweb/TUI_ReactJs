@@ -28,6 +28,7 @@ class EditCourse extends React.Component {
         <Content2 tabs={tabs}>
           <div>
             <FormControls label="科目名称" ctrl="input" value="courseInfo.Name" required="required" />
+            <FormControls label="科目名称" ctrl="input" type="number" value="courseInfo.Sort" required="required" />
             <div className="formControl-btn">
               <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
               <Btn type="submit" txt="确定" href={this.editCourseInfo.bind(this)} />
@@ -51,7 +52,8 @@ class EditCourse extends React.Component {
 
     let _this = this,
       jsonParam = {
-        Name: editInfo.courseInfo.Name
+        Name: editInfo.courseInfo.Name,
+        Sort: editInfo.courseInfo.Sort
       }
 
 

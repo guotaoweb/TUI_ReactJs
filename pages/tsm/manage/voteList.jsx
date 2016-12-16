@@ -38,7 +38,7 @@ class VoteList extends React.Component {
         for (var i = 0; i < voteList.length; i++) {
             let _d = voteList[i],
                 _isStartBtn = _d.IsStart == 0 ? "关闭" : "开启",
-                _type = _d.Type == 1 ? "科目类型" : "普通类型",
+                _type = _d.Type == 1 ? "科目" : "常规",
                 _isStart = _d.IsStart == 0 ? "开启" : "关闭"
             tblContent
                 .tbody
@@ -277,7 +277,12 @@ class VoteList extends React.Component {
             status: "addVote",
             width: ""
         })
-
+        addEditInfo({
+            infoName: "voteInfo",
+            Type: 1,
+            IsStart: 1,
+        })
+        this.addCourseList()
         pushBreadNav({ name: "新增投票" })
     }
 

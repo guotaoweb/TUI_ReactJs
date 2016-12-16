@@ -41,4 +41,10 @@ export function updateSurvy(data){
     }
 }
 
+export function updateSurvyIsDefault(data){
+    return {
+        type:"UPDATE_SURVY_ISDEFAULT",
+        data
+    }
+}
 

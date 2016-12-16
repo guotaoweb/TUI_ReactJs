@@ -26,6 +26,18 @@ export default function manageReducers(state = initState, action) {
                 }
             }
             return Object.assign({}, state, { list: eval(JSON.stringify(state.data)) })
+        case "UPDATE_SURVY_ISDEFAULT":
+            for (let i = 0; i < state.list.length; i++) {
+                let $d = state.list[i]
+     
+                if ($d.Id == action.data) {
+                    $d.IsDefault = 0
+                    continue
+                }
+                $d.IsDefault = 1
+            }
+            return Object.assign({}, state, { list: eval(JSON.stringify(state.list)) })
+            
         case "ADD_SURVY_DATA":
             return Object.assign({}, state, { data: action.data })
         case "UPDATE_SURVY_DATA":

@@ -93,7 +93,7 @@ class Btn extends React.Component {
       setTimeout(function(){waiteMsg("提交中,请稍等...")},100)
     }
     if (href) {
-      href()
+      href(e)
     }
   }
 }
