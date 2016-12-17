@@ -49,6 +49,7 @@ class EditVote extends React.Component {
                         selectFn={this._selectFn.bind(this)}
                         value={"voteInfo.Survy" + $c.Id}
                         placeholder="内容为空则绑定默认问卷"
+                        clearFn={this._clearFn.bind(this, $c.Id)}
                         />
                 )
             }
@@ -62,15 +63,17 @@ class EditVote extends React.Component {
                     ctrl="input"
                     type="select"
                     selectFn={this._selectFn.bind(this)}
-                    value={"voteInfo.Survy0"} />
+                    value={"voteInfo.Survy0"}
+                    clearFn={this._clearFn.bind(this)}
+                    />
             )
         }
 
-                    // <FormControls
-                    //     label="是否启用"
-                    //     ctrl="slide"
-                    //     options={_slide}
-                    //     value="voteInfo.IsStart" />
+        // <FormControls
+        //     label="是否启用"
+        //     ctrl="slide"
+        //     options={_slide}
+        //     value="voteInfo.IsStart" />
         return (
             <Content2 tabs={tabs}>
                 <div>
@@ -105,7 +108,7 @@ class EditVote extends React.Component {
         )
     }
 
-    
+
 
 
     _selectFn(bind) {
@@ -117,6 +120,21 @@ class EditVote extends React.Component {
                 Id: bind.Id
             }
         })
+    }
+
+    _clearFn(courseId) {
+        const {updateEditInfo,editInfo} = this.props
+        let _jsonParam = {
+            infoName: "voteInfo"
+        }
+
+        for (let key in editInfo.voteInfo) {
+            if (key=="VoteRelated" + courseId) {
+                editInfo.voteInfo[key]["SurvyId"]=""
+                _jsonParam["VoteRelated" + courseId]=editInfo.voteInfo[key]
+            }
+        }
+        updateEditInfo(_jsonParam)
     }
 
     selectOnChangeFn(type) {
@@ -181,15 +199,15 @@ class EditVote extends React.Component {
         } else {
             let _id = editInfo.voteInfo.Id
             TUI.platform.put("/Vote/" + _id, jsonParam, function (result) {
-                    if (result.code == 0) {
-                        jsonParam["Id"] = _id
-                        updateVoteList(jsonParam)
-                        successMsg("编辑成功")
-                    } else {
-                        errorMsg(Config.ERROR_INFO[result.code]);
-                    }
-                    _this.goBack()
-                })
+                if (result.code == 0) {
+                    jsonParam["Id"] = _id
+                    updateVoteList(jsonParam)
+                    successMsg("编辑成功")
+                } else {
+                    errorMsg(Config.ERROR_INFO[result.code]);
+                }
+                _this.goBack()
+            })
         }
 
     }

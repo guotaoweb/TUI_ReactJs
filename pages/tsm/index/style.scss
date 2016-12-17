@@ -1,12 +1,8 @@
-body {
+.v-body {
     background: url("./img/bg.jpg") repeat center top;
-    font-family: "微软雅黑", "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+    font-family: "YouYuan";
     overflow-y: auto;
     overflow-x: hidden;
-}
-
-body * {
-    box-sizing: border-box;
 }
 
 .v-header {

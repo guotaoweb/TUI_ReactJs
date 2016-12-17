@@ -26,7 +26,7 @@ class PersonMatchPostEdit extends React.Component {
 
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "角色", "name5": "职位级别", "name6": "操作" },
+            "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "角色", "name5": "职位级别","name6": "内部编码", "name7": "操作" },
             "tbody": []
         }
         for (var i = 0; i < roleData.length; i++) {
@@ -39,6 +39,7 @@ class PersonMatchPostEdit extends React.Component {
                 "value3": _d.loginUid,
                 "value4": _d.roleName,
                 "value5": _d.userLevel,
+                "value6":_d.staffCode,
                 "fns": [{
                     "name": "设置角色",
                     "fn": function () {
@@ -191,13 +192,13 @@ class PersonMatchPostEdit extends React.Component {
                     addTxt="调入"
                     editTxt="兼职">
                     <div>
-                        <Search placeholder="请输入关键字(用户名)搜索" style={{
+                        <Search placeholder="请输入关键字(姓名、用户名、内部编码)搜索" style={{
                             border: "none",
                             borderBottom: "1px solid #ebebeb",
                             width: "98%",
                             margin: "auto"
                         }} fn={this._searchPersonMachPostEdit.bind(this)} />
-                        <Table bindPager="personMatchPostEditPager" tblContent={tblContent} width="50,0,150,150,100,220" />
+                        <Table bindPager="personMatchPostEditPager" tblContent={tblContent} width="50,0,150,150,100,200,220" />
                         <Pager id="personMatchPostEditPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                     </div>
                 </Content>
@@ -207,7 +208,7 @@ class PersonMatchPostEdit extends React.Component {
     _searchPersonMachPostEdit(val) {
         const {addPersonMatchPostRole, updatePageInfo, errorMsg, pageInfo} = this.props
         let _pageSize = pageInfo["personMatchPostEditPager"] ? pageInfo["personMatchPostEditPager"].size : 10
-        let _url = "/dutys/?positionId=" + this.props.sidePageInfo.gateWay.positionId + "&loginUid=" + val + "&from={0}&limit=" + _pageSize
+        let _url = "/dutys/?positionId=" + this.props.sidePageInfo.gateWay.positionId + "&loginName=" + val + "&from={0}&limit=" + _pageSize
         TUI.platform.get(_url.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 let _data = result.data

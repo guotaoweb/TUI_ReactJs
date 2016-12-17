@@ -30,7 +30,7 @@ class UserMaintain extends React.Component {
         } = this.props
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "用户名-desc-cnName", "name3": "账号-desc-loginUid", "name4": "默认组织", "name5": "职位", "name6": "手机","name7":"内部编码-desc-staffCode","name8": "排序号", "name9": "操作" },
+            "thead": { "name1": "序号", "name2": "用户名-desc-cnName", "name3": "账号-desc-loginUid", "name4": "默认组织", "name5": "职位", "name6": "手机", "name7": "内部编码-desc-staffCode", "name8": "排序号", "name9": "操作" },
             "tbody": []
         }
         for (var i = 0; i < data.length; i++) {
@@ -149,7 +149,7 @@ class UserMaintain extends React.Component {
                             width: "98%",
                             margin: "auto"
                         }} fn={this._searchUserMaintain.bind(this)} />
-                        <Table id="userMaintain" bindPager="userMaintainPager" tblContent={tblContent} width="50,100,100,0,0,120,100,70,80" sort={this.tblSort.bind(this)}/>
+                        <Table id="userMaintain" bindPager="userMaintainPager" tblContent={tblContent} width="50,100,100,0,0,120,100,70,80" sort={this.tblSort.bind(this)} />
                         <Pager id="userMaintainPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                     </div>
                 </Content3>
@@ -162,24 +162,23 @@ class UserMaintain extends React.Component {
         )
     }
 
-    tblSort(params){
-        console.info(params)
+    tblSort(params) {
         let sort = ""
-        if(params.sort=="desc"){
-            sort = "%2B"+params.filter
+        if (params.sort == "desc") {
+            sort = "%2B" + params.filter
         }
-        else{
-            sort = "-"+params.filter
+        else {
+            sort = "-" + params.filter
         }
-        
-        this.loadUser(USERMAINTAIN_ID,sort)
+
+        this.loadUser(USERMAINTAIN_ID, sort)
     }
 
 
     _searchUserMaintain(val) {
         let {searchInfo, addUserMaintain, updatePageInfo, errorMsg, pageInfo} = this.props
         let _pageSize = pageInfo["userMaintainPager"] ? pageInfo["userMaintainPager"].size : 10
-        val = "/staffs?loginName=" + val + "&unitId=" + searchInfo.key + "&from={0}&limit=10"
+        val = val ? "/staffs?loginName=" + val + "&from={0}&limit=10" : pageInfo.userMaintainPager.url
         TUI.platform.get(val.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addUserMaintain(result.data)
@@ -195,7 +194,7 @@ class UserMaintain extends React.Component {
                 index: 1,
                 size: _pageSize,
                 sum: result._page ? result._page.total : 0,
-                url: val
+                surl: val
             })
         })
     }
@@ -321,11 +320,10 @@ class UserMaintain extends React.Component {
         })
     }
 
-    loadUser(id,sort) {
-        const {errorMsg, addUserMaintain, updatePageInfo, clearPageInfo, updateSearchInfo,pageInfo} = this.props
-        let _pageSize = pageInfo["userMaintainPager"] ? pageInfo["userMaintainPager"].size : 10
-
-        let url = id ? "/staffs?unitId=" + id + "&sort="+(sort?sort:"")+"&from={0}&limit="+_pageSize : "/staffs?from={0}&limit="+_pageSize
+    loadUser(id, sort) {
+        const {errorMsg, addUserMaintain, updatePageInfo, clearPageInfo, updateSearchInfo, pageInfo} = this.props
+        let _pageSize = pageInfo["userMaintainPager"] ? pageInfo["userMaintainPager"].size : 10,
+            url = id ? "/staffs?unitId=" + id + "&sort=" + (sort ? sort : "") + "&from={0}&limit=" + _pageSize : "/staffs?from={0}&limit=" + _pageSize
 
         TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
@@ -476,7 +474,9 @@ class UserMaintain extends React.Component {
     pageFn(index, loadComplete) {
         const {pageInfo, addUserMaintain, updatePageInfo} = this.props
         let _pageSize = pageInfo["userMaintainPager"] ? pageInfo["userMaintainPager"].size : 10,
-            _url = pageInfo.userMaintainPager.url,
+            _initUrl = pageInfo.userMaintainPager.url,
+            _initSurl = pageInfo.userMaintainPager.surl,
+            _url = _initSurl=="#"?_initUrl:_initSurl,
             rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
         TUI.platform.get(rUrl.replace("{0}", _pageSize * (index - 1)), function (result) {
             if (result.code == 0) {
@@ -491,7 +491,8 @@ class UserMaintain extends React.Component {
                 index: index,
                 size: _pageSize,
                 sum: pageInfo.userMaintainPager ? pageInfo.userMaintainPager.sum : 0,
-                url: rUrl
+                url: _initSurl=="#"?rUrl:_initUrl,
+                surl:_initSurl=="#"?_initSurl:rUrl,
             })
         })
 

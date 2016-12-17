@@ -6,7 +6,8 @@ const initState = {
             index: 1,//页数
             size: 5,//每页的数量
             sum: 1,//总数
-            url: ""//当前接口地址
+            url: "",//当前接口地址
+            surl:"#"//搜索url
         }
     },
     sidePageInfo: {
@@ -41,6 +42,7 @@ const initState = {
     side: [],
     breadNav: [],//面包屑
     hasVerticalScroll: true,//iScroll专用,判断滚动条
+    loginStatus:0 //0未登陆 1登陆中
 }
 
 export default function manageReducers(state = initState, action) {
@@ -104,7 +106,8 @@ export default function manageReducers(state = initState, action) {
                     index: action.data.index ? action.data.index : state.pageInfo[_id].index,
                     size: action.data.size ? action.data.size : state.pageInfo[_id].size,
                     sum: (action.data.sum || action.data.sum==0) ? action.data.sum : state.pageInfo[_id].sum,
-                    url: action.data.url ? action.data.url : state.pageInfo[_id].url
+                    url: action.data.url ? action.data.url : state.pageInfo[_id].url,
+                    surl:action.data.surl ? action.data.surl : (state.pageInfo[_id]?state.pageInfo[_id].surl:"#")
                 }
                 return Object.assign({}, state, {
                     pageInfo: JSON.parse(JSON.stringify(state.pageInfo))
@@ -117,7 +120,8 @@ export default function manageReducers(state = initState, action) {
                             index: action.data.index ? action.data.index : state.pageInfo["index"].index,
                             size: action.data.size ? action.data.size : state.pageInfo["index"].size,
                             sum: action.data.sum ? action.data.sum : state.pageInfo["index"].sum,
-                            url: action.data.url ? action.data.url : state.pageInfo["index"].url
+                            url: action.data.url ? action.data.url : state.pageInfo["index"].url,
+                            surl:action.data.surl ? action.data.surl : state.pageInfo["index"].surl
                         }
                     }
                 })
@@ -219,6 +223,9 @@ export default function manageReducers(state = initState, action) {
             return Object.assign({}, state, { breadNav: eval(JSON.stringify(state.breadNav)) })
         case "SET_CANVERTICALLYSCROLL":
             return Object.assign({}, state, { hasVerticalScroll: action.data })
+        case "UPDATE_LOGIN_STATUS":
+            return Object.assign({}, state, { loginStatus: action.data })
+            
         default: return state
     }
 }

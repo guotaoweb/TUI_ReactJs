@@ -32,7 +32,7 @@ class PersonMatchPostEditSelect extends React.Component {
         }
 
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "部门", "name5": "职位", "name6": "操作" },
+            "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "部门", "name5": "职位",  "name6": "内部编码","name7": "操作" },
             "tbody": []
         }
         for (var i = 0; i < selectUserData.length; i++) {
@@ -50,6 +50,7 @@ class PersonMatchPostEditSelect extends React.Component {
                 "value3": _d.loginUid,
                 "value4": _d.unitName,
                 "value5": _d.positionNames,
+                "value6": _d.staffCode,
                 "fns": [{
                     "name": sidePageName,
                     "fn": function () {
@@ -95,13 +96,13 @@ class PersonMatchPostEditSelect extends React.Component {
                     <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />{sidePageName}列表</span>
                 </div>
                 <div>
-                    <Search placeholder="请输入关键字(用户名)搜索" style={{
+                    <Search placeholder="请输入关键字(姓名、用户名、内部编码)搜索" style={{
                         border: "none",
                         borderBottom: "1px solid #ebebeb",
                         width: "98%",
                         margin: "auto"
                     }} fn={this._searchPersonMachPostEditSelect.bind(this)} />
-                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,100,150,0,0,80" />
+                    <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,100,150,0,0,200,80" />
                 </div>
             </div>
         )

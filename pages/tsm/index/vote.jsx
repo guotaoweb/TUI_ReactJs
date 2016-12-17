@@ -64,7 +64,7 @@ class Vote extends React.Component {
     }
 
     return (
-      <div>
+      <div className="v-body">
         <div className="v-header">
           <img src={logo} />
         </div>

@@ -281,7 +281,8 @@ class Orgnization extends React.Component {
             }
         }
         let _pageSize = pageInfo["orgnizationPager"] ? pageInfo["orgnizationPager"].size : 10
-        val = val ? "/units?unitName=" + params[0] + "&unitCode=" + params[1] + "from={0}&limit=" + _pageSize : "/units?from={0}&limit=" + _pageSize
+        val = val ? "/units?unitName=" + params[0] + "&from={0}&limit=" + _pageSize : pageInfo.orgnizationPager.url
+        //"/units?from={0}&limit=" + _pageSize
         TUI.platform.get(val.replace("{0}", 0), function (result) {
             if (result.code == 0) {
                 addSubList(result.data)
@@ -297,7 +298,7 @@ class Orgnization extends React.Component {
                 index: 1,
                 size: _pageSize,
                 sum: result._page ? result._page.total : 0,
-                url: val
+                surl: val
             })
         })
     }
@@ -383,7 +384,8 @@ class Orgnization extends React.Component {
                     remark: _d.remark,
                     permission: _d.unitCode,
                     globalCode: _d.globalCode,
-                    staffing: _d.staffing
+                    staffing: _d.staffing,
+                    statusName:_d.statusName
                 })
             }
             _this.props.pushBreadNav({ name: _d.unitName })
@@ -466,7 +468,8 @@ class Orgnization extends React.Component {
                 index: 1,
                 size: _pageSize,
                 sum: result._page ? result._page.total : 0,
-                url: url
+                url: url,
+                surl:"#"
             })
         })
     }
@@ -577,7 +580,9 @@ class Orgnization extends React.Component {
     pageFn(index, loadComplete) {
         const {pageInfo, addSubList, updatePageInfo, errorMsg} = this.props
         let _pageSize = pageInfo["orgnizationPager"] ? pageInfo["orgnizationPager"].size : 10,
-            _url = pageInfo.orgnizationPager.url,
+            _initUrl = pageInfo.orgnizationPager.url,
+            _initSurl =pageInfo.orgnizationPager.surl,
+            _url = _initSurl=="#"?_initUrl:_initSurl,
             rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
 
         TUI.platform.get(rUrl.replace("{0}", _pageSize * (index - 1)), function (result) {
@@ -596,7 +601,8 @@ class Orgnization extends React.Component {
                 index: index,
                 size: _pageSize,
                 sum: result._page ? result._page.total : 0,
-                url: rUrl
+                url: _initSurl=="#"?rUrl:_initUrl,
+                surl:_initSurl=="#"?_initSurl:rUrl,
             })
         })
     }

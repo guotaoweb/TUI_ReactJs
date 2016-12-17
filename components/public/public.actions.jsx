@@ -209,4 +209,11 @@ export function setCanVerticallyScroll(data) {
     }
 }
 
+export function updateLoginStatus(data) {
+    return {
+        type: "UPDATE_LOGIN_STATUS",
+        data
+    }
+}
+
 

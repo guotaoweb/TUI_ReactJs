@@ -24,6 +24,7 @@ class UserMaintainExtInfo extends React.Component {
                     <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                     <Btn type="submit" txt="确定" href={this.editUserMaintainExtInfo.bind(this)} />
                 </div>
+                <br/>
             </div>
         )
     }

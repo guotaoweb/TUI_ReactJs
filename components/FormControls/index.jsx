@@ -30,7 +30,8 @@ class FormControls extends React.Component {
             value,
             onChangeFn,
             bind,
-            selectFn
+            selectFn,
+            clearFn
         } = this.props
         let bindElem
 
@@ -55,6 +56,7 @@ class FormControls extends React.Component {
                 placeholder={this.props.placeholder}
                 labelTxt={labelTxt}
                 minWidth={minWidth}
+                clearFn={clearFn}
                 />
         }
         else if (ctrl == "textarea") {
@@ -180,7 +182,8 @@ class CTRL_INPUT extends React.Component {
             data,
             bind,
             selectFn,
-            placeholder
+            placeholder,
+            clearFn
         } = this.props
 
         let _label
@@ -205,7 +208,7 @@ class CTRL_INPUT extends React.Component {
         if (type == "select") {
             _input.push(
                 <div key={"formcontrol-input-search" + data} className="formcontrol-input-select">
-                    <input className={required} ref="formcontrolInputSelect" type="text" onClick={this._selectFn.bind(this)} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style}  placeholder={placeholder}  readOnly />
+                    <input className={required} ref="formcontrolInputSelect" type="text" onClick={this._selectFn.bind(this)} onBlur={onBlur} onChange={this._onChange.bind(this)} value={_value || ""} style={style} placeholder={placeholder} readOnly />
                     <img src={search} onClick={this._selectFn.bind(this)} />
                     {_value ? <img src={chag} onClick={this._clearSelect.bind(this)} className="chachag" /> : ""}
                 </div>
@@ -223,7 +226,7 @@ class CTRL_INPUT extends React.Component {
         )
     }
     _selectFn() {
-        const {selectFn, bind, addFn, value} = this.props
+        const {selectFn, bind, addFn, value,clearFn} = this.props
         if (this.props.selectFn) {
             let _object = value.split(".")
             let _info = {
@@ -237,13 +240,15 @@ class CTRL_INPUT extends React.Component {
         }
     }
     _clearSelect(e) {
-        const {value, editFn} = this.props
+        const {value, editFn,bind,clearFn} = this.props
         let _object = value.split(".")
         let _info = {
             infoName: _object[0]
         }
         _info[_object[1]] = ""
-        if (editFn) { editFn(_info) }
+
+        if (editFn) {editFn(_info) }
+        if(clearFn){clearFn()}
         this.refs.formcontrolInputSelect.value = ""
     }
     _onChange(e) {
@@ -580,12 +585,11 @@ class CTRL_DATE_PICKER extends React.Component {
             _value = data[value.split(".")[0]][value.split(".")[1]]
         }
 
-
         return (
             <div className="t-formControls">
                 {_label}
                 <DateField
-                    defaultValue={_value}
+                    value={_value || ""}
                     dateFormat="YYYY-MM-DD"
                     onChange={this._onChange.bind(this)}
                     />
@@ -717,7 +721,7 @@ export function clearCtrlStatus() {
     let $checkbox = document.getElementsByClassName("t-c_checkbox")
     for (var i = 0; i < $checkbox.length; i++) {
         var $c = $checkbox[i];
-        $c.getElementsByTagName("img")[0].setAttribute("src",unCheckbox)
-        $c.setAttribute("data-status","unselect")
+        $c.getElementsByTagName("img")[0].setAttribute("src", unCheckbox)
+        $c.setAttribute("data-status", "unselect")
     }
 }

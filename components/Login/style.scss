@@ -1,13 +1,28 @@
 .t-login{
-    position:absolute;
-    left:35%;
-    top:20%;
+    width: 420px;
+    margin:auto;
+    margin-top:10%;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px #ebebeb;
+    background-color: #f9f9f9;
+    padding: 8px;
     h3{
         width:100%;
         height:40px;
         line-height:40px;
         text-align:center;
-        font-size:30px;
+        font-size:20px;
+    }
+    .t-l-error{
+        margin-left: 3px;
+        color: #ec1010;
+        text-align: center;
+        display:none;
+    }
+    a{
+        width:100%;
+        display:block;
     }
 }
 
