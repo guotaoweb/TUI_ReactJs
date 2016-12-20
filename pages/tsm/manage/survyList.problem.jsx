@@ -66,7 +66,6 @@ class SurvyProblem extends React.Component {
                         Order: _d[i].Order,
                         ParentId: _d[i].ParentId,
                         Type: _d[i].Type
-
                     })
                     for (var j = 0; j < _d[i].Datas.length; j++) {
                         var _d_ = _d[i].Datas[j];
@@ -76,7 +75,8 @@ class SurvyProblem extends React.Component {
                             Name: _d_.Name,
                             Order: _d_.Order,
                             ParentId: _d_.ParentId,
-                            Type: _d_.Type
+                            Type: _d_.Type,
+                            Score: _d_.Score
                         })
                     }
                 }
@@ -106,7 +106,8 @@ class SurvyProblem extends React.Component {
                         ParentId: editInfo[key].ParentId,
                         Name: editInfo[key].Name,
                         Order: $s.Order,
-                        Type: editInfo[key].Type
+                        Type: editInfo[key].Type,
+                        Score:editInfo[key].Score
                     })
                 }
             }
@@ -119,7 +120,8 @@ class SurvyProblem extends React.Component {
                             ParentId: editInfo[key].ParentId,
                             Name: editInfo[key].Name,
                             Order: $d.Order,
-                            Type: editInfo[key].Type
+                            Type: editInfo[key].Type,
+                            Score:editInfo[key].Score
                         })
                     }
                 }
@@ -265,8 +267,6 @@ class SurvyProblem extends React.Component {
                 $m.Order = parseInt(i)
             }
         }
-        console.info("==>up")
-        console.info(survyData)
         updateSurvy(survyData)
     }
     //题目降序
@@ -289,8 +289,6 @@ class SurvyProblem extends React.Component {
                 survyData[i].Order = parseInt(order)
             }
         }
-        console.info("==>down")
-        console.info(survyData)
         updateSurvy(survyData)
     }
 }

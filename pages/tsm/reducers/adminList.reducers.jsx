@@ -4,20 +4,18 @@ const initState = {
     list: []
 }
 
-export default function gradeListReducers(state = initState, action) {
+export default function adminListReducers(state = initState, action) {
     switch (action.type) {
-        case "ADD_GRADE_LIST":
+        case "ADD_ADMIN_LIST":
             if (state.list.length == 0) {
                 return Object.assign({}, state, {list: action.data})
             } else {
-                state
-                    .list
-                    .push(action.data)
+                state.list.push(action.data)
                 return Object.assign({}, state, {
                     list: JSON.parse(JSON.stringify(state.list))
                 })
             }
-        case "DELETE_GRADE_LIST":
+        case "DELETE_ADMIN_LIST":
             for (let i = 0; i < state.list.length; i++) {
                 let $d = state.list[i]
                 if ($d.Id == action.id) {
@@ -27,18 +25,24 @@ export default function gradeListReducers(state = initState, action) {
             return Object.assign({}, state, {
                 list: eval(JSON.stringify(state.list))
             })
-        case "UPDATE_GRADE_LIST":
+        case "UPDATE_ADMIN_LIST":
             for (let i = 0; i < state.list.length; i++) {
                 let $d = state.list[i]
 
                 if ($d.Id == action.data.Id) {
-                    $d.Name = action.data.Name
-                    $d.IsStart = action.data.IsStart
+                    $d.UserName = action.data.UserName
+                    $d.LockoutEnabled = action.data.LockoutEnabled
                 }
             }
             return Object.assign({}, state, {
                 list: eval(JSON.stringify(state.list))
             })
+        case "LOAD_ADMIN_LIST":
+            return Object.assign({}, state, {
+                list: JSON.parse(JSON.stringify(action.data))
+            })
+
+            
         default:
             return state
     }

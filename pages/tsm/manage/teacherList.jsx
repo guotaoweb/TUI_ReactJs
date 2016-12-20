@@ -152,14 +152,14 @@ class TeacherList extends React.Component {
   }
 
   componentDidMount() {
-    const {addTeacherList, errorMsg, teacherList, updatePageInfo, addCourseList, courseList,addBreadNav} = this.props
+    const {loadTeacherList, errorMsg, teacherList, updatePageInfo, addCourseList, courseList,addBreadNav} = this.props
     openLoading()
     addBreadNav({name:"教师列表"})
     //获取教师列表
     let _url = "/Teacher?pageIndex={0}&pageSize=10"
     TUI.platform.get(_url.replace("{0}",1), function (result) {
       if (result.code == 0) {
-        addTeacherList(result.datas)
+        loadTeacherList(result.datas)
         updatePageInfo({
           index: 1,
           size: 10,
@@ -168,7 +168,7 @@ class TeacherList extends React.Component {
         })
       }
       else if (result.code == 1) {
-        addTeacherList([])
+        loadTeacherList([])
       }
       else {
         errorMsg(Config.ERROR_INFO[result.code]);

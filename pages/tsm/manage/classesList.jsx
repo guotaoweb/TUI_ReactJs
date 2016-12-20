@@ -13,7 +13,7 @@ import MultyMenu from "MultyMenu"
 import { openLoading, closeLoading } from "Loading"
 
 import EditClasses from "./classesList.edit"
-import BindVote from "./classesList.bindVote"
+// import BindVote from "./classesList.bindVote"
 import ClassesGrade from "./classesList.grade"
 import GradeEdit from "./classesList.gradeEdit"
 import SelectTeacher from "./classesList.selectTeacher"

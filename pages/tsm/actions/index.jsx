@@ -6,6 +6,7 @@ import * as classesList from './classesList.actions'
 import * as survyList from './survyList.actions'
 import * as voteList from './voteList.actions'
 import * as gradeList from './gradeList.actions'
+import * as adminList from './adminList.actions'
 import * as voting from './voting.actions'
 
 export default {
@@ -17,5 +18,6 @@ export default {
     ...fromControl,
     ...voteList,
     ...gradeList,
+    ...adminList,
     ...voting
 }

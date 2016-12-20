@@ -27,7 +27,7 @@ class SurvyOption extends React.Component {
                     optionBtns = [],
                     _type = "input",
                     _width = {
-                        width: "400px"
+                        width: "340px"
                     }
 
                 if (type != "textarea") {
@@ -51,7 +51,12 @@ class SurvyOption extends React.Component {
                 _survy.push(
                     <div key={"survy_s_" + i + "_" + j} style={{ marginLeft: "35px" }}>
                         {optionNo}
-                        <div style={{ float: "left" }}><FormControls ctrl={_type} bind={_bind} value={"survyOptionInfo_" + $o.Id + ".Name"} style={_width} /></div>
+                        <div style={{ float: "left" }}>
+                            <FormControls ctrl={_type} bind={_bind} value={"survyOptionInfo_" + $o.Id + ".Name"} placeholder="选项内容" style={_width} />
+                        </div>
+                        <div style={{ float: "left", marginLeft: "10px" }}>
+                            <FormControls ctrl="input" bind={_bind} value={"survyOptionInfo_" + $o.Id + ".Score"} placeholder="分值" style={{ width: "50px" }} />
+                        </div>
                         {optionBtns}
                         <br className="clear" />
                     </div>
@@ -167,12 +172,12 @@ class SurvyOption extends React.Component {
                                 errorMsg(Config.ERROR_INFO[result.code]);
                             }
                         })
-                        
+
                     }
                 }
             }
         }
-        
+
     }
 
     //题目升序

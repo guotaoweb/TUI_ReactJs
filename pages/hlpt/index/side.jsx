@@ -1,6 +1,7 @@
 import Side from 'Side'
 import { browserHistory } from 'react-router'
 import { openLoading, closeLoading } from "Loading"
+import { Link } from 'react-router'
 //图片
 import other from "!url!./img/other.png" //虚拟组织
 import others from "!url!./img/other-s.png" //虚拟组织

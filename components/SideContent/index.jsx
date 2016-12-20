@@ -80,5 +80,7 @@ export function openSideContent() {
 }
 
 export function closeSideContent() {
-    _obj().sideContent.style.left = "-1000px";
+    if (_obj().sideContent) {
+        _obj().sideContent.style.left = "-1000px";
+    }
 }

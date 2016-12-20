@@ -1,12 +1,12 @@
 import Content2 from "Content2"
 import Btn from "Btn"
 import FormControls from "FormControls"
-import {closeSidePage} from "SidePage"
+import { closeSidePage } from "SidePage"
 
 
 class EditAdmin extends React.Component {
   render() {
-    const {sidePageInfo, userId, detail} = this.props
+    const {sidePageInfo} = this.props
     let tabs = []
 
     if (sidePageInfo.status == "editAdmin") {
@@ -15,120 +15,91 @@ class EditAdmin extends React.Component {
     else {
       tabs.push({ name: "新增管理员" })
     }
-
+    let _slideOptions = [{ id: 0, name: "否" }, { id: 1, name: "是" }]
     return (
       <div>
         <Content2 tabs={tabs}>
-          <FormControls label="用户名" ctrl="input" txt={detail.code} onChange={this.onChangeByCode.bind(this) }/>
-          <FormControls label="账号密码" ctrl="input" txt={detail.name} onChange={this.onChangeByName.bind(this) }/>
-          <FormControls label="重复密码" ctrl="input" txt={detail.note} onChange={this.onChangeByNote.bind(this) }/>
-          <div style={{ marginLeft: "70px", paddingTop: "5px" }}>
-            <Btn type="cancel" txt="取消" href={this.goPrevPage.bind(this) } style={{ float: "left", marginRight: "10px" }} />
-            <Btn type="check" txt="确定" href={this.editVTeamInfo.bind(this) } style={{ float: "left" }}  />
+          <div>
+            <FormControls label="用户名" ctrl="input" value="userInfo.UserName" required="required" />
+            <FormControls label="账号密码" ctrl="input" type="Password" placeholder="密码至少6位" value="userInfo.Password" />
+            <FormControls label="重复密码" ctrl="input" type="Password" placeholder="密码至少6位" value="userInfo.ConfirmPassword" />
+            <FormControls label="是否锁定" ctrl="slide" options={_slideOptions} value="userInfo.LockoutEnabled" />
+            <div className="formControl-btn">
+              <Btn type="cancel" txt="取消" href={this._goBack.bind(this)} />
+              <Btn type="submit" txt="确定" href={this.editAdminInfo.bind(this)} />
+            </div>
           </div>
         </Content2>
       </div>
     )
   }
 
+  _goBack() {
+    const {clearEditInfo} = this.props
+    closeSidePage()
+    clearEditInfo({
+      infoName: "userInfo"
+    })
+  }
 
-  editVTeamInfo() {
-    const {detail, sidePageInfo, userId, successMsg, errorMsg, updateVTeamListByID, updateVTeamData, preventSubmit,waiteMsg} = this.props
+  editAdminInfo() {
+    const {
+      editInfo,
+      sidePageInfo,
+      successMsg,
+      errorMsg,
+      updateAdminList,
+      addAdminList
+    } = this.props
+    let _this = this
 
-    if (preventSubmit) {
+
+    let jsonParam = {
+      UserName: editInfo.userInfo.UserName,
+      Password: editInfo.userInfo.Password,
+      LockoutEnabled: editInfo.userInfo.LockoutEnabled == 0 ? true : false
+    }
+
+    if(jsonParam.Password.length<6 || editInfo.userInfo.ConfirmPassword.length<6){
+      setTimeout(function(){errorMsg("密码至少6位")},1000)
+      
       return false
     }
 
-    waiteMsg("数据提交中,请稍后...")
-
-    let _this = this,
-      operType,
-      teamId
-
-    if (sidePageInfo.status == "editVTeam") {
-      operType = "U"
-      teamId = detail.id
-    }
-    else {
-      operType = "A"
-    }
-
-    TUI.platform.post("/projectteam/team", {
-      "uid": userId,
-      "team_id": teamId,
-      "upper_team_id": "-1",
-      "team_code": detail.code,
-      "team_name": detail.name,
-      "team_note": detail.note,
-      "team_icon": "",
-      "sort": "99",
-      "state": "1",
-      "del_flag": "n",
-      "opertype": operType
-    }, function (result) {
-      if (result.code == 0) {
-        if (operType == "U") {
-          setTimeout(function(){successMsg("虚拟组编辑成功")},800)
+    if (sidePageInfo.status == "addAdmin") {
+      jsonParam["ConfirmPassword"] = editInfo.userInfo.ConfirmPassword
+      TUI.platform.post("/Register", jsonParam, function (result) {
+        if (result.code == 0) {
+          jsonParam["Id"] = result.datas
+          successMsg("新增成功")
+          addAdminList(jsonParam)
         }
         else {
-          setTimeout(function(){successMsg("虚拟组新增成功")},800)
-          let _addData = {
-            team_id: result.datas[0],
-            team_code: detail.code,
-            team_name: detail.name,
-            team_note: detail.note,
-            admins: {} 
-          }
- 
-          updateVTeamData(_addData)
+          setTimeout(function(){errorMsg(Config.ERROR_INFO[result.code]);},1000)
         }
-        updateVTeamListByID(teamId)
-        _this.goPrevPage()
-      }
-      else {
-        errorMsg(config.ERROR_INFO[result.code]);
-      }
-    })
+        _this._goBack()
+      })
+    }
+    else {
+      let _id = sidePageInfo.gateWay.id
+      jsonParam["Id"] = _id
+      TUI.platform.put("/User/" + _id, jsonParam, function (result) {
+        if (result.code == 0) {
+          successMsg("更新成功")
+          updateAdminList(jsonParam)
+        }
+        else {
+          setTimeout(function(){errorMsg(Config.ERROR_INFO[result.code]);},1000)
+        }
+        _this._goBack()
+      })
+    }
   }
 
-  goPrevPage() {
-    const {clearVTeamInfo} = this.props
-    setTimeout(function () {
-      clearVTeamInfo()
-      closeSidePage()
-    }, 0)
-  }
-
-  onChangeByCode(e) {
-    const {detail, updateVTeamInfo} = this.props
-    updateVTeamInfo({
-      code: e.currentTarget.value,
-      name: detail.name,
-      note: detail.note
-    })
-  }
-  onChangeByName(e) {
-    const {detail, updateVTeamInfo} = this.props
-    updateVTeamInfo({
-      code: detail.code,
-      name: e.currentTarget.value,
-      note: detail.note
-    })
-  }
-  onChangeByNote(e) {
-    const {detail, updateVTeamInfo} = this.props
-    updateVTeamInfo({
-      code: detail.code,
-      name: detail.name,
-      note: e.currentTarget.value
-    })
-  }
 };
 
 
 export default TUI._connect({
-  userId: "publicInfo.userInfo.id",
   sidePageInfo: "publicInfo.sidePageInfo",
-  detail: "vteamList.detail",
-  preventSubmit: "publicInfo.msgInfo.txt"
+  editInfo: "formControlInfo.data"
 }, EditAdmin)

@@ -1,5 +1,5 @@
 import Side from 'Side'
-
+import { Link } from 'react-router'
 //图片
 import admin from "!url!./img/admin.png"
 import admins from "!url!./img/admin-s.png"
@@ -30,9 +30,11 @@ class _Side extends React.Component {
       icon: admin,
       sicon: admins,
       sub: [{
-        name: "管理员列表",
+        id:"1-1",
+        name: "管理员列表", 
         url: Config.ROOTPATH + "admins"
       }, {
+        id:"1-2", 
         name: "教师列表",
         url: Config.ROOTPATH + "teachers"
       }]
@@ -43,37 +45,42 @@ class _Side extends React.Component {
       icon: classes,
       sicon: classess,
       sub: [{
+        id:"2-1",
         name: "科目列表",
         url: Config.ROOTPATH + "courses"
       }, {
+        id:"2-2",
         name: "班级列表",
         url: Config.ROOTPATH + "classes"
       }]
     }, {
       id:"3",
       name: "问卷管理",
-      url: "survys",
+      url: Config.ROOTPATH + "survys",
       icon: survy,
       sicon: survys
     }, {
       id:"4",
       name: "投票管理",
-      url: "votes",
+      url: Config.ROOTPATH + "votes",
       icon: vote,
       sicon: votes
     }, {
       id:"5",
       name: "报表系统",
-      url: "survys",
+      url: Config.ROOTPATH + "survys",
       icon: report,
       sicon: reports,
       sub: [{
+        id:"5-1",
         name: "在线分析",
         url: Config.ROOTPATH + "TeacherList"
       }, {
+        id:"5-2",
         name: "导出报表",
         url: Config.ROOTPATH + "TeacherList"
       }, {
+        id:"5-3",
         name: "报表列表",
         url: Config.ROOTPATH + "reports"
       }]

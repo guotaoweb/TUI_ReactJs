@@ -22,8 +22,8 @@ class Routers extends React.Component {
         const {history} = this.props
         return (
             <Router history={history}>
-                <Route path={Config.ROOTPATH} component={Login}> 
-
+                <Route path={Config.ROOTPATH} component={Manage}> 
+                    <IndexRoute component={AdminList} />
                     <Route path={Config.ROOTPATH + "teachers"} component={TeacherList} />
                     <Route path={Config.ROOTPATH + "courses"} component={CourseList} />
                     <Route path={Config.ROOTPATH + "admins"} component={AdminList} />

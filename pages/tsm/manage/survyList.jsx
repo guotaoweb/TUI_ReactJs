@@ -6,8 +6,8 @@ import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import { openDialog, closeDialog } from "Dialog"
 import Pager from "Pager"
 import EditSurvy from "./survyList.edit"
-import SurvyBindCourse from "./survyList.bindCourse"
-import SurvyUnBindCourse from "./survyList.unBindCourse"
+// import SurvyBindCourse from "./survyList.bindCourse"
+// import SurvyUnBindCourse from "./survyList.unBindCourse"
 import { openLoading, closeLoading } from "Loading"
 
 class SurvyList extends React.Component {
