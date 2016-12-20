@@ -122,7 +122,7 @@ class CourseList extends React.Component {
   }
 
   componentDidMount() {
-    const {addCourseList, updatePageInfo, addSurvyList,addBreadNav,survyList} = this.props
+    const {loadCourseList, updatePageInfo, addSurvyList,addBreadNav,survyList} = this.props
     addBreadNav({name:"科目列表"})
     openLoading()
 
@@ -130,10 +130,10 @@ class CourseList extends React.Component {
     let _url = "/Course?pageIndex={0}&pageSize=10"
     TUI.platform.get(_url.replace("{0}", 1), function (result) {
       if (result.code == 0) {
-        addCourseList(result.datas)
+        loadCourseList(result.datas)
       }
       else if (result.code == 1) {
-        addCourseList([])
+        loadCourseList([])
       }
       else {
         errorMsg(Config.ERROR_INFO[result.code]);

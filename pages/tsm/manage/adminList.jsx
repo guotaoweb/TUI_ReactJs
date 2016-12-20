@@ -18,7 +18,8 @@ class AdminList extends React.Component {
             sidePageInfo,
             pageInfo,
             successMsg,
-            addEditInfo
+            addEditInfo,
+            updatePageInfo
         } = this.props
 
         let _editAdmin,
@@ -40,12 +41,12 @@ class AdminList extends React.Component {
                 "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                 "value2": _d.UserName,
                 "value3": _d.AccessFailedCount,
-                "value4": _d.LockoutEnabled ? "正常" : "锁定",
+                "value4": _d.LockoutEnabled==0 ? "正常" : "锁定",
                 "fns": [{
                     "name": "重置密码",
                     "fn": function () {
                         var delFetch = function () {
-                            TUI.platform.put("/RefreshPassword/" + _d.Id, {}, function (result) {
+                            TUI.platform.put("/ResetPassword/" + _d.Id, {}, function (result) {
                                 if (result.code == 0) {
                                     successMsg(result.msg)
                                 }
@@ -67,7 +68,7 @@ class AdminList extends React.Component {
                                     infoName: "userInfo",
                                     Id: _d.Id,
                                     UserName: _d.UserName,
-                                    LockoutEnabled: _d.LockoutEnabled == true ? 0 : 1
+                                    LockoutEnabled: _d.LockoutEnabled
                                 })
 
                                 openSidePage(_this, {
@@ -90,6 +91,9 @@ class AdminList extends React.Component {
                             TUI.platform.delete("/User/" + _d.Id, function (result) {
                                 if (result.code == 0) {
                                     deleteAdminList(_d.Id)
+                                    updatePageInfo({
+                                        sum: parseInt(pageInfo.index.sum) - 1
+                                    })
                                 }
                                 else {
                                     errorMsg(Config.ERROR_INFO[result.code]);

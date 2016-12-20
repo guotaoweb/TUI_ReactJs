@@ -25,7 +25,7 @@ class login extends React.Component {
                 <h3>{title}</h3>
                 <br />
                 <FormControls ctrl="input" placeholder="请输入用户账号" style={_inputStyle} value="loginInfo.UserName" />
-                <FormControls ctrl="input" placeholder="请输入用户密码" style={_inputStyle} value="loginInfo.Password" />
+                <FormControls ctrl="input" placeholder="请输入用户密码" type="password" style={_inputStyle} value="loginInfo.Password" />
                 <br />
                 <Btn txt={_btnTxt} href={this._login.bind(this)} style={{
                     display: "block",
@@ -36,12 +36,13 @@ class login extends React.Component {
                     marginTop: "-20px"
                 }} />
                 <p className="t-l-error">*用户账号或密码错误</p>
+                <p className="t-l-error">*账号已经被锁定</p>
             </div>
         )
     }
 
     _login() {
-        const {editInfo, errorMsg, updateLoginStatus, loginStatus} = this.props
+        const {editInfo, errorMsg, updateLoginStatus, loginStatus, url, to} = this.props
         let _this = this
         if (loginStatus == 1) { return false }
         if (editInfo.loginInfo) {
@@ -49,36 +50,42 @@ class login extends React.Component {
                 UserName: editInfo.loginInfo.UserName,
                 Password: editInfo.loginInfo.Password
             }
-
-            console.info(jsonParam)
-            //browserHistory.push(Config.ROOTPATH + "manage")
             updateLoginStatus(1)
-            setTimeout(function () {
+            TUI.platform.post(url, jsonParam, function (result) {
+                if (result.code == 0) {
+                    browserHistory.push(Config.ROOTPATH + to)
+                }
+                else {
+                    _this.loginError(result.code)
+                }
                 updateLoginStatus(0)
-            }, 3000)
+            })
         }
-        _this.loginError()
+
     }
 
-    loginError() {
-        let $error = document.getElementsByClassName("t-l-error")[0]
-        $error.style.display = "block"
+    loginError(code) {
+        if (code == 984) {
+            let $error = document.getElementsByClassName("t-l-error")[1]
+            $error.style.display = "block"
+        }
+        else {
+            let $error = document.getElementsByClassName("t-l-error")[0]
+            $error.style.display = "block"
+        }
     }
 
     componentDidMount() {
         let _this = this
-        // let $inputs = document.getElementsByClassName("t-login")[0].getElementsByTagName("input")
-        // for (var i = 0; i < $inputs.length; i++) {
-        //     var $input = $inputs[i];
         document.addEventListener("keypress", function (e) {
-            let $error = document.getElementsByClassName("t-l-error")[0]
-            $error.style.display = "none"
-            console.info(e.keyCode)
+            let $error1 = document.getElementsByClassName("t-l-error")[0]
+            let $error2 = document.getElementsByClassName("t-l-error")[1]
+            $error1.style.display = "none"
+            $error2.style.display = "none"
             if (e.keyCode == 13) {
                 _this._login()
             }
         })
-        //}
     }
 }
 

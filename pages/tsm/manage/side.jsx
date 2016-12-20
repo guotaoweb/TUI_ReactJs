@@ -1,5 +1,4 @@
 import Side from 'Side'
-import { Link } from 'react-router'
 //图片
 import admin from "!url!./img/admin.png"
 import admins from "!url!./img/admin-s.png"
@@ -18,7 +17,7 @@ class _Side extends React.Component {
   render() {
     const {sideList} = this.props
     return (
-      <Side list={sideList} title="TSM" />
+      <Side list={sideList} title="TSM" to="statistic" />
     )
   }
 

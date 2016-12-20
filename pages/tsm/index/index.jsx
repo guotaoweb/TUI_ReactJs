@@ -1,5 +1,5 @@
 import '!style!css!postcss!sass!./style.scss'
-
+import { browserHistory } from 'react-router'
 import FormControls from "FormControls"
 import Dialog,{openDialog} from "Dialog"
 import Loading from "Loading"
@@ -14,17 +14,17 @@ class Index extends React.Component {
 
         let _classes = [],
             _voteStartBtn = []
-        console.info(classes)
+  
         if (classes.length == 0) {
-            _classes.push(<div className="i-voting">正在获取准备投票的班级...</div>)
+            _classes.push(<div key="i-voting" className="i-voting">正在获取准备投票的班级...</div>)
         }
         else if (classes == "no") {
-            _classes.push(<div className="i-voting">目前无班级投票</div>)
+            _classes.push(<div key="i-no-voting" className="i-voting">目前无班级投票</div>)
         }
         else {
-            _classes.push(<div className="i-voting">正准备投票的班级:C0601</div>)
+            _classes.push(<div key="i-voting-ing" className="i-voting">正准备投票的班级:{classes.Name}</div>)
             _voteStartBtn.push(
-                <div className="i-startbtn">
+                <div className="i-startbtn" key="i-voting-btn">
                     <img src={votestart} onClick={this.voteStart.bind(this)} />
                 </div>
             )
@@ -56,15 +56,15 @@ class Index extends React.Component {
     }
 
     login() {
-
+        browserHistory.push(Config.ROOTPATH + "login")
     }
 
     voteStart() {
-        console.info("开始投票")
+        browserHistory.push(Config.ROOTPATH + "vote")
     }
 
     componentDidMount() {
-        const {addVotingClasses, errorMsg} = this.props
+        const {addVotingClasses, errorMsg,addVotingStatus} = this.props
 
         let classesId = TUI.fn.requestParam("id")
         TUI.platform.get("/VotingClassesSimple", function (result) {

@@ -2,7 +2,7 @@ import '!style!css!postcss!sass!./style.scss'
 import { Link } from 'react-router'
 import { openLoading } from "Loading"
 import { closeSideContent } from "SideContent"
-
+import { browserHistory } from 'react-router'
 
 class Side extends React.Component {
     render() {
@@ -39,7 +39,7 @@ class Side extends React.Component {
 
         return (
             <div className={"t-side " + (sideStatus == "0" ? "t-side--open" : "t-side--close")} ref="tSide">
-                <div className="t-side_header">{title}</div>
+                <div className="t-side_header" onClick={this.goPage.bind(this)}>{title}</div>
                 <ul className="t-side_list" ref="tSideList">
                     {_list}
                 </ul>
@@ -47,7 +47,12 @@ class Side extends React.Component {
         )
     }
 
-    closeSideContent(){
+    goPage() {
+        const {to} = this.props
+        browserHistory.push(Config.ROOTPATH + to)
+    }
+
+    closeSideContent() {
         closeSideContent()
     }
 

@@ -57,16 +57,16 @@ class EditAdmin extends React.Component {
     let jsonParam = {
       UserName: editInfo.userInfo.UserName,
       Password: editInfo.userInfo.Password,
-      LockoutEnabled: editInfo.userInfo.LockoutEnabled == 0 ? true : false
+      LockoutEnabled: editInfo.userInfo.LockoutEnabled
     }
 
-    if(jsonParam.Password.length<6 || editInfo.userInfo.ConfirmPassword.length<6){
-      setTimeout(function(){errorMsg("密码至少6位")},1000)
-      
-      return false
-    }
+
 
     if (sidePageInfo.status == "addAdmin") {
+      if (jsonParam.Password.length < 6 || editInfo.userInfo.ConfirmPassword.length < 6) {
+        setTimeout(function () { errorMsg("密码至少6位") }, 1000)
+        return false
+      }
       jsonParam["ConfirmPassword"] = editInfo.userInfo.ConfirmPassword
       TUI.platform.post("/Register", jsonParam, function (result) {
         if (result.code == 0) {
@@ -75,7 +75,7 @@ class EditAdmin extends React.Component {
           addAdminList(jsonParam)
         }
         else {
-          setTimeout(function(){errorMsg(Config.ERROR_INFO[result.code]);},1000)
+          setTimeout(function () { errorMsg(Config.ERROR_INFO[result.code]); }, 1000)
         }
         _this._goBack()
       })
@@ -89,7 +89,7 @@ class EditAdmin extends React.Component {
           updateAdminList(jsonParam)
         }
         else {
-          setTimeout(function(){errorMsg(Config.ERROR_INFO[result.code]);},1000)
+          setTimeout(function () { errorMsg(Config.ERROR_INFO[result.code]); }, 1000)
         }
         _this._goBack()
       })
