@@ -125,9 +125,11 @@ class _Side extends React.Component {
                     }
 
                 }
-                browserHistory.push(Config.ROOTPATH + url)
+                let USER_ID = TUI.fn.requestParam("uId")
+                if (USER_ID) {
+                    browserHistory.push(Config.ROOTPATH + url)
+                }
                 closeLoading()
-
                 addSide(list)
             }
             else {

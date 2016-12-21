@@ -1,6 +1,7 @@
 import Header from 'Header'
 import { openDialog } from 'Dialog'
 import { openModalDialog } from 'ModalDialog'
+import { browserHistory } from 'react-router'
 
 class _Header extends React.Component {
   render() {
@@ -29,18 +30,23 @@ class _Header extends React.Component {
     let USER_ID = TUI.fn.requestParam("uId")
     let _this = this
     //获取当前用户信息
-    TUI.platform.get("/userInfo/" + USER_ID, function (result) {
-      if (result.code == 0) {
-        let _d = result.data
-        updateUserInfo({ id: _d.userId, name: _d.userName, photo: _d.photocrc })
-      }
-      else if (result.code == 404) {
-        updateUserInfo({})
-      }
-      else {
-        errorMsg(result.message)
-      }
-    })
+    if (USER_ID) {
+      TUI.platform.get("/userInfo/" + USER_ID, function (result) {
+        if (result.code == 0) {
+          let _d = result.data
+          updateUserInfo({ id: _d.userId, name: _d.userName, photo: _d.photocrc })
+        }
+        else if (result.code == 404) {
+          updateUserInfo({})
+        }
+        else {
+          errorMsg(result.message)
+        }
+      })
+    }
+    else{
+      browserHistory.push(Config.ROOTPATH+"ErrorPage") 
+    }
 
     // let $search = document.getElementById("t-header-search-i")
     // let keypressFn = function (e) {

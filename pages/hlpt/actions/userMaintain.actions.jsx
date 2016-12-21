@@ -66,3 +66,9 @@ export function addDefaultUnit(data){
     }
 }
 
+export function updateComponentInfo(data){
+    return {
+        type:"UPDATE_COMPONENT_INFO",
+        data
+    }
+}

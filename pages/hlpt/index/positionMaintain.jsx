@@ -1,23 +1,19 @@
-//图片
-import minus from "!url!../../../components/MultyMenu/img/minus.png"
-import singleLeft from "!url!./img/singleLeft.png"
 //组件
 import PositionMaintainEdit from "./positionMaintain.edit"
 import PositionMaintainRoleInList from "./positionMaintain.role.jobList"
 import FormControls from "FormControls"
 import { getContentIndex } from "Content2"
-import Content3, { openContentLoading, closeContentLoading } from "Content3"
+import Content, { openContentLoading, closeContentLoading } from "Content"
 import Btn from "Btn"
 import Table from "Table"
-import MultyMenu, { editFn } from "MultyMenu"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import Pager from "Pager"
 import { openDialog, closeDialog } from "Dialog"
 import { openLoading, closeLoading } from "Loading"
 import Search from "Search"
+import {openSideContent} from "SideContent"
 
 class PositionMaintain extends React.Component {
-
     render() {
         const {
             errorMsg,
@@ -132,10 +128,6 @@ class PositionMaintain extends React.Component {
             })
         }
 
-        let addBtn
-        if (this.props.eidtId) {
-            addBtn = <Btn type="add" txt="新增" href={this.addPositionMaintainBtn.bind(this)} style={{ float: "right" }} />
-        }
 
         let _positionMaintainEdit = []
         let _positionMaintainRoleEdit = []
@@ -149,16 +141,7 @@ class PositionMaintain extends React.Component {
 
         return (
             <div>
-                <Content3>
-                    <div>
-                        <MultyMenu data={odata} type="nocheck" lastdeep="6" color="white" clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
-                        <br />
-                    </div>
-                    <div></div>
-                    <div className="t-content_t">
-                        <span>职位维护列表</span>
-                        {addBtn}
-                    </div>
+                <Content txt="职位维护" addHref={this.addPositionMaintainBtn.bind(this)} addHrefTx="新增">
                     <div>
                         <Search placeholder="输入关键字(职位名称)搜索" style={{
                             border: "none",
@@ -169,7 +152,7 @@ class PositionMaintain extends React.Component {
                         <Table id="positionMaintain" bindPager="positionMaintainPager" tblContent={tblContent} width="50,100,0,120,0,70,70,100" />
                         <Pager id="positionMaintainPager" fn={this.pageFn.bind(this)} />
                     </div>
-                </Content3>
+                </Content>
                 <SidePage id="PositionMaintain">
                     <div>
                         {_positionMaintainEdit}
@@ -208,84 +191,46 @@ class PositionMaintain extends React.Component {
         })
     }
 
+
+    componentDidUpdate() {
+        const {sideContentInfo, componentInfo, updateComponentInfo} = this.props
+        if (componentInfo.key != sideContentInfo.key) {
+            this.loadPosition(sideContentInfo.id)
+
+            this.props.clearEditInfo({
+                infoName: "positionMaintainInfo"
+            })
+            openContentLoading()
+            closeSidePage()
+            this.props.updateEditInfo({
+                infoName: "jobsInfo",
+                status: "list"
+            })
+            this.props.updateEditInfo({
+                infoName: "rolesInfo",
+                status: "list"
+            })
+
+            updateComponentInfo(sideContentInfo)
+            return true
+        }
+        else {
+            return false
+        }
+    }
+
+    componentWillUnmount() {
+        this.props.updateSideContentInfo({
+            key: TUI.fn.newGuid()
+        })
+    }
+
     componentDidMount() {
         let _this = this;
 
-        const {addData, errorMsg, addUnitBizTypes, addPositionTypes, addStatus, addCity, addSubList, updatePageInfo, addUnitKind} = this.props
-
-        openLoading()
-        //获取组织根节点,且默认展开第一个父节点
-        TUI.platform.get("/units/tree/0", function (result) {
-            if (result.code == 0) {
-                let node = []
-                for (let index = 0; index < result.data.length; index++) {
-                    let _d = result.data[index];
-                    node.push({
-                        id: _d.id,
-                        name: _d.name,
-                        type: _d.unitCode,
-                        isHadSub: _d.isleaf,
-                        ext1: _d.unitLevel,
-                        num: "",
-                        deep: 1,
-                        btns: "A/E"
-                    })
-                }
-                addData(node)
-
-
-                let $clickMenu = document.getElementsByClassName("clickmenu")[0]
-                let firtNodeId = $clickMenu.getAttribute("data-id")
-                $clickMenu.style.backgroundColor = "rgba(250,250,250,0.5)"
-                $clickMenu.style.borderRadius = "3px"
-                //展开第一个节点的一级子节点
-                TUI.platform.get("/units/tree/" + firtNodeId, function (result) {
-                    if (result.code == 0) {
-
-                        for (var i = 0; i < _this.props.odata.length; i++) {
-                            var d = _this.props.odata[i]
-                            if (d.id == firtNodeId) {
-                                let children = []
-                                for (var j = 0; j < result.data.length; j++) {
-                                    var $s = result.data[j];
-                                    children.push({
-                                        id: $s.id,
-                                        name: $s.name,
-                                        type: $s.unitCode,
-                                        isHadSub: $s.isleaf,
-                                        num: "",
-                                        ext1: $s.unitLevel,
-                                        deep: 2
-                                    })
-                                }
-
-                                d.children = children
-                                addData(_this.props.odata)
-                                $clickMenu.nextSibling.style.display = "block"
-                                let $img = $clickMenu.getElementsByTagName("img")[1]
-                                $img.setAttribute("data-status", "show")
-                                $img.setAttribute("src", minus)
-                                //获取职位列表
-                                _this.loadPosition();
-
-                            }
-                        }
-
-                    }
-
-                    else {
-                        errorMsg(result.message)
-                    }
-                })
-            }
-            else if (result.code == 404) {
-                addData([])
-            }
-            else {
-                errorMsg(result.message)
-            }
-        })
-
+        const {addBreadNav, sideContentInfo} = this.props
+        openSideContent()
+        this.loadPosition(sideContentInfo.id)
 
         TUI.platform.get("/positionFamilys", function (result) {
             if (result.code == 0) {
@@ -310,39 +255,39 @@ class PositionMaintain extends React.Component {
         })
 
 
-        this.props.addBreadNav({ name: "职位维护" })
+        addBreadNav({ name: "职位维护" })
     }
 
-    clickMenu($m) {
-        let _this = this
-        let $menuLi = document.getElementsByClassName("clickmenu")
-        for (let j = 0; j < $menuLi.length; j++) {
-            let $m1 = $menuLi[j];
-            $m1.style.backgroundColor = ""
-        }
-        $m.style.backgroundColor = "rgba(250,250,250,0.5)"
-        $m.style.borderRadius = "3px"
+    // clickMenu($m) {
+    //     let _this = this
+    //     let $menuLi = document.getElementsByClassName("clickmenu")
+    //     for (let j = 0; j < $menuLi.length; j++) {
+    //         let $m1 = $menuLi[j];
+    //         $m1.style.backgroundColor = ""
+    //     }
+    //     $m.style.backgroundColor = "rgba(250,250,250,0.5)"
+    //     $m.style.borderRadius = "3px"
 
-        let id = $m.getAttribute("data-id")
-        let code = $m.getAttribute("data-type")
-        _this.props.updatePositionMaintainEditId(code)
+    //     let id = $m.getAttribute("data-id")
+    //     let code = $m.getAttribute("data-type")
+    //     _this.props.updatePositionMaintainEditId(code)
 
-        this.props.clearEditInfo({
-            infoName: "positionMaintainInfo"
-        })
-        openContentLoading()
-        this.loadPosition(id)
-        closeSidePage()
-        this.props.updateEditInfo({
-            infoName: "jobsInfo",
-            status: "list"
-        })
-        this.props.updateEditInfo({
-            infoName: "rolesInfo",
-            status: "list"
-        })
-        this.props.addBreadNav({ name: "职位维护" })
-    }
+    //     this.props.clearEditInfo({
+    //         infoName: "positionMaintainInfo"
+    //     })
+    //     openContentLoading()
+    //     this.loadPosition(id)
+    //     closeSidePage()
+    //     this.props.updateEditInfo({
+    //         infoName: "jobsInfo",
+    //         status: "list"
+    //     })
+    //     this.props.updateEditInfo({
+    //         infoName: "rolesInfo",
+    //         status: "list"
+    //     })
+    //     this.props.addBreadNav({ name: "职位维护" })
+    // }
 
     addPositionMaintainBtn() {
         openSidePage(this, {
@@ -388,133 +333,6 @@ class PositionMaintain extends React.Component {
         })
     }
 
-    updateData(data, deep, fn, _deep, addData, action) {
-        //deep的格式是1-2-3,拆成数组
-        //如果deep的length==1的话,就说明已经钻到底层了
-        if (deep.length == 1) {
-            for (let index = 0; index < data.length; index++) {
-                let d = data[index]
-                if (d.id == deep[0]) {
-                    if (action == "A") {
-                        d.deep = parseInt(_deep) + 1
-
-                        if (typeof d.children == "undefined") {
-                            d.children = []
-                        }
-
-                        d.children.push(addData)
-                    }
-                    else {
-                        d.id = addData.id
-                        d.name = addData.name
-                        d.code = addData.code
-                        d.note = addData.note
-                    }
-                    fn(this.props.xnsubdata)
-                }
-            }
-            return false
-        }
-
-        //钻到最底层
-        for (var index = 0; index < data.length; index++) {
-            let d = data[index]
-            if (d.id == deep[0] && deep.length > 1) {
-                deep.splice(0, 1)
-                this.updateData(d.children, deep, fn, _deep + 1, addData, action)
-            }
-        }
-    }
-
-    delData(data, deep, fn, _deep) {
-        //deep的格式是1-2-3,拆成数组
-        //如果deep的length==1的话,就说明已经钻到底层了
-        if (deep.length == 1) {
-            for (let index = 0; index < data.length; index++) {
-                let d = data[index]
-                if (d.id == deep[0]) {
-                    data.splice(index, 1)
-                    fn(this.props.xnsubdata)
-                }
-            }
-            return false
-        }
-
-        //钻到最底层
-        for (var index = 0; index < data.length; index++) {
-            let d = data[index]
-            if (d.id == deep[0] && deep.length > 1) {
-                deep.splice(0, 1)
-                this.delData(d.children, deep, fn, _deep + 1)
-            }
-        }
-    }
-
-
-    deleteData(data, deep) {
-        //deep的格式是1-2-3,拆成数组
-        //如果deep的length==1的话,就说明已经钻到底层了
-        if (deep.length == 1) {
-            for (let index = 0; index < data.length; index++) {
-                let d = data[index]
-                if (d.id == deep[0]) {
-                    data.splice(index, 1)
-                    this.props.addData(this.props.odata)
-                }
-            }
-            return false
-        }
-
-        //钻到最底层
-        for (var index = 0; index < data.length; index++) {
-            let d = data[index]
-            if (d.id == deep[0] && deep.length > 1) {
-                deep.splice(0, 1)
-                this.deleteData(d.children, deep)
-            }
-        }
-    }
-
-    openSubMenu(_data, id, deep, loadComplete) {
-        const {addData, odata, errorMsg} = this.props
-        for (let index = 0; index < _data.length; index++) {
-            let d = _data[index]
-
-            if (d.id == id) {
-                TUI.platform.get("/units/tree/" + id, function (result) {
-                    if (result.code == 0) {
-                        let children = []
-                        let _deep = parseInt(deep) + 1
-                        for (var j = 0; j < result.data.length; j++) {
-                            var $s = result.data[j];
-                            children.push({
-                                id: $s.id,
-                                name: $s.name,
-                                type: $s.unitCode,
-                                isHadSub: $s.isleaf,
-                                ext1: $s.unitLevel,
-                                num: "",
-                                deep: _deep
-                            })
-                        }
-                        d.children = children
-
-                        setTimeout(function () { loadComplete() }, 1000)
-
-                    }
-                    else if (result.code == 404) {
-
-                    }
-                    else {
-                        errorMsg(result.message)
-                    }
-                })
-                break
-            }
-        }
-    }
-
-
     pageFn(index, loadComplete) {
         const {pageInfo, addPositionMaintain, updatePageInfo} = this.props
 
@@ -545,11 +363,11 @@ class PositionMaintain extends React.Component {
 }
 
 export default TUI._connect({
-    odata: "orgnizationManage.data",
     data: "positionMaintain.data",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo",
     searchInfo: "publicInfo.searchInfo",
-    eidtId: "positionMaintain.editId",
-    eidtInfo: "formControlInfo.data"
+    eidtInfo: "formControlInfo.data",
+    sideContentInfo: "publicInfo.sideContentInfo",
+    componentInfo: "personMatchPost.componentInfo"
 }, PositionMaintain)

@@ -5,7 +5,8 @@ const initState = {
     orgnizationId: "",
     nation: [],
     jobsList: [],
-    defaultUnit: []
+    defaultUnit: [],
+    componentInfo: { key: "-1" }
 }
 
 export default function manageReducers(state = initState, action) {
@@ -25,7 +26,7 @@ export default function manageReducers(state = initState, action) {
             }
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
         case "PUSH_USERMAINTAIN_DATA":
-        console.info(state.data)
+            console.info(state.data)
             state.data.push(action.data)
             console.info(action.data)
             return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
@@ -53,6 +54,8 @@ export default function manageReducers(state = initState, action) {
             return Object.assign({}, state, { jobsList: eval(JSON.stringify(state.jobsList)) })
         case "ADD_USERMAINTAIN_DEFAULTUNIT":
             return Object.assign({}, state, { defaultUnit: eval(JSON.stringify(action.data)) })
+        case "UPDATE_COMPONENT_INFO":
+            return Object.assign({}, state, { componentInfo: JSON.parse(JSON.stringify(action.data)) })
         default: return state
     }
 }

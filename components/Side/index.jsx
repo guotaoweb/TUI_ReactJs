@@ -24,7 +24,7 @@ class Side extends React.Component {
                 _list.push(
                     <li key={"side_main_li" + i} className="tSubSide" data-status={sideStatus == "0" ? "open" : "close"}>
                         <div id={$l.id} ref={$l.id + "s"} onClick={this.updateSubStatus.bind(this, this.props.addFn, $l.id)}>{_a}</div>
-                        <SubNode list={$l.sub} closeSideContent={closeSideContent} />
+                        <SubNode list={$l.sub} closeSideContent={closeSideContent} updateSideContentInfo={this.props.updateSideContentInfo} />
                     </li>
                 )
             }
@@ -275,7 +275,7 @@ class SubNode extends React.Component {
             for (let j = 0; j < list.length; j++) {
                 let $s = list[j]
                 if ($s.url) {
-                    _list.push(<li className="sub_li" key={"side_sub_link" + j}><Link to={$s.url} onClick={this.props.closeSideContent}>{$s.name}</Link></li>)
+                    _list.push(<li className="sub_li" key={"side_sub_link" + j} onClick={this._closeSideContent.bind(this)}><Link to={$s.url}>{$s.name}</Link></li>)
                 }
                 else {
                     _list.push(<li className="sub_li" key={"side_sub_a" + j}><a href="#" onClick={$s.fn}>{$s.name}</a></li>)
@@ -288,5 +288,13 @@ class SubNode extends React.Component {
                 {_list}
             </ul>
         )
+    }
+
+    _closeSideContent() {
+        let _key = TUI.fn.newGuid()
+        this.props.updateSideContentInfo({
+            key: _key
+        })
+        closeSideContent()
     }
 }

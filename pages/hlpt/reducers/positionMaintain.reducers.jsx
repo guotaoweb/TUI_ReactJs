@@ -9,7 +9,8 @@ const initState = {
     jobsSearchData: [],//搜索职责结果
     rolesData: [],//角色
     tabStatus: "",
-    editId: ""//职位信息所属的组织架构ID
+    editId: "",//职位信息所属的组织架构ID
+    componentInfo: { key: "-1" }
 }
 
 export default function manageReducers(state = initState, action) {
@@ -97,6 +98,8 @@ export default function manageReducers(state = initState, action) {
                 }
             }
             return Object.assign({}, state, { rolesData: eval(JSON.stringify(state.rolesData)) })
+        case "UPDATE_COMPONENT_INFO":
+            return Object.assign({}, state, { componentInfo: JSON.parse(JSON.stringify(action.data)) })
         default: return state
     }
 }

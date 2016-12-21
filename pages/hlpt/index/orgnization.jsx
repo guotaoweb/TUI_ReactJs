@@ -36,8 +36,8 @@ class Orgnization extends React.Component {
         }
         for (var i = 0; i < subList.length; i++) {
             let _d = subList[i]
-            let _index = pageInfo.orgnizationPager?pageInfo.orgnizationPager.index:1
-            let _size = pageInfo.orgnizationPager?pageInfo.orgnizationPager.size:0
+            let _index = pageInfo.orgnizationPager ? pageInfo.orgnizationPager.index : 1
+            let _size = pageInfo.orgnizationPager ? pageInfo.orgnizationPager.size : 0
             tblContent.tbody.push({
                 "value1": (_index - 1) * _size + (i + 1),
                 "value2": _d.unitCode,
@@ -96,7 +96,18 @@ class Orgnization extends React.Component {
             <div>
                 <Content3>
                     <div>
-                        <MultyMenu data={odata} type="edit" lastdeep="6" color="white" addMenu={this.addMenu.bind(this)} editMenu={this.editMenu.bind(this)} delMenu={this.delMenu.bind(this)} clickMenu={this.clickMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} style={{ marginTop: "20px" }} />
+                        <MultyMenu
+                            data={odata}
+                            type="edit"
+                            lastdeep="6"
+                            color="white"
+                            addMenu={this.addMenu.bind(this)}
+                            editMenu={this.editMenu.bind(this)}
+                            delMenu={this.delMenu.bind(this)}
+                            clickMenu={this.clickMenu.bind(this)}
+                            openSubMenu={this.openSubMenu.bind(this)}
+                            style={{ marginTop: "10px" }}
+                            />
                         <br />
                     </div>
                     <div></div>
@@ -157,16 +168,16 @@ class Orgnization extends React.Component {
                         isHadSub: _d.isleaf,
                         ext1: _d.unitLevel,
                         num: "",
-                        deep: 1,
+                        deep: 0,
                         btns: "A/E"
                     })
                 }
                 addData(node)
 
 
-                let $clickMenu = document.getElementsByClassName("clickmenu")[0]
-                $clickMenu.style.backgroundColor = "rgba(250,250,250,0.5)"
-                $clickMenu.style.borderRadius = "3px"
+                let $clickMenu = document.getElementsByClassName("t-content3")[0].getElementsByClassName("clickmenu")[0]
+                $clickMenu.getElementsByTagName("a")[0].style.backgroundColor = "rgba(250,250,250,0.5)"
+                $clickMenu.getElementsByTagName("a")[0].style.borderRadius = "3px"
                 let firtNodeId = $clickMenu.getAttribute("data-id")
                 let firstRelateId = $clickMenu.getAttribute("data-deep") ? $clickMenu.getAttribute("data-deep") : firtNodeId
                 let firstUnitCode = $clickMenu.getAttribute("data-type")
@@ -194,7 +205,7 @@ class Orgnization extends React.Component {
                                         isHadSub: $s.isleaf,
                                         num: "",
                                         ext1: $s.unitLevel,
-                                        deep: 2
+                                        deep: 1
                                     })
                                 }
 
@@ -385,7 +396,7 @@ class Orgnization extends React.Component {
                     permission: _d.unitCode,
                     globalCode: _d.globalCode,
                     staffing: _d.staffing,
-                    statusName:_d.statusName
+                    statusName: _d.statusName
                 })
             }
             _this.props.pushBreadNav({ name: _d.unitName })
@@ -415,19 +426,19 @@ class Orgnization extends React.Component {
         openDialog(_this, "是否确定删除此项？", delFetch)
     }
 
-    clickMenu($m) {
+    clickMenu(params) {
         let _this = this
-        let $menuLi = document.getElementsByClassName("clickmenu")
-        for (let j = 0; j < $menuLi.length; j++) {
-            let $m1 = $menuLi[j]
-            $m1.style.backgroundColor = ""
-        }
-        $m.style.backgroundColor = "rgba(250,250,250,0.5)"
-        $m.style.borderRadius = "3px"
+        // let $menuLi = document.getElementsByClassName("clickmenu")
+        // for (let j = 0; j < $menuLi.length; j++) {
+        //     let $m1 = $menuLi[j]
+        //     $m1.style.backgroundColor = ""
+        // }
+        // $m.style.backgroundColor = "rgba(250,250,250,0.5)"
+        // $m.style.borderRadius = "3px"
 
-        let id = $m.getAttribute("data-id")
-        let relateId = $m.getAttribute("data-deep") ? $m.getAttribute("data-deep") : id
-        let unitCode = $m.getAttribute("data-type")
+        let id = params.id
+        let relateId = params.deep ? params.deep : id
+        let unitCode = params.type
 
         _this.props.updateOrgnizationRelateId({
             relateId: relateId,//级联的关系ID
@@ -469,7 +480,7 @@ class Orgnization extends React.Component {
                 size: _pageSize,
                 sum: result._page ? result._page.total : 0,
                 url: url,
-                surl:"#"
+                surl: "#"
             })
         })
     }
@@ -561,6 +572,7 @@ class Orgnization extends React.Component {
                             })
                         }
                         d.children = children
+                        addData(odata)
                     }
                     else if (result.code == 404) {
 
@@ -581,8 +593,8 @@ class Orgnization extends React.Component {
         const {pageInfo, addSubList, updatePageInfo, errorMsg} = this.props
         let _pageSize = pageInfo["orgnizationPager"] ? pageInfo["orgnizationPager"].size : 10,
             _initUrl = pageInfo.orgnizationPager.url,
-            _initSurl =pageInfo.orgnizationPager.surl,
-            _url = _initSurl=="#"?_initUrl:_initSurl,
+            _initSurl = pageInfo.orgnizationPager.surl,
+            _url = _initSurl == "#" ? _initUrl : _initSurl,
             rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
 
         TUI.platform.get(rUrl.replace("{0}", _pageSize * (index - 1)), function (result) {
@@ -601,8 +613,8 @@ class Orgnization extends React.Component {
                 index: index,
                 size: _pageSize,
                 sum: result._page ? result._page.total : 0,
-                url: _initSurl=="#"?rUrl:_initUrl,
-                surl:_initSurl=="#"?_initSurl:rUrl,
+                url: _initSurl == "#" ? rUrl : _initUrl,
+                surl: _initSurl == "#" ? _initSurl : rUrl,
             })
         })
     }

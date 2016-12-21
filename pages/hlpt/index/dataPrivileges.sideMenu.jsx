@@ -3,26 +3,22 @@ import { closeSidePage } from "SidePage"
 import MultyMenu from "MultyMenu"
 
 import singleLeft from "!url!./img/singleLeft.png"
-
+// <div className="t-content_t">
+//     <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />菜单</span>
+//     <Btn style={{ float: "right" }} txt="保存" href={this.saveSideSelected.bind(this)} />
+// </div>
 class DataPrivilegesSideMenu extends React.Component {
     render() {
         const {data, sdata, updateOData, hasVerticalScroll} = this.props
-
         return (
-            <div key="content2_userList" >
-                <div className="t-content_t">
-                    <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />菜单</span>
-                    <Btn style={{ float: "right" }} txt="保存" href={this.saveSideSelected.bind(this)} />
-                </div>
-                <div>
-                    <MultyMenu data={data} sdata={sdata} openSubMenu={this.openSubMenu.bind(this)} type="allcheck" lastdeep="5" color="dark" style={{ marginTop: "10px" }} />
-                </div>
+            <div>
+                <MultyMenu data={data} sdata={sdata} openSubMenu={this.openSubMenu.bind(this)} type="allcheck" lastdeep="5" color="dark" style={{ marginTop: "10px" }} />
             </div>
         )
     }
 
     componentDidMount() {
-        const {addSideData,errorMsg} = this.props
+        const {addSideData, errorMsg} = this.props
 
         TUI.platform.get("/menu/qxTree", function (result) {
             if (result.code == 0) {
@@ -36,7 +32,7 @@ class DataPrivilegesSideMenu extends React.Component {
                         type: $s.id,
                         num: "",
                         ext1: $s.url,
-                        deep: 1,
+                        deep: 0,
                         sId: $s.id
                     })
                     list[i]["children"] = []
@@ -49,7 +45,7 @@ class DataPrivilegesSideMenu extends React.Component {
                             type: $c.id,
                             num: "",
                             ext1: $c.url,
-                            deep: 2,
+                            deep: 1,
                             sId: $c.id
                         })
                     }

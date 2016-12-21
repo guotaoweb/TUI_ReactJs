@@ -10,6 +10,8 @@ import PositionMaintain from './index/positionMaintain'
 import UserMaintain from './index/userMaintain'
 import DataPrivileges from './index/dataPrivileges'
 import PersonMatchPost from './index/personMatchPost'
+import ErrorPage from './index/errorPage'
+
 import * as config  from 'config'
 
 class Routers extends React.Component {
@@ -37,6 +39,7 @@ class Routers extends React.Component {
         return (
             <Router history={history}>
                 {_route}
+                <Route path={config.ROOTPATH+"ErrorPage"} component={ErrorPage}></Route>
             </Router>
         )
     }

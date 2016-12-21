@@ -216,4 +216,11 @@ export function updateLoginStatus(data) {
     }
 }
 
+export function updateSideContentInfo(data) {
+    return {
+        type: "UPDATE_SIDECONTENT_INFO",
+        data
+    }
+}
+
 

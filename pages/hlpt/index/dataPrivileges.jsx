@@ -1,8 +1,9 @@
 //图片
 import singleLeft from "!url!./img/singleLeft.png"
+import uncheck from "!url!../../../components/MultyMenu/img/uncheck.png"
 
 //组件
-import Content from "Content"
+import Content, { openContentLoading, closeContentLoading } from "Content"
 import Btn from "Btn"
 import Table from "Table"
 import MultyMenu, { clearCheckBox, updateCheckBoxStatus } from "MultyMenu"
@@ -31,12 +32,15 @@ class DataPrivileges extends React.Component {
         } = this.props
 
         let _this = this
-        let SidePageContent
+        let SidePageContent,
+            sidePageTitle = ""
         if (sidePageInfo.status == "dataPrivilegesDataMenu") {
             SidePageContent = <DataPrivilegesDataMenu key="dataPrivilegesDataMenu" />
+            sidePageTitle = "组织机构"
         }
         else {
             SidePageContent = <DataPrivilegesSideMenu key="dataPrivilegesSideMenu" />
+            sidePageTitle = "菜单"
         }
 
 
@@ -48,10 +52,6 @@ class DataPrivileges extends React.Component {
         for (var i = 0; i < dataPrivileges.length; i++) {
             let _d = dataPrivileges[i]
 
-            //   let _admins = []
-            //   for (var j = 0; j < _d.admins.length; j++) {
-            //     _admins.push(_d.admins[j].username)
-            //   }
             tblContent.tbody.push({
                 "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                 "value2": _d.cnName,
@@ -60,14 +60,15 @@ class DataPrivileges extends React.Component {
                 "fns": [{
                     "name": "数据权限",
                     "fn": function () {
-                        openSidePage(_this, {
-                            status: "dataPrivilegesDataMenu",
-                            width: "500",
-                            gateWay: _d.loginUid
-                        })
-
+                        openContentLoading()
                         TUI.platform.get("/dataprivileges/" + _d.loginUid, function (result) {
                             if (result.code == 0) {
+                                openSidePage(_this, {
+                                    status: "dataPrivilegesDataMenu",
+                                    width: "400",
+                                    gateWay: _d.loginUid
+                                })
+
                                 let selectedIds = []
                                 for (let i = 0; i < result.data.length; i++) {
                                     let $d = result.data[i]
@@ -81,20 +82,20 @@ class DataPrivileges extends React.Component {
                             else {
                                 errorMsg(result.message)
                             }
+                            closeContentLoading()
                         }, this)
-
-
                     }
                 }, {
                     "name": "菜单权限",
                     "fn": function () {
-                        openSidePage(_this, {
-                            status: "dataPrivilegesSideMenu",
-                            width: "400",
-                            gateWay: _d.loginUid
-                        })
+                        openContentLoading()
                         TUI.platform.get("/menustaffs/" + _d.loginUid, function (result) {
                             if (result.code == 0) {
+                                openSidePage(_this, {
+                                    status: "dataPrivilegesSideMenu",
+                                    width: "400",
+                                    gateWay: _d.loginUid
+                                })
                                 let selectedIds = []
                                 for (let i = 0; i < result.data.length; i++) {
                                     let $d = result.data[i]
@@ -108,6 +109,7 @@ class DataPrivileges extends React.Component {
                             else {
                                 errorMsg(result.message)
                             }
+                            closeContentLoading()
                         }, this)
                     }
                 }]
@@ -126,13 +128,91 @@ class DataPrivileges extends React.Component {
                     <Table bindPager="dataPrivilegesPager" tblContent={tblContent} width="50,150,150,0,80" />
                     <Pager id="dataPrivilegesPager" fn={this.pageFn.bind(this)} />
                 </Content>
-                <SidePage>
+                <SidePage title={sidePageTitle} addHref={this.saveDataPrivileges.bind(this)}>
                     <div>
                         {SidePageContent}
                     </div>
                 </SidePage>
             </div>
         )
+    }
+
+    saveDataPrivileges() {
+        const {errorMsg, successMsg, userId, cUserId, sidePageInfo, clearOSData} = this.props
+
+        let $checkbox = document.getElementsByClassName("menu_checkbox"),
+            additem = [],
+            _this = this
+
+        if (sidePageInfo.status == "dataPrivilegesDataMenu") {
+            for (let index = 0; index < $checkbox.length; index++) {
+                let c = $checkbox[index];
+                if (c.getAttribute("data-status") == "check") {
+                    let mid = c.getAttribute("data-mid")
+                    let mtype = c.getAttribute("data-mtype")
+                    additem.push(mid)
+                }
+
+            }
+
+            if (additem.length > 0) {
+                //选中管理员或组织
+                TUI.platform.post("/dataprivileges", {
+                    "loginUid": cUserId,
+                    "dataPrivileges": additem.join(",")
+                }, function (result) {
+                    if (result.code == 0) {
+                        successMsg("权限分配成功")
+                        _this._closeSidePage()
+                    }
+                    else {
+                        errorMsg(result.message)
+                    }
+                })
+
+            }
+            else {
+                _this._closeSidePage()
+            }
+        }
+
+        if (sidePageInfo.status == "dataPrivilegesSideMenu") {
+            for (let index = 0; index < $checkbox.length; index++) {
+                let c = $checkbox[index];
+                if (c.getAttribute("data-status") == "check") {
+
+                    let mid = c.getAttribute("data-mid")
+                    additem.push(mid)
+                }
+
+            }
+
+            if (additem.length > 0) {
+
+                TUI.platform.post("/menustaffs", {
+                    "loginUid": cUserId,
+                    "menustaffs": additem.join(",")
+                }, function (result) {
+                    if (result.code == 0) {
+                        successMsg("权限分配成功")
+                        _this._closeSidePage()
+                    }
+                    else {
+                        errorMsg(result.message)
+                    }
+                })
+
+            }
+            else {
+                _this._closeSidePage()
+            }
+        }
+    }
+
+    _closeSidePage() {
+        const {clearOSData} = this.props
+        clearOSData()
+        closeSidePage()
     }
 
     _searchOrgnization(val) {
@@ -198,6 +278,7 @@ class DataPrivileges extends React.Component {
             userId,
             errorMsg
         } = this.props
+
         this.props.addBreadNav({ name: "权限管理" })
         //获取数据权限列表
         openLoading()
@@ -213,7 +294,7 @@ class DataPrivileges extends React.Component {
                     info: "请输入关键字(用户名)"
                 })
 
-                closeLoading()
+                
             }
             else if (result.code == 404) {
                 addDataPrivileges([])
@@ -228,24 +309,26 @@ class DataPrivileges extends React.Component {
                 sum: result._page ? result._page.total : 0,
                 url: url
             })
+            closeLoading()
         }, this)
 
         //获取组织机构
-        TUI.platform.get("/units/treeCode/0", function (result) {
+        //"/units/treeCode/0"
+        TUI.platform.get("/unit/alltree", function (result) {
             if (result.code == 0) {
-                let _d = []
-                for (var i = 0; i < result.data.length; i++) {
-                    var $d = result.data[i];
-                    _d.push({
-                        id: $d.id,
-                        name: $d.name,
-                        isHadSub: $d.isleaf,
-                        deep: "1",
-                        sId: $d.id
-                    })
-                }
+                //let _d = []
+                // for (var i = 0; i < result.data.length; i++) {
+                //     var $d = result.data[i];
+                //     _d.push({
+                //         id: $d.id,
+                //         name: $d.name,
+                //         isHadSub: $d.isleaf,
+                //         deep: "1",
+                //         sId: $d.id
+                //     })
+                // }
                 //sId: $d.unitCode
-                updateOData(_d)
+                updateOData(result.data)
             }
             else {
                 errorMsg(result.message)
@@ -261,5 +344,6 @@ export default TUI._connect({
     orgnization: "orgnizations.odata",
     userId: "publicInfo.userInfo.userId",
     sidePageInfo: "publicInfo.sidePageInfo",
-    pageInfo: "publicInfo.pageInfo"
+    pageInfo: "publicInfo.pageInfo",
+    cUserId: "publicInfo.sidePageInfo.gateWay"
 }, DataPrivileges)

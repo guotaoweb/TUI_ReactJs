@@ -5,7 +5,8 @@ const initState = {
     roleData: [],
     selectUserData: [],
     setRoleData: [],
-    editId: ""//职位信息所属的组织架构ID
+    editId: "",//职位信息所属的组织架构ID
+    componentInfo: {key:"-1"}
 }
 
 export default function manageReducers(state = initState, action) {
@@ -71,11 +72,13 @@ export default function manageReducers(state = initState, action) {
         case "SET_PERSON_LEVEL":
             for (let i = 0; i < state.roleData.length; i++) {
                 let $d = state.roleData[i]
-                if($d.staffId==action.data.staffId){
+                if ($d.staffId == action.data.staffId) {
                     $d.userLevel = action.data.userLevel
                 }
             }
-            return Object.assign({}, state, { roleData: eval(JSON.stringify(state.roleData))})
+            return Object.assign({}, state, { roleData: eval(JSON.stringify(state.roleData)) })
+        case "UPDATE_COMPONENT_INFO":
+            return Object.assign({}, state, { componentInfo: JSON.parse(JSON.stringify(action.data)) })
         default: return state
     }
 }

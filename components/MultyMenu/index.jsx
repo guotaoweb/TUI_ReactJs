@@ -30,7 +30,6 @@ class MultyMenu extends React.Component {
     init = data
     COLOR = color
     let initData = []
-
     if (init) {
       for (let index = 0; index < init.length; index++) {
         let d = init[index];
@@ -120,7 +119,27 @@ class MultyMenu extends React.Component {
             <ul className="sub">
               {
                 d.children ? d.children.map(child => (
-                  <TreeNode type={type} lastdeep={lastdeep} key={child.id} data={child} deep={d.deep} mid={child.id} mname={child.name} role={child.role} ext1={child.ext1} mtype={child.type} id={d.id + "-" + child.id} color={color} editMenu={editMenu} addMenu={addMenu} delMenu={delMenu} clickMenu={clickMenu} openSubMenu={openSubMenu} isHadSub={child.isHadSub} btns={child.btns} sId={child.sId} />
+                  <TreeNode
+                    type={type}
+                    lastdeep={lastdeep}
+                    key={child.id}
+                    data={child}
+                    deep={child.deep}
+                    mid={child.id}
+                    mname={child.name}
+                    role={child.role}
+                    ext1={child.ext1}
+                    mtype={child.type}
+                    id={d.id + "-" + child.id}
+                    color={color}
+                    editMenu={editMenu}
+                    addMenu={addMenu}
+                    delMenu={delMenu}
+                    clickMenu={clickMenu}
+                    openSubMenu={openSubMenu}
+                    isHadSub={child.isHadSub}
+                    btns={child.btns}
+                    sId={child.sId} />
                 )) : null
               }
             </ul>
@@ -129,7 +148,7 @@ class MultyMenu extends React.Component {
         //如果sodata为空,则删除已选中的复选框
       }
     }
-    
+
     let initHtml = []
     if (initData.length > 0) {
       initHtml.push(
@@ -164,11 +183,34 @@ export default MultyMenu
 
 class TreeNode extends React.Component {
   render() {
-    const {sId, btns, isHadSub, data, color, deep, id, type, lastdeep, mid, mname, mtype, ext1, addMenu, editMenu, delMenu, clickMenu, openSubMenu,role} = this.props
+    const {
+      sId, btns, isHadSub, data, color, deep, id, type,
+      lastdeep, mid, mname, mtype, ext1, addMenu, editMenu,
+      delMenu, clickMenu, openSubMenu, role
+    } = this.props
     let subTree = null
     if (data.children) {
       subTree = data.children.map(child =>
-        <TreeNode key={child.id} data={child} type={type} lastdeep={lastdeep} deep={child.deep} mid={child.id} mname={child.name} mtype={child.type} id={id + "-" + child.id} color={color} addMenu={addMenu} editMenu={editMenu} delMenu={delMenu} openSubMenu={openSubMenu} clickMenu={clickMenu} isHadSub={child.isHadSub} btns={child.btns} sId={child.sId} role={role} />
+        <TreeNode
+          key={child.id}
+          data={child}
+          type={type}
+          lastdeep={lastdeep}
+          deep={child.deep}
+          mid={child.id}
+          mname={child.name}
+          mtype={child.type}
+          id={id + "-" + child.id}
+          color={color}
+          addMenu={addMenu}
+          editMenu={editMenu}
+          delMenu={delMenu}
+          openSubMenu={openSubMenu}
+          clickMenu={clickMenu}
+          isHadSub={child.isHadSub}
+          btns={child.btns}
+          sId={child.sId}
+          role={role} />
       )
     }
 
@@ -500,15 +542,24 @@ export function delFn(params) {
 
 //单击按钮
 export function clickFn(e) {
-  if (this.props.clickMenu) {
-    var $m = e.currentTarget
-    this.props.clickMenu($m)
-    let $menuLi = document.getElementsByClassName("clickmenu")
-    for (let j = 0; j < $menuLi.length; j++) {
-      let $m1 = $menuLi[j];
-      $m1.style.backgroundColor = ""
+  var $m = e.currentTarget
+  if (e.target.tagName != "IMG") {
+    if (this.props.clickMenu) {
+      let params = {
+        id: $m.getAttribute("data-id"),
+        type: $m.getAttribute("data-type"),
+        deep:$m.getAttribute("data-deep")
+      }
+      this.props.clickMenu(params)
+      let $menuLi = document.getElementsByClassName("clickmenu")
+      for (let j = 0; j < $menuLi.length; j++) {
+        let $m1 = $menuLi[j];
+        $m1.getElementsByTagName("a")[0].style.backgroundColor = ""
+      }
+
+      let $a = $m.getElementsByTagName("a")[0]
+      $a.style.backgroundColor = "rgba(250,250,250,0.5)"
+      $a.style.borderRadius = "3px"
     }
-    $m.style.backgroundColor = "rgba(250,250,250,0.5)"
-    $m.style.borderRadius = "3px"
   }
 }

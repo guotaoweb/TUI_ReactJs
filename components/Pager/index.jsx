@@ -88,7 +88,7 @@ class Pager extends React.Component {
                     </span>
                     <span style={{ display: (pageSum == 1 ? "none" : "inline-block") }}>总数量: {pageSum} </span>
                     {loadStatusImg}
-                    <ul style={{ display: (pagerLength == 1 ? "none" : "block") }}>
+                    <ul style={{ display: ((!pagerLength || pagerLength==1)? "none" : "block") }}>
                         <li className='first' onClick={this.clickFirst.bind(this)}><a href='javascript:void(0);'><img src={first} /></a></li>
                         {pagerLi}
                         <li className='last' onClick={this.clickLast.bind(this)}><a href='javascript:void(0);'><img src={last} /></a></li>
