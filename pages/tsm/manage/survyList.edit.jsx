@@ -1,4 +1,4 @@
-import Content2,{getContentIndex} from "Content2"
+import Content2, { getContentIndex } from "Content2"
 import FormControls from "FormControls"
 import Btn from "Btn"
 import { openDialog, closeDialog } from "Dialog"
@@ -10,23 +10,30 @@ import SurvyListProblem from './survyList.problem'
 
 class EditSurvy extends React.Component {
     render() {
-        const {editInfo, survyData,updateSurvy} = this.props
+        const {editInfo, survyData, updateSurvy} = this.props
+        let _this = this
         let tabs = [{
             name: "基本信息", id: "tabs1"
         }, {
             name: "问卷内容", id: "tabs2", fn: function () {
-                TUI.platform.get("/SurvyContent/" + editInfo.survyInfo.Id, function (result) {
-                    if (result.code == 0) {
-                        var _d = result.datas
-                        updateSurvy(_d)
-                    }
-                    else if(result.code==1){
-                        updateSurvy([])
-                    }
-                    else {
-                        errorMsg(Config.ERROR_INFO[result.code]);
-                    }
-                })
+
+                if (editInfo.survyInfo) {
+                    TUI.platform.get("/SurvyContent/" + editInfo.survyInfo.Id, function (result) {
+                        if (result.code == 0) {
+                            var _d = result.datas
+                            updateSurvy(_d)
+                        }
+                        else if (result.code == 1) {
+                            updateSurvy([])
+                        }
+                        else {
+                            errorMsg(Config.ERROR_INFO[result.code]);
+                        }
+                    })
+                }
+                else {
+                    updateSurvy([])
+                }
             }
         }, {
             name: "问卷预览", id: "tabs3"
@@ -35,6 +42,18 @@ class EditSurvy extends React.Component {
         let _survys = []
 
         if (survyData.length == 0) {
+            let _txt = ""
+            if (editInfo.survyInfo) {
+                _txt =
+                    <div>
+                        <span>单击 </span>
+                        <Btn txt="编辑" style={{ display: "inline-block" }} href={this.addSurvy.bind(this)} />
+                        <span> 题目</span>
+                    </div>
+            }
+            else {
+                _txt = <span>请先填写问卷的基本信息</span>
+            }
             _survys.push(
                 <div key={"survy_empty"} style={{
                     padding: "10px",
@@ -44,9 +63,7 @@ class EditSurvy extends React.Component {
                     marginTop: "15%",
                     fontSize: "20px"
                 }}>
-                    <span>单击 </span>
-                    <Btn txt="编辑" style={{ display: "inline-block" }} href={this.addSurvy.bind(this)} />
-                    <span> 题目</span>
+                    {_txt}
                 </div>
             )
         }
@@ -75,6 +92,7 @@ class EditSurvy extends React.Component {
     goBack() {
         closeSidePage()
         this.props.backBreadNav()
+        this.props.clearAllEditInfo()
     }
 
     addSurvy() {

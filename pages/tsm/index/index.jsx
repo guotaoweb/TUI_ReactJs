@@ -6,7 +6,8 @@ import Loading from "Loading"
 import Btn from "Btn"
 import logo from "!url!./img/logo.png"
 import votestart from "!url!./img/votestart.png"
-import login from "!url!./img/login.png"
+
+import Header from "./Header"
 
 class Index extends React.Component {
     render() {
@@ -32,10 +33,7 @@ class Index extends React.Component {
 
         return (
             <div className="i-body">
-                <div className="i-header">
-                    <h3>长沙市实验中学教师评价系统<span>V3.0</span></h3>
-                    <p className="i-manage"><img src={login} onClick={this.login.bind(this)} /></p>
-                </div>
+                <Header />
                 {_classes}
                 <div className="i-votedesp"></div>
                 {_voteStartBtn}

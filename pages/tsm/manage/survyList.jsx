@@ -29,7 +29,7 @@ class SurvyList extends React.Component {
         }
 
         let _editSurvy = []
-        if(sidePageInfo.status=="survyEdit"){
+        if(sidePageInfo.status=="survyEdit" || sidePageInfo.status=="addSurvy"){
             _editSurvy.push(<EditSurvy key="editSurvy" />)
         }
 
@@ -166,7 +166,7 @@ class SurvyList extends React.Component {
     }
 
     addSurvy() {
-        const {addBreadNav} = this.props
+        const {addBreadNav,pushBreadNav} = this.props
         openSidePage(this, {
             status: "addSurvy",
             width: ""
@@ -178,6 +178,8 @@ class SurvyList extends React.Component {
         closeSidePage({
             id: "unBindCourse"
         })
+
+        this.props.clearAllEditInfo()
     }
 }
 

@@ -18,3 +18,10 @@ export function clearEditInfo(data){
         data
     } 
 }
+
+export function clearAllEditInfo(data){
+    return {
+        type:"CLEAR_ALL_FORMCONTROL",
+        data
+    } 
+}

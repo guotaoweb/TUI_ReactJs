@@ -162,7 +162,8 @@ class Statistic extends React.Component {
     }
 
     componentDidMount() {
-        const {addVotingClasses, addStatistic, errorMsg} = this.props
+        const {addVotingClasses, addStatistic, errorMsg,addBreadNav} = this.props
+        addBreadNav({name:"首页"})
         TUI.platform.get("/VotingClasses", function (result) {
             if (result.code == 0) {
                 addVotingClasses(result.datas[0])

@@ -1,15 +1,15 @@
 import '!style!css!postcss!sass!./style.scss'
 
 import FormControls, { clearCtrlStatus } from "FormControls"
-import Dialog,{openDialog} from "Dialog"
+import Dialog, { openDialog } from "Dialog"
 import TipTool from "TipTool"
 import Btn from "Btn"
 import logo from "!url!./img/logo.png"
-
+import { browserHistory } from 'react-router'
 
 let VOTING_COURSE_ID = "",//投票科目ID
-    GO_NEXT = true,//提交数据时,判断是否进行下一步的条件true/false
-    VOTING_SURVY_ID = ""//投票问卷ID
+  GO_NEXT = true,//提交数据时,判断是否进行下一步的条件true/false
+  VOTING_SURVY_ID = ""//投票问卷ID
 class Vote extends React.Component {
   render() {
     const {
@@ -30,7 +30,6 @@ class Vote extends React.Component {
       else if ($e.VoteStatus == "voted") {
         _voteStatus = "voted"
       }
-      else { }
       //科目列表
       _course.push(<li key={"courseList" + i}><span className={_voteStatus}>{i + 1}</span>{$e.Name}【{$e.Teacher}】</li>)
     }
@@ -55,13 +54,17 @@ class Vote extends React.Component {
 
     //提交状态
     let _btnTxt = (noVoteNumber == 1) ? "提交" : "下一科目"
-    if(operateStatus==1){
-      _btnTxt="提交中..."
+    if (operateStatus == 1) {
+      _btnTxt = "提交中..."
     }
     let _btn = []
-    if(noVoteNumber>0){
-      _btn.push(<Btn key="vote_btn" txt={_btnTxt} style={{ textAlign: "center"}} href={this.submitVote.bind(this)} />)
+    if (noVoteNumber > 0) {
+      _btn.push(<Btn key="vote_btn" txt={_btnTxt} style={{ textAlign: "center" }} href={this.submitVote.bind(this)} />)
     }
+    if(course.length>0 && noVoteNumber==0) {
+      browserHistory.push(Config.ROOTPATH + "end")
+    }
+    //console.info(noVoteNumber)
 
     return (
       <div className="v-body">
@@ -102,13 +105,13 @@ class Vote extends React.Component {
   }
 
   submitVote(e) {
-    const {status, addVotedCourse, course,updateOperateStatus,operateStatus} = this.props
+    const {status, addVotedCourse, course, updateOperateStatus, operateStatus} = this.props
 
     if (operateStatus == 1) {
       return false
     }
 
-    
+
     let $selectBox = document.getElementsByClassName("v-c-survy"),
       selectedIds = [],
       _this = this
@@ -134,8 +137,8 @@ class Vote extends React.Component {
       }
     }
 
-    if (!GO_NEXT) { 
-      openDialog(this,"至少有一个选题未回答")
+    if (!GO_NEXT) {
+      openDialog(this, "至少有一个选题未回答")
       return false
     }
 
@@ -151,8 +154,6 @@ class Vote extends React.Component {
     updateOperateStatus(1)
     TUI.platform.post("/Answer", jsonParam, function (result) {
       if (result.code == 0) {
-        //setTextContent($btn, "提交在")
-        //$btn.innerHTML=currentText
         let _d = result.datas
         addVotedCourse(
           jsonParam.CourseId

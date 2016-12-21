@@ -22,11 +22,12 @@ class Routers extends React.Component {
         const {history} = this.props
         return (
             <Router history={history}>
-                <Route path={Config.ROOTPATH} component={Index}></Route> 
+                <Route path={Config.ROOTPATH+"s"} component={Index}></Route> 
                 <Route path={Config.ROOTPATH+"vote"} component={Vote}></Route>
+                <Route path={Config.ROOTPATH+"end"} component={End}></Route>
                 <Route path={Config.ROOTPATH+"login"} component={Login}></Route> 
-                <Route path={Config.ROOTPATH+"s"} component={Manage}> 
-                    <IndexRoute component={Statistic} />
+                <Route path={Config.ROOTPATH} component={Manage}> 
+                    <IndexRoute component={SurvyList} />
                     <Route path={Config.ROOTPATH + m + "teachers"} component={TeacherList} />
                     <Route path={Config.ROOTPATH + m + "courses"} component={CourseList} />
                     <Route path={Config.ROOTPATH + m + "admins"} component={AdminList} />

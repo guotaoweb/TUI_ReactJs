@@ -321,11 +321,11 @@ class ClassesList extends React.Component {
     }
 
     componentDidMount() {
-        const {addGradeList, updatePageInfo, errorMsg, courseList, addCourseList} = this.props
+        const {addGradeList, updatePageInfo, errorMsg, courseList, addCourseList,addBreadNav} = this.props
         let _this = this
         openLoading()
         _this.getClassesInGrade(0)
-
+        addBreadNav({ name: "班级列表" })
 
         if (courseList.length == 0) {
             TUI.platform.get("/Course", function (result) {

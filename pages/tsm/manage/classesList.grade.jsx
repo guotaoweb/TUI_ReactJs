@@ -60,9 +60,9 @@ class ClassesGrade extends React.Component {
         )
     }
 
-    _clickMenu($m) {
+    _clickMenu(params) {
         const {loadClassesList, updatePageInfo, errorMsg} = this.props
-        let gradeId = $m.getAttribute("data-id")
+        let gradeId = params.id
 
         let _url = gradeId != 0 ? "/ClassesInGrade/" + gradeId + "?pageIndex={0}&pageSize=10" : "/Classes?pageIndex={0}&pageSize=10"
         openContentLoading()
@@ -170,8 +170,8 @@ class ClassesGrade extends React.Component {
 
         setTimeout(function () {
             let $clickMenu = document.getElementsByClassName("clickmenu")[0]
-            $clickMenu.style.backgroundColor = "rgba(250,250,250,0.5)"
-            $clickMenu.style.borderRadius = "3px"
+            $clickMenu.getElementsByTagName("a")[0].style.backgroundColor = "rgba(250,250,250,0.5)"
+            $clickMenu.getElementsByTagName("a")[0].style.borderRadius = "3px"
             let $img = $clickMenu.getElementsByTagName("img")[1]
             $img.setAttribute("data-status", "show")
             $img.setAttribute("src", minus)

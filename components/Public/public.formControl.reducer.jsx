@@ -10,9 +10,9 @@ export default function manageReducers(state = initState, action) {
             let _infoName = action.data.infoName,
                 initObject = {}
             if (_infoName) {
-               
+
                 if (!state.data[_infoName]) {
-                    initObject[_infoName] ={}
+                    initObject[_infoName] = {}
                 }
                 else {
                     initObject = state.data
@@ -70,6 +70,10 @@ export default function manageReducers(state = initState, action) {
             state.data[_infoName2] = initObject2[_infoName2]
             return Object.assign({}, state, {
                 data: JSON.parse(JSON.stringify(state.data))
+            })
+        case "CLEAR_ALL_FORMCONTROL":
+            return Object.assign({}, state, {
+                data: JSON.parse(JSON.stringify({}))
             })
         default: return state
     }

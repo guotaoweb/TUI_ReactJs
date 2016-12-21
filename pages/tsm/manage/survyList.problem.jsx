@@ -136,6 +136,9 @@ class SurvyProblem extends React.Component {
     goBack() {
         closeSidePage()
         getContentIndex(0)
+        this.props.backBreadNav()
+        this.props.clearAllEditInfo()
+        console.info(this.props.editInfo)
     }
 
     //新增题目
