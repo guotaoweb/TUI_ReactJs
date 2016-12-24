@@ -53,7 +53,17 @@ class login extends React.Component {
             updateLoginStatus(1)
             TUI.platform.post(url, jsonParam, function (result) {
                 if (result.code == 0) {
-                    browserHistory.push(Config.ROOTPATH + to)
+                    let clearStatus = TUI.fn.requestParam("cs")
+                    if (clearStatus == 0) {
+                        if(window.localStorage){
+                            localStorage.clear()
+                            document.cookie=""
+                        }
+                        browserHistory.push(Config.ROOTPATH)
+                    }
+                    else {
+                        browserHistory.push(Config.ROOTPATH + to)
+                    }
                 }
                 else {
                     _this.loginError(result.code)

@@ -22,8 +22,6 @@ export default function orgnizationReducers(state = initState, action) {
             state.subList.push(action.data)
             return Object.assign({}, state, { subList: eval(JSON.stringify(state.subList ))})
         case "UPDATE_SUBLIST":
-        console.info(action.data)
-        console.info(action.data.statusName)
             for (let i = 0; i < state.subList.length; i++) {
                 let $s = state.subList[i]
                 if ($s.unitId == action.data.unitId) {

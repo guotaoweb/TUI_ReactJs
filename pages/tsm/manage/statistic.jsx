@@ -123,6 +123,10 @@ class Statistic extends React.Component {
 
     isStartClasses(classesId) {
         const {updateVotingClasses, errorMsg} = this.props
+
+        //分析投票人数以及是否有没有投完票的情况
+
+
         var delFetch = function () {
             TUI.platform.put("/IsStartClasses/" + classesId + "?action=1", {}, function (result) {
                 if (result.code == 0) {

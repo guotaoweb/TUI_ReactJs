@@ -37,16 +37,25 @@ class Index extends React.Component {
     )
   }
 
-  componentDidMount() {
-    let _this = this;
+  // componentDidMount() {
+  //     this.loadTree()
+  // }
+  componentDidUpdate(nextProps) {
+    if (this.props.userInfo.id != nextProps.userInfo.id) {
+      this.loadTree()
+    }
+  }
 
+  loadTree() {
     const {
       addData,
       errorMsg,
       addSubList,
       updatePageInfo,
-      updateSideContentInfo
+      updateSideContentInfo,
+      userInfo
     } = this.props
+    let _this = this
 
     //获取组织根节点,且默认展开第一个父节点
     TUI.platform.get("/units/tree/0", function (result) {
@@ -68,7 +77,7 @@ class Index extends React.Component {
         addData(node)
 
 
-        let $clickMenu = document.getElementsByClassName("clickmenu")[0]
+        let $clickMenu = document.getElementsByClassName("t-sidecontent")[0].getElementsByClassName("clickmenu")[0]
         $clickMenu.getElementsByTagName("a")[0].style.backgroundColor = "rgba(250,250,250,0.5)"
         $clickMenu.getElementsByTagName("a")[0].style.borderRadius = "3px"
         let firtNodeId = $clickMenu.getAttribute("data-id")
@@ -82,7 +91,7 @@ class Index extends React.Component {
         // })
 
         updateSideContentInfo({
-          "key":TUI.fn.newGuid(),
+          "key": TUI.fn.newGuid(),
           "id": firtNodeId,
           "type": firstUnitCode
         })
@@ -120,6 +129,9 @@ class Index extends React.Component {
           }
         })
       }
+      else if (result.code == 404) {
+        addData("-1")
+      }
       else {
         errorMsg(result.message);
       }
@@ -127,8 +139,19 @@ class Index extends React.Component {
   }
 
   clickMenu(params) {
+    let $menuLi = document.getElementsByClassName("t-sidecontent")[0].getElementsByClassName("clickmenu")
+    for (let j = 0; j < $menuLi.length; j++) {
+      let $m1 = $menuLi[j];
+      $m1.getElementsByTagName("a")[0].style.backgroundColor = ""
+    }
+
+    let $a = $menuLi[0].getElementsByTagName("a")[0]
+    $a.style.backgroundColor = "rgba(250,250,250,0.5)"
+    $a.style.borderRadius = "3px"
+
+
     this.props.updateSideContentInfo({
-      "key":TUI.fn.newGuid(),
+      "key": TUI.fn.newGuid(),
       "id": params.id,
       "type": params.type
     })
@@ -169,7 +192,8 @@ class Index extends React.Component {
 
 export default TUI._connect({
   odata: "orgnizationManage.data",
-  pageStatus: "manages.pageStatus"
+  pageStatus: "manages.pageStatus",
+  userInfo: "publicInfo.userInfo"
 }, Index)
 
 // {this.props.children}

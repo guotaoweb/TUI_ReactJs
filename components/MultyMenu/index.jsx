@@ -27,7 +27,7 @@ let COLOR = null
 class MultyMenu extends React.Component {
   render() {
     const {data, color, type, lastdeep, sdata, addMenu, editMenu, delMenu, clickMenu, openSubMenu} = this.props
-    init = data
+    init = data=="-1"?[]:data
     COLOR = color
     let initData = []
     if (init) {
@@ -157,7 +157,7 @@ class MultyMenu extends React.Component {
         </ul>)
     }
     else {
-      initHtml.push(<div key="menu_loadingstatus" style={{ textAlign: "center", width: "100%", height: "40px", marginTop: "30px", color: color == "dark" ? "black" : "white" }}>加载中...</div>)
+      initHtml.push(<div key="menu_loadingstatus" style={{ textAlign: "center", width: "100%", height: "40px", marginTop: "30px", color: color == "dark" ? "black" : "white" }}>{data=="-1"?"没有任何数据":"加载中..."}</div>)
     }
     return (
       <div className="t-multymenu" style={this.props.style}>

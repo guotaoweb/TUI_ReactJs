@@ -166,7 +166,6 @@ class UserMaintain extends React.Component {
                 infoName: "userMaintainInfo"
             })
             openContentLoading()
-            console.info(sideContentInfo.id)
             this.loadUser(sideContentInfo.id)
             USERMAINTAIN_ID = sideContentInfo.id
             closeSidePage()

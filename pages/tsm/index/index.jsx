@@ -1,10 +1,10 @@
 import '!style!css!postcss!sass!./style.scss'
 import { browserHistory } from 'react-router'
 import FormControls from "FormControls"
-import Dialog,{openDialog} from "Dialog"
+import Dialog, { openDialog } from "Dialog"
 import Loading from "Loading"
 import Btn from "Btn"
-import logo from "!url!./img/logo.png"
+// import logo from "!url!./img/logo.png"
 import votestart from "!url!./img/votestart.png"
 
 import Header from "./Header"
@@ -15,7 +15,7 @@ class Index extends React.Component {
 
         let _classes = [],
             _voteStartBtn = []
-  
+
         if (classes.length == 0) {
             _classes.push(<div key="i-voting" className="i-voting">正在获取准备投票的班级...</div>)
         }
@@ -38,8 +38,10 @@ class Index extends React.Component {
                 <div className="i-votedesp"></div>
                 {_voteStartBtn}
                 <p className="getip" onClick={this.getIp.bind(this)}>IP</p>
+                <p className="getip" onClick={this.clearStatus.bind(this)} style={{bottom:"28px"}}>清</p>
+                <Dialog/>
             </div>
-            
+
         )
     }
 
@@ -48,9 +50,13 @@ class Index extends React.Component {
         TUI.platform.get("/MyIp", function (result) {
             if (result.code == 0) {
                 let _d = result.datas
-                alert(_d)
+                openDialog(this,"当前IP地址:"+_d)
             }
         })
+    }
+
+    clearStatus(){
+        browserHistory.push(Config.ROOTPATH + "login?cs=0")
     }
 
     login() {
@@ -58,11 +64,31 @@ class Index extends React.Component {
     }
 
     voteStart() {
-        browserHistory.push(Config.ROOTPATH + "vote")
+        const {classes} = this.props
+        if (window.localStorage) {
+            if (localStorage["voting"] != classes.Name) {
+                localStorage["voting"] = classes.Name
+                browserHistory.push(Config.ROOTPATH + "vote")
+            }
+            else {
+                alert("投票异常,请联系管理员!")
+            }
+        }
+        else {
+            let _cookie = document.cookie ? document.cookie.substring(7) : document.cookie
+
+            if (_cookie != classes.Name) {
+                document.cookie = "voting=" + classes.Name;
+                browserHistory.push(Config.ROOTPATH + "vote")
+            }
+            else {
+                alert("投票异常,请联系管理员!")
+            }
+        }
     }
 
     componentDidMount() {
-        const {addVotingClasses, errorMsg,addVotingStatus} = this.props
+        const {addVotingClasses, errorMsg, addVotingStatus} = this.props
 
         let classesId = TUI.fn.requestParam("id")
         TUI.platform.get("/VotingClassesSimple", function (result) {

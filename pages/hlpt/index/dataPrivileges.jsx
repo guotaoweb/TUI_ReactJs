@@ -61,13 +61,14 @@ class DataPrivileges extends React.Component {
                     "name": "数据权限",
                     "fn": function () {
                         openContentLoading()
+                        openSidePage(_this, {
+                            status: "dataPrivilegesDataMenu",
+                            width: "400",
+                            gateWay: _d.loginUid
+                        })
                         TUI.platform.get("/dataprivileges/" + _d.loginUid, function (result) {
                             if (result.code == 0) {
-                                openSidePage(_this, {
-                                    status: "dataPrivilegesDataMenu",
-                                    width: "400",
-                                    gateWay: _d.loginUid
-                                })
+
 
                                 let selectedIds = []
                                 for (let i = 0; i < result.data.length; i++) {
@@ -89,13 +90,14 @@ class DataPrivileges extends React.Component {
                     "name": "菜单权限",
                     "fn": function () {
                         openContentLoading()
+                        openSidePage(_this, {
+                            status: "dataPrivilegesSideMenu",
+                            width: "400",
+                            gateWay: _d.loginUid
+                        })
                         TUI.platform.get("/menustaffs/" + _d.loginUid, function (result) {
                             if (result.code == 0) {
-                                openSidePage(_this, {
-                                    status: "dataPrivilegesSideMenu",
-                                    width: "400",
-                                    gateWay: _d.loginUid
-                                })
+
                                 let selectedIds = []
                                 for (let i = 0; i < result.data.length; i++) {
                                     let $d = result.data[i]
@@ -294,7 +296,7 @@ class DataPrivileges extends React.Component {
                     info: "请输入关键字(用户名)"
                 })
 
-                
+
             }
             else if (result.code == 404) {
                 addDataPrivileges([])

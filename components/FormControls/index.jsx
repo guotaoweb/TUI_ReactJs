@@ -142,7 +142,9 @@ class FormControls extends React.Component {
                 addFn={this.props.addEditInfo}
                 required={this.props.required}
                 data={data}
-                bind={bind} />
+                bind={bind}
+                type={type}
+                blurFn={this.props.blurFn} />
         }
         else if (ctrl == "slide") {
             bindElem = <CTRL_SLIDE
@@ -564,7 +566,8 @@ class CTRL_DATE_PICKER extends React.Component {
             disabled,
             value,
             data,
-            bind
+            bind,
+            blurFn
         } = this.props
 
         let _label
@@ -586,11 +589,11 @@ class CTRL_DATE_PICKER extends React.Component {
         }
 
         return (
-            <div className="t-formControls">
+            <div className="t-formControls" style={style}>
                 {_label}
                 <DateField
                     value={_value || ""}
-                    dateFormat="YYYY-MM-DD"
+                    dateFormat={type?type:"YYYY-MM-DD"}
                     onChange={this._onChange.bind(this)}
                     />
             </div>
@@ -598,7 +601,7 @@ class CTRL_DATE_PICKER extends React.Component {
     }
 
     _onChange(e) {
-        const {value, addFn, data, bind} = this.props
+        const {value, addFn, data, bind,blurFn} = this.props
 
         let _object = value.split(".")
         let _info = {
@@ -609,7 +612,7 @@ class CTRL_DATE_PICKER extends React.Component {
                 _info[key] = bind[key]
             }
         }
-
+        if(blurFn){blurFn(e)}
         _info[_object[1]] = e
         addFn(_info)
     }

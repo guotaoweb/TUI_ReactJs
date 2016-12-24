@@ -87,9 +87,15 @@ class _Side extends React.Component {
         // }, _this)
     }
 
-    componentDidMount() {
+    componentDidUpdate(nextProps) {
+        if (this.props.userInfo.id != nextProps.userInfo.id) {
+            this.loadMenuTree()
+        }
+    }
+
+    loadMenuTree() {
         const {addSide, errorMsg} = this.props
-        openLoading(1)
+        
         TUI.platform.get("/menu/tree", function (result) {
             if (result.code == 0) {
                 let list = [],
@@ -195,5 +201,6 @@ class _Side extends React.Component {
 export default TUI._connect({
     data: "sideList.data",
     sideStatus: "publicInfo.sideStatus",
-    userId: "publicInfo.userInfo.id"
+    userId: "publicInfo.userInfo.id",
+    userInfo: "publicInfo.userInfo"
 }, _Side)

@@ -18,13 +18,20 @@
     }
     input:focus,
     textarea:focus {
-        border:1px solid #999;
+        border: 1px solid #999;
+    }
+    .react-date-field input:focus {
+        border: none;
     }
     textarea {
         min-height: 80px;
         padding-top: 5px;
         outline: none;
         resize: none;
+    }
+    .react-date-field textarea {
+        min-height: auto;
+        padding-top: 0px;
     }
     .formcontrol-input-select {
         display: inline;
@@ -45,7 +52,7 @@
 
 .t-c_radio,
 .t-c_checkbox {
-    display:inline-block;
+    display: inline-block;
     cursor: pointer;
     img {
         width: 18px;

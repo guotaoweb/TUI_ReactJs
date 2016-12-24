@@ -39,7 +39,16 @@ class PositionGroup extends React.Component {
       <div>
         <Content3>
           <div>
-            <MultyMenu data={data} type="edit" lastdeep="2" color="white" addMenu={this.addMenu.bind(this)} delMenu={this.delMenu.bind(this)} openSubMenu={this.openSubMenu.bind(this)} clickMenu={this.clickSubMenu.bind(this)} style={{ marginTop: "20px" }} />
+            <MultyMenu 
+            data={data} 
+            type="edit" 
+            lastdeep="2" 
+            color="white" 
+            addMenu={this.addMenu.bind(this)} 
+            delMenu={this.delMenu.bind(this)} 
+            openSubMenu={this.openSubMenu.bind(this)} 
+            clickMenu={this.clickSubMenu.bind(this)} 
+            style={{ marginTop: "5px",marginLeft:"10px" }} />
             <br />
           </div>
           <div></div>
@@ -97,13 +106,13 @@ class PositionGroup extends React.Component {
 
     let _didMount = function () {
       //默认展开一个sub
-      document.querySelector(".t-multyMenu_list_li").querySelector(".sub").style.display = "block"
-      let $img = document.querySelector(".t-multyMenu_list_main").getElementsByTagName("img")[1]
-      let $sub = $img.parentNode.parentNode.parentNode
+      document.getElementsByClassName("t-content3")[0].querySelector(".t-multyMenu_list_li").querySelector(".sub").style.display = "block"
+      let $img = document.getElementsByClassName("t-content3")[0].querySelector(".t-multyMenu_list_main").getElementsByTagName("img")[1]
+      let $sub = $img.parentNode.parentNode
       $sub.style.backgroundColor = "rgba(250,250,250,0.5)"
       $sub.style.borderRadius = "3px"
 
-      let id = $sub.getAttribute("data-id")
+      let id = $sub.parentNode.getAttribute("data-id")
       TUI.platform.get("/positionType/" + id, function (result) {
         if (result.code == 0) {
           let _editInfo = result.data
@@ -121,10 +130,10 @@ class PositionGroup extends React.Component {
     setTimeout(_didMount, 250)
   }
 
-  clickSubMenu($m) {
+  clickSubMenu(params) {
     let _this = this
-    let type = $m.getAttribute("data-type")
-    let code = $m.getAttribute("data-id")
+    let type = params.type
+    let code = params.id
     this.props.updatePositionType(type)
     let url
     if (type == "0") {
@@ -137,7 +146,7 @@ class PositionGroup extends React.Component {
       url = "/jobfamily/" + code
     }
 
-    _this.props.updatePositionDeep($m.getAttribute("data-deep") ? $m.getAttribute("data-deep") : $m.getAttribute("data-id"))
+    _this.props.updatePositionDeep(params.deep ? params.deep : params.id)
 
     TUI.platform.get(url, function (result) {
       if (result.code == 0) {
@@ -249,7 +258,6 @@ class PositionGroup extends React.Component {
       }
       if (params.type == "1") {
         TUI.platform.delete(url, function (result) {
-          console.info(result)
           if (result.code == 0) {
 
             _this.delData(data, params.deep.split("-"))
@@ -262,7 +270,6 @@ class PositionGroup extends React.Component {
       }
       else {
         TUI.platform.patch(url, function (result) {
-          console.info(result)
           if (result.code == 0) {
 
             _this.delData(data, params.deep.split("-"))

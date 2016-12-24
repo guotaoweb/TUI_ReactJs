@@ -27,7 +27,7 @@ class Routers extends React.Component {
                 <Route path={Config.ROOTPATH+"end"} component={End}></Route>
                 <Route path={Config.ROOTPATH+"login"} component={Login}></Route> 
                 <Route path={Config.ROOTPATH} component={Manage}> 
-                    <IndexRoute component={SurvyList} />
+                    <IndexRoute component={Statistic} />
                     <Route path={Config.ROOTPATH + m + "teachers"} component={TeacherList} />
                     <Route path={Config.ROOTPATH + m + "courses"} component={CourseList} />
                     <Route path={Config.ROOTPATH + m + "admins"} component={AdminList} />

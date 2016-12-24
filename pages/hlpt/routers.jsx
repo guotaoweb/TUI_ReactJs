@@ -10,6 +10,7 @@ import PositionMaintain from './index/positionMaintain'
 import UserMaintain from './index/userMaintain'
 import DataPrivileges from './index/dataPrivileges'
 import PersonMatchPost from './index/personMatchPost'
+import AuditLogs from './index/auditLogs'
 import ErrorPage from './index/errorPage'
 
 import * as config  from 'config'
@@ -33,6 +34,7 @@ class Routers extends React.Component {
                     <Route path={config.ROOTPATH + "userMaintain"} component={UserMaintain} />
                     <Route path={config.ROOTPATH + "dataPrivileges"} component={DataPrivileges} />
                     <Route path={config.ROOTPATH + "personMatchPost"} component={PersonMatchPost} />
+                    <Route path={config.ROOTPATH + "auditLogs"} component={AuditLogs} />
                 </Route>
         }
         const {history} = this.props
