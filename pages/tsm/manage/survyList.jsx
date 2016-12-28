@@ -17,19 +17,21 @@ class SurvyList extends React.Component {
             courseList,
             errorMsg,
             sidePageInfo,
+            updatePageInfo,
             pageInfo,
             loadCourseList,
             updateEditInfo,
-            updateSurvyIsDefault
+            updateSurvyIsDefault,
+            deleteSurvyList
         } = this.props
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "名称", "name3": "描述", "name4": "是否默认","name5": "创建时间", "name6": "操作" },
+            "thead": { "name1": "序号", "name2": "名称", "name3": "描述", "name4": "是否默认", "name5": "创建时间", "name6": "操作" },
             "tbody": []
         }
 
         let _editSurvy = []
-        if(sidePageInfo.status=="survyEdit" || sidePageInfo.status=="addSurvy"){
+        if (sidePageInfo.status == "survyEdit" || sidePageInfo.status == "addSurvy") {
             _editSurvy.push(<EditSurvy key="editSurvy" />)
         }
 
@@ -40,13 +42,13 @@ class SurvyList extends React.Component {
                 "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                 "value2": _d.Name,
                 "value3": _d.Desp,
-                "value4": _d.IsDefault==0?"默认":"",
+                "value4": _d.IsDefault == 0 ? "默认" : "",
                 "value5": _d.UpdateTime,
                 "fns": [{
-                    "name":"设为默认",
-                    "fn":function(){
+                    "name": "设为默认",
+                    "fn": function () {
                         var delFetch = function () {
-                            TUI.platform.put("/IsDefault/" + _d.Id,{}, function (result) {
+                            TUI.platform.put("/IsDefault/" + _d.Id, {}, function (result) {
                                 if (result.code == 0) {
                                     updateSurvyIsDefault(_d.Id)
                                 }
@@ -58,7 +60,7 @@ class SurvyList extends React.Component {
 
                         openDialog(_this, "是否确定将【" + _d.Name + "】设置为默认?", delFetch)
                     }
-                },{
+                }, {
                     "name": "编辑",
                     "fn": function () {
                         openContentLoading()
@@ -72,8 +74,8 @@ class SurvyList extends React.Component {
                                     Desp: _d.Desp
                                 })
                             }
-                            else if(result.code==1){
-                                
+                            else if (result.code == 1) {
+
                             }
                             else {
                                 errorMsg(Config.ERROR_INFO[result.code]);
@@ -92,6 +94,9 @@ class SurvyList extends React.Component {
                             TUI.platform.delete("/Survy/" + _d.Id, function (result) {
                                 if (result.code == 0) {
                                     deleteSurvyList(_d.Id)
+                                    updatePageInfo({
+                                        sum: parseInt(pageInfo.index.sum)-1,
+                                    })
                                 }
                                 else {
                                     errorMsg(Config.ERROR_INFO[result.code]);
@@ -139,14 +144,14 @@ class SurvyList extends React.Component {
     }
 
     componentDidMount() {
-        const {addSurvyList, errorMsg, updatePageInfo, addBreadNav} = this.props
+        const {loadSurvyList, errorMsg, updatePageInfo, addBreadNav} = this.props
         let _this = this
         addBreadNav({ name: "问卷列表" })
         openLoading()
         let _url = "/Survy?pageIndex={0}&pageSize=10"
         TUI.platform.get(_url.replace("{0}", 1), function (result) {
             if (result.code == 0) {
-                addSurvyList(result.datas)
+                loadSurvyList(result.datas)
                 updatePageInfo({
                     index: 1,
                     size: 10,
@@ -155,7 +160,7 @@ class SurvyList extends React.Component {
                 })
             }
             else if (result.code == 1) {
-                addSurvyList([])
+                loadSurvyList([])
             }
             else {
                 errorMsg(Config.ERROR_INFO[result.code]);
@@ -166,7 +171,7 @@ class SurvyList extends React.Component {
     }
 
     addSurvy() {
-        const {addBreadNav,pushBreadNav} = this.props
+        const {addBreadNav, pushBreadNav} = this.props
         openSidePage(this, {
             status: "addSurvy",
             width: ""

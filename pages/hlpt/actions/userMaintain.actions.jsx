@@ -72,3 +72,17 @@ export function updateComponentInfo(data){
         data
     }
 }
+
+export function addJobsAllList(data){
+    return {
+        type:"ADD_JOBS_ALLLIST",
+        data
+    }
+}
+
+export function updateJobAllList(data){
+    return {
+        type:"UPDATE_JOBS_ALLLIST",
+        data
+    }
+}

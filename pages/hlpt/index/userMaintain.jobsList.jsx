@@ -1,10 +1,11 @@
 import Content2 from "Content2"
 import FormControls from "FormControls"
 import Btn from "Btn"
-import { closeSidePage } from "SidePage"
+import { openSidePage,closeSidePage } from "SidePage"
 import Table from "Table"
 import Pager from "Pager"
 import { openDialog, closeDialog } from "Dialog"
+
 
 import singleLeft from "!url!./img/singleLeft.png"
 
@@ -18,7 +19,8 @@ class UserMaintainJobsList extends React.Component {
             jobsList,
             pageInfo,
             updatePageInfo,
-            delUserMaintainJobsList
+            delUserMaintainJobsList,
+            addJobsAllList
         } = this.props
 
         let _this = this
@@ -49,7 +51,28 @@ class UserMaintainJobsList extends React.Component {
                             else {
                                 errorMsg(result.message);
                             }
-                            _this._closeSidePage()
+                            //_this._closeSidePage()
+                        })
+                    }
+                }, {
+                    "name": "调整职位",
+                    "fn": function () {
+                        TUI.platform.get("/position/dict/"+_this.props.sideContentInfo.type, function (result) {
+                            if (result.code == 0) {
+                                addJobsAllList(result.data)
+                                openSidePage(_this,{
+                                    id:"resetJob",
+                                    status:"resetJob",
+                                    gateWay:{
+                                        poid:_d.poid,
+                                        positionId:_d.positionId
+                                    }
+                                })
+                                _this.props.pushBreadNav({name:_d.positionName})
+                            }
+                            else {
+                                errorMsg(result.message);
+                            }
                         })
                     }
                 }, {
@@ -75,7 +98,7 @@ class UserMaintainJobsList extends React.Component {
                 <div className="t-content_t">
                     <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />职位列表</span>
                 </div>
-                <Table id="userMaintainJobsListTable" bindPager="userMaintainJobsList" tblContent={tblContent} width="50,300,0,0,100,80" />
+                <Table id="userMaintainJobsListTable" bindPager="userMaintainJobsList" tblContent={tblContent} width="50,0,0,250,100,80" />
                 <Pager id="userMaintainJobsList" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
             </div>
         )
@@ -177,5 +200,6 @@ export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
     orgnizationId: "userMaintain.orgnizationId",
     editInfo: "formControlInfo.data",
-    jobsList: "userMaintain.jobsList"
+    jobsList: "userMaintain.jobsList",
+    sideContentInfo:"publicInfo.sideContentInfo"
 }, UserMaintainJobsList)

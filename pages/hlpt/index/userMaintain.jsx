@@ -1,5 +1,4 @@
 //组件
-import UserMaintainEdit from "./userMaintain.edit"
 import FormControls from "FormControls"
 import { getContentIndex } from "Content2"
 import Content, { openContentLoading, closeContentLoading } from "Content"
@@ -11,6 +10,9 @@ import { openDialog, closeDialog } from "Dialog"
 import { openLoading, closeLoading } from "Loading"
 import Search from 'Search'
 import { openSideContent } from "SideContent"
+
+import UserMaintainEdit from "./userMaintain.edit"
+import UserMaintainResetJob from "./userMaintain.resetJob"
 
 let USERMAINTAIN_ID = ""
 
@@ -89,6 +91,7 @@ class UserMaintain extends React.Component {
                                 errorMsg(result.message)
                             }
                             openSidePage(_this, {
+                                id:"userMaintainEdit",
                                 status: "editUserMaintain"
                             })
                             closeContentLoading()
@@ -138,9 +141,14 @@ class UserMaintain extends React.Component {
                         <Pager id="userMaintainPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                     </div>
                 </Content>
-                <SidePage>
+                <SidePage id="userMaintainEdit">
                     <div>
                         <UserMaintainEdit key="userMaintain_edit" />
+                    </div>
+                </SidePage>
+                <SidePage id="resetJob">
+                    <div>
+                        <UserMaintainResetJob key="userMaintain_resetjob" />
                     </div>
                 </SidePage>
             </div >
@@ -217,32 +225,9 @@ class UserMaintain extends React.Component {
         addBreadNav({ name: "用户信息维护" })
     }
 
-    // clickMenu($m) {
-    //     let _this = this
-    //     let $menuLi = document.getElementsByClassName("clickmenu")
-    //     for (let j = 0; j < $menuLi.length; j++) {
-    //         let $m1 = $menuLi[j];
-    //         $m1.style.backgroundColor = ""
-    //     }
-    //     $m.style.backgroundColor = "rgba(250,250,250,0.5)"
-    //     $m.style.borderRadius = "3px"
-
-    //     let id = $m.getAttribute("data-id")
-    //     let code = $m.getAttribute("data-type")
-    //     _this.props.updateUserMaintainOrgnizationId(code)
-
-    //     this.props.clearEditInfo({
-    //         infoName: "userMaintainInfo"
-    //     })
-    //     openContentLoading()
-    //     this.loadUser(id)
-    //     USERMAINTAIN_ID = id
-    //     closeSidePage()
-    //     this.props.addBreadNav({ name: "用户信息维护" })
-    // }
-
     addPositionMaintainBtn() {
         openSidePage(this, {
+            id:"userMaintainEdit",
             status: "addUserMaintain",
         })
 
@@ -314,6 +299,7 @@ class UserMaintain extends React.Component {
 
     addUserMaintainBtn() {
         openSidePage(this, {
+            id:"userMaintainEdit",
             status: "addUserMaintain",
         })
 

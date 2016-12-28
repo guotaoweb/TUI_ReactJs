@@ -6,7 +6,7 @@ import { browserHistory } from 'react-router'
 
 class Side extends React.Component {
     render() {
-        const {sideStatus, userId, list, title, addFn} = this.props
+        const {sideStatus, userId, list, title, addFn, openSideUrlList} = this.props
 
         let _list = []
         for (let i = 0; i < list.length; i++) {
@@ -24,7 +24,7 @@ class Side extends React.Component {
                 _list.push(
                     <li key={"side_main_li" + i} className="tSubSide" data-status={sideStatus == "0" ? "open" : "close"}>
                         <div id={$l.id} ref={$l.id + "s"} onClick={this.updateSubStatus.bind(this, this.props.addFn, $l.id)}>{_a}</div>
-                        <SubNode list={$l.sub} closeSideContent={closeSideContent} updateSideContentInfo={this.props.updateSideContentInfo} />
+                        <SubNode list={$l.sub} openSideUrlList={openSideUrlList} closeSideContent={closeSideContent} updateSideContentInfo={this.props.updateSideContentInfo} />
                     </li>
                 )
             }
@@ -269,7 +269,7 @@ export default TUI._connect({
 
 class SubNode extends React.Component {
     render() {
-        const {list} = this.props
+        const {list, openSideUrlList} = this.props
         let _list = []
         if (list) {
             for (let j = 0; j < list.length; j++) {
@@ -291,10 +291,24 @@ class SubNode extends React.Component {
     }
 
     _closeSideContent() {
-        let _key = TUI.fn.newGuid()
-        this.props.updateSideContentInfo({
-            key: _key
-        })
-        closeSideContent()
+        const {openSideUrlList} = this.props
+        let _key = TUI.fn.newGuid(),
+            url = window.location.href,
+            closeSide = false
+        if (openSideUrlList) {
+            for (var i = 0; i < openSideUrlList.length; i++) {
+                var $o = openSideUrlList[i];
+                if (url.indexOf($o) > -1) {
+                    closeSide = true
+                    break
+                }
+            }
+        }
+        if (!closeSide) {
+            this.props.updateSideContentInfo({
+                key: _key
+            })
+            closeSideContent()
+        }
     }
 }

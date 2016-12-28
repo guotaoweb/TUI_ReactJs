@@ -20,7 +20,8 @@ export function updateUserInfo(data){
         type:"SET_USERINFO",
         name:data.name,
         id:data.id,
-        photo:data.photo
+        photo:data.photo,
+        role:data.role
     } 
 }
 

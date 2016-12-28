@@ -54,7 +54,8 @@ class SurvyProblem extends React.Component {
 
     componentDidMount() {
         const {updateSurvy, editInfo, addEditInfo} = this.props
-        TUI.platform.get("/SurvyContent/" + editInfo.survyInfo.Id, function(result) {
+        console.info("==>"+editInfo.survyInfo.Id)
+        TUI.platform.get("/SurvyContent/" + editInfo.survyInfo.Id, function (result) {
             if (result.code == 0) {
                 var _d = result.datas
                 updateSurvy(_d)
@@ -91,7 +92,7 @@ class SurvyProblem extends React.Component {
     }
 
     ediSurvy() {
-        const {editInfo, survyData} = this.props
+        const {editInfo, survyData, errorMsg, successMsg} = this.props
 
         let _survy = []
 
@@ -107,7 +108,7 @@ class SurvyProblem extends React.Component {
                         Name: editInfo[key].Name,
                         Order: $s.Order,
                         Type: editInfo[key].Type,
-                        Score:editInfo[key].Score
+                        Score: editInfo[key].Score?editInfo[key].Score:0
                     })
                 }
             }
@@ -121,7 +122,7 @@ class SurvyProblem extends React.Component {
                             Name: editInfo[key].Name,
                             Order: $d.Order,
                             Type: editInfo[key].Type,
-                            Score:editInfo[key].Score
+                            Score: editInfo[key].Score?editInfo[key].Score:0
                         })
                     }
                 }
@@ -131,6 +132,15 @@ class SurvyProblem extends React.Component {
         console.info("提交的JSON")
         console.info(_survy)
         console.info(JSON.stringify(_survy))
+
+        TUI.platform.put("/SurvyContent", _survy, function (result) {
+            if (result.code == 0) {
+                successMsg("提交成功")
+            }
+            else {
+                errorMsg(Config.ERROR_INFO[result.code]);
+            }
+        })
     }
 
     goBack() {
@@ -151,15 +161,15 @@ class SurvyProblem extends React.Component {
 
         openDialog(_this, {
             title: "选择题型", data: [{
-                name: "单选题", fn: function() {
+                name: "单选题", fn: function () {
                     _this._addSubject(_this, order, "radio")
                 }
             }, {
-                name: "多选题", fn: function() {
+                name: "多选题", fn: function () {
                     _this._addSubject(_this, order, "checkbox")
                 }
             }, {
-                name: "填空题", fn: function() {
+                name: "填空题", fn: function () {
                     _this._addSubject(_this, order, "textarea")
                 }
             }]
@@ -203,7 +213,7 @@ class SurvyProblem extends React.Component {
         }
 
 
-        TUI.platform.post("/SurvyContentInit", newSurvy, function(result) {
+        TUI.platform.post("/SurvyContentInit", newSurvy, function (result) {
             if (result.code == 0) {
                 var _d = result.datas[0]
                 _odata[parseInt(order) + 1] = _d
@@ -230,7 +240,7 @@ class SurvyProblem extends React.Component {
             if ($m.Id == id) {
                 survyData.splice(i, 1)
 
-                TUI.platform.delete("/SurvyContentById/" + $m.Id, function(result) {
+                TUI.platform.delete("/SurvyContentById/" + $m.Id, function (result) {
                     if (result.code == 0) {
                         var _d = result.datas
                     }

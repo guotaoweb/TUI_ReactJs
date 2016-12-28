@@ -10,6 +10,8 @@ import PositionMaintainRoleEdit from "./positionMaintain.role.edit"
 import PositionMaintainWorkStandard from "./positionMaintain.workStandard"
 // import PositionMaintainPersonMatchPost from "./positionMaintain.personMatchPost"
 
+let POSITION_ISEXIST = false
+
 class PositionMaintainEdit extends React.Component {
     render() {
         const {sidePageInfo, positionFamilys, jobFamilys, editInfo} = this.props
@@ -86,7 +88,7 @@ class PositionMaintainEdit extends React.Component {
                 <div>
                     <FormControls label="职位ID" ctrl="input" value="positionMaintainInfo.id" disabled="disabled" />
 
-                    <FormControls label="职位名称" ctrl="input" value="positionMaintainInfo.name" required="required" />
+                    <FormControls label="职位名称" ctrl="input" value="positionMaintainInfo.name" required="required" onBlur={this.onBlur.bind(this)} />
                     <FormControls label="职位编制" ctrl="input" type="number" value="positionMaintainInfo.staffing" />
 
                     <FormControls label="职位族" ctrl="select" options={positionFamilys} value="positionMaintainInfo.positionFamily" onChangeFn={this.onChangeFnByPositionFamilys.bind(this)} />
@@ -110,11 +112,26 @@ class PositionMaintainEdit extends React.Component {
         )
     }
 
-    // <div style={{ borderTop: "1px solid #ebebeb" }}>
-    //     <PositionMaintainPersonMatchPost />
-    // </div>
     onChangeFnByPositionFamilys(id) {
         this.loadJobFamilys(id)
+    }
+
+    onBlur(e){
+        const {sideContentInfo,errorMsg} = this.props
+        TUI.platform.get("/position/"+sideContentInfo.type+"/"+e.currentTarget.value, function (result) {
+            if (result.code == 0) {
+                if(result.data==1){
+                    errorMsg("职位名称已存在")
+                    POSITION_ISEXIST = true
+                }
+                else{
+                    POSITION_ISEXIST = false
+                }
+            }
+            else {
+                errorMsg(result.message)
+            }
+        })
     }
 
     getPositionMaintainJobs() {
@@ -222,7 +239,10 @@ class PositionMaintainEdit extends React.Component {
             updatePageInfo,
             pageInfo
         } = this.props
-
+        if(POSITION_ISEXIST){
+            setTimeout(function(){errorMsg("职位名称已存在")},500)
+            return false
+        }
         let _this = this,
             postJson = {
                 "unitId": editId,
@@ -327,10 +347,10 @@ class PositionMaintainEdit extends React.Component {
                 if (result.code == 0) {
                     let _data = result.data
                     let newData = []
-                    newData.push({
-                        id: "-1",
-                        name: "请选择"
-                    })
+                    // newData.push({
+                    //     id: "-1",
+                    //     name: "请选择"
+                    // })
                     for (var i = 0; i < _data.length; i++) {
                         var $d = _data[i];
                         newData.push({
@@ -360,5 +380,6 @@ export default TUI._connect({
     editId: "positionMaintain.editId",
     jobsData: "positionMaintain.jobsData",
     editInfo: "formControlInfo.data",
-    pageInfo:"publicInfo.pageInfo"
+    pageInfo:"publicInfo.pageInfo",
+    sideContentInfo: "publicInfo.sideContentInfo"
 }, PositionMaintainEdit)

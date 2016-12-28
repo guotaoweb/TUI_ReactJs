@@ -100,7 +100,7 @@ class OrgnizationEdit extends React.Component {
 
                     _this.addOrgnizationData(data, relateId.split("-"), {
                         id: result.data.unitId,
-                        name: result.data.unitName,
+                        name: result.data.ext2,
                         isleaf: "1",
                         deep: relateId.split("-").length,
                         unitCode: result.data.unitCode
@@ -110,8 +110,6 @@ class OrgnizationEdit extends React.Component {
                         id: "orgnizationPager",
                         sum: parseInt(pageInfo.orgnizationPager.sum) + 1
                     })
-
-                    console.info(pageInfo)
                 }
                 else {
                     errorMsg(result.message)

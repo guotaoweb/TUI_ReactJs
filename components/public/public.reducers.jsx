@@ -25,7 +25,8 @@ const initState = {
     userInfo: {
         id: "",//用户ID
         name: "",//用户名
-        photo: ""//用户图像
+        photo: "",//用户图像
+        role: ""//用户图像
     },
     dialogInfo: "",//弹窗文字
     loadStatus: 1, //0 加载中 1加载完成
@@ -92,7 +93,8 @@ export default function manageReducers(state = initState, action) {
                 userInfo: {
                     id: action.id,
                     name: action.name,
-                    photo: action.photo
+                    photo: action.photo,
+                    role:action.role
                 }
             })
         case "UPDATE_SIDE_STATUS":

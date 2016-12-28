@@ -153,7 +153,8 @@ class Index extends React.Component {
     this.props.updateSideContentInfo({
       "key": TUI.fn.newGuid(),
       "id": params.id,
-      "type": params.type
+      "type": params.type,
+      "name":params.name
     })
   }
 

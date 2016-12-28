@@ -42,24 +42,26 @@ class login extends React.Component {
     }
 
     _login() {
-        const {editInfo, errorMsg, updateLoginStatus, loginStatus, url, to} = this.props
-        let _this = this
+        const {editInfo, errorMsg, updateLoginStatus, loginStatus, url, to,updateUserInfo} = this.props
+        let _this = this,
+            clearStatus = TUI.fn.requestParam("cs")=="true"?1:0
         if (loginStatus == 1) { return false }
         if (editInfo.loginInfo) {
-            let jsonParam = {
+            let jsonParam = { 
                 UserName: editInfo.loginInfo.UserName,
-                Password: editInfo.loginInfo.Password
+                Password: editInfo.loginInfo.Password,
+                Action:clearStatus
             }
             updateLoginStatus(1)
             TUI.platform.post(url, jsonParam, function (result) {
                 if (result.code == 0) {
-                    let clearStatus = TUI.fn.requestParam("cs")
                     if (clearStatus == 0) {
                         if(window.localStorage){
                             localStorage.clear()
                             document.cookie=""
                         }
-                        browserHistory.push(Config.ROOTPATH)
+                        updateUserInfo({ id: result.datas[0]})
+                        browserHistory.push(Config.ROOTPATH + to)
                     }
                     else {
                         browserHistory.push(Config.ROOTPATH + to)

@@ -48,7 +48,7 @@ class _Side extends React.Component {
 
 
         return (
-            <Side list={list} title="" addFn={this.addFn} />
+            <Side list={list} openSideUrlList={["userMaintain","positionMaintain","personMatchPost"]} title="" addFn={this.addFn} />
         )
     }
 

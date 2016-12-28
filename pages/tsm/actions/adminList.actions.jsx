@@ -30,6 +30,13 @@ export function updateAdminList(data){
     } 
 }
 
+export function addRoleList(data){
+    return {
+        type:"ADD_ROLE_LIST",
+        data
+    } 
+}
+
 
 
 

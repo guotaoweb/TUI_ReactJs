@@ -12,14 +12,19 @@ import StartVote from "./statistic.startVote"
 class Statistic extends React.Component {
     render() {
         const {voting, statistic, sidePageInfo} = this.props
-        let tblContent = {
-            "thead": { "name1": "序号", "name2": "名称", "name3": "描述", "name4": "创建时间", "name5": "操作" },
+        let coursetblContent = {
+            "thead": { "name1": "序号", "name2": "科目", "name3": "进度(已投人数/班级人数)" },
+            "tbody": []
+        }
+        //异常投票列表
+        let votedExceptionTblContent = {
+            "thead": { "name1": "序号", "name2": "IP", "name3": "进度(已投科目数/可投科目数)" },
             "tbody": []
         }
 
         let _voting = []
 
-        if (voting.length == 0) {
+        if (!voting) {
             _voting.push(
                 <div className="t-s-noclassvote" key="noclassvote">
                     <p>目前没有班级进行投票,单击<a href="javascript:void(0);" onClick={this.startVote.bind(this)}>启动</a>进行投票设置</p>
@@ -27,6 +32,24 @@ class Statistic extends React.Component {
             )
         }
         else {
+            for (var i = 0; i < voting.ExpcetionList.length; i++) {
+                let _d = voting.ExpcetionList[i]
+
+                votedExceptionTblContent.tbody.push({
+                    "value1": (i + 1),
+                    "value2": _d.Ip,
+                    "value3": _d.Number
+                })
+            }
+            for (var i = 0; i < voting.CourseList.length; i++) {
+                let _d = voting.CourseList[i]
+
+                coursetblContent.tbody.push({
+                    "value1": (i + 1),
+                    "value2": _d.Course,
+                    "value3": _d.Number
+                })
+            }
             _voting.push(
                 <ul key="classvote">
                     <li style={{ width: "30%" }}>
@@ -52,12 +75,10 @@ class Statistic extends React.Component {
             )
         }
 
-        // let _statistic = []
-        // if (statistic.length != 0) {
-        //     _statistic.push(
 
-        //     )
-        // }
+
+
+
 
         let _startVote = []
         if (sidePageInfo.status == "startVote") {
@@ -71,25 +92,25 @@ class Statistic extends React.Component {
                         <li>
                             <div>
                                 <h3>投票数量</h3>
-                                <p>{statistic.VoteNumber?statistic.VoteNumber:0}</p>
+                                <p>{statistic.VoteNumber ? statistic.VoteNumber : 0}</p>
                             </div>
                         </li>
                         <li>
                             <div>
                                 <h3>班级数量</h3>
-                                <p>{statistic.ClassesNumber?statistic.ClassesNumber:0}</p>
+                                <p>{statistic.ClassesNumber ? statistic.ClassesNumber : 0}</p>
                             </div>
                         </li>
                         <li>
                             <div>
                                 <h3>科目数量</h3>
-                                <p>{statistic.CourseNumber?statistic.CourseNumber:0}</p>
+                                <p>{statistic.CourseNumber ? statistic.CourseNumber : 0}</p>
                             </div>
                         </li>
                         <li>
                             <div>
                                 <h3>教师数量</h3>
-                                <p>{statistic.TeacherNumber?statistic.TeacherNumber:0}</p>
+                                <p>{statistic.TeacherNumber ? statistic.TeacherNumber : 0}</p>
                             </div>
                         </li>
                     </ul>
@@ -100,10 +121,14 @@ class Statistic extends React.Component {
                 </div>
 
                 <div className="t-s-teacherlist">
-                    <Table tblContent={tblContent} width="50,0,150,150,200,180" />
+                    <div>投票科目列表<a href="#" style={{ float: "right", marginRight: "10px" }} onClick={this.RefreshVotingClasses.bind(this)}>刷新</a></div>
+                    <Table tblContent={coursetblContent} width="50,0,200" />
+                    <br />
                 </div>
                 <div className="t-s-classeslist">
-                    <Table tblContent={tblContent} width="50,0,150,150,100,80" />
+                    <div>投票进度列表<a href="#" style={{ float: "right", marginRight: "10px" }} onClick={this.RefreshVotingClasses.bind(this)}>刷新</a></div>
+                    <Table tblContent={votedExceptionTblContent} width="50,0,250" />
+                    <br />
                 </div>
                 <SidePage title="投票设置">
                     <div>
@@ -147,17 +172,7 @@ class Statistic extends React.Component {
     componentDidUpdate(nextProps) {
         const {addVotingClasses, errorMsg} = this.props
         if (this.props.sidePageInfo.status != nextProps.sidePageInfo.status) {
-            TUI.platform.get("/VotingClasses", function (result) {
-                if (result.code == 0) {
-                    addVotingClasses(result.datas[0])
-                }
-                else if (result.code == 1) {
-                    addVotingClasses([])
-                }
-                else {
-                    errorMsg(Config.ERROR_INFO[result.code]);
-                }
-            })
+            this.loadVotingClasses()
             return true
         }
         else {
@@ -165,20 +180,30 @@ class Statistic extends React.Component {
         }
     }
 
-    componentDidMount() {
-        const {addVotingClasses, addStatistic, errorMsg,addBreadNav} = this.props
-        addBreadNav({name:"首页"})
+    loadVotingClasses() {
+        const {addVotingClasses, errorMsg} = this.props
         TUI.platform.get("/VotingClasses", function (result) {
             if (result.code == 0) {
-                addVotingClasses(result.datas[0])
+                addVotingClasses(result.datas)
             }
             else if (result.code == 1) {
-                addVotingClasses([])
+                addVotingClasses({})
             }
             else {
                 errorMsg(Config.ERROR_INFO[result.code]);
             }
         })
+    }
+
+    RefreshVotingClasses() {
+        this.loadVotingClasses()
+    }
+    
+    componentDidMount() {
+        const {addStatistic, errorMsg, addBreadNav} = this.props
+        addBreadNav({ name: "首页" })
+
+        this.loadVotingClasses()
 
         TUI.platform.get("/Statistic", function (result) {
             if (result.code == 0) {

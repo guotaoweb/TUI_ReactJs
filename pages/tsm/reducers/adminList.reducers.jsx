@@ -1,7 +1,8 @@
 import 'babel-polyfill'
 
 const initState = {
-    list: []
+    list: [],
+    role:""
 }
 
 export default function adminListReducers(state = initState, action) {
@@ -41,7 +42,10 @@ export default function adminListReducers(state = initState, action) {
             return Object.assign({}, state, {
                 list: JSON.parse(JSON.stringify(action.data))
             })
-
+        case "ADD_ROLE_LIST":
+            return Object.assign({}, state, {
+                role: action.data
+            })
             
         default:
             return state

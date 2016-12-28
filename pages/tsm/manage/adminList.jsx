@@ -30,7 +30,7 @@ class AdminList extends React.Component {
 
 
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "名称", "name3": "登陆错误次数", "name4": "状态", "name5": "操作" },
+            "thead": { "name1": "序号", "name2": "名称", "name3": "角色", "name4": "状态", "name5": "操作" },
             "tbody": []
         }
 
@@ -40,8 +40,8 @@ class AdminList extends React.Component {
             tblContent.tbody.push({
                 "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                 "value2": _d.UserName,
-                "value3": _d.AccessFailedCount,
-                "value4": _d.LockoutEnabled==0 ? "正常" : "锁定",
+                "value3": _d.UserRole,
+                "value4": _d.LockoutEnabled == 0 ? "正常" : "锁定",
                 "fns": [{
                     "name": "重置密码",
                     "fn": function () {
@@ -68,7 +68,8 @@ class AdminList extends React.Component {
                                     infoName: "userInfo",
                                     Id: _d.Id,
                                     UserName: _d.UserName,
-                                    LockoutEnabled: _d.LockoutEnabled
+                                    LockoutEnabled: _d.LockoutEnabled,
+                                    UserRole:_d.UserRole
                                 })
 
                                 openSidePage(_this, {
@@ -170,7 +171,7 @@ class AdminList extends React.Component {
     }
 
     addAdmin() {
-        const {addEditInfo} = this.props
+        const {addEditInfo, role,addRoleList,errorMsg} = this.props
         openSidePage(this, {
             status: "addAdmin",
             width: ""
@@ -179,6 +180,25 @@ class AdminList extends React.Component {
             infoName: "userInfo",
             LockoutEnabled: 1
         })
+        if (!role) {
+            TUI.platform.get("/Role", function (result) {
+                if (result.code == 0) {
+                    let _d = result.datas
+                    let newdata = []
+                    for (var i = 0; i < _d.length; i++) {
+                        var $d = _d[i];
+                        newdata.push({
+                            id:$d.Id,
+                            name:$d.Name
+                        })
+                    }
+                    addRoleList(newdata)
+                }
+                else {
+                    errorMsg(result.message)
+                }
+            })
+        }
     }
 }
 
@@ -186,7 +206,8 @@ class AdminList extends React.Component {
 export default TUI._connect({
     adminList: "adminList.list",
     sidePageInfo: "publicInfo.sidePageInfo",
-    pageInfo: "publicInfo.pageInfo"
+    pageInfo: "publicInfo.pageInfo",
+    role: "adminList.role"
 }, AdminList)
 
 

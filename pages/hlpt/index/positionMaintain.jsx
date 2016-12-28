@@ -26,7 +26,7 @@ class PositionMaintain extends React.Component {
         } = this.props
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "职位代码", "name3": "职位名称", "name4": "职位类别", "name5": "所属组织", "name6": "状态", "name7": "编制", "name8": "操作" },
+            "thead": { "name1": "序号", "name2": "职位代码", "name3": "职位名称-desc-positionName", "name4": "职位类别", "name5": "所属组织", "name6": "状态", "name7": "编制","name8":"人数","name9":"排序号-desc-sort", "name10": "操作" },
             "tbody": []
         }
 
@@ -42,6 +42,8 @@ class PositionMaintain extends React.Component {
                 "value5": _d.unitShortName,
                 "value6": _d.statusName,
                 "value7": _d.staffing,
+                "value8": _d.sumStaff,
+                "value9": _d.sort,
                 "fns": [{
                     "name": "编辑",
                     "fn": function () {
@@ -149,7 +151,7 @@ class PositionMaintain extends React.Component {
                             width: "98%",
                             margin: "auto"
                         }} fn={this._searchPositionMaintain.bind(this)} />
-                        <Table id="positionMaintain" bindPager="positionMaintainPager" tblContent={tblContent} width="50,100,0,120,0,70,70,100" />
+                        <Table id="positionMaintain" bindPager="positionMaintainPager" tblContent={tblContent}  sort={this.tblSort.bind(this)} width="50,100,0,120,0,70,70,70,70,100" />
                         <Pager id="positionMaintainPager" fn={this.pageFn.bind(this)} />
                     </div>
                 </Content>
@@ -191,6 +193,17 @@ class PositionMaintain extends React.Component {
         })
     }
 
+    tblSort(params) {
+        let sort = ""
+        if (params.sort == "desc") {
+            sort = "%2B" + params.filter
+        }
+        else {
+            sort = "-" + params.filter
+        }
+
+        this.loadPosition(this.props.sideContentInfo.id, sort)
+    }
 
     componentDidUpdate() {
         const {sideContentInfo, componentInfo, updateComponentInfo} = this.props
@@ -258,51 +271,22 @@ class PositionMaintain extends React.Component {
         addBreadNav({ name: "职位维护" })
     }
 
-    // clickMenu($m) {
-    //     let _this = this
-    //     let $menuLi = document.getElementsByClassName("clickmenu")
-    //     for (let j = 0; j < $menuLi.length; j++) {
-    //         let $m1 = $menuLi[j];
-    //         $m1.style.backgroundColor = ""
-    //     }
-    //     $m.style.backgroundColor = "rgba(250,250,250,0.5)"
-    //     $m.style.borderRadius = "3px"
-
-    //     let id = $m.getAttribute("data-id")
-    //     let code = $m.getAttribute("data-type")
-    //     _this.props.updatePositionMaintainEditId(code)
-
-    //     this.props.clearEditInfo({
-    //         infoName: "positionMaintainInfo"
-    //     })
-    //     openContentLoading()
-    //     this.loadPosition(id)
-    //     closeSidePage()
-    //     this.props.updateEditInfo({
-    //         infoName: "jobsInfo",
-    //         status: "list"
-    //     })
-    //     this.props.updateEditInfo({
-    //         infoName: "rolesInfo",
-    //         status: "list"
-    //     })
-    //     this.props.addBreadNav({ name: "职位维护" })
-    // }
-
     addPositionMaintainBtn() {
+        const {sideContentInfo,updatePositionMaintainEditId,pushBreadNav} = this.props
         openSidePage(this, {
             status: "addPositionMaintain",
             id: "PositionMaintain"
         })
 
-        this.props.pushBreadNav({ name: "添加职位信息" })
+        updatePositionMaintainEditId(sideContentInfo.type)
+
+        pushBreadNav({ name: "添加职位信息" })
     }
 
-    loadPosition(id) {
+    loadPosition(id,sort) {
         const {addPositionMaintain, updatePageInfo, clearPageInfo, updateSearchInfo, pageInfo} = this.props
-        let _pageSize = pageInfo["positionMaintainPager"] ? pageInfo["positionMaintainPager"].size : 10
-        console.info(_pageSize)
-        let url = id ? "/positions?unitId=" + id + "&from={0}&limit=" + _pageSize : "/positions?unitCode=0&from={0}&limit=" + _pageSize
+        let _pageSize = pageInfo["positionMaintainPager"] ? pageInfo["positionMaintainPager"].size : 10,
+            url = id ? "/positions?unitId=" + id +"&sort=" + (sort ? sort : "") +  "&from={0}&limit=" + _pageSize : "/positions?unitCode=0&from={0}&limit=" + _pageSize
         TUI.platform.get(url.replace("{0}", "0"), function (result) {
             if (result.code == 0) {
                 addPositionMaintain(result.data)

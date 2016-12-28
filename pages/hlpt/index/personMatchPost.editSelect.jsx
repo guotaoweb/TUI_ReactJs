@@ -49,20 +49,27 @@ class PersonMatchPostEditSelect extends React.Component {
                 "value2": _d.cnName,
                 "value3": _d.loginUid,
                 "value4": _d.unitName,
-                "value5": _d.positionNames,
+                "value5": _d.positionName,
                 "value6": _d.staffCode,
                 "fns": [{
                     "name": sidePageName,
                     "fn": function () {
 
                         let _positionId = sidePageInfo.gateWay.positionId.split("-")[0]
-                        let jsonParma = {
-                            staffId: _d.staffId,
-                            positionId: _positionId,
-                            dutyType: sidePageName == "调入" ? 1 : 2
+                        let jsonParam = {
+                            positionId: _positionId
                         }
+                        if(sidePageName == "调入"){
+                            jsonParam["poid"] = _d.poid
+                            jsonParam["dutyType"] = "1"
+                        }
+                        else{
+                            jsonParam["dutyType"] = "2"
+                            jsonParam["staffId"] = _d.staffId
+                        }
+
                         waiteMsg("数据提交中,请稍等...")
-                        TUI.platform.post("/duty", jsonParma, function (result) {
+                        TUI.platform.post("/duty", jsonParam, function (result) {
                             if (result.code == 0) {
                                 let _data = result.data
 
@@ -110,7 +117,7 @@ class PersonMatchPostEditSelect extends React.Component {
 
     _searchPersonMachPostEditSelect(val) {
         const {addPersonMatchPostSelectUserData, errorMsg, updatePageInfo} = this.props
-        let _url = "/staffs?loginName=" + val + "&from={0}&limit=10"
+        let _url = "/dutys?loginName=" + val + "&from={0}&limit=10"
         //positionId=" + this.props.sidePageInfo.gateWay.positionId + "
         TUI.platform.get(_url.replace("{0}", 0), function (result) {
             if (result.code == 0) {

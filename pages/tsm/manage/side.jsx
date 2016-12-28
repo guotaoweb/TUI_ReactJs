@@ -16,98 +16,163 @@ import reports from "!url!./img/report-s.png"
 class _Side extends React.Component {
   render() {
     const {sideList} = this.props
+
+    let list = []
+
+    for (let i = 0; i < sideList.length; i++) {
+      let $d = sideList[i]
+      let $s = []
+
+      if ($d.Children) {
+        for (var j = 0; j < $d.Children.length; j++) {
+          var $c = $d.Children[j];
+          $s.push({
+            id: $c.Id,
+            name: $c.Name,
+            url: Config.ROOTPATH + $c.Url
+          })
+        }
+      }
+      list.push({
+        id: $d.Id,
+        name: $d.Name,
+        url: $d.Url,
+        icon: this.getImg($d.Name),
+        sicon: this.getImg($d.Name + "s"),
+        sub: $s
+      })
+    }
+
     return (
-      <Side list={sideList} title="TSM" to="statistic" />
+      <Side list={list} title="TSM" to="statistic" />
     )
   }
 
+  componentDidUpdate(nextProps) {
+
+    if (this.props.userInfo.role != nextProps.userInfo.role) {
+      this.loadColumn()
+    }
+  }
+
   componentDidMount() {
-    let list = [{
-      id:"1",
-      name: "用户管理",
-      url: "#",
-      icon: admin,
-      sicon: admins,
-      sub: [{
-        id:"1-1",
-        name: "管理员列表", 
-        url: Config.ROOTPATH + "admins"
-      }, {
-        id:"1-2", 
-        name: "教师列表",
-        url: Config.ROOTPATH + "teachers"
-      }]
-    }, {
-      id:"2",
-      name: "班级管理",
-      url: "#",
-      icon: classes,
-      sicon: classess,
-      sub: [{
-        id:"2-1",
-        name: "科目列表",
-        url: Config.ROOTPATH + "courses"
-      }, {
-        id:"2-2",
-        name: "班级列表",
-        url: Config.ROOTPATH + "classes"
-      }]
-    }, {
-      id:"3",
-      name: "问卷管理",
-      url: Config.ROOTPATH + "survys",
-      icon: survy,
-      sicon: survys
-    }, {
-      id:"4",
-      name: "投票管理",
-      url: Config.ROOTPATH + "votes",
-      icon: vote,
-      sicon: votes
-    }, {
-      id:"5",
-      name: "报表系统",
-      url: Config.ROOTPATH + "survys",
-      icon: report,
-      sicon: reports,
-      sub: [{
-        id:"5-1",
-        name: "在线分析",
-        url: Config.ROOTPATH + "TeacherList"
-      }, {
-        id:"5-2",
-        name: "导出报表",
-        url: Config.ROOTPATH + "TeacherList"
-      }, {
-        id:"5-3",
-        name: "报表列表",
-        url: Config.ROOTPATH + "reports"
-      }]
-    }]
-    this.props.addSide(list)
+
+    const {userInfo, errorMsg, addSide} = this.props
+
+    TUI.platform.get("/Column/691d6a95-32fa-43f0-b8cf-6f09e41d1f81", function (result) {
+      if (result.code == 0) {
+        let _d = result.datas
+        addSide(_d)
+      }
+      else {
+        errorMsg(result.message)
+      }
+    })
+  }
+
+  loadColumn() {
+    const {userInfo, errorMsg, addSide} = this.props
+
+    TUI.platform.get("/Column/" + userInfo.role, function (result) {
+      if (result.code == 0) {
+        let _d = result.datas
+        addSide(_d)
+      }
+      else {
+        errorMsg(result.message)
+      }
+    })
+
+    // let list = [{
+    //   id: "1",
+    //   name: "用户管理",
+    //   url: "#",
+    //   icon: admin,
+    //   sicon: admins,
+    //   sub: [{
+    //     id: "1-1",
+    //     name: "管理员列表",
+    //     url: Config.ROOTPATH + "admins"
+    //   }, {
+    //     id: "1-2",
+    //     name: "教师列表",
+    //     url: Config.ROOTPATH + "teachers"
+    //   }]
+    // }, {
+    //   id: "2",
+    //   name: "班级管理",
+    //   url: "#",
+    //   icon: classes,
+    //   sicon: classess,
+    //   sub: [{
+    //     id: "2-1",
+    //     name: "科目列表",
+    //     url: Config.ROOTPATH + "courses"
+    //   }, {
+    //     id: "2-2",
+    //     name: "班级列表",
+    //     url: Config.ROOTPATH + "classes"
+    //   }]
+    // }, {
+    //   id: "3",
+    //   name: "问卷管理",
+    //   url: Config.ROOTPATH + "survys",
+    //   icon: survy,
+    //   sicon: survys
+    // }, {
+    //   id: "4",
+    //   name: "投票管理",
+    //   url: Config.ROOTPATH + "votes",
+    //   icon: vote,
+    //   sicon: votes
+    // }, {
+    //   id: "5",
+    //   name: "报表系统",
+    //   url: Config.ROOTPATH + "survys",
+    //   icon: report,
+    //   sicon: reports,
+    //   sub: [{
+    //     id: "5-1",
+    //     name: "教师统计",
+    //     url: Config.ROOTPATH + "TeacherList"
+    //   }, {
+    //     id: "5-2",
+    //     name: "班级统计",
+    //     url: Config.ROOTPATH + "TeacherList"
+    //   }, {
+    //     id: "5-3",
+    //     name: "导出报表",
+    //     url: Config.ROOTPATH + "TeacherList"
+    //   }, {
+    //     id: "5-4",
+    //     name: "报表列表",
+    //     url: Config.ROOTPATH + "reports"
+    //   }]
+    // }]
+    // this.props.addSide(list)
   }
 
   getImg(src) {
     switch (src) {
-      case "admin":
+      case "用户管理":
         return admin
-      case "admins":
+      case "用户管理s":
         return admins
-      case "classes":
+      case "班级管理":
         return classes
-      case "classess":
+      case "班级管理s":
         return classess
-      case "survy":
+      case "问卷管理":
         return survy
-      case "survys":
+      case "问卷管理s":
         return survys
-      case "vote":
+      case "投票管理":
         return vote
-      case "votes":
+      case "投票管理s":
         return votes
-      case "report":
+      case "报表系统":
         return report
-      case "reports":
+      case "报表系统s":
         return reports
       default:
         return admin
@@ -117,6 +182,6 @@ class _Side extends React.Component {
 
 export default TUI._connect({
   sideStatus: "publicInfo.sideStatus",
-  userId: "publicInfo.userInfo.id",
-  sideList:"publicInfo.side"
+  userInfo: "publicInfo.userInfo",
+  sideList: "publicInfo.side"
 }, _Side)

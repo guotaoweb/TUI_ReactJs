@@ -6,7 +6,7 @@ import { closeSidePage } from "SidePage"
 
 class EditAdmin extends React.Component {
   render() {
-    const {sidePageInfo} = this.props
+    const {sidePageInfo,role} = this.props
     let tabs = []
 
     if (sidePageInfo.status == "editAdmin") {
@@ -23,6 +23,7 @@ class EditAdmin extends React.Component {
             <FormControls label="用户名" ctrl="input" value="userInfo.UserName" required="required" />
             <FormControls label="账号密码" ctrl="input" type="Password" placeholder="密码至少6位" value="userInfo.Password" />
             <FormControls label="重复密码" ctrl="input" type="Password" placeholder="密码至少6位" value="userInfo.ConfirmPassword" />
+            <FormControls label="角色" ctrl="select" options={role} value="userInfo.UserRole" />
             <FormControls label="是否锁定" ctrl="slide" options={_slideOptions} value="userInfo.LockoutEnabled" />
             <div className="formControl-btn">
               <Btn type="cancel" txt="取消" href={this._goBack.bind(this)} />
@@ -57,7 +58,8 @@ class EditAdmin extends React.Component {
     let jsonParam = {
       UserName: editInfo.userInfo.UserName,
       Password: editInfo.userInfo.Password,
-      LockoutEnabled: editInfo.userInfo.LockoutEnabled
+      LockoutEnabled: editInfo.userInfo.LockoutEnabled,
+      UserRole:editInfo.userInfo.UserRole
     }
 
 
@@ -71,6 +73,7 @@ class EditAdmin extends React.Component {
       TUI.platform.post("/Register", jsonParam, function (result) {
         if (result.code == 0) {
           jsonParam["Id"] = result.datas
+          jsonParam["UserRole"] = editInfo.userInfo.UserRoleName
           successMsg("新增成功")
           addAdminList(jsonParam)
         }
@@ -85,6 +88,7 @@ class EditAdmin extends React.Component {
       jsonParam["Id"] = _id
       TUI.platform.put("/User/" + _id, jsonParam, function (result) {
         if (result.code == 0) {
+          jsonParam["UserRole"] = editInfo.userInfo.UserRoleName
           successMsg("更新成功")
           updateAdminList(jsonParam)
         }
@@ -101,5 +105,6 @@ class EditAdmin extends React.Component {
 
 export default TUI._connect({
   sidePageInfo: "publicInfo.sidePageInfo",
-  editInfo: "formControlInfo.data"
+  editInfo: "formControlInfo.data",
+  role:"adminList.role"
 }, EditAdmin)

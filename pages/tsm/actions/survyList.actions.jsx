@@ -6,6 +6,13 @@ export function addSurvyList(data){
     }
 }
 
+export function loadSurvyList(data){
+    return {
+        type:"LOAD_SURVY_LIST",
+        data
+    }
+}
+
 //更新问卷列表信息【2】
 export function updateSurvyList(data){
     return {
@@ -16,10 +23,10 @@ export function updateSurvyList(data){
 
 
 //删除问卷列表信息【3】
-export function deleteSurvyList(data){
+export function deleteSurvyList(Id){
     return {
         type:"DELETE_SURVY_LIST",
-        data
+        Id
     }
 }
 

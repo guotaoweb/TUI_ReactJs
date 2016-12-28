@@ -10,7 +10,7 @@ import SurvyListProblem from './survyList.problem'
 
 class EditSurvy extends React.Component {
     render() {
-        const {editInfo, survyData, updateSurvy} = this.props
+        const {editInfo, survyData, updateSurvy, addEditInfo} = this.props
         let _this = this
         let tabs = [{
             name: "基本信息", id: "tabs1"
@@ -18,10 +18,34 @@ class EditSurvy extends React.Component {
             name: "问卷内容", id: "tabs2", fn: function () {
 
                 if (editInfo.survyInfo) {
-                    TUI.platform.get("/SurvyContent/" + editInfo.survyInfo.Id, function (result) {
+                    console.info(editInfo)
+                    console.info("++++>" + _this.props.editInfo.survyInfo.Id)
+                    TUI.platform.get("/SurvyContent/" + _this.props.editInfo.survyInfo.Id, function (result) {
                         if (result.code == 0) {
                             var _d = result.datas
                             updateSurvy(_d)
+                            for (let i = 0; i < _d.length; i++) {
+                                addEditInfo({
+                                    infoName: "survyProblemInfo_" + _d[i].Id,
+                                    Id: _d[i].Id,
+                                    Name: _d[i].Name,
+                                    Order: _d[i].Order,
+                                    ParentId: _d[i].ParentId,
+                                    Type: _d[i].Type
+                                })
+                                for (var j = 0; j < _d[i].Datas.length; j++) {
+                                    var _d_ = _d[i].Datas[j];
+                                    addEditInfo({
+                                        infoName: "survyOptionInfo_" + _d_.Id,
+                                        Id: _d_.Id,
+                                        Name: _d_.Name,
+                                        Order: _d_.Order,
+                                        ParentId: _d_.ParentId,
+                                        Type: _d_.Type,
+                                        Score: _d_.Score
+                                    })
+                                }
+                            }
                         }
                         else if (result.code == 1) {
                             updateSurvy([])
@@ -44,12 +68,17 @@ class EditSurvy extends React.Component {
         if (survyData.length == 0) {
             let _txt = ""
             if (editInfo.survyInfo) {
-                _txt =
-                    <div>
-                        <span>单击 </span>
-                        <Btn txt="编辑" style={{ display: "inline-block" }} href={this.addSurvy.bind(this)} />
-                        <span> 题目</span>
-                    </div>
+                if (editInfo.survyInfo.Id) {
+                    _txt =
+                        <div>
+                            <span>单击 </span>
+                            <Btn txt="编辑" style={{ display: "inline-block" }} href={this.addSurvy.bind(this)} />
+                            <span> 题目</span>
+                        </div>
+                }
+                else {
+                    _txt = <span>请先填写问卷的基本信息</span>
+                }
             }
             else {
                 _txt = <span>请先填写问卷的基本信息</span>
@@ -77,7 +106,7 @@ class EditSurvy extends React.Component {
                     <FormControls label="问卷说明" ctrl="textarea" value="survyInfo.Desp" />
                     <div className="formControl-btn">
                         <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
-                        <Btn type="add" txt="确定" />
+                        <Btn type="add" txt="确定" href={this.addSurvyBseInfo.bind(this)} />
                     </div>
                 </div>
                 <div>
@@ -95,85 +124,63 @@ class EditSurvy extends React.Component {
         this.props.clearAllEditInfo()
     }
 
+    addSurvyBseInfo() {
+        const {addSurvyList, editInfo, successMsg, errorMsg, updateEditInfo,updatePageInfo,pageInfo} = this.props
+        let jsonParam = {
+            Name: editInfo.survyInfo.Name,
+            Desp: editInfo.survyInfo.Desp
+        }
+        TUI.platform.post("/Survy", jsonParam, function (result) {
+            if (result.code == 0) {
+                jsonParam["Id"] = result.datas[0]
+                updateEditInfo({
+                    infoName: "survyInfo",
+                    Id: result.datas[0]
+                })
+                addSurvyList(jsonParam)
+
+                updatePageInfo({
+                    sum: parseInt(pageInfo.index.sum) + 1,
+                })
+                successMsg("提交成功")
+            }
+            else {
+                errorMsg(Config.ERROR_INFO[result.code]);
+            }
+        })
+    }
+
     addSurvy() {
-        this.props.addSurvy([{
-            Id: TUI.fn.newGuid(),
-            ParentId: "0",
-            Name: "",
+        const {addSurvy, editInfo} = this.props
+        let id = TUI.fn.newGuid()
+
+        let jsonParam = {
             Order: 0,
             Type: "radio",
+            SurvyId: editInfo.survyInfo.Id,
             Datas: [{
-                Id: TUI.fn.newGuid(),
-                Name: "",
-                Order: 0
+                Order: 0,
+                Type: "radio",
+                SurvyId: editInfo.survyInfo.Id
             }]
-        }])
+        }
+        //this.props.addSurvy()
         var _this = this
 
         console.info(_this.props.survyData)
 
-
+        TUI.platform.post("/SurvyContentInit", jsonParam, function (result) {
+            if (result.code == 0) {
+                addSurvy(jsonParam)
+                //successMsg("提交成功")
+            }
+            else {
+                errorMsg(Config.ERROR_INFO[result.code]);
+            }
+        })
     }
 
     componentDidMount() {
-        // this.props.updateSurvy([{
-        //     txt: "这是第一道题",
-        //     sort: 0,
-        //     type: "radio",
-        //     options: [{
-        //         txt: "选项一",
-        //         sort: 0
-        //     }, {
-        //         txt: "选项二",
-        //         sort: 1
-        //     }, {
-        //         txt: "选项三",
-        //         sort: 2
-        //     }, {
-        //         txt: "选项四",
-        //         sort: 3
-        //     }]
-        // }, {
-        //     txt: "这是第二道题",
-        //     sort: 1,
-        //     type: "textarea",
-        //     options: []
-        // }, {
-        //     txt: "这是第三道题",
-        //     sort: 1,
-        //     type: "checkbox",
-        //     options: [{
-        //         txt: "选项一",
-        //         sort: 0
-        //     }, {
-        //         txt: "选项二",
-        //         sort: 1
-        //     }, {
-        //         txt: "选项三",
-        //         sort: 2
-        //     }, {
-        //         txt: "选项四",
-        //         sort: 3
-        //     }]
-        // }, {
-        //     txt: "这是第四道题",
-        //     sort: 1,
-        //     type: "checkbox",
-        //     options: [{
-        //         txt: "选项一",
-        //         sort: 0
-        //     }, {
-        //         txt: "选项二",
-        //         sort: 1
-        //     }, {
-        //         txt: "选项三",
-        //         sort: 2
-        //     }, {
-        //         txt: "选项四",
-        //         sort: 3
-        //     }]
-        // }])
-
 
         let _this = this
         //鼠标经过操作按钮的时候,提示正在操作哪个题目/选项
@@ -194,5 +201,6 @@ class EditSurvy extends React.Component {
 
 export default TUI._connect({
     editInfo: "formControlInfo.data",
-    survyData: "survyList.data"
+    survyData: "survyList.data",
+    pageInfo:"publicInfo.pageInfo"
 }, EditSurvy)

@@ -24,7 +24,7 @@ export default function classesListReducers(state = initState, action) {
             })
         case "ADD_VOTING_CLASSES":
             return Object.assign({}, state, {
-                voting: JSON.parse(JSON.stringify(action.data))
+                voting: action.data
             })
         case "ADD_STATISTIC":
             return Object.assign({}, state, {

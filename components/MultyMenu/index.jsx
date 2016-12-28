@@ -548,7 +548,8 @@ export function clickFn(e) {
       let params = {
         id: $m.getAttribute("data-id"),
         type: $m.getAttribute("data-type"),
-        deep:$m.getAttribute("data-deep")
+        deep:$m.getAttribute("data-deep"),
+        name:$m.getAttribute("data-name")
       }
       this.props.clickMenu(params)
       let $menuLi = document.getElementsByClassName("clickmenu")
