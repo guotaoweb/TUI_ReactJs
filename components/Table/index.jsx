@@ -35,20 +35,26 @@ class Table extends React.Component {
 
     let _width = width ? width : w
 
-    let tbodyLength = tblContent.tbody.length
-    let pagerNumber = pageInfo[bindPager] ? pageInfo[bindPager].size : pageInfo["index"].size
+    let tbodyLength = tblContent.tbody.length,
+        pagerNumber = pageInfo[bindPager] ? pageInfo[bindPager].size : pageInfo["index"].size,
+        pagerUrl = pageInfo[bindPager] ? pageInfo[bindPager].url : pageInfo["index"].url
 
     let _length = 0
     if (num) {
-      if (pagerNumber > num) {
+      if(pagerUrl){
         _length = pagerNumber
       }
-      else {
-        _length = num
+      else{
+        _length = tbodyLength>num?num:tbodyLength
       }
     }
     else {
-      _length = pagerNumber
+      if(pagerUrl){
+        _length = pagerNumber
+      }
+      else{
+        _length = tbodyLength
+      }
     }
 
     for (let i = 0; i < _length; i++) {

@@ -224,7 +224,7 @@ class PersonMatchPostEdit extends React.Component {
                 id: "personMatchPostEditPager",
                 index: 1,
                 size: _pageSize,
-                sum: result._page ? result._page.total : 1,
+                sum: result._page ? result._page.total : 0,
                 url: _url
             })
         })

@@ -26,6 +26,7 @@ class SelectSurvy extends React.Component {
             _list = []
 
         if (survyList.length > 0) {
+            console.info(survyList)
             for (let i = 0; i < survyList.length; i++) {
                 let $t = survyList[i]
                 let survyName = $t.Name + ($t.IsDefault==0?" (默认)":"")
@@ -59,14 +60,14 @@ class SelectSurvy extends React.Component {
     }
 
     componentDidMount() {
-        const {survyList,addSurvyList, errorMsg} = this.props
+        const {survyList,loadSurvyList, errorMsg} = this.props
         if (survyList.length == 0) {
             TUI.platform.get("/Survy", function (result) {
                 if (result.code == 0) {
-                    addSurvyList(result.datas)
+                    loadSurvyList(result.datas)
                 }
                 else if (result.code == 1) {
-                    addSurvyList([])
+                    loadSurvyList([])
                 } else {
                     errorMsg(Config.ERROR_INFO[result.code]);
                 }

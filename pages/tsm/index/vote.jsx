@@ -118,11 +118,11 @@ class Vote extends React.Component {
 
     for (let i = 0; i < $selectBox.length; i++) {
       let $s = $selectBox[i],
-        $selectObj = $s.getElementsByClassName("t-c_checkbox"),
+        $selectObj = $s.getElementsByClassName("t-formControls"),
         _isSelected = false
 
       for (let j = 0; j < $selectObj.length; j++) {
-        let $o = $selectObj[j]
+        let $o = $selectObj[j].getElementsByTagName("div")[0]
         if ($o.getAttribute("data-status") == "selected") {
           _isSelected = true
           selectedIds.push({
@@ -197,8 +197,6 @@ class Vote extends React.Component {
           }
         }
         addVotingCourse(_d)
-        let survyId = _d[0].Id
-        VOTING_SURVY_ID = survyId
         _this.getSurvy(_d[0].Id)
       }
       if (result.code == 1) {
@@ -219,6 +217,7 @@ class Vote extends React.Component {
       if (result.code == 0) {
         let _d = result.datas
         addVotingSurvy(_d)
+        VOTING_SURVY_ID = _d.Id
         clearCtrlStatus()
       }
       if (result.code == 1) {
@@ -281,7 +280,7 @@ class SurvyOptions extends React.Component {
           _type = this.props.type
         if (_type != "textarea") {
           let _val = this.NumSwitchChar(j + 1) + "." + $o.Name
-          _survy.push(<FormControls key={"options_type" + j} id={$o.Id} minWidth="0" labelWidth="40" ctrl={_type} txt={_val} clickFn={this.clickFn.bind(this)} />)
+          _survy.push(<FormControls key={"options_type" + j} groupName={"option_groupName"+i} id={$o.Id} minWidth="0" labelWidth="40" ctrl={_type} txt={_val} clickFn={this.clickFn.bind(this)} />)
         }
         else {
           _survy.push(<FormControls key={"options_type" + j} id={$o.Id} minWidth="0" labelWidth="40" ctrl={_type} value="" style={{ width: "430px" }} />)

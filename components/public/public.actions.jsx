@@ -177,7 +177,6 @@ export function addSide(data){
     } 
 }
 
-
 export function addBreadNav(data){
     return {
         type:"ADD_BREAD_NAV",

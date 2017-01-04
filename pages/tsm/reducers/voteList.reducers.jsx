@@ -10,9 +10,7 @@ export default function manageReducers(state = initState, action) {
             if (state.list.length == 0) {
                 return Object.assign({}, state, { list: action.data })
             } else {
-                state
-                    .list
-                    .push(action.data)
+                state.list.push(action.data)
                 return Object.assign({}, state, {
                     list: JSON.parse(JSON.stringify(state.list))
                 })
@@ -36,10 +34,9 @@ export default function manageReducers(state = initState, action) {
                 if ($d.Id == action.data.Id) {
                     $d.Name = action.data.Name?action.data.Name:$d.Name
                     $d.IsStart = action.data.IsStart
-                    $d.Type = action.data.Type
+                    $d.Type = action.data.Type?action.data.Type:$d.Type
                 }
             }
-            console.info(state.list)
             return Object.assign({}, state, {
                 list: eval(JSON.stringify(state.list))
             })

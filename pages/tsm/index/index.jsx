@@ -50,13 +50,13 @@ class Index extends React.Component {
         TUI.platform.get("/MyIp", function (result) {
             if (result.code == 0) {
                 let _d = result.datas
-                openDialog(this,"当前IP地址:"+_d)
+                openDialog(_this,"当前IP地址:"+_d)
             }
         })
     }
 
     clearStatus(){
-        browserHistory.push(Config.ROOTPATH + "login?cs=0")
+        browserHistory.push(Config.ROOTPATH + "login?cs=true")
     }
 
     login() {

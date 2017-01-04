@@ -14,7 +14,8 @@ class UserMaintainResetJob extends React.Component {
             successMsg,
             sidePageInfo,
             jobsAllList,
-            updateJobAllList
+            updateJobAllList,
+            sideContentInfo
         } = this.props
 
         let _this = this
@@ -64,7 +65,7 @@ class UserMaintainResetJob extends React.Component {
                 <div className="t-content_t">
                     <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />职位列表</span>
                 </div>
-                <Table id="userMaintainJobsListTable" tblContent={tblContent} width="50,0,80" />
+                <Table id="userMaintainJobsListTable" tblContent={tblContent} width="100,0,120" />
             </div>
         )
     }

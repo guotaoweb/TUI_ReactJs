@@ -233,7 +233,7 @@ class PositionMaintainEdit extends React.Component {
             data, 
             editInfo, 
             sidePageInfo, 
-            editId, 
+            sideContentInfo, 
             pushPositionMaintain, 
             updatePositionMaintain,
             updatePageInfo,
@@ -245,7 +245,7 @@ class PositionMaintainEdit extends React.Component {
         }
         let _this = this,
             postJson = {
-                "unitId": editId,
+                "unitId": sideContentInfo.type,
                 "positionName": editInfo.positionMaintainInfo.name,
                 "staffing": parseInt(editInfo.positionMaintainInfo.staffing),
                 "jobfamilyId": editInfo.positionMaintainInfo.positionFamily,
@@ -377,7 +377,6 @@ export default TUI._connect({
     sidePageInfo: "publicInfo.sidePageInfo",
     positionFamilys: "positionMaintain.positionFamilys",
     jobFamilys: "positionMaintain.jobFamilys",
-    editId: "positionMaintain.editId",
     jobsData: "positionMaintain.jobsData",
     editInfo: "formControlInfo.data",
     pageInfo:"publicInfo.pageInfo",

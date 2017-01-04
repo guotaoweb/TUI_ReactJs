@@ -86,7 +86,7 @@ class PositionMaintainEdit extends React.Component {
             data, 
             editInfo, 
             sidePageInfo, 
-            orgnizationId, 
+            sideContentInfo, 
             pushUserMaintain, 
             updateUserMaintain,
             updatePageInfo,
@@ -104,7 +104,7 @@ class PositionMaintainEdit extends React.Component {
                 telephone: editInfo.userMaintainInfo.companyPhone,//办公电话
                 officeAddress: editInfo.userMaintainInfo.companyAddress,//办公地址
                 userNumber: editInfo.userMaintainInfo.idCard,//身份证
-                unitId: orgnizationId,//默认组织id
+                unitId: sideContentInfo.type,//默认组织id
                 sort: editInfo.userMaintainInfo.sort ? editInfo.userMaintainInfo.sort : "9999",//排序号
                 ext2: editInfo.userMaintainInfo.isShow ? editInfo.userMaintainInfo.isShow : 1,//是否显示
                 staffCode: editInfo.userMaintainInfo.staffCode,
@@ -287,7 +287,7 @@ class PositionMaintainEdit extends React.Component {
 export default TUI._connect({
     baseInfo: "userMaintain.baseInfo",
     sidePageInfo: "publicInfo.sidePageInfo",
-    orgnizationId: "userMaintain.orgnizationId",
+    sideContentInfo: "publicInfo.sideContentInfo",
     editInfo: "formControlInfo.data",
     defaultUnit: "userMaintain.defaultUnit",
     pageInfo:"publicInfo.pageInfo"

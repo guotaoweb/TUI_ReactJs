@@ -55,14 +55,14 @@ class VoteList extends React.Component {
                             fn: function () {
                                 openDialog(_this, "是否确定" + _isStartBtn + "此投票", function () {
                                     let _action = _d.IsStart == 0 ? 1 : 0
-                                    TUI.platform.put("/IsStartVote/" + _d.Id+"?action="+_action,{}, function (result) {
+                                    TUI.platform.put("/IsStartVote/" + _d.Id + "?action=" + _action, {}, function (result) {
                                         if (result.code == 0) {
                                             let jsonParam = {
                                                 Id: _d.Id,
-                                                IsStart:_action
+                                                IsStart: _action
                                             }
                                             updateVoteList(jsonParam)
-                                            successMsg("投票"+_isStartBtn+"成功")
+                                            successMsg("投票" + _isStartBtn + "成功")
                                         } else {
                                             errorMsg(Config.ERROR_INFO[result.code]);
                                         }
@@ -105,16 +105,17 @@ class VoteList extends React.Component {
                             "name": "删除",
                             "fn": function () {
                                 var delFetch = function () {
-                                    TUI
-                                        .platform
-                                        .delete("/Vote/" + _d.Id, function (result) {
-                                            if (result.code == 0) {
-                                                deleteVoteList(_d.Id)
-                                                successMsg("删除成功")
-                                            } else {
-                                                errorMsg(TUI.ERROR_INFO[result.code]);
-                                            }
-                                        })
+                                    TUI.platform.delete("/Vote/" + _d.Id, function (result) {
+                                        if (result.code == 0) {
+                                            deleteVoteList(_d.Id)
+                                            successMsg("删除成功")
+                                            updatePageInfo({
+                                                sum:parseInt(pageInfo.index.sum)-1
+                                            })
+                                        } else {
+                                            errorMsg(TUI.ERROR_INFO[result.code]);
+                                        }
+                                    })
                                 }
 
                                 openDialog(_this, "是否确定删除【" + _d.Name + "】", delFetch)
@@ -262,7 +263,7 @@ class VoteList extends React.Component {
             if (result.code == 0) {
                 addVoteList(result.datas)
                 updatePageInfo({ index: 1, size: 10, sum: result.total, url: _url })
-            } else if (result.code == 9) {
+            } else if (result.code == 1) {
                 addVoteList([])
             } else {
                 errorMsg(TUI.ERROR_INFO[result.code]);

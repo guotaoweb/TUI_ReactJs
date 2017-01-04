@@ -185,9 +185,6 @@ class EditVote extends React.Component {
                     jsonParam["VotedNumber"] = 0
                     jsonParam["UpdateTime"] = TUI.fn.currentTime()
                     addVoteList(jsonParam)
-                    updatePageInfo({
-                        sum: parseInt(pageInfo.index.sum) + 1
-                    })
                     successMsg("新增成功")
                 } else if (result.code == 9) {
                     addVoteList([])
@@ -209,25 +206,6 @@ class EditVote extends React.Component {
                 _this.goBack()
             })
         }
-
-    }
-
-    componentDidMount() {
-        const {addCourseList, courseList, errorMsg, updateEditInfo, editInfo} = this.props
-
-        // if (courseList.length == 0) {
-        //     TUI.platform.get("/Course", function (result) {
-        //         if (result.code == 0) {
-        //             addCourseList(result.datas)
-        //         }
-        //         else if (result.code == 1) {
-        //             addCourseList([])
-        //         } else {
-        //             errorMsg(Config.ERROR_INFO[result.code]);
-        //         }
-        //     })
-        // }
-        //this.updateTest()
 
     }
 }

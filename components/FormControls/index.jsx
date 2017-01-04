@@ -105,6 +105,7 @@ class FormControls extends React.Component {
                 value={this.props.value}
                 labelTxt={labelTxt}
                 minWidth={minWidth}
+                id={this.props.id}
                 clickFn={this.props.clickFn}
                 />
         }
@@ -228,7 +229,7 @@ class CTRL_INPUT extends React.Component {
         )
     }
     _selectFn() {
-        const {selectFn, bind, addFn, value,clearFn} = this.props
+        const {selectFn, bind, addFn, value, clearFn} = this.props
         if (this.props.selectFn) {
             let _object = value.split(".")
             let _info = {
@@ -242,15 +243,15 @@ class CTRL_INPUT extends React.Component {
         }
     }
     _clearSelect(e) {
-        const {value, editFn,bind,clearFn} = this.props
+        const {value, editFn, bind, clearFn} = this.props
         let _object = value.split(".")
         let _info = {
             infoName: _object[0]
         }
         _info[_object[1]] = ""
 
-        if (editFn) {editFn(_info) }
-        if(clearFn){clearFn()}
+        if (editFn) { editFn(_info) }
+        if (clearFn) { clearFn() }
         this.refs.formcontrolInputSelect.value = ""
     }
     _onChange(e) {
@@ -424,7 +425,7 @@ class CTRL_RADIO extends React.Component {
         return (
             <div className="t-formControls">
                 {label}
-                <div className="t-c_radio" data-groupname={this.props.groupName} onClick={this.radioClick.bind(this)} data-status={this.props.selected == "yes" ? "selected" : "unselect"} data-value={this.props.value}>
+                <div className="t-c_radio" data-groupname={this.props.groupName} data-id={this.props.id} onClick={this.radioClick.bind(this)} data-status={this.props.selected == "yes" ? "selected" : "unselect"} data-value={this.props.value}>
                     <img src={this.props.selected == "yes" ? isRadio : unRadio} />
                     <span>{txt}</span>
                 </div>
@@ -440,14 +441,20 @@ class CTRL_RADIO extends React.Component {
 
         for (var i = 0; i < $radios.length; i++) {
             var $e = $radios[i];
+
             if ($e.getAttribute("data-groupName") == groupName) {
                 $e.setAttribute("data-status", "unselect")
                 $e.getElementsByTagName("img")[0].setAttribute("src", unRadio)
             }
         }
-
         $elem.parentNode.setAttribute("data-status", "selected")
-        $elem.setAttribute("src", isRadio)
+        if ($elem.tagName == "SPAN") {
+            $elem.previousSibling.setAttribute("src", isRadio)
+        }
+        else {
+            $elem.setAttribute("src", isRadio)
+        }
+
         if (this.props.clickFn) { this.props.clickFn(e) }
     }
 }
@@ -593,7 +600,7 @@ class CTRL_DATE_PICKER extends React.Component {
                 {_label}
                 <DateField
                     value={_value || ""}
-                    dateFormat={type?type:"YYYY-MM-DD"}
+                    dateFormat={type ? type : "YYYY-MM-DD"}
                     onChange={this._onChange.bind(this)}
                     />
             </div>
@@ -601,7 +608,7 @@ class CTRL_DATE_PICKER extends React.Component {
     }
 
     _onChange(e) {
-        const {value, addFn, data, bind,blurFn} = this.props
+        const {value, addFn, data, bind, blurFn} = this.props
 
         let _object = value.split(".")
         let _info = {
@@ -612,7 +619,7 @@ class CTRL_DATE_PICKER extends React.Component {
                 _info[key] = bind[key]
             }
         }
-        if(blurFn){blurFn(e)}
+        if (blurFn) { blurFn(e) }
         _info[_object[1]] = e
         addFn(_info)
     }
@@ -725,6 +732,12 @@ export function clearCtrlStatus() {
     for (var i = 0; i < $checkbox.length; i++) {
         var $c = $checkbox[i];
         $c.getElementsByTagName("img")[0].setAttribute("src", unCheckbox)
+        $c.setAttribute("data-status", "unselect")
+    }
+    let $radio = document.getElementsByClassName("t-c_radio")
+    for (var i = 0; i < $radio.length; i++) {
+        var $c = $radio[i];
+        $c.getElementsByTagName("img")[0].setAttribute("src", unRadio)
         $c.setAttribute("data-status", "unselect")
     }
 }

@@ -55,15 +55,15 @@ class login extends React.Component {
             updateLoginStatus(1)
             TUI.platform.post(url, jsonParam, function (result) {
                 if (result.code == 0) {
-                    if (clearStatus == 0) {
+                    if (clearStatus == 1) {
                         if(window.localStorage){
                             localStorage.clear()
                             document.cookie=""
                         }
-                        updateUserInfo({ id: result.datas[0]})
-                        browserHistory.push(Config.ROOTPATH + to)
+                        browserHistory.push(Config.ROOTPATH)
                     }
                     else {
+                        updateUserInfo({ id: result.datas[0]})
                         browserHistory.push(Config.ROOTPATH + to)
                     }
                 }

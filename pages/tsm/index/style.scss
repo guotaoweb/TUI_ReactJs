@@ -1,3 +1,6 @@
+.i-body{
+overflow: hidden;
+}
 .v-body {
     background: url("./img/bg.jpg") repeat center top;
     font-family: "YouYuan";
@@ -67,7 +70,8 @@
         }
     }
     .v-c-survy {
-        margin-top: 10px;
+        margin-top: 4px;
+        border: 3px solid white;
         b {
             color: red;
             font-weight: lighter;

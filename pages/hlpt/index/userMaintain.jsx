@@ -91,7 +91,7 @@ class UserMaintain extends React.Component {
                                 errorMsg(result.message)
                             }
                             openSidePage(_this, {
-                                id:"userMaintainEdit",
+                                id: "userMaintainEdit",
                                 status: "editUserMaintain"
                             })
                             closeContentLoading()
@@ -219,7 +219,7 @@ class UserMaintain extends React.Component {
     }
 
     componentDidMount() {
-        const {addBreadNav,sideContentInfo} = this.props
+        const {addBreadNav, sideContentInfo} = this.props
         openSideContent()
         this.loadUser(sideContentInfo.id)
         addBreadNav({ name: "用户信息维护" })
@@ -227,7 +227,7 @@ class UserMaintain extends React.Component {
 
     addPositionMaintainBtn() {
         openSidePage(this, {
-            id:"userMaintainEdit",
+            id: "userMaintainEdit",
             status: "addUserMaintain",
         })
 
@@ -299,12 +299,20 @@ class UserMaintain extends React.Component {
 
     addUserMaintainBtn() {
         openSidePage(this, {
-            id:"userMaintainEdit",
+            id: "userMaintainEdit",
             status: "addUserMaintain",
         })
 
         this.props.pushBreadNav({ name: "添加用户信息" })
     }
+
+    // loadUserUnint() {
+    //     TUI.platform.get("/staff/unit/" + _d.staffId, function (result) {
+    //         if (result.code == 0) {
+    //             _this.props.addDefaultUnit(result.data)
+    //         }
+    //     })
+    // }
 }
 
 export default TUI._connect({

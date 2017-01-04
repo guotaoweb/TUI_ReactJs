@@ -1,209 +1,142 @@
+//图片
+import singleLeft from "!url!./img/singleLeft.png"
+import minus from "!url!../../../components/MultyMenu/img/minus.png"
+
 //组件
-import Content from "Content"
+import Content, { openContentLoading, closeContentLoading } from "Content"
 import Btn from "Btn"
 import Table from "Table"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import { openDialog, closeDialog } from "Dialog"
 import Pager, { pageLoadCompelte } from "Pager"
-import EditTeacher from "./teacherList.edit"
-import TeacherInClasses from "./teacherList.inClasses"
 import { openLoading, closeLoading } from "Loading"
+import TeacherStatistic from "./teacherOnline.statistic"
+
+
 
 class TeacherOnline extends React.Component {
-  render() {
-    const {
-      teacherList,
-      courseList,
-      errorMsg,
-      sidePageInfo,
-      addEditInfo,
-      pageInfo,
-      addCourseList,
-      addTeacherInClasses,
-      deleteTeacherList,
-      pushBreadNav
-    } = this.props
+    render() {
+        const {
+            addTeacherStatistic,
+            errorMsg,
+            teacherRankList,
+            pageInfo,
+            sidePageInfo,
+            successMsg
+        } = this.props
 
-    let _this = this
+        let tblContent = {
+            "thead": { "name1": "序号", "name2": "教师", "name3": "科目", "name4": "班级", "name5": "百分比","name6": "最高/最低","name7":"操作"},
+            "tbody": []
+        },
+        _tbContent = [],
+        _this = this
 
-    let tblContent = {
-      "thead": { "name1": "序号", "name2": "名称", "name3": "科目", "name4": "更新时间", "name5": "操作" },
-      "tbody": []
+        for (var i = 0; i < teacherRankList.TeacherRank.length; i++) {
+            let _d = teacherRankList.TeacherRank[i],
+                _tr = {
+                    "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
+                    "value2": _d.TeacherName,
+                    "value3": _d.CourseName,
+                    "value4": _d.ClassesName,
+                    "value5": _d.Percent,
+                    "value5": teacherRankList.Percent.MaxPercent+"/"+teacherRankList.Percent.MinPercent,
+                    "fns":[{
+                        "name":"查看",
+                        "fn":function(){
+                            openContentLoading()
+                            TUI.platform.get("/TeacherRankDetail/"+_d.TeacherId, function (result) {
+                                if (result.code == 0) {
+                                    addTeacherStatistic(result.datas)
+                                    openSidePage(_this, {
+                                        status: "teacherStatistic"
+                                    })
+                                }
+                                else if (result.code == 1) {
+                                    addTeacherStatistic([])
+                                }
+                                else {
+                                    errorMsg(Config.ERROR_INFO[result.code]);
+                                }
+                                closeContentLoading()
+                            })
+                        }
+                    }]
+                }
+            tblContent.tbody.push(_tr)
+
+            if (i > 0) {
+                _tbContent.push(<div key={"d-sub" + i}></div>)
+            }
+        }
+
+        let _teacherStatistic = []
+        if (sidePageInfo.status == "teacherStatistic") {
+            _teacherStatistic.push(<TeacherStatistic key="teacherStatistic" />)
+        }
+
+        return (
+            <div>
+                <Content txt="班级列表">
+                    <div>
+                        <Table num="10" pageSize="2" tblContent={tblContent} width="50,0,150,150,100" />
+                        <Pager fn={this.pageFn.bind(this)} />
+                    </div>
+                </Content>
+                <SidePage id="teacherStatistic">
+                    <div>
+                        {_teacherStatistic}
+                    </div>
+                </SidePage>
+            </div>
+        )
     }
 
-    for (var i = 0; i < teacherList.length; i++) {
-      let _d = teacherList[i]
+    pageFn(index) {
+        const {pageInfo, updateVTeamData, updatePageInfo} = this.props
+        TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
+            if (result.code == 0) {
+                updateVTeamData(result.datas)
+                updatePageInfo({
+                    index: index,
+                    size: 10,
+                    sum: result.total,
+                    url: pageInfo.index.url
+                })
+            }
+            else {
+                updateVTeamData([])
+            }
+        })
+    }
 
-      tblContent.tbody.push({
-        "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
-        "value2": _d.Name,
-        "value3": _d.Courses,
-        "value4": _d.UpdateTime,
-        "fns": [{
-          "name": "编辑",
-          "fn": function () {
-            TUI.platform.get("/Teacher/" + _d.Id, function (result) {
-              if (result.code == 0) {
-                var _r = result.datas[0]
-                pushBreadNav({name:_d.Name})
-                addEditInfo({
-                  infoName: "teacherInfo",
-                  Id: _r.Id,
-                  Name: _r.Name,
-                  CourseId: _r.CourseId
-                })
-                openSidePage(_this, {
-                  id: "editTeacher",
-                  status: "editTeacher"
-                })
-              }
-              else {
-                errorMsg(Config.ERROR_INFO[result.code]);
-              }
-            })
-          }
-        }, {
-          "name": "详细信息",
-          "fn": function () {
-            TUI.platform.get("/TeacherInClasses/" + _d.Id, function (result) {
-              if (result.code == 0) {
-                var _r = result.datas
-                addTeacherInClasses(_r)
-              }
-              else if(result.code==1){
-                addTeacherInClasses([])
-              }
-              else {
-                errorMsg(Config.ERROR_INFO[result.code]);
-              }
-              openSidePage(_this, {
-                id: "teacherInClasses",
-                status: "teacherInClasses",
-                width: "500",
-                gateWay:{
-                  Name:_d.Name
-                }
-              })
-            })
-          }
-        }, {
-          "name": "删除",
-          "fn": function () {
-            var delFetch = function () {
-              TUI.platform.delete("/Teacher/" + _d.Id, function (result) {
+    componentDidMount() {
+        const {addTeacherStatistic, updatePageInfo, errorMsg, teacherRankList,addBreadNav} = this.props
+        let _this = this
+        openLoading()
+        addBreadNav({ name: "班级统计" })
+
+        if (teacherRankList.length==0) {
+            TUI.platform.get("/TeacherRank", function (result) {
                 if (result.code == 0) {
-                  deleteTeacherList(_d.Id)
+                    addTeacherStatistic(result.datas)
+                }
+                else if (result.code == 1) {
+                    addTeacherStatistic([])
                 }
                 else {
-                  errorMsg(Config.ERROR_INFO[result.code]);
+                    errorMsg(Config.ERROR_INFO[result.code]);
                 }
-              })
-            }
-            openDialog(_this, "是否确定删除【" + _d.Name + "】", delFetch)
-          }
-        }]
-      })
-    }
-
-    return (
-      <div>
-        <Content txt="教师列表" addHref={this.addTeacherList.bind(this)}>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,250,250,180" />
-          <Pager fn={this.pageFn.bind(this)} />
-        </Content>
-        <SidePage id="editTeacher">
-          <div>
-            <EditTeacher />
-          </div>
-        </SidePage>
-        <SidePage id="teacherInClasses" title="教师任教列表">
-          <div>
-            <TeacherInClasses />
-          </div>
-        </SidePage>
-      </div>
-    )
-  }
-
-  pageFn(index) {
-    const {pageInfo, updateVTeamData, updatePageInfo} = this.props
-    TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
-      if (result.code == 0) {
-        updateVTeamData(result.datas)
-        updatePageInfo({
-          index: index,
-          size: 7,
-          sum: result.total,
-          url: pageInfo.index.url
-        })
-      }
-      else {
-        updateVTeamData([])
-      }
-    })
-  }
-
-  componentDidMount() {
-    const {loadTeacherList, errorMsg, teacherList, updatePageInfo, addCourseList, courseList,addBreadNav} = this.props
-    openLoading()
-    addBreadNav({name:"教师列表"})
-    //获取教师列表
-    let _url = "/Teacher?pageIndex={0}&pageSize=10"
-    TUI.platform.get(_url.replace("{0}",1), function (result) {
-      if (result.code == 0) {
-        loadTeacherList(result.datas)
-        updatePageInfo({
-          index: 1,
-          size: 10,
-          sum: result.ttotal,
-          url: _url
-        })
-      }
-      else if (result.code == 1) {
-        loadTeacherList([])
-      }
-      else {
-        errorMsg(Config.ERROR_INFO[result.code]);
-      }
-      closeLoading()
-    })
-
-    if (courseList.length == 0) {
-      //获取科目列表
-      TUI.platform.get("/Course", function (result) {
-        if (result.code == 0) {
-          var _d = result.datas
-          addCourseList(_d)
+            })
         }
-        else {
-          errorMsg(Config.ERROR_INFO[result.code]);
-        }
-      })
+
     }
-
-
-  }
-
-  addTeacherList() {
-    const {clearEditInfo,pushBreadNav} = this.props
-
-    clearEditInfo({
-      infoName: "teacherInfo"
-    })
-
-    openSidePage(this, {
-      status: "addTeacher",
-      width: ""
-    })
-
-    pushBreadNav({name:"新增教师"})
-  }
 }
 
 
 export default TUI._connect({
-  teacherList: "teacherList.list",
-  courseList: "courseList.list",
-  sidePageInfo: "publicInfo.sidePageInfo",
-  pageInfo: "publicInfo.pageInfo"
+    teacherRankList: "teacherList.teacherRankList",
+    teacherRankListDetail: "teacherList.teacherRankListDetail",
+    sidePageInfo: "publicInfo.sidePageInfo",
+    pageInfo: "publicInfo.pageInfo"
 }, TeacherOnline)

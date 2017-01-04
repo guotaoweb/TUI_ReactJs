@@ -66,7 +66,17 @@ export default function manageReducers(state = initState, action) {
                 }
             }
             return Object.assign({}, state, { jobsList: eval(JSON.stringify(state.jobsList)) })
-
+        case "UPDATE_MAIN_POSITION":
+            for (let i = 0; i < state.jobsList.length; i++) {
+                let $d = state.jobsList[i]
+                if ($d.poid == action.data.poid) {
+                    $d.isDefault = 1
+                }
+                else{
+                    $d.isDefault = 0
+                }
+            }
+            return Object.assign({}, state, { jobsList: eval(JSON.stringify(state.jobsList)) })
             
         default: return state
     }

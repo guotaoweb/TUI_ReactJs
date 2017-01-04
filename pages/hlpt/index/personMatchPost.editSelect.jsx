@@ -84,7 +84,7 @@ class PersonMatchPostEditSelect extends React.Component {
 
                                 updatePageInfo({
                                     id: "personMatchPostEditPager",
-                                    sum: parseInt(pageInfo.personMatchPostEditPager.sum) + 1
+                                    sum: pageInfo.personMatchPostEditPager.sum
                                 })
                             }
                             else {

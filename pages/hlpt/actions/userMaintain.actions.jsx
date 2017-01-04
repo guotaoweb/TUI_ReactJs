@@ -86,3 +86,11 @@ export function updateJobAllList(data){
         data
     }
 }
+
+export function updateMainPosition(data){
+    return {
+        type:"UPDATE_MAIN_POSITION",
+        data
+    }
+}
+

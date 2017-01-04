@@ -10,49 +10,50 @@ import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import { openDialog, closeDialog } from "Dialog"
 import Pager, { pageLoadCompelte } from "Pager"
 import { openLoading, closeLoading } from "Loading"
-import ClassesStatistic from "./classesOnline.statistic"
+import CourseStatistic from "./courseOnline.statistic"
 
 
 
-class ClassesOnline extends React.Component {
+class CourseOnline extends React.Component {
     render() {
         const {
             addCourseStatistic,
             errorMsg,
-            classesList,
+            courseStatisticList,
             pageInfo,
             sidePageInfo,
             successMsg
         } = this.props
 
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "名称", "name3": "人数", "name4": "所属年级", "name5": "状态"},
+            "thead": { "name1": "序号", "name2": "教师", "name3": "科目", "name4": "班级", "name5": "百分比","name6": "最高/最低","name7":"操作"},
             "tbody": []
         },
-            _tbContent = [],
-            _this = this
+        _tbContent = [],
+        _this = this
 
-        for (var i = 0; i < classesList.length; i++) {
-            let _d = classesList[i],
+        for (var i = 0; i < teacherRankList.TeacherRank.length; i++) {
+            let _d = teacherRankList.TeacherRank[i],
                 _tr = {
                     "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
-                    "value2": _d.Name,
-                    "value3": _d.Number,
-                    "value4": _d.Grade,
-                    "value5": _isStart,
+                    "value2": _d.TeacherName,
+                    "value3": _d.CourseName,
+                    "value4": _d.ClassesName,
+                    "value5": _d.Percent,
+                    "value5": teacherRankList.Percent.MaxPercent+"/"+teacherRankList.Percent.MinPercent,
                     "fns":[{
                         "name":"查看",
                         "fn":function(){
                             openContentLoading()
-                            TUI.platform.get("/ClassesOnline/"+"这个地方是投票ID", function (result) {
+                            TUI.platform.get("/TeacherRankDetail/"+_d.TeacherId, function (result) {
                                 if (result.code == 0) {
-                                    addCourseStatistic(result.datas)
+                                    addTeacherStatistic(result.datas)
                                     openSidePage(_this, {
-                                        status: "classesStatistic"
+                                        status: "teacherStatistic"
                                     })
                                 }
                                 else if (result.code == 1) {
-                                    addCourseStatistic([])
+                                    addTeacherStatistic([])
                                 }
                                 else {
                                     errorMsg(Config.ERROR_INFO[result.code]);
@@ -69,9 +70,9 @@ class ClassesOnline extends React.Component {
             }
         }
 
-        let _editClasses = []
-        if (sidePageInfo.status == "classesStatistic") {
-            _editClasses.push(<ClassesStatistic key="classesStatistic" />)
+        let _teacherStatistic = []
+        if (sidePageInfo.status == "teacherStatistic") {
+            _teacherStatistic.push(<TeacherStatistic key="teacherStatistic" />)
         }
 
         return (
@@ -82,9 +83,9 @@ class ClassesOnline extends React.Component {
                         <Pager fn={this.pageFn.bind(this)} />
                     </div>
                 </Content>
-                <SidePage id="classesStatistic">
+                <SidePage id="teacherStatistic">
                     <div>
-                        {_editClasses}
+                        {_teacherStatistic}
                     </div>
                 </SidePage>
             </div>
@@ -110,18 +111,18 @@ class ClassesOnline extends React.Component {
     }
 
     componentDidMount() {
-        const {addCourseStatistic, updatePageInfo, errorMsg, courseList,addBreadNav} = this.props
+        const {addTeacherStatistic, updatePageInfo, errorMsg, teacherRankList,addBreadNav} = this.props
         let _this = this
         openLoading()
         addBreadNav({ name: "班级统计" })
 
-        if (classesList.length==0) {
-            TUI.platform.get("/Classes", function (result) {
+        if (teacherRankList.length==0) {
+            TUI.platform.get("/TeacherRank", function (result) {
                 if (result.code == 0) {
-                    addCourseStatistic(result.datas)
+                    addTeacherStatistic(result.datas)
                 }
                 else if (result.code == 1) {
-                    addCourseStatistic([])
+                    addTeacherStatistic([])
                 }
                 else {
                     errorMsg(Config.ERROR_INFO[result.code]);
@@ -134,8 +135,8 @@ class ClassesOnline extends React.Component {
 
 
 export default TUI._connect({
-    classesList: "classesList.list",
-    classesStatistic: "classesList.data",
+    teacherRankList: "teacherList.teacherRankList",
+    teacherRankListDetail: "teacherList.teacherRankListDetail",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo"
-}, ClassesOnline)
+}, CourseOnline)

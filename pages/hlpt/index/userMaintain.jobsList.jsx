@@ -20,7 +20,8 @@ class UserMaintainJobsList extends React.Component {
             pageInfo,
             updatePageInfo,
             delUserMaintainJobsList,
-            addJobsAllList
+            addJobsAllList,
+            updateMainPosition
         } = this.props
 
         let _this = this
@@ -46,6 +47,7 @@ class UserMaintainJobsList extends React.Component {
                             "poid": _d.poid
                         }, function (result) {
                             if (result.code == 0) {
+                                updateMainPosition({poid:_d.poid})
                                 successMsg("设置成功")
                             }
                             else {
@@ -57,7 +59,7 @@ class UserMaintainJobsList extends React.Component {
                 }, {
                     "name": "调整职位",
                     "fn": function () {
-                        TUI.platform.get("/position/dict/"+_this.props.sideContentInfo.type, function (result) {
+                        TUI.platform.get("/position/dict/"+_d.unitCode, function (result) {
                             if (result.code == 0) {
                                 addJobsAllList(result.data)
                                 openSidePage(_this,{

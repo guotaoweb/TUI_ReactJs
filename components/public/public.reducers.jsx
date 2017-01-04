@@ -42,6 +42,7 @@ const initState = {
     isRefreshTable: 0, //0不刷新 1刷新
     side: [],
     breadNav: [],//面包屑
+    breadNavCD:true,
     hasVerticalScroll: true,//iScroll专用,判断滚动条
     loginStatus: 0, //0未登陆 1登陆中
     sideContentInfo: {}
@@ -94,7 +95,7 @@ export default function manageReducers(state = initState, action) {
                     id: action.id,
                     name: action.name,
                     photo: action.photo,
-                    role:action.role
+                    role: action.role
                 }
             })
         case "UPDATE_SIDE_STATUS":
@@ -218,7 +219,9 @@ export default function manageReducers(state = initState, action) {
             return Object.assign({}, state, { breadNav: eval(JSON.stringify(_breadNav)) })
         case "PUSH_BREAD_NAV":
             state.breadNav.push(action.data)
-            return Object.assign({}, state, { breadNav: eval(JSON.stringify(state.breadNav)) })
+            return Object.assign({}, state, { 
+                breadNav: eval(JSON.stringify(state.breadNav)) 
+            })
         case "CLEAR_BREAD_NAV":
             return Object.assign({}, state, { breadNav: [] })
         case "BACK_BREAD_NAV":
@@ -232,7 +235,7 @@ export default function manageReducers(state = initState, action) {
             for (let key in action.data) {
                 state.sideContentInfo[key] = action.data[key]
             }
-            return Object.assign({}, state, { sideContentInfo:JSON.parse(JSON.stringify(state.sideContentInfo)) })
+            return Object.assign({}, state, { sideContentInfo: JSON.parse(JSON.stringify(state.sideContentInfo)) })
         default: return state
     }
 }

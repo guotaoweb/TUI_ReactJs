@@ -12,6 +12,10 @@ import VoteList from './manage/voteList'
 import Login from './manage/login'
 import Statistic from './manage/statistic'
 
+import TeacherStatistic from './manage/teacherOnline'
+import CourseStatistic from './manage/courseOnline'
+import ClassesStatistic from './manage/classesOnline'
+
 import Index from './index/index'
 import Vote from './index/vote'
 import End from './index/end'
@@ -22,13 +26,13 @@ class Routers extends React.Component {
         const {history} = this.props
         return (
             <Router history={history}>
-                <Route path={Config.ROOTPATH+"s"} component={Index}></Route> 
-                <Route path={Config.ROOTPATH+"vote"} component={Vote}></Route>
-                <Route path={Config.ROOTPATH+"end"} component={End}></Route>
-                <Route path={Config.ROOTPATH+"login"} component={Login}></Route> 
+                <Route path={Config.ROOTPATH} component={Index}></Route>
+                <Route path={Config.ROOTPATH + "vote"} component={Vote}></Route>
+                <Route path={Config.ROOTPATH + "end"} component={End}></Route>
+                <Route path={Config.ROOTPATH + "login"} component={Login}></Route>
 
-                <Route path={Config.ROOTPATH} component={Manage}> 
-                    <IndexRoute component={AdminList} />
+                <Route path={Config.ROOTPATH + "s"} component={Manage}>
+                    <IndexRoute component={ClassesList} />
                     <Route path={Config.ROOTPATH + m + "teachers"} component={TeacherList} />
                     <Route path={Config.ROOTPATH + m + "courses"} component={CourseList} />
                     <Route path={Config.ROOTPATH + m + "admins"} component={AdminList} />
@@ -38,6 +42,9 @@ class Routers extends React.Component {
                     <Route path={Config.ROOTPATH + m + "classes"} component={ClassesList} />
                     <Route path={Config.ROOTPATH + m + "login"} component={Login} />
                     <Route path={Config.ROOTPATH + m + "statistic"} component={Statistic} />
+                    <Route path={Config.ROOTPATH + m + "teacherStatistic"} component={TeacherStatistic} />
+                    <Route path={Config.ROOTPATH + m + "courseStatistic"} component={CourseStatistic} />
+                    <Route path={Config.ROOTPATH + m + "cassesStatistic"} component={ClassesStatistic} />
                 </Route>
             </Router >
         )

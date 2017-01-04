@@ -6,6 +6,8 @@ import edit from "!url!./img/edit.png"
 import check from "!url!./img/check.png"
 import back from "!url!./img/back.png"
 
+let BTN_CD = true
+
 class Btn extends React.Component {
   render() {
     const {type, width, href, txt, style,fromControl} = this.props
@@ -60,6 +62,17 @@ class Btn extends React.Component {
 
   _onClick(e) {
     const {type, href, preventSubmit, waiteMsg, errorMsg} = this.props
+
+    //2s内防止重复单击
+    
+    if(BTN_CD){
+      BTN_CD = false
+      setTimeout(function(){BTN_CD=true},500)
+    }
+    else{
+      return false
+    }
+
     if (type == "submit") {
       if (preventSubmit) { return false }
 
