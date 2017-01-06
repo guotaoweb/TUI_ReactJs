@@ -12,6 +12,7 @@
 .t-dialog{
     position:absolute;
     min-width:250px;
+    max-width:300px;
     transform:scale(1.3);
     background-color:#E8E8E8;
     border-radius:5px;
@@ -73,5 +74,17 @@
         width:12px;
         height:12px;
         margin:4px;
+    }
+}
+
+.t-dialog-warning{
+    background-color: #f18888;
+    color:white;
+    >p{
+        border-top: 1px solid #e47979;
+        background-color: #f18888;
+        a{
+            color:gray;
+        }
     }
 }

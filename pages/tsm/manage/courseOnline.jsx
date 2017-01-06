@@ -17,43 +17,42 @@ import CourseStatistic from "./courseOnline.statistic"
 class CourseOnline extends React.Component {
     render() {
         const {
-            addCourseStatistic,
+            addCourseStatisticDetail,
             errorMsg,
-            courseStatisticList,
+            courseList,
             pageInfo,
             sidePageInfo,
             successMsg
         } = this.props
 
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "教师", "name3": "科目", "name4": "班级", "name5": "百分比","name6": "最高/最低","name7":"操作"},
+            "thead": { "name1": "序号", "name2": "班级", "name3": "科目", "name4": "已投教师数", "name5": "教师总数", "name6": "操作" },
             "tbody": []
         },
-        _tbContent = [],
-        _this = this
+            _tbContent = [],
+            _this = this
 
-        for (var i = 0; i < teacherRankList.TeacherRank.length; i++) {
-            let _d = teacherRankList.TeacherRank[i],
+        for (var i = 0; i < courseList.length; i++) {
+            let _d = courseList[i],
                 _tr = {
                     "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
-                    "value2": _d.TeacherName,
+                    "value2": _d.ClassesName,
                     "value3": _d.CourseName,
-                    "value4": _d.ClassesName,
-                    "value5": _d.Percent,
-                    "value5": teacherRankList.Percent.MaxPercent+"/"+teacherRankList.Percent.MinPercent,
-                    "fns":[{
-                        "name":"查看",
-                        "fn":function(){
+                    "value4": _d.Count,
+                    "value5": _d.TeacherNumber,
+                    "fns": [{
+                        "name": "查看",
+                        "fn": function () {
                             openContentLoading()
-                            TUI.platform.get("/TeacherRankDetail/"+_d.TeacherId, function (result) {
+                            TUI.platform.get("/CourseOnlineDetail?courseId="+_d.CourseId+"&voteId=e324217b-6d7f-4b72-ad4a-087b25f4b746", function (result) {
                                 if (result.code == 0) {
-                                    addTeacherStatistic(result.datas)
+                                    addCourseStatisticDetail(result.datas)
                                     openSidePage(_this, {
-                                        status: "teacherStatistic"
+                                        status: "courseStatistic"
                                     })
                                 }
                                 else if (result.code == 1) {
-                                    addTeacherStatistic([])
+                                    addCourseStatisticDetail([])
                                 }
                                 else {
                                     errorMsg(Config.ERROR_INFO[result.code]);
@@ -70,22 +69,22 @@ class CourseOnline extends React.Component {
             }
         }
 
-        let _teacherStatistic = []
-        if (sidePageInfo.status == "teacherStatistic") {
-            _teacherStatistic.push(<TeacherStatistic key="teacherStatistic" />)
+        let _courseStatistic = []
+        if (sidePageInfo.status == "courseStatistic") {
+            _courseStatistic.push(<CourseStatistic key="courseStatistic" />)
         }
 
         return (
             <div>
-                <Content txt="班级列表">
+                <Content txt="科目统计">
                     <div>
-                        <Table num="10" pageSize="2" tblContent={tblContent} width="50,0,150,150,100" />
+                        <Table num="10" pageSize="2" tblContent={tblContent} width="70,0,200,200,200,100" />
                         <Pager fn={this.pageFn.bind(this)} />
                     </div>
                 </Content>
-                <SidePage id="teacherStatistic">
+                <SidePage id="courseStatistic">
                     <div>
-                        {_teacherStatistic}
+                        {_courseStatistic}
                     </div>
                 </SidePage>
             </div>
@@ -111,22 +110,23 @@ class CourseOnline extends React.Component {
     }
 
     componentDidMount() {
-        const {addTeacherStatistic, updatePageInfo, errorMsg, teacherRankList,addBreadNav} = this.props
+        const {addCourseStatisticList, updatePageInfo, errorMsg, courseList, addBreadNav} = this.props
         let _this = this
         openLoading()
-        addBreadNav({ name: "班级统计" })
+        addBreadNav({ name: "科目统计" })
 
-        if (teacherRankList.length==0) {
-            TUI.platform.get("/TeacherRank", function (result) {
+        if (courseList.length == 0) {
+            TUI.platform.get("/CourseOnline?voteId=e324217b-6d7f-4b72-ad4a-087b25f4b746", function (result) {
                 if (result.code == 0) {
-                    addTeacherStatistic(result.datas)
+                    addCourseStatisticList(result.datas)
                 }
                 else if (result.code == 1) {
-                    addTeacherStatistic([])
+                    addCourseStatisticList([])
                 }
                 else {
                     errorMsg(Config.ERROR_INFO[result.code]);
                 }
+                closeLoading()
             })
         }
 
@@ -135,8 +135,8 @@ class CourseOnline extends React.Component {
 
 
 export default TUI._connect({
-    teacherRankList: "teacherList.teacherRankList",
-    teacherRankListDetail: "teacherList.teacherRankListDetail",
+    courseList: "courseList.courseList",
+    courseDetail: "courseList.courseDetail",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo"
 }, CourseOnline)

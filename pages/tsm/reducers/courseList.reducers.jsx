@@ -1,7 +1,10 @@
 import 'babel-polyfill'
 
 const initState = {
-    list: []
+    list: [],
+    courseList:[],
+    courseDetail:[],
+    courseDetailList:[]
 }
 
 export default function courseListReducers(state = initState, action) {
@@ -62,6 +65,18 @@ export default function courseListReducers(state = initState, action) {
             }
             return Object.assign({}, state, {
                 list: eval(JSON.stringify(state.list))
+            })
+        case "ADD_COURSE_STATISTIC_LIST":
+            return Object.assign({}, state, {
+                courseList: JSON.parse(JSON.stringify(action.data))
+            })
+        case "ADD_COURSE_STATISTIC_DETAIL":
+            return Object.assign({}, state, {
+                courseDetail: JSON.parse(JSON.stringify(action.data))
+            })
+        case "ADD_COURSE_STATISTIC_DETAIL_LIST":
+            return Object.assign({}, state, {
+                courseDetailList: JSON.parse(JSON.stringify(action.data))
             })
         default:
             return state

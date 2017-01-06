@@ -1,7 +1,8 @@
 import 'babel-polyfill'
 const initState = {
     odata: "",//机构组织数据
-    osdata: ""//被选择的机构组织数据
+    osdata: "",//被选择的机构组织数据
+    componentInfo: { key: "-1" }
 }
 
 
@@ -49,6 +50,8 @@ export default function orgnizationReducers(state = initState, action) {
             return Object.assign({}, state, { osdata: "" })
         case "UPDATE_ODATA":
             return Object.assign({}, state, { odata: eval(JSON.stringify(action.data ))})
+        case "UPDATE_COMPONENT_INFO":
+            return Object.assign({}, state, { componentInfo: JSON.parse(JSON.stringify(action.data)) })
         default: return state
     }
 

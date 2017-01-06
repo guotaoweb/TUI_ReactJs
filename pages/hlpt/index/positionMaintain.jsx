@@ -115,7 +115,7 @@ class PositionMaintain extends React.Component {
                                     _this.props.deletePositionMaintain(_d.positionId)
                                     updatePageInfo({
                                         id: "positionMaintainPager",
-                                        sum: parseInt(pageInfo.positionMaintainPager.sum) + 1
+                                        sum: parseInt(pageInfo.positionMaintainPager.sum) - 1
                                     })
                                 }
                                 else {

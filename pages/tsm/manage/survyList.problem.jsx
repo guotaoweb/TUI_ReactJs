@@ -36,7 +36,7 @@ class SurvyProblem extends React.Component {
                         <li onClick={this.downSubject.bind(this)} data-order={$s.Order}><img src={downImg} /></li>
                     </ul>
                     <br className="clear" />
-                    <SurvyListOptions survyOptionsData={$s.Datas} i={i} type={$s.Type} parentId={$s.Id} />
+                    <SurvyListOptions survyOptionsData={$s.Datas} i={i} type={$s.Type} parentId={$s.Id} survyId={$s.SurvyId} />
                 </div>
             )
         }

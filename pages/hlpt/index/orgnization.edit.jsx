@@ -6,13 +6,23 @@ import { closeSidePage } from "SidePage"
 class OrgnizationEdit extends React.Component {
     render() {
         const {sidePageInfo, detail, unitBizTypes, unitKind, status, city} = this.props
-        let tabs = null
+
+        let slideOptions=[{id:1,name:"继承"},{id:0,name:"不继承"}]
+        let tabs = null,
+            _slideBtn = []
+        
         if (sidePageInfo.status == "addOrgnization") {
             tabs = [{ name: "添加组织机构", }]
+            _slideBtn.push(
+                <FormControls key="orgnization_slide" label="数据权限" ctrl="slide" size="long" options={slideOptions} selected="0" value="orgnizationInfo.ext4" />
+            )
         }
         else {
             tabs = [{ name: "编辑组织机构" }]
         }
+
+        
+
         return (
             <Content2 tabs={tabs} key="content2_userEdit">
                 <div>
@@ -30,10 +40,10 @@ class OrgnizationEdit extends React.Component {
                     <FormControls label="编制" ctrl="input" type="number" value="orgnizationInfo.staffing" />
                     <FormControls label="人资编码" ctrl="input" value="orgnizationInfo.globalCode" />
                     <FormControls label="备注" ctrl="textarea" value="orgnizationInfo.remark" />
-
+                    {_slideBtn}
                     <div className="formControl-btn">
                         <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
-                        <Btn type="submit" txt="确定" href={this.editOrgization.bind(this)} />
+                        <Btn type="check" txt="确定" href={this.editOrgization.bind(this)} />
                     </div>
                     <br /><br /><br />
                 </div>
@@ -83,7 +93,8 @@ class OrgnizationEdit extends React.Component {
                 "staffing": editInfo.orgnizationInfo.staffing,
                 "superUnitid1": unitCode ? unitCode : sidePageInfo.gateWay.type,
                 "unitLevel": relateId ? relateId.split("-").length + 1 : sidePageInfo.gateWay.ext1,
-                "globalCode": editInfo.orgnizationInfo.globalCode
+                "globalCode": editInfo.orgnizationInfo.globalCode,
+                "ext4": editInfo.orgnizationInfo.ext4==0?1:0
             }
 
             TUI.platform.post("/unit", postJson, function (result) {
@@ -204,7 +215,7 @@ class OrgnizationEdit extends React.Component {
     }
 
     goBack() {
-        closeSidePage()
+        closeSidePage({id:"orgnizationEdit"})
         this.props.backBreadNav()
     }
 }

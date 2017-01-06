@@ -98,7 +98,6 @@ class EditClasses extends React.Component {
 
         for (let key in editInfo.classesInfo) {
             if (key.indexOf("ClassesRelated") > -1 && key!="ClassesRelated") {
-                console.info(editInfo.classesInfo[key])
                 jsonParam.ClassesRelated.push(editInfo.classesInfo[key])
             }
         }

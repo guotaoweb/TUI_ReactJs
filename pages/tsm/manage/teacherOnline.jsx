@@ -17,7 +17,7 @@ import TeacherStatistic from "./teacherOnline.statistic"
 class TeacherOnline extends React.Component {
     render() {
         const {
-            addTeacherStatistic,
+            addTeacherRankDetail,
             errorMsg,
             teacherRankList,
             pageInfo,
@@ -26,34 +26,33 @@ class TeacherOnline extends React.Component {
         } = this.props
 
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "教师", "name3": "科目", "name4": "班级", "name5": "百分比","name6": "最高/最低","name7":"操作"},
+            "thead": { "name1": "序号", "name2": "班级", "name3": "科目", "name4": "教师", "name5": "百分比","name6":"操作"},
             "tbody": []
         },
         _tbContent = [],
         _this = this
 
-        for (var i = 0; i < teacherRankList.TeacherRank.length; i++) {
-            let _d = teacherRankList.TeacherRank[i],
+        for (var i = 0; i < teacherRankList.length; i++) {
+            let _d = teacherRankList[i],
                 _tr = {
                     "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
-                    "value2": _d.TeacherName,
+                    "value2": _d.ClassesName,
                     "value3": _d.CourseName,
-                    "value4": _d.ClassesName,
-                    "value5": _d.Percent,
-                    "value5": teacherRankList.Percent.MaxPercent+"/"+teacherRankList.Percent.MinPercent,
+                    "value4": _d.TeacherName,
+                    "value5": _d.Percent+"%",
                     "fns":[{
                         "name":"查看",
                         "fn":function(){
                             openContentLoading()
-                            TUI.platform.get("/TeacherRankDetail/"+_d.TeacherId, function (result) {
+                            TUI.platform.get("/TeacherRankDetail?teacherId="+_d.TeacherId+"&classesId="+_d.ClassesId+"&voteId=e324217b-6d7f-4b72-ad4a-087b25f4b746", function (result) {
                                 if (result.code == 0) {
-                                    addTeacherStatistic(result.datas)
+                                    addTeacherRankDetail(result.datas)
                                     openSidePage(_this, {
                                         status: "teacherStatistic"
                                     })
                                 }
                                 else if (result.code == 1) {
-                                    addTeacherStatistic([])
+                                    addTeacherRankDetail([])
                                 }
                                 else {
                                     errorMsg(Config.ERROR_INFO[result.code]);
@@ -77,9 +76,9 @@ class TeacherOnline extends React.Component {
 
         return (
             <div>
-                <Content txt="班级列表">
+                <Content txt="教师统计">
                     <div>
-                        <Table num="10" pageSize="2" tblContent={tblContent} width="50,0,150,150,100" />
+                        <Table num="10" pageSize="2" tblContent={tblContent} width="50,200,200,0,200,100" />
                         <Pager fn={this.pageFn.bind(this)} />
                     </div>
                 </Content>
@@ -111,7 +110,7 @@ class TeacherOnline extends React.Component {
     }
 
     componentDidMount() {
-        const {addTeacherStatistic, updatePageInfo, errorMsg, teacherRankList,addBreadNav} = this.props
+        const {updatePageInfo, errorMsg, teacherRankList,addTeacherRankList,addBreadNav} = this.props
         let _this = this
         openLoading()
         addBreadNav({ name: "班级统计" })
@@ -119,14 +118,15 @@ class TeacherOnline extends React.Component {
         if (teacherRankList.length==0) {
             TUI.platform.get("/TeacherRank", function (result) {
                 if (result.code == 0) {
-                    addTeacherStatistic(result.datas)
+                    addTeacherRankList(result.datas)
                 }
                 else if (result.code == 1) {
-                    addTeacherStatistic([])
+                    addTeacherRankList([])
                 }
                 else {
                     errorMsg(Config.ERROR_INFO[result.code]);
                 }
+                closeLoading()
             })
         }
 
@@ -136,7 +136,7 @@ class TeacherOnline extends React.Component {
 
 export default TUI._connect({
     teacherRankList: "teacherList.teacherRankList",
-    teacherRankListDetail: "teacherList.teacherRankListDetail",
+    teacherRankDetail: "teacherList.teacherRankDetail",
     sidePageInfo: "publicInfo.sidePageInfo",
     pageInfo: "publicInfo.pageInfo"
 }, TeacherOnline)

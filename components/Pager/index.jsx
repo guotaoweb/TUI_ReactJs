@@ -71,12 +71,23 @@ class Pager extends React.Component {
             pageSum = 1
         }
 
+//
+//
+// 
+
+        let showPageStyle = "none"
+        for(let key in _pageInfo)
+        {
+            if(_pageInfo[key].url){
+                showPageStyle = "inline-block"
+            }
+        }
 
         return (
 
             <div>
                 <div className="t-pager" style={this.props.style}>
-                    <span style={{margin:"5px", display: (pageSum == 1 ? "none" : "inline-block") }}>
+                    <span  style={{ display: ((pageSum>pageSize)? "inline-block" : "none") }}>
                         显示数:&nbsp;
                         <select style={{color:"#999"}} onChange={this.pagerSizeChange.bind(this)}>
                             <option>10</option>
@@ -86,9 +97,9 @@ class Pager extends React.Component {
                             <option>50</option>
                         </select>&nbsp;&nbsp;&nbsp;
                     </span>
-                    <span style={{ display: (pageSum == 1 ? "none" : "inline-block") }}>总数量: {pageSum} </span>
+                    <span style={{ display: ((pageSum>pageSize)? "inline-block" : "none") }}>总数量: {pageSum} </span>
                     {loadStatusImg}
-                    <ul style={{ display: ((!pagerLength || pagerLength==1)? "none" : "block") }}>
+                    <ul style={{ display: ((pageSum>pageSize)? "inline-block" : "none") }}>
                         <li className='first' onClick={this.clickFirst.bind(this)}><a href='javascript:void(0);'><img src={first} /></a></li>
                         {pagerLi}
                         <li className='last' onClick={this.clickLast.bind(this)}><a href='javascript:void(0);'><img src={last} /></a></li>
@@ -128,9 +139,9 @@ class Pager extends React.Component {
             p.style.backgroundColor = "white"
         }
         obj.style.backgroundColor = "#ebebeb"
-        updatePageInfo({
-            index: parseInt(obj.innerText)
-        })
+        // updatePageInfo({
+        //     index: parseInt(obj.innerText)
+        // })
         fn(parseInt(obj.innerText), pageLoadComplete)
         pageLoading()
 

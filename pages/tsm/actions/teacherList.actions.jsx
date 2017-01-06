@@ -36,7 +36,20 @@ export function loadTeacherList(data){
     } 
 }
 
+export function addTeacherRankList(data){
+    return {
+        type:"ADD_TEACHERRANK_LIST",
+        data
+    } 
+}
 
+
+export function addTeacherRankDetail(data){
+    return {
+        type:"ADD_TEACHERRANK_DETAIL",
+        data
+    } 
+}
 
 
 

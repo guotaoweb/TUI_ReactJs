@@ -13,6 +13,7 @@ import { openSideContent } from "SideContent"
 
 import UserMaintainEdit from "./userMaintain.edit"
 import UserMaintainResetJob from "./userMaintain.resetJob"
+import UserMaintainDetail from "./userMaintain.detail"
 
 let USERMAINTAIN_ID = ""
 
@@ -29,7 +30,7 @@ class UserMaintain extends React.Component {
         } = this.props
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "用户名-desc-cnName", "name3": "账号-desc-loginUid", "name4": "默认组织", "name5": "职位", "name6": "手机", "name7": "内部编码-desc-staffCode", "name8": "排序号", "name9": "操作" },
+            "thead": { "name1": "序号", "name2": "用户名-desc-cnName", "name3": "账号-desc-loginUid", "name4": "默认组织", "name5": "职位", "name6": "手机", "name7": "员工号", "name8": "排序号", "name9": "操作" },
             "tbody": []
         }
         for (var i = 0; i < data.length; i++) {
@@ -47,6 +48,59 @@ class UserMaintain extends React.Component {
                 "value8": _d.sort,
 
                 "fns": [{
+                    "name": "详情",
+                    "fn": function () {
+                        openContentLoading()
+
+                        TUI.platform.get("/staff/" + _d.staffId, function (result) {
+                            if (result.code == 0) {
+                                let _data = result.data
+                                addEditInfo({
+                                    infoName: "userMaintainInfo",
+                                    uId: _data.staffId,//用户ID
+                                    user: _data.loginUid,//用户名
+                                    name: _data.cnName,//中文名
+                                    status: _data.status,//账户状态
+                                    mobile: _data.mobilePhone,//常用手机
+                                    shortNumber: _data.shortPhone,//短号码
+                                    fax: _data.fax,//传真
+                                    companyPhone: _data.telephone,//办公电话
+                                    companyAddress: _data.officeAddress,//办公地址
+                                    idCard: _data.userNumber,//身份证
+                                    orgnization: _data.unitId,//默认组织
+                                    wx: "",//微信号
+                                    sort: _data.sort,//排序号
+                                    isShow: _data.ext2,//是否显示
+                                    kind: _data.kind,
+                                    staffCode: _data.staffCode,
+                                    ext5: _data.ext5,
+                                    ext5Name: _d.unitName,
+                                    empNumber: _data.empNumber
+                                })
+
+
+                                TUI.platform.get("/staff/unit/" + _d.staffId, function (result) {
+                                    if (result.code == 0) {
+                                        _this.props.addDefaultUnit(result.data)
+                                    }
+                                })
+                            }
+                            else if (result.code == 404) {
+                                addEditInfo({})
+                            }
+                            else {
+                                errorMsg(result.message)
+                            }
+                            openSidePage(_this, {
+                                id: "userMaintainDetail",
+                                status: "userMaintainDetail"
+                            })
+                            closeContentLoading()
+                            getContentIndex(0)
+                            _this.props.pushBreadNav({ name: _d.cnName })
+                        })
+                    }
+                }, {
                     "name": "编辑",
                     "fn": function () {
                         openContentLoading()
@@ -119,7 +173,7 @@ class UserMaintain extends React.Component {
                             })
                         }
 
-                        openDialog(_this, "是否确定删除该用户信息?", delFetch)
+                        openDialog(_this, "警告:执行“删除”操作该用户将被永久删除，如果只删除职位请点击[编辑]进入[职位信息]列表删除对应的职位", delFetch)
                     }
                 }]
             })
@@ -131,7 +185,7 @@ class UserMaintain extends React.Component {
             <div>
                 <Content txt="用户信息维护" addHref={this.addUserMaintainBtn.bind(this)} addHrefTxt="新增">
                     <div>
-                        <Search placeholder="输入关键字(用户名、账号、内部编码)搜索" style={{
+                        <Search placeholder="输入关键字(用户名、账号、员工号)搜索" style={{
                             border: "none",
                             borderBottom: "1px solid #ebebeb",
                             width: "98%",
@@ -146,6 +200,12 @@ class UserMaintain extends React.Component {
                         <UserMaintainEdit key="userMaintain_edit" />
                     </div>
                 </SidePage>
+                <SidePage id="userMaintainDetail">
+                    <div>
+                        <UserMaintainDetail key="userMaintain_detail" />
+                    </div>
+                </SidePage>
+
                 <SidePage id="resetJob">
                     <div>
                         <UserMaintainResetJob key="userMaintain_resetjob" />

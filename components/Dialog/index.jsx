@@ -7,7 +7,7 @@ class Dialog extends React.Component {
     const {txt, type} = this.props
     let btns = [],
       txtObject = [],
-      title = "系统提示"
+      title = (txt?(txt.indexOf("警告:") > -1 ? "系统警告" : "系统提示"):"系统提示")
 
     //根据type区别显示按钮
     if (type == 0) {
@@ -43,17 +43,21 @@ class Dialog extends React.Component {
           txtObject.push(<div key={"dialog-type3" + i} onClick={this.dialogListFn.bind(this, $e.fn)} className="dialogList"><a href="#">{$e.name}</a></div>)
         }
       }
-      txtObject.push(<b className="t-closeDialog" onClick={this.closeDialog.bind(this)}><img src={close} /></b>) 
+      txtObject.push(<b className="t-closeDialog" onClick={this.closeDialog.bind(this)}><img src={close} /></b>)
     }
     else {
-      txtObject.push(<span key="dialog-typ1">{txt}</span>)
+      if (txt) {
+        txtObject.push(<span key="dialog-typ1">{txt.indexOf("警告:") > -1 ? (txt.substring(3)) : txt}</span>)
+      }
+      else {
+        txtObject.push(<span key="dialog-typ1">{txt}</span>)
+      }
     }
-
 
     return (
       <div>
         <div className="t-coverbg" ref="coverbg"></div>
-        <div className="t-dialog" ref="dialog">
+        <div className={"t-dialog " + (txt?(txt.indexOf("警告:") > -1 ? "t-dialog-warning" : ""):txt)} ref="dialog">
           <h3>{title}</h3>
           <div>{txtObject}</div>
           {btns}
@@ -78,7 +82,7 @@ class Dialog extends React.Component {
   }
 
   onChangeByDialog(e) {
-    
+
     this.props.updateDialog({
       txt: {
         value: e.currentTarget.value,
@@ -136,7 +140,7 @@ export function openDialog(_this, txt, fn) {
     $dialog.style.opacity = "1"
     $coverbg.style.display = "block"
     $coverbg.style.zIndex = "9999"
-    $coverbg.style.height = allHeight+document.body.scrollTop+"px"
+    $coverbg.style.height = allHeight + document.body.scrollTop + "px"
     $dialog.style["transform"] = "scale(1)"
 
     if ($dialogOk) {
@@ -150,7 +154,7 @@ export function openDialog(_this, txt, fn) {
   }, 120)
 }
 
-export function closeDialog(){
+export function closeDialog() {
   let d = new Dialog()
   d.closeDialog()
 }

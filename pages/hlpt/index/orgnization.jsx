@@ -1,19 +1,17 @@
-//图片
-import minus from "!url!../../../components/MultyMenu/img/minus.png"
-import singleLeft from "!url!./img/singleLeft.png"
 //组件
-
-import OrgnizationEdit from "./orgnization.edit"
 import FormControls from "FormControls"
-import Content3, { openContentLoading, closeContentLoading } from "Content3"
+import Content, { openContentLoading, closeContentLoading } from "Content"
 import Btn from "Btn"
 import Table from "Table"
-import MultyMenu, { editFn } from "MultyMenu"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import Pager from "Pager"
 import { openDialog, closeDialog } from "Dialog"
 import { openLoading, closeLoading } from "Loading"
 import Search from "Search"
+import { openSideContent } from "SideContent"
+
+import OrgnizationEdit from "./orgnization.edit"
+import OrgnizationDetail from "./orgnization.detail"
 
 class Orgnization extends React.Component {
     render() {
@@ -46,13 +44,18 @@ class Orgnization extends React.Component {
                 "value5": _d.superExt2,
                 "value6": _d.statusName,
                 "fns": [{
+                    "name": "详情",
+                    "fn": function () {
+                        //获取单击的组织详情
+                        openContentLoading()
+                        _this.editMenu({ id: _d.unitId, deep: "0-" + _d.unitId ,sidePageId:"orgnizationDetail"})
+                    }
+                }, {
                     "name": "编辑",
                     "fn": function () {
                         //获取单击的组织详情
                         openContentLoading()
-                        _this.editMenu({ id: _d.unitId, deep: "0-" + _d.unitId })
-
-
+                        _this.editMenu({ id: _d.unitId, deep: "0-" + _d.unitId ,sidePageId:"orgnizationEdit"})
                     }
                 }, {
                     "name": "删除",
@@ -89,31 +92,15 @@ class Orgnization extends React.Component {
 
         let addBtn
         if (this.props.relateId) {
-            addBtn = <Btn type="add" txt="新增" href={this.addMenuBtn.bind(this)} style={{ float: "right" }} />
+            addBtn = this.addMenuBtn.bind(this)
+        }
+        else {
+            addBtn = ""
         }
 
         return (
             <div>
-                <Content3>
-                    <div>
-                        <MultyMenu
-                            data={odata}
-                            type="edit"
-                            lastdeep="6"
-                            color="white"
-                            addMenu={this.addMenu.bind(this)}
-                            editMenu={this.editMenu.bind(this)}
-                            delMenu={this.delMenu.bind(this)}
-                            clickMenu={this.clickMenu.bind(this)}
-                            openSubMenu={this.openSubMenu.bind(this)}
-                            />
-                        <br />
-                    </div>
-                    <div></div>
-                    <div className="t-content_t">
-                        <span>组织信息列表</span>
-                        {addBtn}
-                    </div>
+                <Content txt="组织信息列表" addHref={addBtn} addHrefTxt="新增">
                     <div>
                         <Search placeholder="输入关键字(名称,组织编码)搜索" style={{
                             border: "none",
@@ -124,131 +111,104 @@ class Orgnization extends React.Component {
                         <Table bindPager="orgnizationPager" tblContent={tblContent} width="50,140,0,80,0,80,80" />
                         <Pager id="orgnizationPager" fn={this.pageFn.bind(this)} />
                     </div>
-                </Content3>
-                <SidePage>
+                </Content>
+                <SidePage id="orgnizationEdit">
                     <div>
                         <OrgnizationEdit key="orgnization_edit" />
+                    </div>
+                </SidePage>
+                <SidePage id="orgnizationDetail">
+                    <div>
+                        <OrgnizationDetail key="orgnization_detail" />
                     </div>
                 </SidePage>
             </div >
         )
     }
 
-    // componentDidUpdate(nextProps) {
-    //     let thisProps = this.props.pageInfo
-    //     for (let key in thisProps) {
-    //         let _thisProps = thisProps[key]
-    //         if (_thisProps[key].size != nextProps.pageInfo[key].size) {
+    editMenu(params) {
+        let _this = this
+        const {addEditInfo} = _this.props
 
-    //             return true
+        closeSidePage()
+        setTimeout(function () {
+            openSidePage(_this, {
+                id:params.sidePageId,
+                status: params.sidePageId,
+                gateWay: params
+            })
+        }, 300)
 
-    //         }
-    //         else {
-    //             return false
-    //         }
-    //     }
-    // }
-    componentDidUpdate(nextProps) {
-        if (!nextProps.odata) {
-            this.loadFirstNode()
+        let ids = params.deep.split("-")
+
+        _this.props.updateOrgnizationRelateId({
+            relateId: _this.props.relateId + "-" + ids[ids.length - 1],//级联的关系ID
+        })
+
+        TUI.platform.get("/unit/" + ids[ids.length - 1], function (result) {
+            if (result.code == 0) {
+                var _d = result.data
+                addEditInfo({
+                    infoName: "orgnizationInfo",
+                    id: _d.unitId,
+                    code: _d.unitCode,
+                    who: _d.unitName,
+                    upper: _d.superExt2,
+                    level: _d.unitLevel,
+                    unitName: _d.unitName,
+                    ext2: _d.ext2,
+                    bizType: _d.bizType,
+                    kind: _d.kind,
+                    status: _d.status,
+                    areaCode: _d.areaCode,
+                    email: _d.email,
+                    sort: _d.sort,
+                    remark: _d.remark,
+                    permission: _d.unitCode,
+                    globalCode: _d.globalCode,
+                    staffing: _d.staffing,
+                    statusName: _d.statusName
+                })
+            }
+            _this.props.pushBreadNav({ name: _d.unitName })
+            closeContentLoading()
+        })
+    }
+
+    componentDidUpdate() {
+        const {sideContentInfo, componentInfo, updateComponentInfo} = this.props
+
+        if (componentInfo.key != sideContentInfo.key) {
+            this.props.clearEditInfo({
+                infoName: "orgnizationInfo"
+            })
+            openContentLoading()
+            this.loadSubOrgnization(sideContentInfo.id)
+    
+            closeSidePage()
+            this.props.addBreadNav({ name: "组织架构维护" })
+            openContentLoading()
+
+            updateComponentInfo(sideContentInfo)
+            return true
+        }
+        else {
+            return false
         }
     }
 
-    loadFirstNode() {
-        let $clickMenu = document.getElementsByClassName("t-content3")[0].getElementsByClassName("clickmenu")[0]
-        if ($clickMenu) {
-            $clickMenu.getElementsByTagName("a")[0].style.backgroundColor = "rgba(250,250,250,0.5)"
-            $clickMenu.getElementsByTagName("a")[0].style.borderRadius = "3px"
-            let firtNodeId = $clickMenu.getAttribute("data-id")
-
-            $clickMenu.nextSibling.style.display = "block"
-            let $img = $clickMenu.getElementsByTagName("img")[1]
-            $img.setAttribute("data-status", "show")
-            $img.setAttribute("src", minus)
-            this.loadSubOrgnization(firtNodeId)
-        }
+    componentWillUnmount() {
+        this.props.updateSideContentInfo({
+            key: TUI.fn.newGuid()
+        })
     }
 
     componentDidMount() {
         let _this = this;
-
-        const {addData, errorMsg, addUnitBizTypes, addPositionTypes, addStatus, addCity, addSubList, updatePageInfo, addUnitKind} = this.props
-
-        this.loadFirstNode()
-        // openLoading()
-        // //获取组织根节点,且默认展开第一个父节点
-        // TUI.platform.get("/units/tree/0", function (result) {
-        //     if (result.code == 0) {
-        //         let node = []
-        //         for (let index = 0; index < result.data.length; index++) {
-        //             let _d = result.data[index];
-        //             node.push({
-        //                 id: _d.id,
-        //                 name: _d.name,
-        //                 type: _d.unitCode,
-        //                 isHadSub: _d.isleaf,
-        //                 ext1: _d.unitLevel,
-        //                 num: "",
-        //                 deep: 0,
-        //                 btns: "A/E"
-        //             })
-        //         }
-        //         addData(node)
-
-
-        //         let $clickMenu = document.getElementsByClassName("t-content3")[0].getElementsByClassName("clickmenu")[0]
-        //         $clickMenu.getElementsByTagName("a")[0].style.backgroundColor = "rgba(250,250,250,0.5)"
-        //         $clickMenu.getElementsByTagName("a")[0].style.borderRadius = "3px"
-        //         let firtNodeId = $clickMenu.getAttribute("data-id")
-        //         let firstRelateId = $clickMenu.getAttribute("data-deep") ? $clickMenu.getAttribute("data-deep") : firtNodeId
-        //         let firstUnitCode = $clickMenu.getAttribute("data-type")
-        //         _this.loadSubOrgnization(firtNodeId)
-
-        //         _this.props.updateOrgnizationRelateId({
-        //             relateId: firstRelateId,//级联的关系ID
-        //             unitCode: firstUnitCode //上级的code
-        //         })
-
-        //         //展开第一个节点的一级子节点
-        //         TUI.platform.get("/units/tree/" + firtNodeId, function (result) {
-        //             if (result.code == 0) {
-
-        //                 for (var i = 0; i < _this.props.odata.length; i++) {
-        //                     var d = _this.props.odata[i]
-        //                     if (d.id == firtNodeId) {
-        //                         let children = []
-        //                         for (var j = 0; j < result.data.length; j++) {
-        //                             var $s = result.data[j];
-        //                             children.push({
-        //                                 id: $s.id,
-        //                                 name: $s.name,
-        //                                 type: $s.unitCode,
-        //                                 isHadSub: $s.isleaf,
-        //                                 num: "",
-        //                                 ext1: $s.unitLevel,
-        //                                 deep: 1
-        //                             })
-        //                         }
-
-        //                         d.children = children
-        //                         addData(_this.props.odata)
-        //                         $clickMenu.nextSibling.style.display = "block"
-        //                         let $img = $clickMenu.getElementsByTagName("img")[1]
-        //                         $img.setAttribute("data-status", "show")
-        //                         $img.setAttribute("src", minus)
-
-        //                         closeLoading()
-        //                     }
-        //                 }
-
-        //             }
-        //         })
-        //     }
-        //     else {
-        //         errorMsg(result.message);
-        //     }
-        //})
-
+        const {sideContentInfo,addData, errorMsg, addUnitBizTypes, addPositionTypes, addStatus, addCity, addSubList, updatePageInfo, addUnitKind} = this.props
+        openSideContent()
+        //this.loadFirstNode()
+        this.loadSubOrgnization(sideContentInfo.id)
         //获取业务类型
         TUI.platform.get("/unitbiztypes/dict", function (result) {
             if (result.code == 0) {
@@ -290,12 +250,8 @@ class Orgnization extends React.Component {
             }
         })
 
-
-
         this.props.addBreadNav({ name: "组织架构维护" })
-        //this.loadSubOrgnization();
     }
-
 
     _searchOrgnization(val) {
         let {searchInfo, addSubList, updatePageInfo, errorMsg, pageInfo} = this.props
@@ -340,31 +296,47 @@ class Orgnization extends React.Component {
         this.props.clearTeamPersonInfo()
     }
 
-    addMenu(params) {
-        const {updateTeamInfo, clearEditInfo, detail} = this.props
-        let _this = this
+    //翻页方法,显示每页数量的方法
+    pageFn(index, loadComplete) {
+        const {pageInfo, addSubList, updatePageInfo, errorMsg} = this.props
+        let _pageSize = pageInfo["orgnizationPager"] ? pageInfo["orgnizationPager"].size : 10,
+            _initUrl = pageInfo.orgnizationPager.url,
+            _initSurl = pageInfo.orgnizationPager.surl,
+            _url = _initSurl == "#" ? _initUrl : _initSurl,
+            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
 
-        closeSidePage()
-
-        clearEditInfo({
-            infoName: "orgnizationInfo"
-        })
-
-        setTimeout(function () {
-            openSidePage(_this, {
-                status: "addOrgnization",
-                gateWay: params
+        TUI.platform.get(rUrl.replace("{0}", _pageSize * (index - 1)), function (result) {
+            if (result.code == 0) {
+                addSubList(result.data)
+                loadComplete()
+            }
+            else if (result.code == 404) {
+                addSubList([])
+            }
+            else {
+                errorMsg(result.message)
+            }
+            updatePageInfo({
+                id: "orgnizationPager",
+                index: index,
+                size: _pageSize,
+                sum: result._page ? result._page.total : 0,
+                url: _initSurl == "#" ? rUrl : _initUrl,
+                surl: _initSurl == "#" ? _initSurl : rUrl,
             })
-        }, 300)
+        })
     }
 
+
     addMenuBtn() {
-        const {clearEditInfo, sidePageInfo} = this.props
+        const {clearEditInfo, sidePageInfo,addEditInfo} = this.props
         let _this = this
 
         clearEditInfo({
             infoName: "orgnizationInfo"
         })
+
+
         closeSidePage()
 
         setTimeout(function () {
@@ -376,105 +348,7 @@ class Orgnization extends React.Component {
 
         this.props.pushBreadNav({ name: "添加组织机构" })
     }
-
-    editMenu(params) {
-        let _this = this
-        const {addEditInfo} = _this.props
-
-        closeSidePage()
-        setTimeout(function () {
-            openSidePage(_this, {
-                status: "editOrgnization",
-                gateWay: params
-            })
-        }, 300)
-
-        let ids = params.deep.split("-")
-
-        _this.props.updateOrgnizationRelateId({
-            relateId: _this.props.relateId + "-" + ids[ids.length - 1],//级联的关系ID
-        })
-
-        TUI.platform.get("/unit/" + ids[ids.length - 1], function (result) {
-            if (result.code == 0) {
-                var _d = result.data
-                addEditInfo({
-                    infoName: "orgnizationInfo",
-                    id: _d.unitId,
-                    code: _d.unitCode,
-                    who: _d.unitName,
-                    upper: _d.superExt2,
-                    level: _d.unitLevel,
-                    unitName: _d.unitName,
-                    ext2: _d.ext2,
-                    bizType: _d.bizType,
-                    kind: _d.kind,
-                    status: _d.status,
-                    areaCode: _d.areaCode,
-                    email: _d.email,
-                    sort: _d.sort,
-                    remark: _d.remark,
-                    permission: _d.unitCode,
-                    globalCode: _d.globalCode,
-                    staffing: _d.staffing,
-                    statusName: _d.statusName
-                })
-            }
-            _this.props.pushBreadNav({ name: _d.unitName })
-            closeContentLoading()
-        })
-    }
-
-    delMenu(params) {
-        let _this = this
-
-        let delFetch = function () {
-            TUI.platform.patch("/unit/" + params.id, function (result) {
-                if (result.code == 0) {
-                    _this.props.successMsg("组织删除成功")
-                    _this.props.delSubList({
-                        unitId: params.id
-                    })
-
-                    _this.deleteData(_this.props.odata, params.deep.split("-"))
-                }
-                else {
-                    _this.props.errorMsg(result.errors)
-                }
-            })
-        }
-
-        openDialog(_this, "是否确定删除此项？", delFetch)
-    }
-
-    clickMenu(params) {
-        let _this = this
-        // let $menuLi = document.getElementsByClassName("clickmenu")
-        // for (let j = 0; j < $menuLi.length; j++) {
-        //     let $m1 = $menuLi[j]
-        //     $m1.style.backgroundColor = ""
-        // }
-        // $m.style.backgroundColor = "rgba(250,250,250,0.5)"
-        // $m.style.borderRadius = "3px"
-
-        let id = params.id
-        let relateId = params.deep ? params.deep : id
-        let unitCode = params.type
-
-        _this.props.updateOrgnizationRelateId({
-            relateId: relateId,//级联的关系ID
-            unitCode: unitCode //上级的code
-        })
-
-        this.loadSubOrgnization(id)
-
-        closeSidePage()
-
-        openContentLoading()
-
-        this.props.addBreadNav({ name: "组织架构维护" })
-    }
-
+    
     loadSubOrgnization(id) {
         const {addSubList, updatePageInfo, clearPageInfo, updateSearchInfo, pageInfo} = this.props
         let _pageSize = pageInfo["orgnizationPager"] ? pageInfo["orgnizationPager"].size : 10
@@ -506,140 +380,6 @@ class Orgnization extends React.Component {
             })
         })
     }
-
-    updateData(data, deep, fn, _deep, addData, action) {
-        //deep的格式是1-2-3,拆成数组
-        //如果deep的length==1的话,就说明已经钻到底层了
-        if (deep.length == 1) {
-            for (let index = 0; index < data.length; index++) {
-                let d = data[index]
-                if (d.id == deep[0]) {
-                    if (action == "A") {
-                        d.deep = parseInt(_deep) + 1
-
-                        if (typeof d.children == "undefined") {
-                            d.children = []
-                        }
-
-                        d.children.push(addData)
-                    }
-                    else {
-                        d.id = addData.id
-                        d.name = addData.name
-                        d.code = addData.code
-                        d.note = addData.note
-                    }
-                    fn(this.props.xnsubdata)
-                }
-            }
-            return false
-        }
-
-        //钻到最底层
-        for (var index = 0; index < data.length; index++) {
-            let d = data[index]
-            if (d.id == deep[0] && deep.length > 1) {
-                deep.splice(0, 1)
-                this.updateData(d.children, deep, fn, _deep + 1, addData, action)
-            }
-        }
-    }
-
-    deleteData(data, deep) {
-        //deep的格式是1-2-3,拆成数组
-        //如果deep的length==1的话,就说明已经钻到底层了
-        if (deep.length == 1) {
-            for (let index = 0; index < data.length; index++) {
-                let d = data[index]
-                if (d.id == deep[0]) {
-                    data.splice(index, 1)
-                    this.props.addData(this.props.odata)
-                }
-            }
-            return false
-        }
-
-
-
-        //钻到最底层
-        for (var index = 0; index < data.length; index++) {
-            let d = data[index]
-            if (d.id == deep[0] && deep.length > 1) {
-                deep.splice(0, 1)
-                this.deleteData(d.children, deep)
-            }
-        }
-    }
-
-    //展开树子节点方法
-    openSubMenu(_data, id, deep, loadComplete) {
-        const {addData, odata, errorMsg} = this.props
-        for (let index = 0; index < _data.length; index++) {
-            let d = _data[index]
-            if (d.id == id) {
-                TUI.platform.get("/units/tree/" + id, function (result) {
-                    if (result.code == 0) {
-                        let children = []
-                        let _deep = parseInt(deep) + 1
-                        for (var j = 0; j < result.data.length; j++) {
-                            var $s = result.data[j];
-                            children.push({
-                                id: $s.id,
-                                name: $s.name,
-                                type: $s.unitCode,
-                                isHadSub: $s.isleaf,
-                                ext1: $s.unitLevel,
-                                num: "",
-                                deep: _deep
-                            })
-                        }
-                        d.children = children
-                        addData(odata)
-                    }
-                    else if (result.code == 404) {
-
-                    }
-                    else {
-                        errorMsg(result.message)
-                    }
-
-                    setTimeout(function () { loadComplete() }, 1000)
-                })
-                break
-            }
-        }
-    }
-
-    //翻页方法,显示每页数量的方法
-    pageFn(index, loadComplete) {
-        const {pageInfo, addSubList, updatePageInfo, errorMsg} = this.props
-        let _pageSize = pageInfo["orgnizationPager"] ? pageInfo["orgnizationPager"].size : 10,
-            _initUrl = pageInfo.orgnizationPager.url,
-            _initSurl = pageInfo.orgnizationPager.surl,
-            _url = _initSurl == "#" ? _initUrl : _initSurl,
-            rUrl = _url.substring(0, _url.lastIndexOf("=") + 1) + _pageSize
-
-        TUI.platform.get(rUrl.replace("{0}", _pageSize * (index - 1)), function (result) {
-            if (result.code == 0) {
-                addSubList(result.data)
-                loadComplete()
-            }
-            else if (result.code == 404) {
-                addSubList([])
-            }
-            else {
-                errorMsg(result.message)
-            }
-            updatePageInfo({
-                id: "orgnizationPager",
-                index: index,
-                size: _pageSize,
-                sum: result._page ? result._page.total : 0,
-                url: _initSurl == "#" ? rUrl : _initUrl,
-                surl: _initSurl == "#" ? _initSurl : rUrl,
-            })
-        })
-    }
 }
 
 export default TUI._connect({
@@ -650,5 +390,7 @@ export default TUI._connect({
     detail: "orgnizationManage.detail",
     searchInfo: "publicInfo.searchInfo",
     relateId: "orgnizationManage.relateId",
-    editInfo: "formControlInfo.data"
+    editInfo: "formControlInfo.data",
+    sideContentInfo: "publicInfo.sideContentInfo",
+    componentInfo: "personMatchPost.componentInfo"
 }, Orgnization)

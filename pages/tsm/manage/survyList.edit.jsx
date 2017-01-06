@@ -135,8 +135,9 @@ class EditSurvy extends React.Component {
                 jsonParam["Id"] = result.datas[0]
                 updateEditInfo({
                     infoName: "survyInfo",
-                    Id: result.datas[0]
+                    Id: result.datas[0],
                 })
+                jsonParam["UpdateTime"] = TUI.fn.currentTime();
                 addSurvyList(jsonParam)
 
                 updatePageInfo({

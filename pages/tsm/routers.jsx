@@ -32,7 +32,7 @@ class Routers extends React.Component {
                 <Route path={Config.ROOTPATH + "login"} component={Login}></Route>
 
                 <Route path={Config.ROOTPATH + "s"} component={Manage}>
-                    <IndexRoute component={ClassesList} />
+                    <IndexRoute component={SurvyList} />
                     <Route path={Config.ROOTPATH + m + "teachers"} component={TeacherList} />
                     <Route path={Config.ROOTPATH + m + "courses"} component={CourseList} />
                     <Route path={Config.ROOTPATH + m + "admins"} component={AdminList} />

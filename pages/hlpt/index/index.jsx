@@ -3,15 +3,24 @@ import minus from "!url!../../../components/MultyMenu/img/minus.png"
 import Side from "./side"
 import Container from "./container"
 import TipTool from "TipTool"
-import Dialog from "Dialog"
+import Dialog, { openDialog } from "Dialog"
 import ModalDialog from "ModalDialog"
 import Loading from "Loading"
 import SideContent from "SideContent"
 import MultyMenu from "MultyMenu"
 import { openContentLoading, closeContentLoading } from "Content"
+import SidePage, { openSidePage, closeSidePage } from "SidePage"
+import building from "!url!../../../components/ModalDialog/img/building.png"
+
 class Index extends React.Component {
   render() {
-    const {children, odata} = this.props
+    const {children, odata, router} = this.props
+    let multMenuType = "nocheck"
+    if (window.location.href.indexOf("orgnization") > -1) {
+      multMenuType = "edit"
+    }
+    let allWidth = document.documentElement.clientWidth-120
+    let allHeight = document.documentElement.clientHeight-300
 
     return (
       <div className="t-page">
@@ -19,11 +28,14 @@ class Index extends React.Component {
         <SideContent>
           <MultyMenu
             data={odata}
-            type="nocheck"
+            type={multMenuType}
             lastdeep="6"
             color="white"
             clickMenu={this.clickMenu.bind(this)}
             openSubMenu={this.openSubMenu.bind(this)}
+            addMenu={this.addMenu.bind(this)}
+            editMenu={this.editMenu.bind(this)}
+            delMenu={this.delMenu.bind(this)}
             />
         </SideContent>
         <Container>
@@ -31,15 +43,55 @@ class Index extends React.Component {
         </Container>
         <TipTool />
         <Dialog />
-        <ModalDialog />
+        <ModalDialog id="help">
+          <div className="t-modalDialog_building" style={{width:allWidth+"px",height:allHeight+"px"}}>
+            <img src={building} />
+            <p>==建设中==</p>
+          </div>
+        </ModalDialog>
+        <ModalDialog id="quickKey" title="系统快捷键">
+          <div style={{ width: "500px", padding: "10px" }}>
+            <table className="qkeytbl" style={{ width: "100%" }}>
+              <thead>
+                <tr>
+                  <td>按键</td>
+                  <td>功能说明</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>SHIFT+A</td>
+                  <td>用户信息维护</td>
+                </tr>
+                <tr>
+                  <td>SHIFT+B</td>
+                  <td>组织架构维护</td>
+                </tr>
+                <tr>
+                  <td>SHIFT+D</td>
+                  <td>职位维护</td>
+                </tr>
+                <tr>
+                  <td>SHIFT+Q</td>
+                  <td>人职维护</td>
+                </tr>
+                <tr>
+                  <td>SHIFT+H</td>
+                  <td>帮助说明</td>
+                </tr>
+                <tr>
+                  <td>SHIFT+V</td>
+                  <td>关于我们</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ModalDialog>
         <Loading />
       </div>
     )
   }
 
-  // componentDidMount() {
-  //     this.loadTree()
-  // }
   componentDidUpdate(nextProps) {
     if (this.props.userInfo.id != nextProps.userInfo.id) {
       this.loadTree()
@@ -154,7 +206,12 @@ class Index extends React.Component {
       "key": TUI.fn.newGuid(),
       "id": params.id,
       "type": params.type,
-      "name":params.name
+      "name": params.name
+    })
+
+    this.props.updateOrgnizationRelateId({
+      relateId: params.deep ? params.deep : id,//级联的关系ID
+      unitCode: params.type //上级的code
     })
   }
 
@@ -186,6 +243,161 @@ class Index extends React.Component {
           }
         })
         break
+      }
+    }
+  }
+
+  addMenu(params) {
+    const {updateTeamInfo, clearEditInfo, detail} = this.props
+    let _this = this
+
+    closeSidePage()
+
+    clearEditInfo({
+      infoName: "orgnizationInfo"
+    })
+
+    setTimeout(function () {
+      openSidePage(_this, {
+        id:"orgnizationEdit",
+        status: "addOrgnization",
+        gateWay: params
+      })
+    }, 300)
+  }
+
+
+  editMenu(params) {
+    let _this = this
+    const {addEditInfo} = _this.props
+
+    closeSidePage()
+    setTimeout(function () {
+      openSidePage(_this, {
+        id:"orgnizationEdit",
+        status: "editOrgnization",
+        gateWay: params
+      })
+    }, 300)
+
+    let ids = params.deep.split("-")
+
+    _this.props.updateOrgnizationRelateId({
+      relateId: _this.props.relateId + "-" + ids[ids.length - 1],//级联的关系ID
+    })
+
+    TUI.platform.get("/unit/" + ids[ids.length - 1], function (result) {
+      if (result.code == 0) {
+        var _d = result.data
+        addEditInfo({
+          infoName: "orgnizationInfo",
+          id: _d.unitId,
+          code: _d.unitCode,
+          who: _d.unitName,
+          upper: _d.superExt2,
+          level: _d.unitLevel,
+          unitName: _d.unitName,
+          ext2: _d.ext2,
+          bizType: _d.bizType,
+          kind: _d.kind,
+          status: _d.status,
+          areaCode: _d.areaCode,
+          email: _d.email,
+          sort: _d.sort,
+          remark: _d.remark,
+          permission: _d.unitCode,
+          globalCode: _d.globalCode,
+          staffing: _d.staffing,
+          statusName: _d.statusName
+        })
+      }
+      _this.props.pushBreadNav({ name: _d.unitName })
+      closeContentLoading()
+    })
+  }
+
+  delMenu(params) {
+    let _this = this
+
+    let delFetch = function () {
+      TUI.platform.patch("/unit/" + params.id, function (result) {
+        if (result.code == 0) {
+          _this.props.successMsg("组织删除成功")
+          _this.props.delSubList({
+            unitId: params.id
+          })
+
+          _this.deleteData(_this.props.odata, params.deep.split("-"))
+        }
+        else {
+          _this.props.errorMsg(result.errors)
+        }
+      })
+    }
+
+    openDialog(_this, "是否确定删除此项？", delFetch)
+  }
+
+  updateData(data, deep, fn, _deep, addData, action) {
+    //deep的格式是1-2-3,拆成数组
+    //如果deep的length==1的话,就说明已经钻到底层了
+    if (deep.length == 1) {
+      for (let index = 0; index < data.length; index++) {
+        let d = data[index]
+        if (d.id == deep[0]) {
+          if (action == "A") {
+            d.deep = parseInt(_deep) + 1
+
+            if (typeof d.children == "undefined") {
+              d.children = []
+            }
+
+            d.children.push(addData)
+          }
+          else {
+            d.id = addData.id
+            d.name = addData.name
+            d.code = addData.code
+            d.note = addData.note
+          }
+          fn(this.props.xnsubdata)
+        }
+      }
+      return false
+    }
+
+    //钻到最底层
+    for (var index = 0; index < data.length; index++) {
+      let d = data[index]
+      if (d.id == deep[0] && deep.length > 1) {
+        deep.splice(0, 1)
+        this.updateData(d.children, deep, fn, _deep + 1, addData, action)
+      }
+    }
+  }
+
+  deleteData(data, deep) {
+    //deep的格式是1-2-3,拆成数组
+    //如果deep的length==1的话,就说明已经钻到底层了
+    if (deep.length == 1) {
+      for (let index = 0; index < data.length; index++) {
+        let d = data[index]
+        if (d.id == deep[0]) {
+          data.splice(index, 1)
+          this.props.addData(this.props.odata)
+        }
+      }
+      return false
+    }
+
+
+
+    //钻到最底层
+    for (var index = 0; index < data.length; index++) {
+      let d = data[index]
+      if (d.id == deep[0] && deep.length > 1) {
+        deep.splice(0, 1)
+        this.deleteData(d.children, deep)
       }
     }
   }

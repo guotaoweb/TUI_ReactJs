@@ -10,7 +10,7 @@ import downImg from "!url!./img/down.png"
 
 class SurvyOption extends React.Component {
     render() {
-        const {survyOptionsData, i, type, parentId} = this.props
+        const {survyOptionsData, i, type, parentId,survyId} = this.props
         let _survy = []
 
         if (survyOptionsData) {
@@ -34,10 +34,10 @@ class SurvyOption extends React.Component {
                     optionNo.push(<span key={"survy-no-" + i} style={{ float: "left", marginTop: "5px", marginRight: "10px" }}>{this.NumSwitchChar(j + 1)}、</span>)
                     optionBtns.push(
                         <ul key={"survy-o-" + j} className="optionbtns">
-                            <li onClick={this.addOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order} data-survyId={$o.SuryId}><img src={addImg} /></li>
-                            <li onClick={this.deleteOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order} data-Id={$o.Id}><img src={deleteImg} /></li>
-                            <li onClick={this.upOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}><img src={upImg} /></li>
-                            <li onClick={this.downOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}><img src={downImg} /></li>
+                            <li onClick={this.addOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order} data-survyId={survyId}><img src={addImg} /></li>
+                            <li onClick={this.deleteOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order} data-Id={$o.Id}  data-survyId={survyId}><img src={deleteImg} /></li>
+                            <li onClick={this.upOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}  data-survyId={survyId}><img src={upImg} /></li>
+                            <li onClick={this.downOption.bind(this)} data-type={type} data-parent={parentId} data-order={$o.Order}  data-survyId={survyId}><img src={downImg} /></li> 
                         </ul>
                     )
                 }

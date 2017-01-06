@@ -2,7 +2,8 @@ import 'babel-polyfill'
 
 const initState = {
     list: [],
-    teacherInClasses:[]
+    teacherInClasses:[],
+    teacherRankList:[]
 }
 
 export default function teacherListReducers(state = initState, action) {
@@ -50,6 +51,15 @@ export default function teacherListReducers(state = initState, action) {
             return Object.assign({}, state, {
                 teacherInClasses: JSON.parse(JSON.stringify(action.data))
             })
+        case "ADD_TEACHERRANK_LIST":
+            return Object.assign({}, state, {
+                teacherRankList: JSON.parse(JSON.stringify(action.data))
+            })
+        case "ADD_TEACHERRANK_DETAIL":
+            return Object.assign({}, state, {
+                teacherRankDetail: JSON.parse(JSON.stringify(action.data))
+            })
+            
         default:
             return state
     }

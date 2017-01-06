@@ -118,20 +118,22 @@ class PositionMaintainEdit extends React.Component {
 
     onBlur(e){
         const {sideContentInfo,errorMsg} = this.props
-        TUI.platform.get("/position/"+sideContentInfo.type+"/"+e.currentTarget.value, function (result) {
-            if (result.code == 0) {
-                if(result.data==1){
-                    errorMsg("职位名称已存在")
-                    POSITION_ISEXIST = true
+        if(e.currentTarget.value){
+            TUI.platform.get("/position/"+sideContentInfo.type+"/"+e.currentTarget.value, function (result) {
+                if (result.code == 0) {
+                    if(result.data==1){
+                        errorMsg("职位名称已存在")
+                        POSITION_ISEXIST = true
+                    }
+                    else{
+                        POSITION_ISEXIST = false
+                    }
                 }
-                else{
-                    POSITION_ISEXIST = false
+                else {
+                    errorMsg(result.message)
                 }
-            }
-            else {
-                errorMsg(result.message)
-            }
-        })
+            })
+        }
     }
 
     getPositionMaintainJobs() {

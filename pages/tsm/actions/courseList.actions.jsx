@@ -36,5 +36,25 @@ export function updateCourseBindSurvy(data){
     } 
 }
 
+export function addCourseStatisticList(data){
+    return {
+        type:"ADD_COURSE_STATISTIC_LIST",
+        data
+    } 
+}
 
+
+export function addCourseStatisticDetail(data){
+    return {
+        type:"ADD_COURSE_STATISTIC_DETAIL",
+        data
+    } 
+}
+
+export function addCourseStatisticDetailList(data){
+    return {
+        type:"ADD_COURSE_STATISTIC_DETAIL_LIST",
+        data
+    } 
+}
 

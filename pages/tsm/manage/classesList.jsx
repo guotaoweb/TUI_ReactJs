@@ -49,8 +49,8 @@ class ClassesList extends React.Component {
 
         for (var i = 0; i < classesList.length; i++) {
             let _d = classesList[i],
-                _isStartBtn = _d.IsStart == 0 ? "关闭" : "开启",
-                _isStart = _d.IsStart == 0 ? "开启" : "关闭",
+                _isStartBtn = _d.IsStart==2?"重启":(_d.IsStart == 0 ? "关闭" : "开启"),
+                _isStart = _d.IsStart == 2 ?"已投":(_d.IsStart == 0 ? "开启" : "关闭"),
                 _tr = {
                     "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                     "value2": _d.Name,
@@ -60,13 +60,13 @@ class ClassesList extends React.Component {
                     "fns": [{
                         "name": _isStartBtn,
                         "fn": function () {
-                            openDialog(_this, "是否确定" + _isStartBtn + "此班级投票", function () {
-                                let _action = _d.IsStart == 0 ? 1 : 0
+                            openDialog(_this, "是否确定" + _isStartBtn + "此班级投票?", function () {
+                                let _action = _d.IsStart == 2 ?0:(_d.IsStart == 0 ? 1 : 0)
                                 TUI.platform.put("/IsStartClasses/" + _d.Id + "?action=" + _action, {}, function (result) {
                                     if (result.code == 0) {
                                         let jsonParam = {
                                             Id: _d.Id,
-                                            IsStart: _action
+                                            IsStart: result.msg.indexOf("班级投票结束")>-1?2:_action
                                         }
                                         updateClassesList(jsonParam)
                                         successMsg("班级投票" + _isStartBtn + "成功")
@@ -95,7 +95,7 @@ class ClassesList extends React.Component {
                                     closeContentLoading()
                                 })
                             }
-                            openDialog(_this, "是否确定升级【" + _d.Name + "】", delFetch)
+                            openDialog(_this, "是否确定升级【" + _d.Name + "】?", delFetch)
                         }
                     }, {
                         "name": "编辑",
@@ -122,7 +122,6 @@ class ClassesList extends React.Component {
 
                                         for (let i = 0; i < courseList.length; i++) {
                                             let $r = courseList[i]
-                                            console.info(editInfo.classesInfo.ClassesRelated.length)
 
                                             isNew = true
                                             for (let j = 0; j < editInfo.classesInfo.ClassesRelated.length; j++) {

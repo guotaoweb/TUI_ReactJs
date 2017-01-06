@@ -2,35 +2,36 @@ import '!style!css!postcss!sass!./style.scss'
 
 
 import close from "!url!./img/close.png"
-import building from "!url!./img/building.png"
+
 
 class ModalDialog extends React.Component {
   render() {
-    const {txt} = this.props
+    const {children, title, id} = this.props
     return (
       <div>
         <div className="t-coverbg" ref="coverbg"></div>
-        <div className="t-modalDialog">
-          <p className="t-modalDialog_close" onClick={this.closeModalDialog.bind(this) }><img src={close} /></p>
-          <div className="t-modalDialog_title">帮助说明</div>
-          <div className="t-modalDialog_building">
-            <img src={building} />
-            <p>==建设中==</p>
-          </div>
+        <div className="t-modalDialog" id={id}>
+          <p className="t-modalDialog_close" onClick={this.closeModalDialog.bind(this)}><img src={close} /></p>
+          <div className="t-modalDialog_title">{title}</div>
+          {children}
         </div>
       </div>
     )
   }
 
   closeModalDialog() {
-    let $dialog = document.querySelector(".t-modalDialog")
+    let $dialog = document.getElementsByClassName("t-modalDialog")
     let $coverbg = document.querySelector(".t-coverbg")
-    $dialog.style["transition"] = "transform 200ms ease"
-    $dialog.style["transform"] = "scale(0)"
-    $coverbg.style.display = "none"
-    setTimeout(function () {
-      $dialog.style.opacity = "0"
-    }, 140)
+    for (var index = 0; index < $dialog.length; index++) {
+      var $d = $dialog[index];
+      $d.style["transition"] = "transform 200ms ease"
+      $d.style["transform"] = "scale(0)"
+      
+      setTimeout(function () {
+        $d.style.opacity = "0"
+      }, 140)
+    }
+$coverbg.style.display = "none"
   }
 }
 
@@ -39,16 +40,23 @@ export default TUI._connect({
 }, ModalDialog)
 
 
-export function openModalDialog() {
+export function openModalDialog(param) {
   setTimeout(function () {
     let $dialog = document.querySelector(".t-modalDialog")
+    if (param) {
+      if (param.id) {
+        $dialog = document.getElementById(param.id)
+      }
+    }
+
     let $coverbg = document.querySelector(".t-coverbg")
+
 
     let allWidth = document.documentElement.clientWidth
     let allHeight = document.documentElement.clientHeight
 
-    $dialog.style.width = (allWidth - 120) + "px"
-    $dialog.style.height = (allHeight - 80) + "px"
+    // $dialog.style.width = (allWidth - 120) + "px"
+    // $dialog.style.height = (allHeight - 80) + "px"
 
     let dialogWidth = $dialog.offsetWidth
     let dialogHeight = $dialog.offsetHeight
@@ -64,4 +72,6 @@ export function openModalDialog() {
     $dialog.style["transform"] = "scale(1)"
   }, 120)
 }
+
+
 

@@ -95,7 +95,8 @@ class SidePage extends React.Component {
         let _scrollWrapper = this.scrollAreaSidePageComponent.wrapper
         let _scrollContent = this.scrollAreaSidePageComponent.content
         
-        _scrollWrapper.style.height = ($obj.allHeight-(_scrollWrapper.getElementsByClassName("t-content_t").length>0?0:100)) + "px"
+        //-(_scrollWrapper.getElementsByClassName("t-content_t").length>0?0:100)
+        _scrollWrapper.style.height = ($obj.allHeight) + "px"
         // _scrollContent.style.height = ($obj.allHeight) + "px"
         if (this.scrollAreaSidePageComponent) {
             this.scrollAreaSidePageComponent.scrollArea.refresh()

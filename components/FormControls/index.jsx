@@ -91,6 +91,7 @@ class FormControls extends React.Component {
                 bind={bind}
                 labelTxt={labelTxt}
                 minWidth={minWidth}
+                disabled={this.props.disabled}
                 />
         }
         else if (ctrl == "radio") {
@@ -158,7 +159,8 @@ class FormControls extends React.Component {
                 data={data}
                 bind={bind}
                 editFn={this.props.updateEditInfo}
-                selected={this.props.selected} />
+                selected={this.props.selected}
+                size={this.props.size} />
         }
 
         return (
@@ -340,7 +342,8 @@ class CTRL_SELECT extends React.Component {
             value,
             data,
             onChangeFn,
-            bind
+            bind,
+            disabled
         } = this.props
         let label
         if (this.props.label) {
@@ -378,7 +381,7 @@ class CTRL_SELECT extends React.Component {
         return (
             <div className="t-formControls">
                 {label}
-                <select className={this.props.required} style={this.props.style} onChange={this._onChange.bind(this)}  >
+                <select className={this.props.required} style={this.props.style} disabled={disabled} onChange={this._onChange.bind(this)}  >
                     {options}
                 </select>
             </div>
@@ -638,7 +641,8 @@ class CTRL_SLIDE extends React.Component {
             data,
             bind,
             options,
-            selected
+            selected,
+            size
         } = this.props
 
         let _label
@@ -667,7 +671,7 @@ class CTRL_SLIDE extends React.Component {
             _index = data[_object[0]][_object[1]]
         }
 
-        let _activity = _index == 0 ? 't-slide t-slide_activity' : "t-slide"
+        let _activity = _index == 0 ? 't-slide '+(size=="long"?"t-slide-long":"")+' t-slide_activity' : "t-slide "+(size=="long"?"t-slide-long":"")
 
         return (
             <div className="t-formControls">

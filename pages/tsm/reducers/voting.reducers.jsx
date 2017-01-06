@@ -1,24 +1,26 @@
 import 'babel-polyfill'
 
+    // {
+    //     "Id": "62354bdf-14f5-4de1-8ee6-1c33dcd2b127",
+    //     "Name": "505",
+    //     "Vote": "第一个投票",
+    //     "GradeId": "391c97d0-032b-4e98-be4b-86c4e9ebb1eb",
+    //     "Grade": "初一",
+    //     "GradeShortName": "C1",
+    //     "VoteId": "1726f9e5-4f4f-4274-aacd-db06acb12d42",
+    // }
+
+
+// {
+//         ClassesId: "62354bdf-14f5-4de1-8ee6-1c33dcd2b127",
+//         VoteId: "1726f9e5-4f4f-4274-aacd-db06acb12d42",
+//         GradeId: "391c97d0-032b-4e98-be4b-86c4e9ebb1eb"
+//     }
 const initState = {
-    classes:
-    {
-        "Id": "62354bdf-14f5-4de1-8ee6-1c33dcd2b127",
-        "Name": "505",
-        "Vote": "第一个投票",
-        "GradeId": "391c97d0-032b-4e98-be4b-86c4e9ebb1eb",
-        "Grade": "初一",
-        "GradeShortName": "C1",
-        "VoteId": "1726f9e5-4f4f-4274-aacd-db06acb12d42",
-    }//投票班级
-    ,
+    classes:[],//投票班级
     course: [],//投票科目
     survy: [],//投票问卷
-    status: {
-        ClassesId: "62354bdf-14f5-4de1-8ee6-1c33dcd2b127",
-        VoteId: "1726f9e5-4f4f-4274-aacd-db06acb12d42",
-        GradeId: "391c97d0-032b-4e98-be4b-86c4e9ebb1eb"
-    },//投票状态,包括提交成功需要的一系列的ID
+    status:[],//投票状态,包括提交成功需要的一系列的ID
     operateStatus:0//投票操作状态=>0:提交 1:下一个科目 2:提交中... 3:正在生成问卷...
 }
 

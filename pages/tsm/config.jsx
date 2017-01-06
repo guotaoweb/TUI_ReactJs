@@ -1,4 +1,4 @@
-//接口地址前缀
+﻿//接口地址前缀
 export const INTERFACE1 = "/v1"
 //项目根目录
 export const ROOTPATH = "/tsm/"
@@ -27,7 +27,8 @@ export const ERROR_INFO = {
     986:"账号或密码错误",
     985:"密码重置失败",
     984:"账户已被锁定",
-    983:"无权限"
+    983:"无权限",
+    982:"该班级下没有任课老师"
 }    
 
 export const DEFAULT_OPEN_SIDE = [0,0]

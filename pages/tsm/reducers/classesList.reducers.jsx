@@ -4,7 +4,10 @@ const initState = {
     list: "",
     related:"",
     voting:"",
-    statistic:""
+    statistic:"",
+    classesStatisticList:[],
+    classesStatisticDetail:[],
+    classesStatisticDetailList:[]
 }
 
 export default function classesListReducers(state = initState, action) {
@@ -110,6 +113,19 @@ export default function classesListReducers(state = initState, action) {
             return Object.assign({}, state, {
                 related: eval(JSON.stringify(action.data))
             })
+        case "ADD_CLASSES_STATISTIC_LIST":
+            return Object.assign({}, state, {
+                classesStatisticList: eval(JSON.stringify(action.data))
+            })
+        case "ADD_CLASSES_STATISTIC_DETAIL":
+            return Object.assign({}, state, {
+                classesStatisticDetail: eval(JSON.stringify(action.data))
+            })
+        case "ADD_CLASSES_STATISTIC_DETAIL_LIST":
+            return Object.assign({}, state, {
+                classesStatisticDetailList: eval(JSON.stringify(action.data))
+            })
+            
         default:
             return state
     }

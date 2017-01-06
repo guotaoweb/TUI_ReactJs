@@ -78,6 +78,26 @@ export function addStatistic(data){
     } 
 }
 
+export function addClassesStatisticList(data){
+    return {
+        type:"ADD_CLASSES_STATISTIC_LIST",
+        data
+    } 
+}
+
+export function addClassesStatisticDetail(data){
+    return {
+        type:"ADD_CLASSES_STATISTIC_DETAIL",
+        data
+    } 
+}
+
+export function addClassesStatisticDetailList(data){
+    return {
+        type:"ADD_CLASSES_STATISTIC_DETAIL_LIST",
+        data
+    } 
+}
 
 
 

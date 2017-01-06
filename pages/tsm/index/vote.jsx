@@ -189,12 +189,16 @@ class Vote extends React.Component {
         let _d = result.datas
         for (let i = 0; i < _d.length; i++) {
           let $d = _d[i]
-          if (i == 0) {
+          if($d.VoteStatus=="novote"){
             $d["VoteStatus"] = "voting"
+            break;
           }
-          else {
-            $d["VoteStatus"] = "novote"
-          }
+          // if (i == 0) {
+          //   $d["VoteStatus"] = "voting"
+          // }
+          // else {
+          //   $d["VoteStatus"] = "novote"
+          // }
         }
         addVotingCourse(_d)
         _this.getSurvy(_d[0].Id)

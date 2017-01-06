@@ -1,7 +1,3 @@
-//图片
-import singleLeft from "!url!./img/singleLeft.png"
-import minus from "!url!../../../components/MultyMenu/img/minus.png"
-
 //组件
 import Content, { openContentLoading, closeContentLoading } from "Content"
 import Btn from "Btn"
@@ -17,42 +13,43 @@ import ClassesStatistic from "./classesOnline.statistic"
 class ClassesOnline extends React.Component {
     render() {
         const {
-            addCourseStatistic,
+            classesStatisticList,
+            addClassesStatisticDetail,
             errorMsg,
-            classesList,
             pageInfo,
             sidePageInfo,
             successMsg
         } = this.props
 
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "名称", "name3": "人数", "name4": "所属年级", "name5": "状态"},
+            "thead": { "name1": "序号", "name2": "年级", "name3": "班级", "name4": "人数", "name5": "状态", "name6": "操作" },
             "tbody": []
         },
             _tbContent = [],
             _this = this
 
-        for (var i = 0; i < classesList.length; i++) {
-            let _d = classesList[i],
+        for (var i = 0; i < classesStatisticList.length; i++) {
+            let _d = classesStatisticList[i],
+      
                 _tr = {
                     "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
-                    "value2": _d.Name,
-                    "value3": _d.Number,
-                    "value4": _d.Grade,
-                    "value5": _isStart,
-                    "fns":[{
-                        "name":"查看",
-                        "fn":function(){
+                    "value2": _d.Grade,
+                    "value3": _d.Name,
+                    "value4": _d.Number,
+                    "value5": "已投",
+                    "fns": [{
+                        "name": "查看",
+                        "fn": function () {
                             openContentLoading()
-                            TUI.platform.get("/ClassesOnline/"+"这个地方是投票ID", function (result) {
+                            TUI.platform.get("/ClassesOnline?classesId="+_d.Id+"&voteId=e324217b-6d7f-4b72-ad4a-087b25f4b746", function (result) {
                                 if (result.code == 0) {
-                                    addCourseStatistic(result.datas)
+                                    addClassesStatisticDetail(result.datas)
                                     openSidePage(_this, {
                                         status: "classesStatistic"
                                     })
                                 }
                                 else if (result.code == 1) {
-                                    addCourseStatistic([])
+                                    addClassesStatisticDetail([])
                                 }
                                 else {
                                     errorMsg(Config.ERROR_INFO[result.code]);
@@ -74,11 +71,17 @@ class ClassesOnline extends React.Component {
             _editClasses.push(<ClassesStatistic key="classesStatistic" />)
         }
 
+        let exportBtn = ""
+        if(userInfo.id=="691d6a95-32fa-43f0-b8cf-6f09e41d1f81" || userInfo.id=="1583ce74-94da-4f46-9478-b4fa3109f78e")
+        {
+            exportBtn = []  
+        }
+
         return (
             <div>
-                <Content txt="班级列表">
+                <Content txt="班级统计" addHref={""}>
                     <div>
-                        <Table num="10" pageSize="2" tblContent={tblContent} width="50,0,150,150,100" />
+                        <Table num="10" pageSize="2" tblContent={tblContent} width="70,0,200,200,200,100" />
                         <Pager fn={this.pageFn.bind(this)} />
                     </div>
                 </Content>
@@ -110,22 +113,30 @@ class ClassesOnline extends React.Component {
     }
 
     componentDidMount() {
-        const {addCourseStatistic, updatePageInfo, errorMsg, courseList,addBreadNav} = this.props
+        const {addClassesStatisticList, updatePageInfo, errorMsg, classesStatisticList, addBreadNav} = this.props
         let _this = this
         openLoading()
         addBreadNav({ name: "班级统计" })
 
-        if (classesList.length==0) {
-            TUI.platform.get("/Classes", function (result) {
+        if (classesStatisticList.length == 0) {
+            let url = "/Classes?pageIndex={0}&pageSize=10&isStart=2"
+            TUI.platform.get(url.replace("{0}",0), function (result) {
                 if (result.code == 0) {
-                    addCourseStatistic(result.datas)
+                    addClassesStatisticList(result.datas)
+                    updatePageInfo({
+                        index: 1,
+                        size: 10,
+                        sum: result.total,
+                        url: url
+                    })
                 }
                 else if (result.code == 1) {
-                    addCourseStatistic([])
+                    addClassesStatisticList([])
                 }
                 else {
                     errorMsg(Config.ERROR_INFO[result.code]);
                 }
+                closeLoading()
             })
         }
 
@@ -134,8 +145,9 @@ class ClassesOnline extends React.Component {
 
 
 export default TUI._connect({
-    classesList: "classesList.list",
-    classesStatistic: "classesList.data",
+    classesStatisticList: "classesList.classesStatisticList",
+    classesStatisticDetail: "classesList.classesStatisticDetail",
     sidePageInfo: "publicInfo.sidePageInfo",
-    pageInfo: "publicInfo.pageInfo"
+    pageInfo: "publicInfo.pageInfo",
+    userInfo:"publicInfo.userInfo"
 }, ClassesOnline)

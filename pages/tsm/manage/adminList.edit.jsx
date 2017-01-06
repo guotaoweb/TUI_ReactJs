@@ -65,9 +65,15 @@ class EditAdmin extends React.Component {
 
 
     if (sidePageInfo.status == "addAdmin") {
-      if (jsonParam.Password.length < 6 || editInfo.userInfo.ConfirmPassword.length < 6) {
-        setTimeout(function () { errorMsg("密码至少6位") }, 1000)
-        return false
+      if(jsonParam.Password && jsonParam.ConfirmPassword){
+        if (jsonParam.Password.length < 6 || editInfo.userInfo.ConfirmPassword.length < 6) {
+          setTimeout(function () { errorMsg("密码至少6位") }, 1000)
+          return false
+        }
+      }
+      else{
+          setTimeout(function () { errorMsg("密码至少6位") }, 1000)
+          return false
       }
       jsonParam["ConfirmPassword"] = editInfo.userInfo.ConfirmPassword
       TUI.platform.post("/Register", jsonParam, function (result) {

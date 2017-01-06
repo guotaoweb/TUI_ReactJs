@@ -102,3 +102,23 @@ body * {
         border-radius: 3px;
     }
 }
+
+.qkeytbl {
+    td {
+        height: 40px;
+        height: 40px;
+        line-height: 40px;
+        padding-left: 5px;
+    }
+    tr {
+        td {
+            border: 1px solid #ddd;
+        }
+        td:first-child{
+            border-left:none;
+        }
+        td:last-child{
+            border-right:none;
+        }
+    }
+}

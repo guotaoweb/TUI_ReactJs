@@ -278,7 +278,7 @@ class PositionMaintainEdit extends React.Component {
         this.props.clearEditInfo({
             infoName: "userMaintainInfo"
         })
-        closeSidePage()
+        closeSidePage({id:"userMaintainEdit"})
         this.props.backBreadNav()
     }
 }
