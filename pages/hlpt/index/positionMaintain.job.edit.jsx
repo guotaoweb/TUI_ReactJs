@@ -14,10 +14,9 @@ class PositionMaintainEdit extends React.Component {
                 <FormControls label="职责描述" ctrl="textarea" value="jobsInfo.remark" />
                 <FormControls label="考核标准" ctrl="textarea" value="jobsInfo.standard" />
                 <div className="formControl-btn">
-                    <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                     <Btn type="submit" txt="确定" href={this.editPositionMaintainJob.bind(this)} />
                 </div>
-                <br /><br /><br />
+                <br /><br />
             </div>
         )
     }

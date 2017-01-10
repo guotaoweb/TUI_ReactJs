@@ -11,6 +11,7 @@ import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import { openDialog, closeDialog } from "Dialog"
 import Pager, { pageLoadCompelte } from "Pager"
 import { openLoading, closeLoading } from "Loading"
+import { closeSideContent } from "SideContent"
 import Search from "Search"
 import DataPrivilegesDataMenu from "./dataPrivileges.dataMenu"
 import DataPrivilegesSideMenu from "./dataPrivileges.sideMenu"
@@ -283,6 +284,7 @@ class DataPrivileges extends React.Component {
 
         this.props.addBreadNav({ name: "权限管理" })
         //获取数据权限列表
+        closeSideContent()
         openLoading()
         let url = "/staffs/?isData=1&from={0}&limit=10"
         TUI.platform.get(url.replace("{0}", "0"), function (result) {

@@ -1,4 +1,4 @@
-import Content2 from "Content2"
+import Content from "Content"
 import FormControls from "FormControls"
 import Btn from "Btn"
 import { closeSidePage } from "SidePage"
@@ -8,11 +8,11 @@ class OrgnizationDetail extends React.Component {
         const {sidePageInfo, detail, unitBizTypes, unitKind, status, city} = this.props
 
         let _slideBtn = []
-        let tabs = [{ name: "组织机构详情" }]
+        let tabs = [{ name: "" }]
 
         return (
-            <Content2 tabs={tabs} key="content2_userEdit">
-                <div>
+            <Content txt="组织机构详情" backHref={this.goBack.bind(this)} key="content2_userEdit" style={{top:"-5px"}}>
+                <div style={{paddingTop:"10px"}}>
                     <FormControls label="组织编码" ctrl="input" value="orgnizationInfo.code" disabled="disabled" />
 
                     <FormControls label="上级组织" ctrl="input" value="orgnizationInfo.upper" disabled="disabled" />
@@ -27,13 +27,8 @@ class OrgnizationDetail extends React.Component {
                     <FormControls label="编制" ctrl="input" type="number" value="orgnizationInfo.staffing" disabled="disabled" />
                     <FormControls label="人资编码" ctrl="input" value="orgnizationInfo.globalCode" disabled="disabled" />
                     <FormControls label="备注" ctrl="textarea" value="orgnizationInfo.remark" disabled="disabled" />
-            
-                    <div className="formControl-btn">
-                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
-                    </div>
-                    <br /><br /><br />
                 </div>
-            </Content2>
+            </Content>
         )
     }
 

@@ -44,7 +44,7 @@ class PositionMaintainEdit extends React.Component {
         let isShow = [{ id: "1", name: "是" }, { id: "0", name: "否" }]
         let kind = [{ id: "1", name: "编制内" }, { id: "2", name: "非编制内" }]
         return (
-            <Content2 tabs={tabs} key="content2_userEdit">
+            <Content2 tabs={tabs} key="content2_userEdit" goBackHref={this.goBack.bind(this)}>
                 <div>
                     {userEditStatus}
                     <FormControls label="中文名" ctrl="input" value="userMaintainInfo.name" required="required" />
@@ -63,10 +63,9 @@ class PositionMaintainEdit extends React.Component {
                     <FormControls label="是否显示" ctrl="select" options={isShow} value="userMaintainInfo.isShow" />
 
                     <div className="formControl-btn">
-                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                         <Btn type="submit" txt="确定" href={this.editUserMaintain.bind(this)} />
                     </div>
-
+                    <br/><br/>
                 </div>
                 <div>
                     <UserMaintainExtInfo />

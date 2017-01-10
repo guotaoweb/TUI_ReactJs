@@ -21,10 +21,9 @@ class UserMaintainExtInfo extends React.Component {
                 <FormControls label="职称名" ctrl="input" value="userMaintainExtInfo.jobTitles" />
                 <FormControls label="职位等级" ctrl="input" value="userMaintainExtInfo.grade" />
                 <div className="formControl-btn">
-                    <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                     <Btn type="submit" txt="确定" href={this.editUserMaintainExtInfo.bind(this)} />
                 </div>
-                <br/>
+                <br/><br/>
             </div>
         )
     }

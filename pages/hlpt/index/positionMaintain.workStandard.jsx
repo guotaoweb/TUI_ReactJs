@@ -16,10 +16,9 @@ class PositionMaintainWorkStandard extends React.Component {
                 <FormControls label="环境特性" ctrl="input" value="workStandardInfo.environment" />
                 <FormControls label="其他要求" ctrl="textarea" value="workStandardInfo.others" />
                 <div className="formControl-btn">
-                    <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                     <Btn type="submit" txt="确定" href={this.editPositionMaintainWorkStandard.bind(this)} />
                 </div>
-                <br /><br /><br />
+                <br /><br />
             </div>
         )
     }

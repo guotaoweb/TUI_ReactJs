@@ -1,4 +1,4 @@
-import Content2, { openContentLoading, closeContentLoading } from "Content2"
+import Content, { openContentLoading, closeContentLoading } from "Content"
 import FormControls from "FormControls"
 import Btn from "Btn"
 import { closeSidePage } from "SidePage"
@@ -23,8 +23,8 @@ class UserMaintainDetail extends React.Component {
         let isShow = [{ id: "1", name: "是" }, { id: "0", name: "否" }]
         let kind = [{ id: "1", name: "编制内" }, { id: "2", name: "非编制内" }]
         return (
-            <Content2 tabs={tabs} key="content2_userEdit">
-                <div>
+            <Content style={{top:"-10px"}} txt="用户信息详情" key="content2_userEdit" backHref={this.goBack.bind(this)}>
+                <div style={{marginTop:"10px"}}>
                     {userEditStatus}
                     <FormControls label="中文名" ctrl="input" value="userMaintainInfo.name" required="required" disabled="disabled" />
                     <FormControls label="员工号" ctrl="input" value="userMaintainInfo.empNumber" disabled="disabled" />
@@ -40,13 +40,8 @@ class UserMaintainDetail extends React.Component {
                     <FormControls label="身份证" ctrl="input" value="userMaintainInfo.idCard" disabled="disabled" />
                     <FormControls label="排序号" ctrl="input" value="userMaintainInfo.sort" disabled="disabled" />
                     <FormControls label="是否显示" ctrl="select" options={isShow} value="userMaintainInfo.isShow" disabled="disabled" />
-
-                    <div className="formControl-btn">
-                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
-                    </div>
-                    <br/><br/><br/>
                 </div>
-            </Content2>
+            </Content>
         )
     }
 

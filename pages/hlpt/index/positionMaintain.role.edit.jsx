@@ -14,10 +14,9 @@ class PositionMaintainRoleEdit extends React.Component {
                 <FormControls label="备注" ctrl="textarea" value="rolesInfo.remark" onFocus={this.closeSelectList} />
 
                 <div style={{ marginLeft: "100px", paddingTop: "5px" }}>
-                    <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} style={{ float: "left", marginRight: "10px" }} />
                     <Btn type="submit" txt="确定" href={this.editPositionMaintainRole.bind(this)} style={{ float: "left" }} />
                 </div>
-                <br /><br /><br />
+                <br /><br />
             </div>
         )
     }

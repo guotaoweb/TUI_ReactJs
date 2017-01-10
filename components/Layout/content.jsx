@@ -8,7 +8,7 @@ import loading from "!url!./img/loading.png"
 
 class Content extends React.Component {
     render() {
-        const {addHref, txt, children, editHref, addTxt, editTxt, backHref, hasVerticalScroll} = this.props
+        const {addHref, txt, children, editHref, addTxt, editTxt, backHref, style} = this.props
         let addBtn,
             editBtn,
             backBtn
@@ -28,7 +28,7 @@ class Content extends React.Component {
             backBtn = <img src={back} onClick={this.goBack.bind(this)} />
         }
         return (
-            <div className="t-content" ref="tContent">
+            <div className="t-content" style={style} ref="tContent">
                 <div className="t-content_t">
                     <span>{backBtn}{txt}</span>
                     {addBtn}{editBtn}

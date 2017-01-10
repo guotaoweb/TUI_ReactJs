@@ -39,10 +39,6 @@ class PositionMaintainRoleInJobList extends React.Component {
         }
         return (
             <div>
-                <div className="t-content_t">
-                    <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />职责列表</span>
-                    
-                </div>
                 <div className="t-header-search" style={{ top: "50px", paddingLeft: "30px", backgroundPositionX: "5px" }}>
                     <input type="text" ref="sidePageSearch" placeholder="请输入关键词" />
                 </div>

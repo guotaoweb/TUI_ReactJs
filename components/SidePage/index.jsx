@@ -90,7 +90,8 @@ class SidePage extends React.Component {
             $sidePageMin: document.querySelector(".t-sidepage_min"), //辅SidePage
             sideStatus: sideStatus,
             sidePageInfo: sidePageInfo,
-            content3SideWidth: document.querySelector(".t-content3_side") ? document.querySelector(".t-content3_side").offsetWidth : 0
+            content3SideWidth: document.querySelector(".t-content3_side") ? document.querySelector(".t-content3_side").offsetWidth : 0,
+            sideContentWidth: document.querySelector(".t-sidecontent") ? document.querySelector(".t-sidecontent").offsetWidth : 0
         }
         let _scrollWrapper = this.scrollAreaSidePageComponent.wrapper
         let _scrollContent = this.scrollAreaSidePageComponent.content
@@ -132,25 +133,29 @@ class SidePage extends React.Component {
 
         let sidePageMinWidth = $obj.$sidePageMin ? $obj.$sidePageMin.offsetWidth : 0
         if ($obj.$sidePage) {
+            
             if ($obj.$sidePage.style.right == "0px" && !$obj.sidePageInfo.width) {
                 if ($obj.sideStatus == 1) {
                     let sideWidth = 60
                     if ($obj.sidePageInfo.type == 1) {
                         $obj.$sidePageMin.style.left = sideWidth + "px"
                         $obj.$sidePage.style.right = "0px"
-                        $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - sidePageMinWidth) + "px"
+                        $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - sidePageMinWidth-$obj.sideContentWidth) + "px"
                     } else {
-                        $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - $obj.content3SideWidth) + "px"
+                        $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - $obj.content3SideWidth-$obj.sideContentWidth) + "px"
                     }
+                    console.info($obj.sideContentWidth+"==>")
                 } else {
                     let sideWidth = 160
 
                     if ($obj.sidePageInfo.type == 1) {
                         $obj.$sidePageMin.style.left = sideWidth + "px"
-                        $obj.$sidePage.style.width = ($obj.allWidth - sidePageMinWidth - sideWidth) + "px"
+                        $obj.$sidePage.style.width = ($obj.allWidth - sidePageMinWidth - sideWidth-$obj.sideContentWidth) + "px"
                     } else {
-                        $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - $obj.content3SideWidth) + "px"
+                        
+                        $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - $obj.content3SideWidth-$obj.sideContentWidth) + "px"
                     }
+                    console.info($obj.sideContentWidth)
                 }
             }
         }
@@ -200,6 +205,7 @@ export function openSidePage(_this, params) {
                         .offsetWidth
                     : 0
 
+
                 $sidepagemin.style["transition"] = "left 300ms ease"
                 $sidepagemin.style.left = sideWidth + "px"
 
@@ -209,7 +215,21 @@ export function openSidePage(_this, params) {
                 $sidepage.style.right = "0px"
             } else {
                 $sidepage.style["transition"] = "all 300ms ease"
-                $sidepage.style.right = "0px"
+                let allWidth = document.documentElement.clientWidth
+                let sideWidth = document.querySelector(".t-side")
+                    ? document
+                        .querySelector(".t-side")
+                        .offsetWidth
+                    : 0
+                let sideContentWidth = document.querySelector(".t-sidecontent")
+                    ? document
+                        .querySelector(".t-sidecontent")
+                        .offsetWidth
+                    : 0
+                if(!params.width){
+                    $sidepage.style.width = allWidth-sideContentWidth-sideWidth+"px";
+                }
+                $sidepage.style.right = (0)+"px"
             }
 
             //背景颜色

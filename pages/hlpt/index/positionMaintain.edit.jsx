@@ -84,7 +84,7 @@ class PositionMaintainEdit extends React.Component {
 
 
         return (
-            <Content2 tabs={tabs} key="content2_userEdit">
+            <Content2 tabs={tabs} key="content2_userEdit" goBackHref={this.goBack.bind(this)}>
                 <div>
                     <FormControls label="职位ID" ctrl="input" value="positionMaintainInfo.id" disabled="disabled" />
 
@@ -97,10 +97,9 @@ class PositionMaintainEdit extends React.Component {
                     <FormControls label="备注" ctrl="textarea" value="positionMaintainInfo.remark" />
 
                     <div className="formControl-btn">
-                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                         <Btn type="submit" txt="确定" href={this.editPositionMaintain.bind(this)} />
                     </div>
-                    <br /><br /><br />
+                    <br /><br />
                 </div>
                 <div style={{ borderTop: "1px solid #ebebeb" }}>{_PositionMaintainJob}</div>
                 <div style={{ borderTop: "1px solid #ebebeb" }}>{_PositionMaintainRole}</div>

@@ -1,16 +1,20 @@
 import '!style!css!postcss!sass!./style.scss'
 import ScrollArea from 'react-scrollbar'
 import loading from "!url!./img/loading.png"
+import goback from "!url!./img/singleLeft.png"
+
 
 class Content2 extends React.Component {
     render() {
-        const {hasVerticalScroll, tabs} = this.props
+        const {goBackHref, tabs} = this.props
         let tabsArry = []
         let _this = this
 
         if (this.props.tabs) {
+            tabsArry.push(<li key={"content2_editVteam_default"} className="t-content2_tab" data-bind="goback" onClick={goBackHref}><img style={{width:"20px",verticalAlign:"middle",marginTop:"-2px"}} src={goback} />首页</li>)
             for (var index = 0; index < tabs.length; index++) {
                 var $li = tabs[index]
+                
                 if (index == 0) {
                     tabsArry.push(<li key='content2_editVteam_0' className="t-content2_tab t-contetn2_tab--active" data-bind={$li.id} onClick={$li.fn}>{$li.name}</li>)
                 }
@@ -151,11 +155,11 @@ export function bindEvent($this) {
 }
 
 export function getContentIndex(index) {
-
+    
     let $tabs = document.getElementsByClassName("t-content2_tab")
-    for (let i = 0; i < $tabs.length; i++) {
+    for (let i = 1; i < $tabs.length; i++) {
         let $t = $tabs[i]
-        if (i == index) {
+        if ( i== index+1) {
             $t.className = $t.className + " " + "t-contetn2_tab--active"
         }
         else {

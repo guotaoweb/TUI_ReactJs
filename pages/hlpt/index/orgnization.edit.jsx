@@ -1,4 +1,4 @@
-import Content2 from "Content2"
+import Content from "Content"
 import FormControls from "FormControls"
 import Btn from "Btn"
 import { closeSidePage } from "SidePage"
@@ -12,20 +12,20 @@ class OrgnizationEdit extends React.Component {
             _slideBtn = []
         
         if (sidePageInfo.status == "addOrgnization") {
-            tabs = [{ name: "添加组织机构", }]
+            tabs = "添加组织机构"
             _slideBtn.push(
                 <FormControls key="orgnization_slide" label="数据权限" ctrl="slide" size="long" options={slideOptions} selected="0" value="orgnizationInfo.ext4" />
             )
         }
         else {
-            tabs = [{ name: "编辑组织机构" }]
+            tabs = "编辑组织机构"
         }
 
         
 
         return (
-            <Content2 tabs={tabs} key="content2_userEdit">
-                <div>
+            <Content txt={tabs} backHref={this.goBack.bind(this)} key="content2_userEdit" style={{top:"-5px"}}>
+                <div style={{paddingTop:"10px"}}>
                     <FormControls label="组织编码" ctrl="input" value="orgnizationInfo.code" disabled="disabled" />
 
                     <FormControls label="上级组织" ctrl="input" value="orgnizationInfo.upper" disabled="disabled" />
@@ -42,12 +42,11 @@ class OrgnizationEdit extends React.Component {
                     <FormControls label="备注" ctrl="textarea" value="orgnizationInfo.remark" />
                     {_slideBtn}
                     <div className="formControl-btn">
-                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                         <Btn type="check" txt="确定" href={this.editOrgization.bind(this)} />
                     </div>
                     <br /><br /><br />
                 </div>
-            </Content2>
+            </Content>
         )
     }
 

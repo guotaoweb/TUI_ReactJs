@@ -97,10 +97,7 @@ class UserMaintainJobsList extends React.Component {
         }
         return (
             <div>
-                <div className="t-content_t">
-                    <span><img src={singleLeft} onClick={this._closeSidePage.bind(this)} />职位列表</span>
-                </div>
-                <Table id="userMaintainJobsListTable" bindPager="userMaintainJobsList" tblContent={tblContent} width="50,0,0,250,100,80" />
+                <Table style={{borderTop:"1px solid #ebebeb"}} id="userMaintainJobsListTable" bindPager="userMaintainJobsList" tblContent={tblContent} width="50,0,0,250,100,80" />
                 <Pager id="userMaintainJobsList" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
             </div>
         )

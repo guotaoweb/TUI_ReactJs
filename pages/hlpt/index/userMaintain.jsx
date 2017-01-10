@@ -30,22 +30,21 @@ class UserMaintain extends React.Component {
         } = this.props
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "用户名-desc-cnName", "name3": "账号-desc-loginUid", "name4": "默认组织", "name5": "职位", "name6": "手机", "name7": "员工号", "name8": "排序号", "name9": "操作" },
+            "thead": { "name1": "序号", "name2": "用户名-desc-cnName", "name3": "账号-desc-loginUid", "name4": "默认组织", "name5": "职位", "name6": "手机", "name7": "排序号", "name9": "操作" },
             "tbody": []
-        }
+        }//empNumber
         for (var i = 0; i < data.length; i++) {
             let _d = data[i]
             let _index = pageInfo.userMaintainPager ? pageInfo.userMaintainPager.index : 1
             let _size = pageInfo.userMaintainPager ? pageInfo.userMaintainPager.size : 0
             tblContent.tbody.push({
                 "value1": (_index - 1) * _size + (i + 1),
-                "value2": _d.cnName,
+                "value2": _d.cnName+"_"+_d.empNumber,
                 "value3": _d.loginUid,
                 "value4": _d.unitName,
                 "value5": _d.positionNames,
                 "value6": _d.mobilePhone,
-                "value7": _d.staffCode,
-                "value8": _d.sort,
+                "value7": _d.sort,
 
                 "fns": [{
                     "name": "详情",
@@ -191,7 +190,7 @@ class UserMaintain extends React.Component {
                             width: "98%",
                             margin: "auto"
                         }} fn={this._searchUserMaintain.bind(this)} />
-                        <Table id="userMaintain" bindPager="userMaintainPager" tblContent={tblContent} width="50,100,100,0,0,120,100,70,80" sort={this.tblSort.bind(this)} />
+                        <Table id="userMaintain" bindPager="userMaintainPager" tblContent={tblContent} width="50,100,100,0,0,200,80,80" sort={this.tblSort.bind(this)} />
                         <Pager id="userMaintainPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                     </div>
                 </Content>

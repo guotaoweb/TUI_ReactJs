@@ -69,7 +69,13 @@ class Table extends React.Component {
             _tds.push(<td key={i + "_" + key}><a className="autoTblWidth" href="javascript:void(0);" title={_td[key]} style={{ color: "#333" }}>{_td[key]}</a></td>)
           }
           else {
-            _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}>{_td[key]}</td>)
+           
+            if(_td[key].toString().indexOf("_")>0){
+              _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}><a href="#" title={_td[key].split("_")[1]}  style={{ color: "#333" }}>{_td[key].split("_")[0]}</a></td>)
+            }
+            else{
+              _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}>{_td[key]}</td>)
+            }
           }
         }
         else {

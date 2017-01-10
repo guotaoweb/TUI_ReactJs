@@ -80,7 +80,6 @@ class PositionMaintainJob extends React.Component {
             <div>
                 <div style={{ borderBottom: "1px solid #ebebeb", height: "50px", lineHeight: "50px", marginTop: "-10px" }}>
                     <span style={{ float: "left", fontSize: "20px" }}>
-                        <img src={back} onClick={this.goBack.bind(this)} style={{ width: "25px", height: "25px", verticalAlign: "middle", marginTop: "-3px", cursor: "pointer" }} />
                         职位职责列表
                     </span>
                     <Btn style={{ float: "right" }} txt="新增" type="add" href={this.addPositionMaintainJob.bind(this)} />

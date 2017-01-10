@@ -42,7 +42,7 @@ class SideContent extends React.Component {
 
     componentDidUpdate(nextProps) {
         const {sideStatus} = this.props
-
+        this.autoAdaption()
         if (sideStatus != nextProps.sideStatus && document.getElementsByClassName("t-sidecontent")[0].style.left > 0) {
             SIDESTATUS = sideStatus
             openSideContent()
@@ -50,6 +50,23 @@ class SideContent extends React.Component {
         }
         else {
             return false
+        }
+    }
+
+    autoAdaption(){
+        if(this.props.sideStatus=="1"){
+            _obj().sideContent.style.left = "60px"
+            if(document.getElementsByClassName("t-sidecontent")[0].style.left > 0){
+                let $tContent = document.getElementsByClassName("t-content")[0]
+                $tContent.style.width = (_obj().allWidth - 60 - 240 - 30) + "px"
+            }
+        }
+        else{
+            _obj().sideContent.style.left = "160px"
+            let $tContent = document.getElementsByClassName("t-content")[0]
+            if($tContent && document.getElementsByClassName("t-sidecontent")[0].style.left > 0){
+                $tContent.style.width = (_obj().allWidth - 160 - 240 - 30) + "px"
+            }
         }
     }
 }
@@ -70,6 +87,7 @@ export function _obj() {
 export function openSideContent() {
 
     let _sideWidth = SIDESTATUS == 0 ? "160" : "60"
+
     _obj().sideContent.style.left = _sideWidth + "px"
     let $tContent = document.getElementsByClassName("t-content")[0]
 
