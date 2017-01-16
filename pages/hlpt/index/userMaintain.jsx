@@ -39,7 +39,7 @@ class UserMaintain extends React.Component {
             let _size = pageInfo.userMaintainPager ? pageInfo.userMaintainPager.size : 0
             tblContent.tbody.push({
                 "value1": (_index - 1) * _size + (i + 1),
-                "value2": _d.cnName+"_"+_d.empNumber,
+                "value2": _d.cnName+"$"+_d.empNumber,
                 "value3": _d.loginUid,
                 "value4": _d.unitName,
                 "value5": _d.positionNames,

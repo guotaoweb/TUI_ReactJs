@@ -4,7 +4,7 @@ import sortAsc from "!url!./img/sort-asc.png"
 
 class Table extends React.Component {
   render() {
-    const {tblContent, width, num, bindPager, pageInfo} = this.props
+    const {tblContent, width, num, bindPager, pageInfo,id} = this.props
     let tbl_thead = [],
       tbl_tbody = []
 
@@ -69,9 +69,8 @@ class Table extends React.Component {
             _tds.push(<td key={i + "_" + key}><a className="autoTblWidth" href="javascript:void(0);" title={_td[key]} style={{ color: "#333" }}>{_td[key]}</a></td>)
           }
           else {
-           
-            if(_td[key].toString().indexOf("_")>0){
-              _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}><a href="#" title={_td[key].split("_")[1]}  style={{ color: "#333" }}>{_td[key].split("_")[0]}</a></td>)
+            if(_td[key].toString().indexOf("$")>0){
+              _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}><a href="#" title={_td[key].split("$")[1]}  style={{ color: "#333" }}>{_td[key].split("$")[0]}</a></td>)
             }
             else{
               _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}>{_td[key]}</td>)
@@ -97,7 +96,7 @@ class Table extends React.Component {
       tbl_tbody.push(<tr key="tbl_nodata"><td colSpan={tbl_thead.length} style={{ textAlign: "center", color: "#999" }}>没有任何数据</td></tr>)
     }
     return (
-      <table ref={"t-tbl"} className="t-tbl" style={this.props.style}>
+      <table ref={"t-tbl"} id={id} className="t-tbl" style={this.props.style}>
         <thead>
           <tr>
             {tbl_thead}
@@ -157,26 +156,32 @@ shouldComponentUpdate(nextProps) {
 componentDidUpdate() {
   let _this = this
   const {width, id} = _this.props
-  let $tlb = _this.refs["t-tbl"]
+  let $tlb = id?document.getElementById(id):_this.refs["t-tbl"]
 
   setTimeout(function () {
     let styleWidth = $tlb.parentNode.style.width
+  
     let tblWidth = styleWidth ? styleWidth.substring(0, styleWidth.length - 2) : $tlb.parentNode.offsetWidth,
       $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
       autoLength = 0
-
+        //console.info($tlb)
+        //console.info(id)
+  //console.info(tblWidth)
     let _width = width.split(",")
     for (let i = 0; i < _width.length; i++) {
       let $w = _width[i]
       tblWidth -= $w
+      //console.info(tblWidth +"-"+ $w)
       if ($w == 0) {
         autoLength++
       }
     }
 
+    //console.info(autoLength)
     for (let j = 0; j < $autoTblWidth.length; j++) {
       let $a = $autoTblWidth[j]
-      $a.style.width = tblWidth / autoLength + "px"
+      //console.info(tblWidth +"/"+ autoLength)
+      $a.style.width = tblWidth / 2 + "px"
       $a.style.display = "block"
       $a.style.overflow = "hidden"
       $a.style.whiteSpace = "nowrap"
@@ -184,7 +189,7 @@ componentDidUpdate() {
     }
 
     _this.props.noRefreshTable()
-  }, 0)
+  }, 300)
 }
 }
 

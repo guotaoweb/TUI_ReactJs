@@ -144,7 +144,6 @@ class SidePage extends React.Component {
                     } else {
                         $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - $obj.content3SideWidth-$obj.sideContentWidth) + "px"
                     }
-                    console.info($obj.sideContentWidth+"==>")
                 } else {
                     let sideWidth = 160
 
@@ -155,7 +154,6 @@ class SidePage extends React.Component {
                         
                         $obj.$sidePage.style.width = ($obj.allWidth - sideWidth - $obj.content3SideWidth-$obj.sideContentWidth) + "px"
                     }
-                    console.info($obj.sideContentWidth)
                 }
             }
         }

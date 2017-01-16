@@ -42,10 +42,15 @@ class SideContent extends React.Component {
 
     componentDidUpdate(nextProps) {
         const {sideStatus} = this.props
-        this.autoAdaption()
-        if (sideStatus != nextProps.sideStatus && document.getElementsByClassName("t-sidecontent")[0].style.left > 0) {
+        let sideContentLeft = document.getElementsByClassName("t-sidecontent")[0].style.left
+        if(sideContentLeft){
+            sideContentLeft = sideContentLeft.substring(0,sideContentLeft.length-2)
+        }
+  
+        if (sideStatus != nextProps.sideStatus && sideContentLeft > 0) {
             SIDESTATUS = sideStatus
             openSideContent()
+            this.autoAdaption()
             return true
         }
         else {

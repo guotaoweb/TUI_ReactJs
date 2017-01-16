@@ -1,6 +1,7 @@
-body{
+body {
     overflow: hidden;
 }
+
 .t-container {
     width: 100%;
     padding-left: 60px;
@@ -159,7 +160,7 @@ body{
 .tabledetail {
     width: 98%;
     margin: auto;
-    margin-top:10px;
+    margin-top: 10px;
     td {
         height: 35px;
         line-height: 35px;
@@ -170,13 +171,13 @@ body{
         text-align: left;
         padding-left: 10px;
     }
-    tr:nth-child(2n+1){
-        background-color:#f9f9f9;
+    tr:nth-child(2n+1) {
+        background-color: #f9f9f9;
     }
     thead {
         h3 {
             font-weight: lighter;
-            font-size:23px;
+            font-size: 23px;
             text-align: center;
         }
         p {
@@ -184,4 +185,12 @@ body{
             text-align: center;
         }
     }
+}
+
+.empty_msg {
+    width: 100%;
+    text-align: center;
+    color: #999;
+    font-size: 20px;
+    margin-top: 15%;
 }

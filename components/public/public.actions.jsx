@@ -223,4 +223,11 @@ export function updateSideContentInfo(data) {
     }
 }
 
+export function updatePrintStatus(data) {
+    return {
+        type: "UPDATE_PRINT_STATUS",
+        data
+    }
+}
+
 

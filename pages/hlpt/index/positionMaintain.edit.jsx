@@ -116,9 +116,9 @@ class PositionMaintainEdit extends React.Component {
     }
 
     onBlur(e){
-        const {sideContentInfo,errorMsg} = this.props
+        const {sideContentInfo,errorMsg,sidePageInfo} = this.props
         if(e.currentTarget.value){
-            TUI.platform.get("/position/"+sideContentInfo.type+"/"+e.currentTarget.value, function (result) {
+            TUI.platform.get("/position/"+sideContentInfo.type+"/"+e.currentTarget.value+"?positionId="+sidePageInfo.gateWay.positionId, function (result) {
                 if (result.code == 0) {
                     if(result.data==1){
                         errorMsg("职位名称已存在")

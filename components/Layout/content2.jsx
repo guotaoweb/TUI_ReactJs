@@ -11,7 +11,7 @@ class Content2 extends React.Component {
         let _this = this
 
         if (this.props.tabs) {
-            tabsArry.push(<li key={"content2_editVteam_default"} className="t-content2_tab" data-bind="goback" onClick={goBackHref}><img style={{width:"20px",verticalAlign:"middle",marginTop:"-2px"}} src={goback} />首页</li>)
+            tabsArry.push(<li key={"content2_editVteam_default"} className="t-content2_tab" data-bind="goback" onClick={goBackHref}><img style={{width:"20px",verticalAlign:"middle",marginTop:"-2px"}} src={goback} />返回</li>)
             for (var index = 0; index < tabs.length; index++) {
                 var $li = tabs[index]
                 
@@ -124,22 +124,24 @@ export function bindEvent($this) {
     let _fn = function () {
         let _this = this
         let tabId = this.getAttribute("data-bind")
-        let nodes = TUI.fn.siblingsElem(tabId)
-        document.querySelector(".t-contetn2_tab--active").className = "t-content2_tab"
-        _this.className = _this.className + " " + "t-contetn2_tab--active"
-        for (var index = 0; index < nodes.length; index++) {
-            var $n = nodes[index];
-            $n.style.display = "none"
-        }
+        if(tabId !="goback"){
+            let nodes = TUI.fn.siblingsElem(tabId)
+            document.querySelector(".t-contetn2_tab--active").className = "t-content2_tab"
+            _this.className = _this.className + " " + "t-contetn2_tab--active"
+            for (var index = 0; index < nodes.length; index++) {
+                var $n = nodes[index];
+                $n.style.display = "none"
+            }
 
-        let _content = document.querySelector("." + tabId)
-        _content.style.display = "block"
-        _content.style.paddingBottom = "10px"
-        if (_content.offsetHeight > _content.parentNode.parentNode.parentNode.offsetHeight) {
-            $this.props.setCanVerticallyScroll(true)
-        }
-        else {
-            $this.props.setCanVerticallyScroll(false)
+            let _content = document.querySelector("." + tabId)
+            _content.style.display = "block"
+            _content.style.paddingBottom = "10px"
+            if (_content.offsetHeight > _content.parentNode.parentNode.parentNode.offsetHeight) {
+                $this.props.setCanVerticallyScroll(true)
+            }
+            else {
+                $this.props.setCanVerticallyScroll(false)
+            }
         }
     }
 

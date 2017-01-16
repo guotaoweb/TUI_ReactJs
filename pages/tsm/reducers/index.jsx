@@ -11,6 +11,7 @@ import voteList from './voteList.reducers'
 import gradeList from './gradeList.reducers'
 import adminList from './adminList.reducers'
 import voting from './voting.reducers'
+import print from './print.reducers'
 
 //使用redux的combineReducers方法将所有reducer打包起来
 const rootReducer = combineReducers({
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
 	gradeList,
 	adminList,
 	voting,
+	print,
   	routing: routerReducer //整合路由 
 })
 

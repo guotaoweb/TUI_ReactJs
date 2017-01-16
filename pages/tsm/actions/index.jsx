@@ -8,6 +8,7 @@ import * as voteList from './voteList.actions'
 import * as gradeList from './gradeList.actions'
 import * as adminList from './adminList.actions'
 import * as voting from './voting.actions'
+import * as print from './print.actions'
 
 export default {
     ...teacherList,
@@ -19,5 +20,6 @@ export default {
     ...voteList,
     ...gradeList,
     ...adminList,
-    ...voting
+    ...voting,
+    ...print
 }

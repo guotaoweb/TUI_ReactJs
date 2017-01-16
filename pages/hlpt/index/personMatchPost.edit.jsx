@@ -26,7 +26,7 @@ class PersonMatchPostEdit extends React.Component {
 
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "角色", "name5": "职位级别","name6": "内部编码", "name7": "操作" },
+            "thead": { "name1": "序号", "name2": "姓名", "name3": "用户名", "name4": "角色", "name5": "职位级别","name6": "员工号", "name7": "操作" },
             "tbody": []
         }
         for (var i = 0; i < roleData.length; i++) {
@@ -39,7 +39,7 @@ class PersonMatchPostEdit extends React.Component {
                 "value3": _d.loginUid,
                 "value4": _d.roleName,
                 "value5": _d.userLevel,
-                "value6":_d.staffCode,
+                "value6":_d.empNumber,
                 "fns": [{
                     "name": "设置角色",
                     "fn": function () {
@@ -198,7 +198,7 @@ class PersonMatchPostEdit extends React.Component {
                             width: "98%",
                             margin: "auto"
                         }} fn={this._searchPersonMachPostEdit.bind(this)} />
-                        <Table bindPager="personMatchPostEditPager" tblContent={tblContent} width="50,0,150,150,100,200,220" />
+                        <Table bindPager="personMatchPostEditPager" tblContent={tblContent} width="50,150,150,150,80,0,200" />
                         <Pager id="personMatchPostEditPager" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
                     </div>
                 </Content>

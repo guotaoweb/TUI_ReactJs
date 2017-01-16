@@ -45,7 +45,8 @@ const initState = {
     breadNavCD:true,
     hasVerticalScroll: true,//iScroll专用,判断滚动条
     loginStatus: 0, //0未登陆 1登陆中
-    sideContentInfo: {}
+    sideContentInfo: {},
+    printStatus:0 //0 启动中 1启动成功 2启动失败
 }
 
 export default function manageReducers(state = initState, action) {
@@ -236,6 +237,8 @@ export default function manageReducers(state = initState, action) {
                 state.sideContentInfo[key] = action.data[key]
             }
             return Object.assign({}, state, { sideContentInfo: JSON.parse(JSON.stringify(state.sideContentInfo)) })
+        case "UPDATE_PRINT_STATUS":
+            return Object.assign({}, state, { printStatus: action.data })
         default: return state
     }
 }
