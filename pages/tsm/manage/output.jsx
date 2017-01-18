@@ -1,14 +1,9 @@
-//图片
-import singleLeft from "!url!./img/singleLeft.png"
-
 //组件
 import Content from "Content"
 import Btn from "Btn"
 import FormControls from "FormControls"
 import Remark from "Remark"
 import {openDialog, closeDialog} from "Dialog"
-
-
 
 
 class ReportList extends React.Component {
@@ -19,6 +14,7 @@ class ReportList extends React.Component {
 
 
         let gradeList = [{name:"所以班级",id:"-1"},{name:"初一",id:"0"},{name:"初二",id:"1"},{name:"初三",id:"2"},{name:"高一",id:"3"},{name:"高二",id:"3"},{name:"高三",id:"3"}]
+        
         return (
             <div>
                 <Content txt="批量导出">
@@ -34,7 +30,7 @@ class ReportList extends React.Component {
                         <div style={{width:"45%",float:"left"}}>
                             <FormControls label="投票年级" ctrl="select" options={gradeList}  style={{width:"80%"}}  />
                         </div>
-                        <Btn type="add" txt="导出" style={{float:"left",marginTop:"6px"}} />
+                        <Btn type="export" txt="导出" style={{float:"left",marginTop:"6px"}} />
                     </div>
                 </Content>
             </div>
@@ -42,9 +38,15 @@ class ReportList extends React.Component {
     }
 
     componentDidMount(){
+        const {addVoteList} = this.props
         TUI.platform.get("/Vote?pageIndex=1&pageSize=10", function (result) {
             if (result.code == 0) {
-                addVoteList(result.datas)
+                let _d = []
+                for (var i = 0; i < result.datas.length; i++) {
+                    var $d = result.datas[i];
+                    _d.push({id:$d.Id,name:$d.Name})
+                }
+                addVoteList(_d)
             }
             else if (result.code == 1) {
                 addVoteList([])
@@ -53,6 +55,10 @@ class ReportList extends React.Component {
                 errorMsg(Config.ERROR_INFO[result.code]);
             }
         })
+    }
+
+    exportReport(){
+        
     }
 }
 

@@ -7,7 +7,7 @@ class Dialog extends React.Component {
     const {txt, type} = this.props
     let btns = [],
       txtObject = [],
-      title = (txt?(txt.indexOf("警告:") > -1 ? "系统警告" : "系统提示"):"系统提示")
+      title = (txt && typeof txt=="string"?(txt.indexOf("警告:") > -1 ? "系统警告" : "系统提示"):"系统提示")
 
     //根据type区别显示按钮
     if (type == 0) {
@@ -46,6 +46,7 @@ class Dialog extends React.Component {
       txtObject.push(<b className="t-closeDialog" onClick={this.closeDialog.bind(this)}><img src={close} /></b>)
     }
     else {
+
       if (txt) {
         txtObject.push(<span key="dialog-typ1">{txt.indexOf("警告:") > -1 ? (txt.substring(3)) : txt}</span>)
       }
@@ -57,7 +58,7 @@ class Dialog extends React.Component {
     return (
       <div>
         <div className="t-coverbg" ref="coverbg"></div>
-        <div className={"t-dialog " + (txt?(txt.indexOf("警告:") > -1 ? "t-dialog-warning" : ""):txt)} ref="dialog">
+        <div className={"t-dialog " + (txt && typeof txt=="string"?(txt.indexOf("警告:") > -1 ? "t-dialog-warning" : ""):txt)} ref="dialog">
           <h3>{title}</h3>
           <div>{txtObject}</div>
           {btns}

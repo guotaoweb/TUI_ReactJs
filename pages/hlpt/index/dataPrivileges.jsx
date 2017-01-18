@@ -218,7 +218,7 @@ class DataPrivileges extends React.Component {
         closeSidePage()
     }
 
-    _searchOrgnization(val) {
+    _searchOrgnization(val,loadComplete) {
         let {searchInfo, addDataPrivileges, updatePageInfo, errorMsg, pageInfo} = this.props
 
         let _pageSize = pageInfo["dataPrivilegesPager"] ? pageInfo["dataPrivilegesPager"].size : 10
@@ -241,6 +241,7 @@ class DataPrivileges extends React.Component {
                 sum: result._page ? result._page.total : 0,
                 url: val
             })
+            loadComplete()
         })
     }
 

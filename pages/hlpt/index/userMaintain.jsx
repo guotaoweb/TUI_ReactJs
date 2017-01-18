@@ -253,7 +253,8 @@ class UserMaintain extends React.Component {
         })
     }
 
-    _searchUserMaintain(val) {
+    _searchUserMaintain(val,loadComplete) {
+
         let {searchInfo, addUserMaintain, updatePageInfo, errorMsg, pageInfo} = this.props
         let _pageSize = pageInfo["userMaintainPager"] ? pageInfo["userMaintainPager"].size : 10
         val = val ? "/staffs?loginName=" + val + "&from={0}&limit=10" : pageInfo.userMaintainPager.url
@@ -274,6 +275,7 @@ class UserMaintain extends React.Component {
                 sum: result._page ? result._page.total : 0,
                 surl: val
             })
+            loadComplete()
         })
     }
 

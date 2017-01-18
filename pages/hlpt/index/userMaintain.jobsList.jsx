@@ -97,7 +97,7 @@ class UserMaintainJobsList extends React.Component {
         }
         return (
             <div>
-                <Table style={{borderTop:"1px solid #ebebeb"}} id="userMaintainJobsListTable" bindPager="userMaintainJobsList" tblContent={tblContent} width="50,300,0,250,100,80" />
+                <Table style={{borderTop:"1px solid #ebebeb"}} id="userMaintainJobsListTable" bindPager="userMaintainJobsList" tblContent={tblContent} width="50,0,0,150,100,80" />
                 <Pager id="userMaintainJobsList" fn={this.pageFn.bind(this)} style={{ float: "right", marginRight: "5px" }} />
             </div>
         )

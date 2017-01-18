@@ -11,7 +11,6 @@ import UserMaintain from './index/userMaintain'
 import DataPrivileges from './index/dataPrivileges'
 import PersonMatchPost from './index/personMatchPost'
 import AuditLogs from './index/auditLogs'
-import Print from './index/print'
 import ErrorPage from './index/errorPage'
 
 import * as config  from 'config'

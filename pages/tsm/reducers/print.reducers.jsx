@@ -6,7 +6,8 @@ const initState = {
     course:[],
     printVote:[],
     votedClasses:[],
-    votedCourse:[]
+    votedCourse:[],
+    printDetail:[]
 }
 
 export default function printReducers(state = initState, action) {
@@ -80,6 +81,10 @@ export default function printReducers(state = initState, action) {
                 votedClasses: eval(JSON.stringify(action.data))
             })
         case "ADD_PRINT_VOTED_CLASSES":
+           return Object.assign({}, state, {
+                votedClasses: eval(JSON.stringify(action.data))
+            })
+        case "ADD_PRINT_DETAIL":
            return Object.assign({}, state, {
                 votedClasses: eval(JSON.stringify(action.data))
             })

@@ -109,8 +109,7 @@ class PositionMaintainEdit extends React.Component {
                 staffCode: editInfo.userMaintainInfo.staffCode,
                 empNumber: editInfo.userMaintainInfo.empNumber,
                 kind: editInfo.userMaintainInfo.kind,
-                ext5: editInfo.userMaintainInfo.ext5
-            }
+                ext5: editInfo.userMaintainInfo.ext5            }
 
         if (sidePageInfo.status == "addUserMaintain") {
             TUI.platform.post("/staff", postJson, function (result) {

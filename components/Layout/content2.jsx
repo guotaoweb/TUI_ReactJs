@@ -150,7 +150,6 @@ export function bindEvent($this) {
     for (var i = 0; i < contentTabs.length; i++) {
         var $t = contentTabs[i]
 
-        //console.info($t)
         $t.removeEventListener("click", _fn)
         $t.addEventListener("click", _fn)
     }
@@ -181,11 +180,15 @@ export function getContentIndex(index) {
 
 }
 
+
 export function openContentLoading() {
     let sidepage = document.querySelector(".t-content-loading")
     sidepage.style["transition"] = "opacity 200ms ease"
     sidepage.style.opacity = "1"
     sidepage.style.display = "block"
+    setTimeout(function(){
+        closeContentLoading()
+    },15000)
 }
 
 export function closeContentLoading() {

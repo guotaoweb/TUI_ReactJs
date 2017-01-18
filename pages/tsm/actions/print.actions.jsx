@@ -58,6 +58,14 @@ export function addPrintVotedCourse(data){
     } 
 }
 
+export function addPrintDetail(data){
+    return {
+        type:"ADD_PRINT_DETAIL",
+        data
+    } 
+}
+
+
 
 
 

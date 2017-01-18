@@ -366,7 +366,7 @@ class CTRL_SELECT extends React.Component {
 
         let options = []
         options.push(<option key={"o-1"} value="-1">请选择</option>)
- console.info(this.props.options)
+
         if (this.props.options) {
             for (var index = 0; index < this.props.options.length; index++) {
                 var $o = this.props.options[index];
@@ -399,7 +399,7 @@ class CTRL_SELECT extends React.Component {
             }
         }
         let _this = e.currentTarget
-        console.info("=>"+_this.value)
+  
         _info[_object[1]] = _this.value
         _info[_object[1] + "Name"] = _this.options[_this.selectedIndex].innerHTML
         addFn(_info)

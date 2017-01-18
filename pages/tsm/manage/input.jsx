@@ -33,7 +33,7 @@ class ReportList extends React.Component {
                         <div style={{width:"91%",float:"left"}}> 
                             <FormControls label="上传关联表格" ctrl="input" value="uploadFiles.fileName" style={{width:"87%"}} placeholder="单击输入框,选择需要上传的文件"  />
                         </div>
-                        <Btn type="add" txt="导入" style={{float:"left",marginTop:"6px"}} />
+                        <Btn type="import" txt="导入" style={{float:"left",marginTop:"6px"}} />
                         <div style={{
                             position: "relative",
                             top: "-45px",

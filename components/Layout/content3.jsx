@@ -117,6 +117,9 @@ export function openContentLoading() {
   sidepage.style["transition"] = "opacity 200ms ease"
   sidepage.style.opacity = "1"
   sidepage.style.display = "block"
+      setTimeout(function(){
+        closeContentLoading()
+    },15000)
 }
 
 export function closeContentLoading() {

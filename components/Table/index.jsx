@@ -69,8 +69,13 @@ class Table extends React.Component {
             _tds.push(<td key={i + "_" + key}><a className="autoTblWidth" href="javascript:void(0);" title={_td[key]} style={{ color: "#333" }}>{_td[key]}</a></td>)
           }
           else {
-            if(_td[key].toString().indexOf("$")>0){
-              _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}><a href="#" title={_td[key].split("$")[1]}  style={{ color: "#333" }}>{_td[key].split("$")[0]}</a></td>)
+            if(_td[key]){
+              if(_td[key].toString().indexOf("$")>0){
+                _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}><a href="javascript:void(0);" title={_td[key].split("$")[1]}  style={{ color: "#333" }}>{_td[key].split("$")[0]}</a></td>)
+              }
+              else{
+                _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}>{_td[key]}</td>)
+              }
             }
             else{
               _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}>{_td[key]}</td>)
@@ -138,21 +143,6 @@ class Table extends React.Component {
   }
 
 
-shouldComponentUpdate(nextProps) {
-  // console.info(nextProps.isRefreshTable)
-  // if (nextProps.tblContent.tbody.length == this.props.tblContent.tbody.length && nextProps.isRefreshTable==0) {
-  //   console.info("不刷新")
-  //   return false
-  // }
-  // else {
-  //   console.clear()
-  //   console.info("刷新")
-  //   console.info(nextProps.tblContent)
-  //   return true
-  // }
-  return true
-}
-
 componentDidUpdate() {
   let _this = this
   const {width, id} = _this.props
@@ -160,27 +150,31 @@ componentDidUpdate() {
 
   setTimeout(function () {
     let styleWidth = $tlb.parentNode.style.width
-  
+    // console.info("id:"+id)
+    
     let tblWidth = styleWidth ? styleWidth.substring(0, styleWidth.length - 2) : $tlb.parentNode.offsetWidth,
       $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
       autoLength = 0
-        //console.info($tlb)
-        //console.info(id)
-  //console.info(tblWidth)
+//       console.info($tlb)
+// console.info("width:"+tblWidth)
+// console.info("autoNumber:"+$autoTblWidth.length)
+// console.info("trNumber:"+($tlb.getElementsByTagName("tr").length-1))
+
     let _width = width.split(",")
+    //console.info("width_str:"+_width)
     for (let i = 0; i < _width.length; i++) {
       let $w = _width[i]
       tblWidth -= $w
-      //console.info(tblWidth +"-"+ $w)
+    
       if ($w == 0) {
         autoLength++
       }
     }
 
-    //console.info(autoLength)
+// console.info("减完之后:"+tblWidth)
     for (let j = 0; j < $autoTblWidth.length; j++) {
       let $a = $autoTblWidth[j]
-      //console.info(tblWidth +"/"+ autoLength)
+
       $a.style.width = tblWidth / 2 + "px"
       $a.style.display = "block"
       $a.style.overflow = "hidden"

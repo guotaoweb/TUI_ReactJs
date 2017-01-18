@@ -367,6 +367,7 @@ export function isCheck(e) {
     obj.setAttribute("data-status", "check")
     if (obj.getAttribute("data-sid")) {
       isCheckNodes(obj, "check")
+      isCheckParents(obj, "check")
     }
     else {
       unCheckParents(obj, "uncheck")
@@ -393,6 +394,20 @@ export function unCheckParents(obj, status) {
       }
     }
     unCheckParents(obj.parentNode, status)
+  }
+}
+
+//取消父节点被选中状态
+export function isCheckParents(obj, status) {
+  if (obj.getAttribute("class") != "t-multyMenu_list_li") {
+    if (obj.getAttribute("class") == "sub") {
+      let $checkbox = obj.previousSibling.getElementsByClassName("menu_checkbox")[0]
+      if ($checkbox) {
+        $checkbox.setAttribute("src", check)
+        $checkbox.setAttribute("data-status", status)
+      }
+    }
+    isCheckParents(obj.parentNode, status)
   }
 }
 

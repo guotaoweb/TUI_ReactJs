@@ -10,7 +10,8 @@ import vote from "!url!./img/vote.png"
 import votes from "!url!./img/vote-s.png"
 import report from "!url!./img/report.png"
 import reports from "!url!./img/report-s.png"
-
+import imorexport from "!url!./img/imorexport.png"
+import imorexports from "!url!./img/imorexport-s.png"
 
 
 class _Side extends React.Component {
@@ -174,6 +175,10 @@ class _Side extends React.Component {
         return report
       case "报表系统s":
         return reports
+      case "导入导出":
+        return imorexport
+      case "导入导出s":
+        return imorexports
       default:
         return admin
     }

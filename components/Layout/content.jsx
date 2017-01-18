@@ -8,7 +8,7 @@ import loading from "!url!./img/loading.png"
 
 class Content extends React.Component {
     render() {
-        const {addHref, txt, children, editHref, addTxt, editTxt, backHref, style} = this.props
+        const {addHref, txt, children, editHref, addTxt, editTxt, backHref, style,editType} = this.props
         let addBtn,
             editBtn,
             backBtn
@@ -20,7 +20,7 @@ class Content extends React.Component {
 
         if (editHref) {
             editBtn = <div style={{ float: "right", marginRight: "10px" }}>
-                <Btn type="edit" txt={editTxt ? editTxt : "编辑"} href={editHref} />
+                <Btn type={editType?editType:"edit"} txt={editTxt ? editTxt : "编辑"} href={editHref} />
             </div>
         }
 
@@ -107,6 +107,10 @@ export function openContentLoading() {
     sidepage.style["transition"] = "opacity 200ms ease"
     sidepage.style.opacity = "1"
     sidepage.style.display = "block"
+
+    setTimeout(function(){
+        closeContentLoading()
+    },15000)
 }
 
 export function closeContentLoading() {
@@ -117,5 +121,6 @@ export function closeContentLoading() {
         setTimeout(function () {
             sidepage.style.display = "none"
         }, 201)
+        
     }, 500)
 }

@@ -138,7 +138,7 @@ class PersonMatchPost extends React.Component {
         )
     }
 
-    _searchPersonMachPost(val) {
+    _searchPersonMachPost(val,loadComplete) {
         let {errormsg, searchInfo, updatePageInfo, addPersonMatchPost, pageInfo} = this.props
         let _pageSize = pageInfo["personMatchPostPager"] ? pageInfo["personMatchPostPager"].size : 10
         let _url = "/positions/?unitId=" + searchInfo.key.unitId + "&positionName=" + val + "&from={0}&limit=" + _pageSize
@@ -159,6 +159,7 @@ class PersonMatchPost extends React.Component {
                 sum: result._page ? result._page.total : 1,
                 url: _url
             })
+            loadComplete()
         })
     }
 

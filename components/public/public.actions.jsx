@@ -230,4 +230,19 @@ export function updatePrintStatus(data) {
     }
 }
 
+export function searchLoading() {
+    return {
+        type: "UPDATE_SEARCHLOAING_STATUS",
+        status:0
+    }
+}
+
+export function searchLoadComplete() {
+    return {
+        type: "UPDATE_SEARCHLOAING_STATUS",
+        status:1
+    }
+}
+
+
 

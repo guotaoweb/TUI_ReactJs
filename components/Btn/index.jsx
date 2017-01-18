@@ -5,12 +5,16 @@ import cancel from "!url!./img/cancel.png"
 import edit from "!url!./img/edit.png"
 import check from "!url!./img/check.png"
 import back from "!url!./img/back.png"
+import print from "!url!./img/print.png"
+import _export from "!url!./img/export.png"
+import _import from "!url!./img/import.png"
+import search from "!url!./img/search.png"
 
 let BTN_CD = true
 
 class Btn extends React.Component {
   render() {
-    const {type, width, href, txt, style,fromControl} = this.props
+    const {type, width, href, txt, style, fromControl} = this.props
     let icon
 
     if (type == "edit") {
@@ -28,10 +32,22 @@ class Btn extends React.Component {
     else if (type == "back") {
       icon = <img src={back} />
     }
+    else if (type == "print") {
+      icon = <img src={print} />
+    }
+    else if (type == "export") {
+      icon = <img src={_export} />
+    }
+    else if (type == "import") {
+      icon = <img src={_import} />
+    }
+    else if (type == "search") {
+      icon = <img src={search} />
+    }
     else { }
 
     let btnElem,
-    btnStyle = { padding: "10px " + width + "px" }
+      btnStyle = { padding: "10px " + width + "px" }
     // if(this.props.style){
     //   let _btnStyle = this.props.style
     //   for (var key in _btnStyle) {
@@ -46,7 +62,7 @@ class Btn extends React.Component {
       </Link>
     }
     else {
-      btnElem = <a href="javascript:void(0);" className={"t-btn t-btn--" + type}  style={btnStyle} onClick={this._onClick.bind(this) }>
+      btnElem = <a href="javascript:void(0);" className={"t-btn t-btn--" + type} style={btnStyle} onClick={this._onClick.bind(this)}>
         {icon}
         {txt}
       </a>
@@ -64,12 +80,12 @@ class Btn extends React.Component {
     const {type, href, preventSubmit, waiteMsg, errorMsg} = this.props
 
     //2s内防止重复单击
-    
-    if(BTN_CD){
+
+    if (BTN_CD) {
       BTN_CD = false
-      setTimeout(function(){BTN_CD=true},500)
+      setTimeout(function () { BTN_CD = true }, 500)
     }
-    else{
+    else {
       return false
     }
 
@@ -82,14 +98,14 @@ class Btn extends React.Component {
 
       for (let i = 0; i < $requiredInput.length; i++) {
         if ($requiredInput[i].tagName == "SELECT") {
-        
-          if ($requiredInput[i].value == -1 || $requiredInput[i].options[$requiredInput[i].selectedIndex].text=="请选择") {
+
+          if ($requiredInput[i].value == -1 || $requiredInput[i].options[$requiredInput[i].selectedIndex].text == "请选择") {
             isRequired = true
             break
           }
         }
         else {
-                
+
           if (!$requiredInput[i].value) {
             isRequired = true
             break
@@ -103,7 +119,7 @@ class Btn extends React.Component {
         return false
       }
 
-      setTimeout(function(){waiteMsg("提交中,请稍等...")},100)
+      setTimeout(function () { waiteMsg("提交中,请稍等...") }, 100)
     }
     if (href) {
       href(e)

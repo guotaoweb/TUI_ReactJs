@@ -253,7 +253,7 @@ class Orgnization extends React.Component {
         this.props.addBreadNav({ name: "组织架构维护" })
     }
 
-    _searchOrgnization(val) {
+    _searchOrgnization(val,loadComplete) {
         let {searchInfo, addSubList, updatePageInfo, errorMsg, pageInfo} = this.props
         //uid=" + searchInfo.key + "&
         let params = ["", ""]
@@ -288,6 +288,7 @@ class Orgnization extends React.Component {
                 sum: result._page ? result._page.total : 0,
                 surl: val
             })
+            loadComplete()
         })
     }
 

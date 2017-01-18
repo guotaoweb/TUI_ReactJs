@@ -169,7 +169,7 @@ class PositionMaintain extends React.Component {
         )
     }
 
-    _searchPositionMaintain(val) {
+    _searchPositionMaintain(val,loadComplete) {
         let {searchInfo, addPositionMaintain, updatePageInfo, errorMsg, pageInfo} = this.props
         let _pageSize = pageInfo["positionMaintainPager"] ? pageInfo["positionMaintainPager"].size : 10
         val = "/positions?unitId=" + searchInfo.key + "&positionName=" + val + "&from={0}&limit=" + _pageSize
@@ -190,6 +190,7 @@ class PositionMaintain extends React.Component {
                 sum: result._page ? result._page.total : 1,
                 url: val
             })
+            loadComplete()
         })
     }
 

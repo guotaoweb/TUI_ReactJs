@@ -20,7 +20,7 @@ export default function manageReducers(state = initState, action) {
                 if ($d.staffId == action.data.staffId) {
                     $d.cnName = action.data.cnName
                     $d.loginUid = action.data.loginUid
-                    $d.unitName = action.data.ext5Name
+                    $d.unitName = action.data.unitName
                     $d.mobilePhone = action.data.mobilePhone
                     $d.sort = action.data.sort
                 }

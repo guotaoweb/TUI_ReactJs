@@ -31,6 +31,7 @@ const initState = {
     dialogInfo: "",//弹窗文字
     loadStatus: 1, //0 加载中 1加载完成
     pageLoadStatus: 1, //0 加载中 1加载完成
+    searchLoadStatus:1,
     searchInfo: {
         id: "",
         key: "",
@@ -138,6 +139,10 @@ export default function manageReducers(state = initState, action) {
         case "UPDATE_PAGELOAING_STATUS":
             return Object.assign({}, state, {
                 pageLoadStatus: action.status
+            })
+        case "UPDATE_SEARCHLOAING_STATUS":
+            return Object.assign({}, state, {
+                searchLoadStatus: action.status
             })
         case "CLEAR_PAGEINFO":
 
