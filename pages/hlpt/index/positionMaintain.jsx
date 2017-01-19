@@ -26,7 +26,7 @@ class PositionMaintain extends React.Component {
         } = this.props
         let _this = this
         let tblContent = {
-            "thead": { "name1": "序号", "name2": "职位代码", "name3": "职位名称-desc-positionName", "name4": "职位类别", "name5": "所属组织", "name6": "状态", "name7": "编制","name8":"人数","name9":"排序号-desc-sort", "name10": "操作" },
+            "thead": { "name1": "序号", "name2": "职位代码", "name3": "职位名称-desc-positionName", "name4": "所属组织", "name5": "状态", "name6": "编制","name7":"人数","name8":"排序号-desc-sort", "name9": "操作" },
             "tbody": []
         }
 
@@ -38,12 +38,11 @@ class PositionMaintain extends React.Component {
                 "value1": (_index - 1) * _size + (i + 1),
                 "value2": _d.postId,
                 "value3": _d.positionName,
-                "value4": _d.kindName,
-                "value5": _d.unitShortName,
-                "value6": _d.statusName,
-                "value7": _d.staffing,
-                "value8": _d.sumStaff,
-                "value9": _d.sort,
+                "value4": _d.unitShortName,
+                "value5": _d.statusName,
+                "value6": _d.staffing,
+                "value7": _d.sumStaff,
+                "value8": _d.sort,
                 "fns": [{
                     "name": "编辑",
                     "fn": function () {
@@ -151,7 +150,7 @@ class PositionMaintain extends React.Component {
                             width: "98%",
                             margin: "auto"
                         }} fn={this._searchPositionMaintain.bind(this)} />
-                        <Table id="positionMaintain" bindPager="positionMaintainPager" tblContent={tblContent}  sort={this.tblSort.bind(this)} width="50,100,0,120,0,70,70,70,70,100" />
+                        <Table id="positionMaintain" bindPager="positionMaintainPager" tblContent={tblContent}  sort={this.tblSort.bind(this)} width="50,100,0,0,70,70,70,70,100" />
                         <Pager id="positionMaintainPager" fn={this.pageFn.bind(this)} />
                     </div>
                 </Content>

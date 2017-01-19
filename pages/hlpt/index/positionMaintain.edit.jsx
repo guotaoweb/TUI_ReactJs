@@ -115,16 +115,16 @@ class PositionMaintainEdit extends React.Component {
         this.loadJobFamilys(id)
     }
 
-    onBlur(e){
-        const {sideContentInfo,errorMsg,sidePageInfo} = this.props
-        if(e.currentTarget.value){
-            TUI.platform.get("/position/"+sideContentInfo.type+"/"+e.currentTarget.value+"?positionId="+sidePageInfo.gateWay.positionId, function (result) {
+    onBlur(e) {
+        const {sideContentInfo, errorMsg, sidePageInfo} = this.props
+        if (e.currentTarget.value) {
+            TUI.platform.get("/position/" + sideContentInfo.type + "/" + e.currentTarget.value + "?positionId=" + sidePageInfo.gateWay.positionId, function (result) {
                 if (result.code == 0) {
-                    if(result.data==1){
+                    if (result.data == 1) {
                         errorMsg("职位名称已存在")
                         POSITION_ISEXIST = true
                     }
-                    else{
+                    else {
                         POSITION_ISEXIST = false
                     }
                 }
@@ -180,7 +180,7 @@ class PositionMaintainEdit extends React.Component {
                 errorMsg(result.message)
             }
             updatePageInfo({
-                id:"positionMaintainRolePager",
+                id: "positionMaintainRolePager",
                 index: 1,
                 size: 10,
                 sum: result._page ? result._page.total : 0,
@@ -230,18 +230,18 @@ class PositionMaintainEdit extends React.Component {
 
     editPositionMaintain() {
         const {
-            errorMsg, 
-            data, 
-            editInfo, 
-            sidePageInfo, 
-            sideContentInfo, 
-            pushPositionMaintain, 
+            errorMsg,
+            data,
+            editInfo,
+            sidePageInfo,
+            sideContentInfo,
+            pushPositionMaintain,
             updatePositionMaintain,
             updatePageInfo,
             pageInfo
         } = this.props
-        if(POSITION_ISEXIST){
-            setTimeout(function(){errorMsg("职位名称已存在")},500)
+        if (POSITION_ISEXIST) {
+            setTimeout(function () { errorMsg("职位名称已存在") }, 500)
             return false
         }
         let _this = this,
@@ -380,6 +380,6 @@ export default TUI._connect({
     jobFamilys: "positionMaintain.jobFamilys",
     jobsData: "positionMaintain.jobsData",
     editInfo: "formControlInfo.data",
-    pageInfo:"publicInfo.pageInfo",
+    pageInfo: "publicInfo.pageInfo",
     sideContentInfo: "publicInfo.sideContentInfo"
 }, PositionMaintainEdit)

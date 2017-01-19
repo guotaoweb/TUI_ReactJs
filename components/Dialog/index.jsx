@@ -140,7 +140,7 @@ export function openDialog(_this, txt, fn) {
     $dialog.style["transition"] = "transform 400ms ease"
     $dialog.style.opacity = "1"
     $coverbg.style.display = "block"
-    $coverbg.style.zIndex = "9999"
+    $coverbg.style.zIndex = "99999"
     $coverbg.style.height = allHeight + document.body.scrollTop + "px"
     $dialog.style["transform"] = "scale(1)"
 

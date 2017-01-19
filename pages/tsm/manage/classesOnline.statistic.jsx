@@ -16,19 +16,21 @@ class ClassesOnlineStatistic extends React.Component {
         } = this.props
 
         let tabs = [],
-        _this = this,
-        goBackStyle={
-            width:"25px",
-            verticalAlign: "middle",
-            marginLeft: "5px",
-            marginTop: "-2px",
-            cursor:"pointer"
-        }
+            _this = this,
+            goBackStyle = {
+                width: "25px",
+                verticalAlign: "middle",
+                marginLeft: "5px",
+                marginTop: "-2px",
+                cursor: "pointer"
+            }
         for (let i = 0; i < classesStatisticDetail.length; i++) {
             let $c = classesStatisticDetail[i]
-            tabs.push({ name: $c.TeacherName + "(" + $c.CourseName + ")", id: "tabs" + i,fn:function(){
-                _this.loadClassesDetailByIndex(i)
-            } })
+            tabs.push({
+                name: $c.TeacherName + "(" + $c.CourseName + ")", id: "tabs" + i, fn: function () {
+                    _this.loadClassesDetailByIndex(i)
+                }
+            })
         }
         let _tableTHeader = [],
             _tableTBody = []
@@ -74,22 +76,18 @@ class ClassesOnlineStatistic extends React.Component {
                 }
             }
         }
-        let goBackBtn = <span style={{cursor:"pointer"}}  onClick={this.goBack.bind(this)}><img src={back} style={goBackStyle} />返回班级统计列表</span>
+        let _tables = []
+        for (let i = 0; i < classesStatisticDetail.length; i++) {
+            _tables.push(
+                <div>
+                    <table className="tabledetail">{_tableTHeader}{_tableTBody}</table>
+                </div>
+            )
+        }
         return (
             <div>
-                <Content2 txt="班级统计详情" tabs={tabs}>
-                    <div>
-                        {goBackBtn}
-                        <table className="tabledetail">{_tableTHeader}{_tableTBody}</table>
-                    </div>
-                    <div>
-                        {goBackBtn}
-                        <table className="tabledetail">{_tableTHeader}{_tableTBody}</table>
-                    </div>
-                    <div>
-                        {goBackBtn}
-                        <table className="tabledetail">{_tableTHeader}{_tableTBody}</table>
-                    </div>
+                <Content2 txt="班级统计详情" tabs={tabs} goBackHref={this.goBack.bind(this)}>
+                    {_tables}
                 </Content2>
             </div>
         )
@@ -110,7 +108,7 @@ class ClassesOnlineStatistic extends React.Component {
             }
         }
     }
-    goBack(){
+    goBack() {
         closeSidePage()
     }
 }

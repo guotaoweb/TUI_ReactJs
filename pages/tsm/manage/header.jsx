@@ -9,9 +9,14 @@ class _Header extends React.Component {
     const {userInfo, sideStatus, searchInfo} = this.props
     let _this = this,
       list = [{
+        name: "快捷键",
+        fn: function () {
+          openModalDialog({id:"quickKey"})
+        }
+      },{
         name: "帮助说明",
         fn: function () {
-          openModalDialog()
+          openModalDialog({id:"help"})
         }
       }, {
         name: "关于我们",
@@ -37,6 +42,28 @@ class _Header extends React.Component {
       else {
         errorMsg(result.message)
       }
+    })
+
+    
+    document.addEventListener("keypress",function(e){
+        if(e.keyCode=="65"){
+          browserHistory.push(Config.ROOTPATH+"userMaintain")
+        }
+        else if(e.keyCode=="83"){
+          browserHistory.push(Config.ROOTPATH+"orgnization")
+        }
+        else if(e.keyCode=="68"){
+          browserHistory.push(Config.ROOTPATH+"positionMaintain")
+        }
+        else if(e.keyCode=="81"){
+          browserHistory.push(Config.ROOTPATH+"personMatchPost")
+        }
+        else if(e.keyCode=="72"){
+          openModalDialog({id:"help"})
+        }
+        else if(e.keyCode=="86"){
+          openDialog(_this, Config.VERSION)
+        }
     })
   }
 }

@@ -5,6 +5,8 @@ import FormControls from "FormControls"
 import Remark from "Remark"
 import { openDialog, closeDialog } from "Dialog"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
+import uncheck from "!url!../../../components/FormControls/img/uncheckbox.png"
+import check from "!url!../../../components/FormControls/img/checkbox.png"
 
 class Print extends React.Component {
     render() {
@@ -28,12 +30,12 @@ class Print extends React.Component {
             _courseList = []
         _classesList.push(
             <li key="voted_classes">
-                <FormControls ctrl="checkbox" txt="全选" />
+                <FormControls ctrl="checkbox" txt="全选" clickFn={this.allClasses.bind(this)} />
             </li>
         )
         _courseList.push(
             <li key="voted_course">
-                <FormControls ctrl="checkbox" txt="全选" />
+                <FormControls ctrl="checkbox" txt="全选" clickFn={this.allCourse.bind(this)} />
             </li>
         )
         for (var i = 0; i < votedClasses.length; i++) {
@@ -85,12 +87,12 @@ class Print extends React.Component {
                     </div>
                 </Content>
                 <SidePage id="classesList" title="已投班级列表">
-                    <div>
+                    <div className="classeslist">
                         <ul style={{ margin: "5px" }}>{_classesList}</ul>
                     </div>
                 </SidePage>
                 <SidePage id="courseList" title="已投科目列表">
-                    <div>
+                    <div className="courselist">
                         <ul style={{ margin: "5px" }}>{_courseList}</ul>
                     </div>
                 </SidePage>
@@ -124,6 +126,33 @@ class Print extends React.Component {
 
     }
 
+    allClasses(e) {
+        let $classes = e.currentTarget,
+            status = $classes.getAttribute("data-status"),
+            classesList = document.getElementsByClassName("classeslist")[0].getElementsByClassName("t-c_checkbox")
+        if (status == "selected") {
+            for (let i = 1; i < classesList.length; i++) {
+                let $c = classesList[i]
+                let id = $c.getAttribute("data-id"),
+                    name = $c.parentNode.innerText,
+                    $img = $c.getElementsByTagName("img")[0]
+                this.props.addPrintClasses({ id: id, name: name })
+                $img.setAttribute("src", check)
+                $img.parentNode.setAttribute("data-status", "selected")
+            }
+        }
+        else {
+            for (let i = 1; i < classesList.length; i++) {
+                let $c = classesList[i],
+                    id = $c.getAttribute("data-id"),
+                    $img = $c.getElementsByTagName("img")[0]
+                this.props.removePrintClasses(id)
+                $img.setAttribute("src", uncheck)
+                $img.parentNode.setAttribute("data-status", "unselect")
+            }
+        }
+    }
+
     clickClasses(e) {
         let $classes = e.currentTarget,
             status = $classes.getAttribute("data-status"),
@@ -139,6 +168,43 @@ class Print extends React.Component {
 
     removeClassesTip(id) {
         this.props.removePrintClasses(id)
+        let classesList = document.getElementsByClassName("classeslist")[0].getElementsByClassName("t-c_checkbox")
+        for (let i = 1; i < classesList.length; i++) {
+            let $c = classesList[i],
+                _id = $c.getAttribute("data-id"),
+                $img = $c.getElementsByTagName("img")[0]
+            if (id == _id) {
+                $img.setAttribute("src", uncheck)
+                $img.parentNode.setAttribute("data-status", "unselect")
+            }
+        }
+    }
+
+    allCourse(e) {
+        let $course = e.currentTarget,
+            status = $course.getAttribute("data-status"),
+            courseList = document.getElementsByClassName("courselist")[0].getElementsByClassName("t-c_checkbox")
+        if (status == "selected") {
+            for (let i = 1; i < courseList.length; i++) {
+                let $c = courseList[i]
+                let id = $c.getAttribute("data-id"),
+                    name = $c.parentNode.innerText,
+                    $img = $c.getElementsByTagName("img")[0]
+                this.props.addPrintCourse({ id: id, name: name })
+                $img.setAttribute("src", check)
+                $img.parentNode.setAttribute("data-status", "selected")
+            }
+        }
+        else {
+            for (let i = 1; i < courseList.length; i++) {
+                let $c = courseList[i],
+                    id = $c.getAttribute("data-id"),
+                    $img = $c.getElementsByTagName("img")[0]
+                this.props.removePrintCourse(id)
+                $img.setAttribute("src", uncheck)
+                $img.parentNode.setAttribute("data-status", "unselect")
+            }
+        }
     }
 
     clickCourse(e) {
@@ -156,10 +222,20 @@ class Print extends React.Component {
 
     removeCourseTip(id) {
         this.props.removePrintCourse(id)
+        let courseList = document.getElementsByClassName("courselist")[0].getElementsByClassName("t-c_checkbox")
+        for (let i = 1; i < courseList.length; i++) {
+            let $c = courseList[i],
+                _id = $c.getAttribute("data-id"),
+                $img = $c.getElementsByTagName("img")[0]
+            if (id == _id) {
+                $img.setAttribute("src", uncheck)
+                $img.parentNode.setAttribute("data-status", "unselect")
+            }
+        }
     }
 
     componentDidMount() {
-        const {updatePrintStatus, addPrintVoteList, addPrintVotedClasses, addPrintVotedCourse, addEditInfo} = this.props
+        const {updatePrintStatus, addPrintVoteList, addPrintVotedClasses, addPrintVotedCourse, addEditInfo, addBreadNav} = this.props
         if (TUI.fn.needCLodop()) {
             var head = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
             var oscript = document.createElement("script");
@@ -171,6 +247,8 @@ class Print extends React.Component {
             oscript.src = "http://localhost:18000/CLodopfuncs.js?priority=0";
             head.insertBefore(oscript, head.firstChild);
         };
+
+        addBreadNav({ name: "在线打印" })
 
         addEditInfo({
             infoName: "printInfo",
@@ -264,6 +342,7 @@ class Print extends React.Component {
                     _this.generateTable(result.datas, LODOP, number < 3 ? 3 : number)
                 } else if (result.code == 1) {
                     addPrintVotedCourse([])
+                    openDialog(_this, "未匹配到任何数据")
                 } else {
                     errorMsg(TUI.ERROR_INFO[result.code]);
                 }
@@ -309,7 +388,7 @@ class Print extends React.Component {
 
                 var _header_0 = new Array()
                 _header_0.push(html[m].ClassesName)
-                _header_0.push(html[m].TeacherName+"("+html[m].CourseName+")")
+                _header_0.push(html[m].TeacherName + "(" + html[m].CourseName + ")")
                 _header_.push(_header_0)
                 _temp.push(html[m].ClassesName + "_" + html[m].CourseName)
 
@@ -317,7 +396,7 @@ class Print extends React.Component {
                     var _header_1 = new Array()
                     if (html[m].ClassesName != html[n].ClassesName && html[m].CourseName == html[n].CourseName) {
                         _header_1.push(html[n].ClassesName)
-                        _header_1.push(html[n].TeacherName+"("+html[n].CourseName+")")
+                        _header_1.push(html[n].TeacherName + "(" + html[n].CourseName + ")")
                         _header_.push(_header_1)
                         _temp.push(html[n].ClassesName + "_" + html[n].CourseName)
                     }
@@ -349,8 +428,8 @@ class Print extends React.Component {
                 _header.push(_h)
             }
         }
-        console.info("==>" + number)
-        console.info(_header)
+        // console.info("==>" + number)
+        // console.info(_header)
 
         var _header0 = new Array()
         var _temp0 = new Array()
@@ -457,9 +536,9 @@ class Print extends React.Component {
                 _header0.push(_h0)
             }
         }
-        console.info("==>")
-        console.info(_header0)
-        
+        // console.info("==>")
+        // console.info(_header0)
+
 
         for (var i = 0; i < _header.length; i++) {
             var $h = _header[i];
@@ -471,7 +550,7 @@ class Print extends React.Component {
             strHtml += "<tr>"
             for (let j = 0; j < $h.length; j++) {
                 let $hh = $h[j];
-                if(j<=number){
+                if (j <= number) {
                     if (j == 0) {
                         strHtml += "<td rowspan='2' style='text-align:center;font-weight:bold;'>" + $hh[0] + "</td>"
                     }
@@ -486,7 +565,7 @@ class Print extends React.Component {
             strHtml += "<tr>"
             for (let j = 0; j < $h.length; j++) {
                 let $hh = $h[j]
-                if(j<=number){
+                if (j <= number) {
                     if ($hh[1]) {
                         strHtml += "<td style='text-align:center;font-weight:bold;' colspan='4'>" + $hh[1] + "</td>"
                     }
@@ -501,7 +580,7 @@ class Print extends React.Component {
                 strHtml += "<tr>"
 
                 for (var m = 0; m < $hhh.length; m++) {
-                    if(m<=number*4){
+                    if (m <= number * 4) {
                         if (m == 0) {
                             let _no = ""
                             if ($hhh[m + 1] == "投票人数") {

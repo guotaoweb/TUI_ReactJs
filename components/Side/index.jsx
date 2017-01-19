@@ -24,7 +24,7 @@ class Side extends React.Component {
                 _list.push(
                     <li key={"side_main_li" + i} className="tSubSide" data-status={sideStatus == "0" ? "open" : "close"}>
                         <div id={$l.id} ref={$l.id + "s"} onClick={this.updateSubStatus.bind(this, this.props.addFn, $l.id)}>{_a}</div>
-                        <SubNode list={$l.sub} openSideUrlList={openSideUrlList} closeSideContent={closeSideContent} updateSideContentInfo={this.props.updateSideContentInfo} />
+                        {$l.sub.length==0?"":<SubNode list={$l.sub} openSideUrlList={openSideUrlList} closeSideContent={closeSideContent} updateSideContentInfo={this.props.updateSideContentInfo} />}
                     </li>
                 )
             }

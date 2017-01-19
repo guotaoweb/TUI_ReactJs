@@ -21,15 +21,18 @@ class CourseOnlineStatistic extends React.Component {
             successMsg
         } = this.props
 
-        let tabs = []
+        let tabs = [],
+        _this = this
         for (let i = 0; i < courseDetail.length; i++) {
             let $c = courseDetail[i]
-            tabs.push({ name: $c.TeacherName, id: i })
+            tabs.push({ name: $c.ClassesName, id: "courseonline_" + i ,fn:function(){
+                _this.loadCourseDetailByTeacher(i)
+            }})
         }
         let _tableTHeader = [],
             _tableTBody = []
 
-        if (courseDetailList.length>0) {
+        if (courseDetailList.length > 0) {
             let _detail = courseDetailList[0],
                 _survy = courseDetailList[0].Survy
             _tableTHeader =
@@ -50,7 +53,7 @@ class CourseOnlineStatistic extends React.Component {
             for (let i = 0; i < _survy.length; i++) {
                 let $s = _survy[i]
                 _tableTBody.push(
-                    <tr key={"tabledetail_tbody_main"+i}>
+                    <tr key={"tabledetail_tbody_main" + i}>
                         <td>{i + 1 + "、" + $s.Name}</td>
                         <td>{i == 0 ? "投票人数" : ""}</td>
                         <td>{i == 0 ? "百分比" : ""}</td>
@@ -60,7 +63,7 @@ class CourseOnlineStatistic extends React.Component {
                 for (let j = 0; j < $s.Datas.length; j++) {
                     let $d = $s.Datas[j]
                     _tableTBody.push(
-                        <tr key={"tabledetail_tbody_sub"+i+j}>
+                        <tr key={"tabledetail_tbody_sub" + i + j}>
                             <td style={{ paddingLeft: "34px" }}>{$d.Name}</td>
                             <td>{$d.Number + "/" + $d.Count}</td>
                             <td>{$d.Percent}</td>
@@ -70,12 +73,18 @@ class CourseOnlineStatistic extends React.Component {
                 }
             }
         }
+        let _tables = []
+        for (let i = 0; i < courseDetail.length; i++) {
+            _tables.push(
+                <div key={"_tables"+i}>
+                    <table className="tabledetail">{_tableTHeader}{_tableTBody}</table>
+                </div>
+            )
+        }
         return (
             <div>
-                <Content2 txt="科目统计详情" tabs={tabs}>
-                    <div>
-                        <table className="tabledetail">{_tableTHeader}{_tableTBody}</table>
-                    </div>
+                <Content2 txt="科目统计详情" tabs={tabs} goBackHref={this.goback.bind(this)}>
+                    {_tables}
                 </Content2>
             </div>
         )
@@ -95,6 +104,10 @@ class CourseOnlineStatistic extends React.Component {
                 addCourseStatisticDetailList($d)
             }
         }
+    }
+
+    goback() {
+        closeSidePage({ id: "courseStatistic" })
     }
 }
 
