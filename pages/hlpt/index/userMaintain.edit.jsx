@@ -4,6 +4,7 @@ import Btn from "Btn"
 import { closeSidePage } from "SidePage"
 import UserMaintainExtInfo from "./userMaintain.extInfo"
 import UserMaintainJobsList from "./userMaintain.jobsList"
+import UserMaintainPrivileges from "./userMaintain.privileges"
 
 class PositionMaintainEdit extends React.Component {
     render() {
@@ -36,6 +37,12 @@ class PositionMaintainEdit extends React.Component {
                 fn: function () {
                     _this.getUserMaintainJobList(_this)
                 }
+            }, {
+                name: "权限维护",
+                id: "userMaintain_privileges",
+                fn: function () {
+                    _this.getUserMaintainPrivileges(_this)
+                }
             }]
             userEditStatus = <FormControls label="用户名" ctrl="input" value="userMaintainInfo.user" disabled="disabled" />
         }
@@ -65,13 +72,16 @@ class PositionMaintainEdit extends React.Component {
                     <div className="formControl-btn">
                         <Btn type="submit" txt="确定" href={this.editUserMaintain.bind(this)} />
                     </div>
-                    <br/><br/>
+                    <br /><br />
                 </div>
                 <div>
                     <UserMaintainExtInfo />
                 </div>
                 <div>
                     <UserMaintainJobsList />
+                </div>
+                <div>
+                    <UserMaintainPrivileges />
                 </div>
             </Content2>
         )
@@ -80,13 +90,13 @@ class PositionMaintainEdit extends React.Component {
 
     editUserMaintain() {
         const {
-            successMsg, 
-            errorMsg, 
-            data, 
-            editInfo, 
-            sidePageInfo, 
-            sideContentInfo, 
-            pushUserMaintain, 
+            successMsg,
+            errorMsg,
+            data,
+            editInfo,
+            sidePageInfo,
+            sideContentInfo,
+            pushUserMaintain,
             updateUserMaintain,
             updatePageInfo,
             pageInfo
@@ -109,7 +119,8 @@ class PositionMaintainEdit extends React.Component {
                 staffCode: editInfo.userMaintainInfo.staffCode,
                 empNumber: editInfo.userMaintainInfo.empNumber,
                 kind: editInfo.userMaintainInfo.kind,
-                ext5: editInfo.userMaintainInfo.ext5            }
+                ext5: editInfo.userMaintainInfo.ext5
+            }
 
         if (sidePageInfo.status == "addUserMaintain") {
             TUI.platform.post("/staff", postJson, function (result) {
@@ -209,7 +220,62 @@ class PositionMaintainEdit extends React.Component {
                 url: _url
             })
         })
+    }
 
+    getUserMaintainPrivileges(_this) {
+        const {
+            errorMsg, 
+            updateUserMainPrivilegeByLogin,
+            updateUserMainPrivilegeByEmail,
+            updateUserMainPrivilegeByMsg, 
+            editInfo, 
+            updatePageInfo,
+            addEditInfo
+        } = _this.props
+        let id = editInfo.userMaintainInfo.uId
+
+        openContentLoading()
+        TUI.platform.get("/staff/verifyTAM/" + id, function (result) {
+            if (result.code == 0) {
+                //updateUserMainPrivilegeByLogin(result.data)
+                addEditInfo({
+                    infoName:"userMaintainLoginStatus",
+                    val:result.data==1?0:1
+                })
+            }
+            else {
+                errorMsg(result.message);
+            }
+            closeContentLoading()
+        })
+
+        TUI.platform.get("/staff/verifyEmail/" + id, function (result) {
+            if (result.code == 0) {
+                //updateUserMainPrivilegeByEmail(result.data)
+                addEditInfo({
+                    infoName:"userMaintainEmailStatus",
+                    val:result.data==1?0:1
+                })
+            }
+            else {
+                errorMsg(result.message);
+            }
+            closeContentLoading()
+        })
+
+        TUI.platform.get("/staff/verifySMS/" + id, function (result) {
+            if (result.code == 0) {
+                //updateUserMainPrivilegeByEmail(result.data)
+                addEditInfo({
+                    infoName:"userMaintainSMSStatus",
+                    val:result.data==1?0:1
+                })
+            }
+            else {
+                errorMsg(result.message);
+            }
+            closeContentLoading()
+        })
     }
 
     updateData(data, deep, newData) {
@@ -276,7 +342,7 @@ class PositionMaintainEdit extends React.Component {
         this.props.clearEditInfo({
             infoName: "userMaintainInfo"
         })
-        closeSidePage({id:"userMaintainEdit"})
+        closeSidePage({ id: "userMaintainEdit" })
         this.props.backBreadNav()
     }
 }
@@ -288,5 +354,5 @@ export default TUI._connect({
     sideContentInfo: "publicInfo.sideContentInfo",
     editInfo: "formControlInfo.data",
     defaultUnit: "userMaintain.defaultUnit",
-    pageInfo:"publicInfo.pageInfo"
+    pageInfo: "publicInfo.pageInfo"
 }, PositionMaintainEdit)

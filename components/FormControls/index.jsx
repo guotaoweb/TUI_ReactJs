@@ -160,7 +160,9 @@ class FormControls extends React.Component {
                 bind={bind}
                 editFn={this.props.updateEditInfo}
                 selected={this.props.selected}
-                size={this.props.size} />
+                size={this.props.size}
+                fn={this.props.fn}
+                 />
         }
 
         return (
@@ -643,7 +645,8 @@ class CTRL_SLIDE extends React.Component {
             bind,
             options,
             selected,
-            size
+            size,
+            fn
         } = this.props
 
         let _label
@@ -708,7 +711,7 @@ class CTRL_SLIDE extends React.Component {
     }
 
     _onClick() {
-        const {value, addFn, data, bind, options} = this.props
+        const {value, addFn, data, bind, options,fn} = this.props
 
         let _object = value.split(".")
         let _info = {
@@ -725,6 +728,9 @@ class CTRL_SLIDE extends React.Component {
         _info[_object[1]] = _index
         _info[_object[1] + "Name"] = options[_index].name
         addFn(_info)
+        if(fn){
+            fn(_info)
+        }
     }
 }
 

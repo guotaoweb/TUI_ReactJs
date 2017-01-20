@@ -94,3 +94,24 @@ export function updateMainPosition(data){
     }
 }
 
+export function updateUserMainPrivilegeByLogin(data){
+    return {
+        type:"UPDATE_USERMAINTAIN_PRIVILEGE_BY_LOGIN",
+        data
+    }
+}
+
+export function updateUserMainPrivilegeByEmail(data){
+    return {
+        type:"UPDATE_USERMAINTAIN_PRIVILEGE_BY_EMAIL",
+        data
+    }
+}
+
+export function updateUserMainPrivilegeByMsg(data){
+    return {
+        type:"UPDATE_USERMAINTAIN_PRIVILEGE_BY_MSG",
+        data
+    }
+}
+

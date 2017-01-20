@@ -7,7 +7,9 @@ const initState = {
     jobsList: [],
     defaultUnit: [],
     componentInfo: { key: "-1" },
-    jobsAllList:[]
+    jobsAllList:[],
+    userMainTainLoginStatus:0,
+    userMainTainEmailStatus:0
 }
 
 export default function manageReducers(state = initState, action) {
@@ -77,7 +79,10 @@ export default function manageReducers(state = initState, action) {
                 }
             }
             return Object.assign({}, state, { jobsList: eval(JSON.stringify(state.jobsList)) })
-            
+        case "UPDATE_USERMAINTAIN_PRIVILEGE_BY_LOGIN":
+            return Object.assign({}, state, { userMainTainLoginStatus: action.data })
+        case "UPDATE_USERMAINTAIN_PRIVILEGE_BY_EMAIL":
+            return Object.assign({}, state, { userMainTainEmailStatus: action.data })
         default: return state
     }
 }

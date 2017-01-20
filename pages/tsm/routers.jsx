@@ -50,7 +50,7 @@ class Routers extends React.Component {
                     <Route path={Config.ROOTPATH + m + "cassesStatistic"} component={ClassesStatistic} />
                     <Route path={Config.ROOTPATH + m + "output"} component={Output} />
                     <Route path={Config.ROOTPATH + m + "input"} component={Input} />
-                    <Route path={Config.ROOTPATH + m + "repors"} component={ReportList} />
+                    <Route path={Config.ROOTPATH + m + "reports"} component={ReportList} />
                     <Route path={Config.ROOTPATH + m + "print"} component={Print} /> 
                 </Route>
             </Router >

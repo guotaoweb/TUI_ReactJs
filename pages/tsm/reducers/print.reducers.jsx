@@ -7,7 +7,8 @@ const initState = {
     printVote:[],
     votedClasses:[],
     votedCourse:[],
-    printDetail:[]
+    printDetail:[],
+    outputStatistic:[]
 }
 
 export default function printReducers(state = initState, action) {
@@ -87,6 +88,18 @@ export default function printReducers(state = initState, action) {
         case "ADD_PRINT_DETAIL":
            return Object.assign({}, state, {
                 votedClasses: eval(JSON.stringify(action.data))
+            })
+        case "ADD_OUTPUT_STATISTIC":
+           if(state.outputStatistic.length==0){
+               state.outputStatistic.push(action.data)
+           }
+           else{
+               state.outputStatistic[0].CourseNum = action.data.CourseNum
+               state.outputStatistic[0].ClassesNum = action.data.ClassesNum
+               state.outputStatistic[0].Datas = action.data.Datas
+           }
+           return Object.assign({}, state, {
+                outputStatistic: eval(JSON.stringify(state.outputStatistic))
             })
         default:
             return state

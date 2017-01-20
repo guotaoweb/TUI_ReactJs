@@ -65,6 +65,13 @@ export function addPrintDetail(data){
     } 
 }
 
+export function addOutputStatistic(data){
+    return {
+        type:"ADD_OUTPUT_STATISTIC",
+        data
+    } 
+}
+
 
 
 
