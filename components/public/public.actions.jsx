@@ -244,5 +244,21 @@ export function searchLoadComplete() {
     }
 }
 
+export function addContent2More(data) {
+    return {
+        type: "ADD_CONTENT2_MORE_LIST",
+        data
+    }
+}
+
+export function addCommonList(data) {
+    return {
+        type: "ADD_COMMON_LIST",
+        data
+    }
+}
+
+
+
 
 

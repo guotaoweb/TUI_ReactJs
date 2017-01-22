@@ -6,15 +6,15 @@ import goback from "!url!./img/singleLeft.png"
 
 class Content2 extends React.Component {
     render() {
-        const {goBackHref, tabs} = this.props
+        const {goBackHref, tabs, content2More} = this.props
         let tabsArry = []
         let _this = this
 
         if (this.props.tabs) {
-            tabsArry.push(<li key={"content2_editVteam_default"} className="t-content2_tab" data-bind="goback" onClick={goBackHref}><img style={{width:"20px",verticalAlign:"middle",marginTop:"-2px"}} src={goback} />返回</li>)
+            tabsArry.push(<li key={"content2_editVteam_default"} className="t-content2_tab" data-bind="goback" onClick={goBackHref}><img style={{ width: "20px", verticalAlign: "middle", marginTop: "-2px" }} src={goback} />返回</li>)
             for (var index = 0; index < tabs.length; index++) {
                 var $li = tabs[index]
-                
+
                 if (index == 0) {
                     tabsArry.push(<li key='content2_editVteam_0' className="t-content2_tab t-contetn2_tab--active" data-bind={$li.id} onClick={$li.fn}>{$li.name}</li>)
                 }
@@ -22,6 +22,36 @@ class Content2 extends React.Component {
                     tabsArry.push(<li key={"content2_editVteam_" + index} className="t-content2_tab" data-bind={$li.id} onClick={$li.fn}>{$li.name}</li>)
                 }
             }
+
+            let _content2more = []
+            for (var i = 0; i < content2More.length; i++) {
+                var $c = content2More[i]
+                if ($c) {
+                    _content2more.push(<p key={"content2More" + i} className="content2More" data-index={$c.index} data-bind={$c.id} onClick={$c.fn}>{$c.name}</p>)
+                }
+            }
+
+            tabsArry.push(
+                <li
+                    key="t_content2_tabs_more"
+                    className="t_content2_tabs_more"
+                    style={{ width: "20px", padding: "8px 10px", position: "relative",display:"none" }}
+                    onClick={this.content2tabsmore.bind(this)}>
+                    <img src={goback} style={{ width: "10px" }} />
+                    <div style={{
+                        width: "200px",
+                        backgroundColor: "#ebebeb",
+                        border: "1px solid #ebebeb",
+                        position: "absolute",
+                        zIndex: "99",
+                        right: "0px",
+                        top: "39px",
+                        display: "none"
+                    }}>
+                        {_content2more}
+                    </div>
+                </li>
+            )
         }
 
         let isValid = true
@@ -95,7 +125,7 @@ class Content2 extends React.Component {
             }
         }
     }
-    
+
     componentDidMount() {
         let allHeight = document.documentElement.clientHeight
         let headerHeight = document.querySelector(".t-header").offsetHeight
@@ -107,11 +137,50 @@ class Content2 extends React.Component {
         if (this.scrollAreaComponent) {
             this.scrollAreaComponent.scrollArea.refresh()
         }
+
+
+        let $tcontent2 = document.getElementsByClassName("t-content2")
+        let outNum = 0
+        let newTabs = []
+        for (var i = 0; i < $tcontent2.length; i++) {
+            var $t = $tcontent2[i]
+            let $t_ul = $t.getElementsByClassName("t-content2_tab")
+            if (($t_ul.length + 1) * 80 > $t.offsetWidth) {
+                //console.info("超过了")
+                outNum = Math.ceil((($t_ul.length + 1) * 80 - $t.offsetWidth) / 80)
+                $t.getElementsByClassName("t_content2_tabs_more")[0].style.display="inline"
+            }
+            for (var j = 0; j < $t_ul.length; j++) {
+                if (j > $t_ul.length - outNum - 2) {
+                    $t_ul[j].style.display = "none"
+                    let tabs = this.props.tabs
+                    //tabs[j]["Index"] = j
+                    if (tabs[j]) {
+                        tabs[j]["index"] = j
+                        newTabs.push(tabs[j])
+                    }
+                }
+            }
+        }
+
+        this.props.addContent2More(newTabs)
+    }
+
+    content2tabsmore(e) {
+        let $this = e.currentTarget.getElementsByTagName("div")[0]
+
+        if ($this.style.display == "block") {
+            $this.style.display = "none"
+        }
+        else {
+            $this.style.display = "block"
+        }
     }
 }
 
 export default TUI._connect({
-    pageInfo: "publicInfo.pageInfo"
+    pageInfo: "publicInfo.pageInfo",
+    content2More: "publicInfo.content2More"
 }, Content2)
 
 export function bindEvent($this) {
@@ -124,9 +193,11 @@ export function bindEvent($this) {
     let _fn = function () {
         let _this = this
         let tabId = this.getAttribute("data-bind")
-        if(tabId !="goback"){
+        if (tabId != "goback") {
             let nodes = TUI.fn.siblingsElem(tabId)
-            document.querySelector(".t-contetn2_tab--active").className = "t-content2_tab"
+            if (document.querySelector(".t-contetn2_tab--active")) {
+                document.querySelector(".t-contetn2_tab--active").setAttribute("class", "t-content2_tab")
+            }
             _this.className = _this.className + " " + "t-contetn2_tab--active"
             for (var index = 0; index < nodes.length; index++) {
                 var $n = nodes[index];
@@ -145,6 +216,33 @@ export function bindEvent($this) {
         }
     }
 
+    let _fn0 = function () {
+        let $c2more = this
+        let tabId = $c2more.getAttribute("data-bind")
+        let _content = document.querySelector("." + tabId)
+        console.info(tabId)
+        console.info(_content)
+
+        let nodes = TUI.fn.siblingsElem(tabId)
+        if (document.querySelector(".t-contetn2_tab--active")) {
+            document.querySelector(".t-contetn2_tab--active").setAttribute("class", "t-content2_tab")
+        }
+        //c2more.className = _this.className + " " + "t-contetn2_tab--active"
+        for (var index = 0; index < nodes.length; index++) {
+            var $n = nodes[index];
+            $n.style.display = "none"
+        }
+
+        _content.style.display = "block"
+        _content.style.paddingBottom = "10px"
+        if (_content.offsetHeight > _content.parentNode.parentNode.parentNode.offsetHeight) {
+            $this.props.setCanVerticallyScroll(true)
+        }
+        else {
+            $this.props.setCanVerticallyScroll(false)
+        }
+    }
+
     //为tabs绑定事件
     let contentTabs = document.getElementsByClassName("t-content2_tab")
     for (var i = 0; i < contentTabs.length; i++) {
@@ -153,14 +251,21 @@ export function bindEvent($this) {
         $t.removeEventListener("click", _fn)
         $t.addEventListener("click", _fn)
     }
+
+    let content2More = document.getElementsByClassName("content2More")
+    for (let i = 0; i < content2More.length; i++) {
+        let $c2more = content2More[i]
+        $c2more.removeEventListener("click", _fn0)
+        $c2more.addEventListener("click", _fn0)
+    }
 }
 
 export function getContentIndex(index) {
-    
+
     let $tabs = document.getElementsByClassName("t-content2_tab")
     for (let i = 1; i < $tabs.length; i++) {
         let $t = $tabs[i]
-        if ( i== index+1) {
+        if (i == index + 1) {
             $t.className = $t.className + " " + "t-contetn2_tab--active"
         }
         else {
@@ -186,9 +291,9 @@ export function openContentLoading() {
     sidepage.style["transition"] = "opacity 200ms ease"
     sidepage.style.opacity = "1"
     sidepage.style.display = "block"
-    setTimeout(function(){
+    setTimeout(function () {
         closeContentLoading()
-    },15000)
+    }, 15000)
 }
 
 export function closeContentLoading() {

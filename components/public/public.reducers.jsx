@@ -47,7 +47,9 @@ const initState = {
     hasVerticalScroll: true,//iScroll专用,判断滚动条
     loginStatus: 0, //0未登陆 1登陆中
     sideContentInfo: {},
-    printStatus:0 //0 启动中 1启动成功 2启动失败
+    printStatus:0, //0 启动中 1启动成功 2启动失败
+    content2More:[],//content2的隐藏tabs
+    commonMenu:[]//常用功能
 }
 
 export default function manageReducers(state = initState, action) {
@@ -244,6 +246,23 @@ export default function manageReducers(state = initState, action) {
             return Object.assign({}, state, { sideContentInfo: JSON.parse(JSON.stringify(state.sideContentInfo)) })
         case "UPDATE_PRINT_STATUS":
             return Object.assign({}, state, { printStatus: action.data })
+        case "ADD_CONTENT2_MORE_LIST":
+            return Object.assign({}, state, { content2More: JSON.parse(JSON.stringify(action.data)) })
+        case "ADD_COMMON_LIST":
+            let newData = []
+            newData.push(action.data)
+            for (var i = 0; i < state.commonMenu.length; i++) {
+                var $c = state.commonMenu[i]
+                if(action.data.url!=$c.url){
+                    newData.push($c)
+                }
+            }
+
+            if(newData.length>5){
+                newData.splice(4,1)
+            }
+
+            return Object.assign({}, state, { commonMenu: JSON.parse(JSON.stringify(newData)) })
         default: return state
     }
 }

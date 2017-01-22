@@ -24,7 +24,7 @@ class Side extends React.Component {
                 _list.push(
                     <li key={"side_main_li" + i} className="tSubSide" data-status={sideStatus == "0" ? "open" : "close"}>
                         <div id={$l.id} ref={$l.id + "s"} onClick={this.updateSubStatus.bind(this, this.props.addFn, $l.id)}>{_a}</div>
-                        {$l.sub.length==0?"":<SubNode list={$l.sub} openSideUrlList={openSideUrlList} closeSideContent={closeSideContent} updateSideContentInfo={this.props.updateSideContentInfo} />}
+                        {$l.sub.length == 0 ? "" : <SubNode list={$l.sub} openSideUrlList={openSideUrlList} closeSideContent={closeSideContent} updateSideContentInfo={this.props.updateSideContentInfo} addCommonList={this.props.addCommonList} parentId={$l.id} />}
                     </li>
                 )
             }
@@ -88,7 +88,15 @@ class Side extends React.Component {
             return true
         }
         else {
-            return false
+
+            if (this.props.commonList.length != nextProps.commonListlength || this.props.commonList[0].url != nextProps.commonList[0].url) {
+                console.info("==>")
+                console.info(this.props.list)
+                return true
+            }
+            else {
+                return false
+            }
         }
     }
     componentDidMount() {
@@ -212,8 +220,6 @@ class Side extends React.Component {
                 })
             }
         }
-
-
     }
 
 
@@ -263,19 +269,20 @@ export default TUI._connect({
     sideStatus: "publicInfo.sideStatus",
     userId: "publicInfo.userInfo.id",
     data: "sideList.data",
-    init: "publicInfo.init"
+    init: "publicInfo.init",
+    commonList: "publicInfo.commonMenu"
 }, Side)
 
 
 class SubNode extends React.Component {
     render() {
-        const {list, openSideUrlList} = this.props
+        const {list, openSideUrlList, parentId} = this.props
         let _list = []
         if (list) {
             for (let j = 0; j < list.length; j++) {
                 let $s = list[j]
                 if ($s.url) {
-                    _list.push(<li className="sub_li" key={"side_sub_link" + j} onClick={this._closeSideContent.bind(this)}><Link to={$s.url}>{$s.name}</Link></li>)
+                    _list.push(<li className="sub_li" key={"side_sub_link" + j} onClick={this._closeSideContent.bind(this, $s.url, $s.name, parentId)}><Link to={$s.url}>{$s.name}</Link></li>)
                 }
                 else {
                     _list.push(<li className="sub_li" key={"side_sub_a" + j}><a href="#" onClick={$s.fn}>{$s.name}</a></li>)
@@ -290,8 +297,8 @@ class SubNode extends React.Component {
         )
     }
 
-    _closeSideContent() {
-        const {openSideUrlList} = this.props
+    _closeSideContent(_url, name, parentId) {
+        const {openSideUrlList, addCommonList} = this.props
         let _key = TUI.fn.newGuid(),
             url = window.location.href,
             closeSide = false
@@ -309,6 +316,10 @@ class SubNode extends React.Component {
                 key: _key
             })
             closeSideContent()
+        }
+console.info(parentId)
+        if (parentId != "45890800-48a8-00ff-dc76-25792b7f18d5") {
+            addCommonList({ url: _url, name: name })
         }
     }
 }

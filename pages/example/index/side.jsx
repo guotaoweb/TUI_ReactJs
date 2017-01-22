@@ -1,9 +1,11 @@
 import Side from 'Side'
 import { browserHistory } from 'react-router'
-import {openLoading} from 'Loading'
+import { openLoading } from 'Loading'
 //图片
 import xnzz from "!url!./img/xnzz.png"
 import xnzzs from "!url!./img/xnzz-s.png"
+import common from "!url!./img/common.png"
+import commons from "!url!./img/common-s.png"
 
 class _Side extends React.Component {
     render() {
@@ -15,7 +17,6 @@ class _Side extends React.Component {
     }
 
     componentDidMount() {
-        
         let list = [{
             id: "1",
             name: "页面内容布局",
@@ -98,9 +99,61 @@ class _Side extends React.Component {
                 url: Config.ROOTPATH + "breadNav"
             }]
         }]
+
+        if (list.length > 1) {
+            //常用功能的ID是固定的
+            list.push({
+                id: "45890800-48a8-00ff-dc76-25792b7f18d5",
+                name: "常用功能",
+                url: "#",
+                icon: common,
+                sicon: commons,
+                sub: []
+            })
+        }
+
         this.props.addSide(list)
-        browserHistory.push(Config.ROOTPATH + "table")
+        //browserHistory.push(Config.ROOTPATH + "table")
         openLoading(1)
+    }
+
+    componentDidUpdate(nextProps) {
+        let commonList0 = this.props.commonList,
+            commonList1 = nextProps.commonList
+        if (commonList0.length > 0) {
+            if (commonList0.length != commonList1.length) {
+                this.loadCommonList()
+            }
+            else {
+                if (commonList0[0].url != commonList1[0].url) {
+                    this.loadCommonList()
+                }
+            }
+            return true
+        }
+        else{
+            false
+        }
+    }
+
+    loadCommonList() {
+        const {commonList, sideList,addSide} = this.props
+        let children = []
+        for (var i = 0; i < commonList.length; i++) {
+            var $c = commonList[i];
+            children.push({
+                url: $c.url,
+                name: $c.name
+            })
+        }
+        for (var j = 0; j < sideList.length; j++) {
+            var $s = sideList[j];
+            if ($s.id == "45890800-48a8-00ff-dc76-25792b7f18d5") {
+                $s.sub = children
+                addSide(sideList)
+            }
+        }
+
     }
 
     getImg(src) {
@@ -109,6 +162,10 @@ class _Side extends React.Component {
                 return xnzz
             case "xnzzs":
                 return xnzzs
+            case "common":
+                return common
+            case "commons":
+                return commons
             default:
                 return xnzz
         }
@@ -118,5 +175,7 @@ class _Side extends React.Component {
 export default TUI._connect({
     list: "sideList.data",
     sideStatus: "publicInfo.sideStatus",
-    userId: "publicInfo.userInfo.id"
+    userId: "publicInfo.userInfo.id",
+    commonList: "publicInfo.commonMenu",
+    sideList: "sideList.data"
 }, _Side)
