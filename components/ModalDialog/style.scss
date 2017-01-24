@@ -5,7 +5,7 @@
     width:100%;
     height:100%;
     background-color:rgba(0,0,0,0.4);
-    z-index:999;
+    z-index:99999;
     display:none;
 }
 
@@ -20,7 +20,7 @@
     transform:scale(0);
     background-color:#E8E8E8;
     border-radius:5px;
-    z-index:9999;
+    z-index:99999;
     opacity: 0;
     top:100%;
     box-shadow: 1px 1px 1px rgba(0,0,0,0.2);
@@ -61,4 +61,7 @@
     margin-top: 15%;
     text-align: center;
     color:#4C86DC;
+}
+.t-moalDialog_content{
+    overflow-y:auto;
 }

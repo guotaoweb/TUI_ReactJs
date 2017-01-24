@@ -11,6 +11,17 @@ import MultyMenu from "MultyMenu"
 import { openContentLoading, closeContentLoading } from "Content"
 import SidePage, { openSidePage, closeSidePage } from "SidePage"
 import building from "!url!../../../components/ModalDialog/img/building.png"
+import help1 from "!url!./img/help/1.png"
+import help2 from "!url!./img/help/2.jpg"
+import help3 from "!url!./img/help/3.jpg"
+import help4 from "!url!./img/help/4.jpg"
+import help5 from "!url!./img/help/5.png"
+import help6 from "!url!./img/help/6.png"
+import help7 from "!url!./img/help/7.png"
+import help8 from "!url!./img/help/8.png"
+import help9 from "!url!./img/help/9.png"
+import help10 from "!url!./img/help/10.png"
+import help11 from "!url!./img/help/11.png"
 
 class Index extends React.Component {
   render() {
@@ -19,9 +30,9 @@ class Index extends React.Component {
     if (window.location.href.indexOf("orgnization") > -1) {
       multMenuType = "edit"
     }
-    let allWidth = document.documentElement.clientWidth-120
-    let allHeight = document.documentElement.clientHeight-300
-
+    let allWidth = document.documentElement.clientWidth - 120
+    let allHeight = document.documentElement.clientHeight - 300
+    //style={{width:allWidth+"px",height:allHeight+"px"}}
     return (
       <div className="t-page">
         <Side />
@@ -43,10 +54,87 @@ class Index extends React.Component {
         </Container>
         <TipTool />
         <Dialog />
-        <ModalDialog id="help">
-          <div className="t-modalDialog_building" style={{width:allWidth+"px",height:allHeight+"px"}}>
-            <img src={building} />
-            <p>==建设中==</p>
+        <ModalDialog id="help" title="帮助说明">
+          <div className="t-modalDialog_building1" style={{ width: allWidth + "px" }}>
+            <ul className="helpdoc">
+              <li>
+                <p>1.进入组织职位人员管理</p>
+                <div className="showcontent" style={{ display: "none" }}>
+                  <p>如果用户有组织职位人员管理模块权限，可通过桌面端主菜单进入组织职位人员管理模块。</p>
+                  <img src={help1} />
+                </div>
+              </li>
+              <li>
+                <p>2.组织职位人员管理介绍</p>
+                <div className="showcontent" style={{ display: "none" }}>
+                  <p>组织职位人员管理模块包括功能菜单区、导航栏和功能操作区。功能菜单会根据用户权限显示相应的功能项，点击功能菜单可在功能操作区进行相应的功能操作。导航栏显示当前用户信息以及正在使用的功能项。</p>
+                  <img src={help2} />
+                </div>
+              </li>
+              <li>
+                <p>3.组织架构维护</p>
+                <div className="showcontent" style={{ display: "none" }}>
+                  <p>维护人员可以查看组织架构树，并可搜索、新增、删除、编辑组织；</p>
+                  <img src={help3} />
+                </div>
+              </li>
+              <li>
+                <p>4.人员信息维护</p>
+                <div className="showcontent" style={{ display: "none" }}>
+                  <p>维护人员可以根据组织架构树查看组织下的人员列表，可查看人员详细信息，可新增、编辑、删除人员；</p>
+                  <img src={help4} />
+                </div>
+              </li>
+              <li>
+                <p>5.人员信息维护-职位信息</p>
+                <div className="showcontent" style={{ display: "none" }}>
+                  <p>选择用户列表【操作】列的【编辑】进入用户编辑界面，在【职位信息】页可以查看到该用户的所有部门及职位信息列表，可在【操作】的【设为主职】设置该用户的主职。</p>
+                  <img src={help5} />
+                </div>
+              </li>
+              <li>
+                <p>6.职位维护</p>
+                <div className="showcontent" style={{ display: "none" }}>
+                  <p>职位维护会以组织架构的方式显示各个组织下的职位列表，可新增、编辑、删除职位。</p>
+                  <img src={help6} />
+                </div>
+              </li>
+              <li>
+                <p>7.职位维护-设置角色</p>
+                <div className="showcontent" style={{ display: "none" }}>
+                  <p>在职位列表中点击【编辑】进入职位设置界面，再选择【角色设置】选项卡，可以看到该职位的角色列表，可以对角色进行新增、编辑和删除操作。</p>
+                  <img src={help7} />
+                </div>
+              </li>
+              <li>
+                <p>8.人职匹配</p>
+                <div className="showcontent" style={{ display: "none" }}>
+                  <p>人职匹配可以进行人员与职位相关操作，可通过兼职、调入等调整人员职位以及设置人员角色。点击设置可查看该职位下的所有员工以及他们的角色。</p>
+                  <img src={help8} />
+                </div>
+              </li>
+              <li>
+                <p>9.人职匹配-调入/兼职</p>
+                <div className="showcontent" style={{ display: "none" }}>
+                  <p>在指定职位的列表选择【设置】进入职位的人员列表，点击上面的【兼职】或【调入】进入调入/兼职列表。在搜索栏输入要调入用户的姓名或用户名并搜索，会列出搜索到的用户，点击操作栏的【兼职】/【调入】则会将该用户兼职或调入到该职位。</p>
+                  <img src={help9} />
+                </div>
+              </li>
+              <li>
+                <p>10.人职匹配-设置角色</p>
+                <div className="showcontent" style={{ display: "none" }}>
+                  <p>点击人员列表操作栏的【设置角色】进入设置角色界面，在角色列表【选择】要设置的角色即完成了角色设置。</p>
+                  <img src={help10} />
+                </div>
+              </li>
+              <li>
+                <p>11.权限管理</p>
+                <div className="showcontent" style={{ display: "none" }}>
+                  <p>权限管理一般给超级管理员使用，用以设置用户使用该系统的权限。权限管理包括【数据权限】和【功能权限】，数据权限是为用户指定能维护哪些数据，功能权限是为用户指定能使用哪些功能。</p>
+                  <img src={help11} />
+                </div>
+              </li>
+            </ul>
           </div>
         </ModalDialog>
         <ModalDialog id="quickKey" title="系统快捷键">
@@ -259,7 +347,7 @@ class Index extends React.Component {
 
     setTimeout(function () {
       openSidePage(_this, {
-        id:"orgnizationEdit",
+        id: "orgnizationEdit",
         status: "addOrgnization",
         gateWay: params
       })
@@ -274,7 +362,7 @@ class Index extends React.Component {
     closeSidePage()
     setTimeout(function () {
       openSidePage(_this, {
-        id:"orgnizationEdit",
+        id: "orgnizationEdit",
         status: "editOrgnization",
         gateWay: params
       })
@@ -401,6 +489,24 @@ class Index extends React.Component {
       }
     }
   }
+
+  componentDidMount() {
+    let $helpLi = document.getElementsByClassName("helpdoc")[0].getElementsByTagName("li")
+    for (var i = 0; i < $helpLi.length; i++) {
+      var $h = $helpLi[i]
+
+      $h.addEventListener("click", function () {
+        let $c = this.getElementsByClassName("showcontent")[0]
+        if ($c.style.display == "none") {
+          $c.style.display = "block"
+        }
+        else {
+          $c.style.display = "none"
+        }
+      })
+
+    }
+  }
 }
 
 export default TUI._connect({
@@ -417,3 +523,5 @@ export default TUI._connect({
 // </ReactCSSTransitionGroup>
 
 
+            // <img src={building} />
+            // <p>==建设中==</p>

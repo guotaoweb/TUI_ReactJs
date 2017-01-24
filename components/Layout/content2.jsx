@@ -220,8 +220,8 @@ export function bindEvent($this) {
         let $c2more = this
         let tabId = $c2more.getAttribute("data-bind")
         let _content = document.querySelector("." + tabId)
-        console.info(tabId)
-        console.info(_content)
+        // console.info(tabId)
+        // console.info(_content)
 
         let nodes = TUI.fn.siblingsElem(tabId)
         if (document.querySelector(".t-contetn2_tab--active")) {

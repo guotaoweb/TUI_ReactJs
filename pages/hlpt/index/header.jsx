@@ -71,7 +71,7 @@ class _Header extends React.Component {
           browserHistory.push(Config.ROOTPATH+"personMatchPost")
         }
         else if(e.keyCode=="72"){
-          openModalDialog({id:"help"})
+          openModalDialog({id:"help",size:"max"})
         }
         else if(e.keyCode=="86"){
           openDialog(_this, Config.VERSION)

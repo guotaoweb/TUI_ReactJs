@@ -72,11 +72,13 @@ class Side extends React.Component {
             }
 
             if (this.refs[id + "s"].parentNode.getAttribute("data-status") == "open") {
-                if (!subUl.style.display || subUl.style.display == "none") {
-                    subUl.style.display = "block"
-                }
-                else {
-                    subUl.style.display = "none"
+                if(subUl.style){
+                    if (!subUl.style.display || subUl.style.display == "none") {
+                        subUl.style.display = "block"
+                    }
+                    else {
+                        subUl.style.display = "none"
+                    }
                 }
             }
 
@@ -90,8 +92,6 @@ class Side extends React.Component {
         else {
 
             if (this.props.commonList.length != nextProps.commonListlength || this.props.commonList[0].url != nextProps.commonList[0].url) {
-                console.info("==>")
-                console.info(this.props.list)
                 return true
             }
             else {
@@ -305,6 +305,7 @@ class SubNode extends React.Component {
         if (openSideUrlList) {
             for (var i = 0; i < openSideUrlList.length; i++) {
                 var $o = openSideUrlList[i];
+
                 if (url.indexOf($o) > -1) {
                     closeSide = true
                     break
@@ -317,8 +318,9 @@ class SubNode extends React.Component {
             })
             closeSideContent()
         }
-console.info(parentId)
+
         if (parentId != "45890800-48a8-00ff-dc76-25792b7f18d5") {
+            console.info({ url: _url, name: name })
             addCommonList({ url: _url, name: name })
         }
     }

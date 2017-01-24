@@ -13,7 +13,9 @@ class ModalDialog extends React.Component {
         <div className="t-modalDialog" id={id}>
           <p className="t-modalDialog_close" onClick={this.closeModalDialog.bind(this)}><img src={close} /></p>
           <div className="t-modalDialog_title">{title}</div>
+          <div className="t-moalDialog_content">
           {children}
+          </div>
         </div>
       </div>
     )
@@ -61,16 +63,29 @@ export function openModalDialog(param) {
     let dialogWidth = $dialog.offsetWidth
     let dialogHeight = $dialog.offsetHeight
 
-    $dialog.style.left = (allWidth - dialogWidth + 50) / 2 + "px"
-    $dialog.style.top = (allHeight - dialogHeight) / 2 + "px"
-
+    
+    if(param.size=="max" || allHeight < dialogHeight){
+      $dialog.style.left = (allWidth - dialogWidth) / 2 + "px"
+      $dialog.style.maxHeight = (allHeight-100)+"px" //40是dialog里面header的高度
+      $dialog.getElementsByClassName("t-moalDialog_content")[0].style.height = (allHeight-100)+"px"
+      $dialog.style.top = (60) / 2 + "px"
+    }
+    else{
+      $dialog.style.left = (allWidth - dialogWidth + 50) / 2 + "px"
+      $dialog.style.top = (allHeight - dialogHeight) / 2 + "px"
+    }
 
 
     $dialog.style["transition"] = "transform 200ms ease"
     $dialog.style.opacity = "1"
     $coverbg.style.display = "block"
     $dialog.style["transform"] = "scale(1)"
-  }, 120)
+  }, 500)
+  // setTimeout(function(){
+  //   let $dialog = document.querySelector(".t-modalDialog")
+  //   let dialogHeight = $dialog.offsetHeight
+  //   console.info(dialogHeight)
+  // },2000)
 }
 
 
