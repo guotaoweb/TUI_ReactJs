@@ -138,32 +138,39 @@ class Content2 extends React.Component {
             this.scrollAreaComponent.scrollArea.refresh()
         }
 
-
+        
         let $tcontent2 = document.getElementsByClassName("t-content2")
         let outNum = 0
         let newTabs = []
-        for (var i = 0; i < $tcontent2.length; i++) {
-            var $t = $tcontent2[i]
-            let $t_ul = $t.getElementsByClassName("t-content2_tab")
-            if (($t_ul.length + 1) * 80 > $t.offsetWidth) {
-                //console.info("超过了")
-                outNum = Math.ceil((($t_ul.length + 1) * 80 - $t.offsetWidth) / 80)
-                $t.getElementsByClassName("t_content2_tabs_more")[0].style.display="inline"
-            }
-            for (var j = 0; j < $t_ul.length; j++) {
-                if (j > $t_ul.length - outNum - 2) {
-                    $t_ul[j].style.display = "none"
-                    let tabs = this.props.tabs
-                    //tabs[j]["Index"] = j
-                    if (tabs[j]) {
-                        tabs[j]["index"] = j
-                        newTabs.push(tabs[j])
-                    }
-                }
-            }
-        }
-
-        this.props.addContent2More(newTabs)
+        // for (var i = 0; i < $tcontent2.length; i++) {
+        //     var $t = $tcontent2[i]
+        //     //console.info($t)
+        //     //console.info($t.offsetWidth)
+        //     let $t_ul = $t.getElementsByClassName("t-content2_tab")
+          
+        //     //console.info(($t_ul.length + 1) * 80 +","+ $t.offsetWidth)
+        //     if (($t_ul.length + 1) * 80 > $t.offsetWidth) {
+        //         console.info("超过了")
+        //         outNum = Math.ceil((($t_ul.length + 1) * 80 - $t.offsetWidth) / 80)
+        //         $t.getElementsByClassName("t_content2_tabs_more")[0].style.display="inline"
+            
+        //         for (var j = 0; j < $t_ul.length; j++) {
+        //             if (j > $t_ul.length - outNum - 2) {
+        //                 $t_ul[j].style.display = "none"
+        //                 let tabs = this.props.tabs
+        //                 //tabs[j]["Index"] = j
+        //                 if (tabs[j]) {
+        //                     tabs[j]["index"] = j
+        //                     newTabs.push(tabs[j])
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        // console.info(outNum)
+        // if(outNum>0){
+        //     this.props.addContent2More(newTabs)
+        // }
     }
 
     content2tabsmore(e) {

@@ -8,7 +8,7 @@ import {closeLoading} from "Loading"
 
 class Layout2 extends React.Component {
     render() {
-                setTimeout(function(){
+        setTimeout(function(){
             closeLoading()
         },1000)
         let tabs = [{ name: "选项一", id: "tabs1" }, { name: "选项二", id: "tabs2" }, { name: "选项三", id: "tabs3" }

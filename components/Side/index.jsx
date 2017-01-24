@@ -320,7 +320,6 @@ class SubNode extends React.Component {
         }
 
         if (parentId != "45890800-48a8-00ff-dc76-25792b7f18d5") {
-            console.info({ url: _url, name: name })
             addCommonList({ url: _url, name: name })
         }
     }
