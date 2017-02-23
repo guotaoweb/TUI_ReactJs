@@ -115,3 +115,11 @@ export function updateUserMainPrivilegeByMsg(data){
     }
 }
 
+export function setUserMaintainSort(data){
+    return {
+        type:"SET_USERMAINTAIN_SORT",
+        data
+    }
+}
+
+

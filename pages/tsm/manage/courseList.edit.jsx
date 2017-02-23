@@ -25,12 +25,11 @@ class EditCourse extends React.Component {
     }
     return (
       <div>
-        <Content2 tabs={tabs}>
+        <Content2 tabs={tabs} gobackHref={this.goBack.bind(this)}>
           <div>
             <FormControls label="科目名称" ctrl="input" value="courseInfo.Name" required="required" />
-            <FormControls label="科目名称" ctrl="input" type="number" value="courseInfo.Sort" required="required" />
+            <FormControls label="科目序号" ctrl="input" type="number" value="courseInfo.Sort" required="required" />
             <div className="formControl-btn">
-              <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
               <Btn type="submit" txt="确定" href={this.editCourseInfo.bind(this)} />
             </div>
           </div>

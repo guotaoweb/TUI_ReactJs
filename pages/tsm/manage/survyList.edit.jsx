@@ -100,12 +100,11 @@ class EditSurvy extends React.Component {
             _survys.push(<SurvyListProblem key="survyProblem" />)
         }
         return (
-            <Content2 tabs={tabs}>
+            <Content2 tabs={tabs} goBackHref={this.goBack.bind(this)}>
                 <div>
                     <FormControls label="问卷名称" ctrl="input" required="required" value="survyInfo.Name" />
                     <FormControls label="问卷说明" ctrl="textarea" value="survyInfo.Desp" />
                     <div className="formControl-btn">
-                        <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
                         <Btn type="add" txt="确定" href={this.addSurvyBseInfo.bind(this)} />
                     </div>
                 </div>

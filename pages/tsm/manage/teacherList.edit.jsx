@@ -25,12 +25,11 @@ class EditTeacher extends React.Component {
 
     return (
       <div>
-        <Content2 tabs={tabs}>
+        <Content2 tabs={tabs} goBackHref={this.goBack.bind(this)}>
           <div>
             <FormControls label="教师姓名" ctrl="input" value="teacherInfo.Name" required="required" />
             <FormControls label="所属科目" ctrl="select" options={course} value="teacherInfo.CourseId" />
             <div className="formControl-btn">
-              <Btn type="cancel" txt="取消" href={this.goBack.bind(this)} />
               <Btn type="submit" txt="确定" href={this.editTeacherInfo.bind(this)} />
             </div>
           </div>

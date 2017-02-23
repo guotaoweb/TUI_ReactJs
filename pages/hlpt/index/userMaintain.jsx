@@ -26,7 +26,9 @@ class UserMaintain extends React.Component {
             data,
             addEditInfo,
             errorMsg,
-            updatePageInfo
+            updatePageInfo,
+            setUserMaintainSort,
+            dialogInfo
         } = this.props
         let _this = this
         let tblContent = {
@@ -44,8 +46,37 @@ class UserMaintain extends React.Component {
                 "value4": _d.unitName,
                 "value5": _d.positionNames,
                 "value6": _d.mobilePhone,
-                "value7": _d.sort,
-
+                "value7": {txt:_d.sort,fn:function(){
+                        let _placeholder = "仅限输入数字"
+        
+                        openDialog(_this, {
+                            title: "设置排序号",
+                            placeholder: _placeholder,
+                            type: "textarea"
+                        }, function () {
+                            let _value = _this.props.dialogInfo.value
+                            if (isNaN(parseInt(_value))) {
+                                openDialog(_this, "请填写数字")
+                            }
+                            else {
+                                let _jsonParam = {
+                                    "poid": _d.poid,
+                                    "sort": _value
+                                }
+                                TUI.platform.put("/duty/sort", _jsonParam, function (result) {
+                                    if (result.code == 0) {
+                                        setUserMaintainSort(_jsonParam)
+                                        //_this.props.refreshTable()
+                                        closeDialog()
+                                    }
+                                    else {
+                                        errorMsg(result.errors)
+                                    }
+                                })
+                            }
+                        })
+                    
+                }},
                 "fns": [{
                     "name": "详情",
                     "fn": function () {
@@ -173,6 +204,12 @@ class UserMaintain extends React.Component {
                         }
 
                         openDialog(_this, "警告:执行“删除”操作该用户将被永久删除，如果只删除职位请点击[编辑]进入[职位信息]列表删除对应的职位", delFetch)
+                    }
+                }],
+                "valueFns":[{
+                    "key":"value7",
+                    "fn":function(){
+
                     }
                 }]
             })
@@ -382,5 +419,6 @@ export default TUI._connect({
     pageInfo: "publicInfo.pageInfo",
     searchInfo: "publicInfo.searchInfo",
     sideContentInfo: "publicInfo.sideContentInfo",
-    componentInfo: "personMatchPost.componentInfo"
+    componentInfo: "personMatchPost.componentInfo",
+    dialogInfo: "publicInfo.dialogInfo.txt"
 }, UserMaintain)

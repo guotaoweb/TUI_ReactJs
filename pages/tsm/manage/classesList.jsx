@@ -49,8 +49,8 @@ class ClassesList extends React.Component {
 
         for (var i = 0; i < classesList.length; i++) {
             let _d = classesList[i],
-                _isStartBtn = _d.IsStart==2?"重启":(_d.IsStart == 0 ? "关闭" : "开启"),
-                _isStart = _d.IsStart == 2 ?"已投":(_d.IsStart == 0 ? "开启" : "关闭"),
+                _isStartBtn = _d.IsStart == 2 ? "重启" : (_d.IsStart == 0 ? "关闭" : "开启"),
+                _isStart = _d.IsStart == 2 ? "已投" : (_d.IsStart == 0 ? "开启" : "关闭"),
                 _tr = {
                     "value1": (pageInfo.index.index - 1) * pageInfo.index.size + (i + 1),
                     "value2": _d.Name,
@@ -61,12 +61,12 @@ class ClassesList extends React.Component {
                         "name": _isStartBtn,
                         "fn": function () {
                             openDialog(_this, "是否确定" + _isStartBtn + "此班级投票?", function () {
-                                let _action = _d.IsStart == 2 ?0:(_d.IsStart == 0 ? 1 : 0)
+                                let _action = _d.IsStart == 2 ? 0 : (_d.IsStart == 0 ? 1 : 0)
                                 TUI.platform.put("/IsStartClasses/" + _d.Id + "?action=" + _action, {}, function (result) {
                                     if (result.code == 0) {
                                         let jsonParam = {
                                             Id: _d.Id,
-                                            IsStart: result.msg.indexOf("班级投票结束")>-1?2:_action
+                                            IsStart: result.msg.indexOf("班级投票结束") > -1 ? 2 : _action
                                         }
                                         updateClassesList(jsonParam)
                                         successMsg("班级投票" + _isStartBtn + "成功")
@@ -138,7 +138,6 @@ class ClassesList extends React.Component {
 
                                         }
                                         if (isNew) {
-                                            console.info(_param)
                                             updateEditInfo(_param)
                                         }
                                     }
@@ -177,7 +176,7 @@ class ClassesList extends React.Component {
 
         let _editClasses = []
 
-        if (sidePageInfo.status == "editClasses" || sidePageInfo.status == "selectTeacher") {
+        if (sidePageInfo.status == "addClasses" || sidePageInfo.status == "editClasses" || sidePageInfo.status == "selectTeacher") {
             _editClasses.push(<EditClasses key="editClass" />)
         }
 
@@ -227,6 +226,7 @@ class ClassesList extends React.Component {
                 },
                     _courseIndex = editInfo.classesInfo.CourseIndex
 
+                console.info(editInfo.classesInfo.ClassesId)
                 _info["ClassesRelated" + _courseIndex] = {
                     ClassesId: editInfo.classesInfo.ClassesId,
                     CourseId: editInfo.classesInfo.CourseId,
@@ -302,37 +302,44 @@ class ClassesList extends React.Component {
     }
 
     pageFn(index) {
-        const {pageInfo, updateVTeamData, updatePageInfo} = this.props
+        const {pageInfo, loadClassesList, updatePageInfo} = this.props
         TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
             if (result.code == 0) {
-                updateVTeamData(result.datas)
+                loadClassesList(result.datas)
                 updatePageInfo({
                     index: index,
-                    size: 7,
+                    size: 10,
                     sum: result.total,
                     url: pageInfo.index.url
                 })
             }
             else {
-                updateVTeamData([])
+                loadClassesList([])
             }
         })
     }
 
     componentDidMount() {
-        const {addGradeList, updatePageInfo, errorMsg, courseList, addCourseList,addBreadNav} = this.props
+        const {addGradeList, updatePageInfo, errorMsg, courseList, loadClassesList, addBreadNav} = this.props
         let _this = this
         openLoading()
         _this.getClassesInGrade(0)
         addBreadNav({ name: "班级列表" })
 
         if (courseList.length == 0) {
-            TUI.platform.get("/Course", function (result) {
+            let _url = "/Classes?pageIndex={0}&pageSize=10"
+            TUI.platform.get(_url.replace("{0}",1), function (result) {
                 if (result.code == 0) {
-                    addCourseList(result.datas)
+                    loadClassesList(result.datas)
+                    updatePageInfo({
+                        index: 1,
+                        size: 10,
+                        sum: result.total,
+                        url: _url
+                    })
                 }
                 else if (result.code == 1) {
-                    addCourseList([])
+                    loadClassesList([])
                 }
                 else {
                     errorMsg(Config.ERROR_INFO[result.code]);
@@ -356,7 +363,6 @@ class ClassesList extends React.Component {
                     sum: result.total,
                     url: _url
                 })
-
             }
             else if (result.code == 1) {
                 loadClassesList([])
@@ -372,8 +378,10 @@ class ClassesList extends React.Component {
     addClasses() {
         openSidePage(this, {
             status: "addClasses",
-            width: "",
-            gateWay: {}
+            gateWay: {
+                preStatus: "addClasses",
+                classesId: TUI.fn.newGuid()
+            }
         })
     }
 }

@@ -65,6 +65,10 @@ class login extends React.Component {
                     else {
                         updateUserInfo({ id: result.datas[0]})
                         browserHistory.push(Config.ROOTPATH + to)
+
+                        if(localStorage["theme"]){
+                            _this.props.setTheme(localStorage["theme"])
+                        }
                     }
                 }
                 else {

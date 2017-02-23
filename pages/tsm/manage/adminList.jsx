@@ -69,7 +69,7 @@ class AdminList extends React.Component {
                                     Id: _d.Id,
                                     UserName: _d.UserName,
                                     LockoutEnabled: _d.LockoutEnabled,
-                                    UserRole:_d.UserRole
+                                    UserRole: _d.UserRole
                                 })
 
                                 openSidePage(_this, {
@@ -83,6 +83,7 @@ class AdminList extends React.Component {
                                 errorMsg(Config.ERROR_INFO[result.code]);
                             }
                             closeContentLoading()
+                            _this.getRole()
                         })
                     }
                 }, {
@@ -171,7 +172,7 @@ class AdminList extends React.Component {
     }
 
     addAdmin() {
-        const {addEditInfo, role,addRoleList,errorMsg} = this.props
+        const {addEditInfo, errorMsg} = this.props
         openSidePage(this, {
             status: "addAdmin",
             width: ""
@@ -180,6 +181,13 @@ class AdminList extends React.Component {
             infoName: "userInfo",
             LockoutEnabled: 1
         })
+
+
+        this.getRole();
+    }
+
+    getRole() {
+        const {role,addRoleList} = this.props
         if (!role) {
             TUI.platform.get("/Role", function (result) {
                 if (result.code == 0) {
@@ -188,8 +196,8 @@ class AdminList extends React.Component {
                     for (var i = 0; i < _d.length; i++) {
                         var $d = _d[i];
                         newdata.push({
-                            id:$d.Id,
-                            name:$d.Name
+                            id: $d.Id,
+                            name: $d.Name
                         })
                     }
                     addRoleList(newdata)

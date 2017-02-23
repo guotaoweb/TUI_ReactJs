@@ -50,7 +50,7 @@ class EditVote extends React.Component {
                         value={"voteInfo.Survy" + $c.Id}
                         placeholder="内容为空则绑定默认问卷"
                         clearFn={this._clearFn.bind(this, $c.Id)}
-                        />
+                    />
                 )
             }
         }
@@ -65,73 +65,47 @@ class EditVote extends React.Component {
                     selectFn={this._selectFn.bind(this)}
                     value={"voteInfo.Survy0"}
                     clearFn={this._clearFn.bind(this)}
-                    />
+                />
             )
         }
 
-        // <FormControls
-        //     label="是否启用"
-        //     ctrl="slide"
-        //     options={_slide}
-        //     value="voteInfo.IsStart" />
         return (
-            <Content2 tabs={tabs}>
+            <Content2 tabs={tabs} goBackHref={this.goBack.bind(this)}>
                 <div>
-                    <FormControls
-                        label="投票名称"
-                        ctrl="input"
-                        required="required"
-                        value="voteInfo.Name" />
-
-                    <FormControls
-                        label="投票类型"
-                        ctrl="select"
-                        options={_voteType}
-                        value="voteInfo.Type" onChangeFn={this.selectOnChangeFn.bind(this)} />
+                    <FormControls label="投票名称" ctrl="input" required="required" value="voteInfo.Name" />
+                    <FormControls label="投票类型" ctrl="select" options={_voteType} value="voteInfo.Type" onChangeFn={this.selectOnChangeFn.bind(this)} />
                     {_selectList}
                     <div className="formControl-btn">
-                        <Btn
-                            type="cancel"
-                            txt="取消"
-                            href={this
-                                .goBack
-                                .bind(this)} />
-                        <Btn
-                            type="submit"
-                            txt="确定"
-                            href={this
-                                .editVoteList
-                                .bind(this)} />
+                        <Btn type="submit" txt="确定" href={this.editVoteList.bind(this)} />
                     </div>
                 </div>
             </Content2>
         )
     }
 
-
-
-
     _selectFn(bind) {
+        const {sidePageInfo} = this.props
         openSidePage(this, {
             id: "selectSurvy",
             status: "selectSurvy",
             width: "400",
             gateWay: {
-                Id: bind.Id
+                Id: bind.Id,
+                prevStatus:sidePageInfo.gateWay.prevStatus
             }
         })
     }
 
     _clearFn(courseId) {
-        const {updateEditInfo,editInfo} = this.props
+        const {updateEditInfo, editInfo} = this.props
         let _jsonParam = {
             infoName: "voteInfo"
         }
 
         for (let key in editInfo.voteInfo) {
-            if (key=="VoteRelated" + courseId) {
-                editInfo.voteInfo[key]["SurvyId"]=""
-                _jsonParam["VoteRelated" + courseId]=editInfo.voteInfo[key]
+            if (key == "VoteRelated" + courseId) {
+                editInfo.voteInfo[key]["SurvyId"] = ""
+                _jsonParam["VoteRelated" + courseId] = editInfo.voteInfo[key]
             }
         }
         updateEditInfo(_jsonParam)
@@ -149,6 +123,7 @@ class EditVote extends React.Component {
         closeSidePage()
         clearEditInfo({ infoName: "voteInfo" })
         backBreadNav()
+        closeSidePage({id:"selectSurvy"})
     }
 
     editVoteList() {
@@ -177,8 +152,8 @@ class EditVote extends React.Component {
             }
         }
         jsonParam["voteRelated"] = voteRelated
-
-        if (sidePageInfo.status == "addVote") {
+        
+        if (sidePageInfo.gateWay.prevStatus == "addVote") {
             TUI.platform.post("/Vote", jsonParam, function (result) {
                 if (result.code == 0) {
                     jsonParam["Id"] = result.datas

@@ -49,7 +49,8 @@ const initState = {
     sideContentInfo: {},
     printStatus:0, //0 启动中 1启动成功 2启动失败
     content2More:[],//content2的隐藏tabs
-    commonMenu:[]//常用功能
+    commonMenu:[],//常用功能
+    theme:"default"//主题
 }
 
 export default function manageReducers(state = initState, action) {
@@ -206,7 +207,8 @@ export default function manageReducers(state = initState, action) {
         case "CLEAR_TIP":
             return Object.assign({}, state, { tips: [] })
         case "UPDATE_INIT":
-            return Object.assign({}, state, { init: 1 })
+        console.info("init:"+action.data)
+            return Object.assign({}, state, { init: (action.data==0?0:1) })
         case "REFRESH_TABLE":
             return Object.assign({}, state, { isRefreshTable: 1 })
         case "NO_REFRESH_TABLE":
@@ -263,6 +265,9 @@ export default function manageReducers(state = initState, action) {
             }
 
             return Object.assign({}, state, { commonMenu: JSON.parse(JSON.stringify(newData)) })
+        case "SET_THEME":
+            console.info("改变"+action.data)
+            return Object.assign({}, state, { theme: action.data })
         default: return state
     }
 }

@@ -18,7 +18,8 @@ class ClassesOnline extends React.Component {
             errorMsg,
             pageInfo,
             sidePageInfo,
-            successMsg
+            successMsg,
+            userInfo
         } = this.props
 
         let tblContent = {

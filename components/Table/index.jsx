@@ -4,7 +4,7 @@ import sortAsc from "!url!./img/sort-asc.png"
 
 class Table extends React.Component {
   render() {
-    const {tblContent, width, num, bindPager, pageInfo,id} = this.props
+    const {tblContent, width, num, bindPager, pageInfo, id} = this.props
     let tbl_thead = [],
       tbl_tbody = []
 
@@ -36,23 +36,23 @@ class Table extends React.Component {
     let _width = width ? width : w
 
     let tbodyLength = tblContent.tbody.length,
-        pagerNumber = pageInfo[bindPager] ? pageInfo[bindPager].size : pageInfo["index"].size,
-        pagerUrl = pageInfo[bindPager] ? pageInfo[bindPager].url : pageInfo["index"].url
+      pagerNumber = pageInfo[bindPager] ? pageInfo[bindPager].size : pageInfo["index"].size,
+      pagerUrl = pageInfo[bindPager] ? pageInfo[bindPager].url : pageInfo["index"].url
 
     let _length = 0
     if (num) {
-      if(pagerUrl){
+      if (pagerUrl) {
         _length = pagerNumber
       }
-      else{
-        _length = tbodyLength>num?num:tbodyLength
+      else {
+        _length = tbodyLength > num ? num : tbodyLength
       }
     }
     else {
-      if(pagerUrl){
+      if (pagerUrl) {
         _length = pagerNumber
       }
-      else{
+      else {
         _length = tbodyLength
       }
     }
@@ -66,19 +66,34 @@ class Table extends React.Component {
         if (key != "fns") {
           //文字区域的td
           if (_width.split(",")[j] == "0") {
-            _tds.push(<td key={i + "_" + key}><a className="autoTblWidth" href="javascript:void(0);" title={_td[key]} style={{ color: "#333" }}>{_td[key]}</a></td>)
+            if (typeof _td[key] == "object") {
+              _tds.push(<td key={i + "_" + key}><a className="autoTblWidth" href="javascript:void(0);" title={_td[key].txt} style={{ color: "#333" }} onClick={_td[key].fn}>{_td[key].txt}</a></td>)
+            }
+            else {
+              _tds.push(<td key={i + "_" + key}><a className="autoTblWidth" href="javascript:void(0);" title={_td[key]} style={{ color: "#333" }}>{_td[key]}</a></td>)
+            }
           }
           else {
-            if(_td[key]){
-              if(_td[key].toString().indexOf("$")>0){
-                _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}><a href="javascript:void(0);" title={_td[key].split("$")[1]}  style={{ color: "#333" }}>{_td[key].split("$")[0]}</a></td>)
+            if (_td[key]) {
+              if (_td[key].toString().indexOf("$") > 0) {
+                _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}><a href="javascript:void(0);" title={_td[key].split("$")[1]} style={{ color: "#333" }}>{_td[key].split("$")[0]}</a></td>)
               }
-              else{
-                _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}>{_td[key]}</td>)
+              else {
+                if (typeof _td[key] == "object") {
+                  _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key} onClick={_td[key].fn}>{_td[key].txt}</td>)
+                }
+                else {
+                  _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}>{_td[key]}</td>)
+                }
               }
             }
-            else{
-              _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}>{_td[key]}</td>)
+            else {
+                if (typeof _td[key] == "object") {
+                  _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key} onClick={_td[key].fn}>{_td[key].txt}</td>)
+                }
+                else {
+                  _tds.push(<td width={_width.split(",")[j]} key={i + "_" + key}>{_td[key]}</td>)
+                }
             }
           }
         }
@@ -128,63 +143,59 @@ class Table extends React.Component {
       if (params.sort == "desc") {
         $elem.setAttribute("data-sort", "asc")
         let $elemImg = $elem.getElementsByTagName("img")[0]
-        $elemImg.setAttribute("src",sortAsc)
-        $elemImg.style.marginTop="8px"
-        $elemImg.style.width="14px"
+        $elemImg.setAttribute("src", sortAsc)
+        $elemImg.style.marginTop = "8px"
+        $elemImg.style.width = "14px"
       }
-      else{
+      else {
         $elem.setAttribute("data-sort", "desc")
         let $elemImg = $elem.getElementsByTagName("img")[0]
-        $elemImg.setAttribute("src",sortDesc)
-        $elemImg.style.marginTop="0px"
-        $elemImg.style.width="20px"
+        $elemImg.setAttribute("src", sortDesc)
+        $elemImg.style.marginTop = "0px"
+        $elemImg.style.width = "20px"
       }
     }
   }
 
 
-componentDidUpdate() {
-  let _this = this
-  const {width, id} = _this.props
-  let $tlb = id?document.getElementById(id):_this.refs["t-tbl"]
+  componentDidUpdate() {
+    let _this = this
+    const {width, id} = _this.props
+    let $tlb = id ? document.getElementById(id) : _this.refs["t-tbl"]
 
-  setTimeout(function () {
-    let styleWidth = $tlb.parentNode.style.width
-    // console.info("id:"+id)
-    
-    let tblWidth = styleWidth ? styleWidth.substring(0, styleWidth.length - 2) : $tlb.parentNode.offsetWidth,
-      $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
-      autoLength = 0
-//       console.info($tlb)
-// console.info("width:"+tblWidth)
-// console.info("autoNumber:"+$autoTblWidth.length)
-// console.info("trNumber:"+($tlb.getElementsByTagName("tr").length-1))
+    setTimeout(function () {
+      let styleWidth = $tlb.parentNode.style.width
+      // console.info("id:"+id)
 
-    let _width = width.split(",")
-    //console.info("width_str:"+_width)
-    for (let i = 0; i < _width.length; i++) {
-      let $w = _width[i]
-      tblWidth -= $w
-    
-      if ($w == 0) {
-        autoLength++
+      let tblWidth = styleWidth ? styleWidth.substring(0, styleWidth.length - 2) : $tlb.parentNode.offsetWidth,
+        $autoTblWidth = $tlb.getElementsByClassName("autoTblWidth"),
+        autoLength = 0
+
+      let _width = width.split(",")
+
+      for (let i = 0; i < _width.length; i++) {
+        let $w = _width[i]
+        tblWidth -= $w
+
+        if ($w == 0) {
+          autoLength++
+        }
       }
-    }
 
-// console.info("减完之后:"+tblWidth)
-    for (let j = 0; j < $autoTblWidth.length; j++) {
-      let $a = $autoTblWidth[j]
+      // console.info("减完之后:"+tblWidth)
+      for (let j = 0; j < $autoTblWidth.length; j++) {
+        let $a = $autoTblWidth[j]
 
-      $a.style.width = tblWidth / 2 + "px"
-      $a.style.display = "block"
-      $a.style.overflow = "hidden"
-      $a.style.whiteSpace = "nowrap"
-      $a.style.textOverflow = "ellipsis"
-    }
+        $a.style.width = tblWidth / 2 + "px"
+        $a.style.display = "block"
+        $a.style.overflow = "hidden"
+        $a.style.whiteSpace = "nowrap"
+        $a.style.textOverflow = "ellipsis"
+      }
 
-    _this.props.noRefreshTable()
-  }, 300)
-}
+      _this.props.noRefreshTable()
+    }, 300)
+  }
 }
 
 

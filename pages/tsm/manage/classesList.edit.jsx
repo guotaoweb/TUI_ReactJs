@@ -42,16 +42,16 @@ class EditClasses extends React.Component {
 
         return (
             <div>
-                <Content2 tabs={tabs}>
+                <Content2 tabs={tabs} goBackHref={this._goBack.bind(this)}>
                     <div>
                         <FormControls label="班级名称" ctrl="input" value="classesInfo.Name" required="required" />
-                        <FormControls label="班级人数" ctrl="input" value="classesInfo.Number" required="required" />
-                        <FormControls label="所属年级" ctrl="select" options={_gradeList} value="classesInfo.GradeId" />
+                        <FormControls label="班级人数" ctrl="input" type="number" value="classesInfo.Number" required="required" />
+                        <FormControls label="所属年级" ctrl="select" options={_gradeList} value="classesInfo.GradeId" required="required" />
                         {courseInput}
                         <div className="formControl-btn">
-                            <Btn type="cancel" txt="取消" href={this._goBack.bind(this)} />
                             <Btn type="submit" txt="确定" href={this.editClassesInfo.bind(this)} />
                         </div>
+                        <br/>
                     </div>
                 </Content2>
             </div>
@@ -77,7 +77,9 @@ class EditClasses extends React.Component {
                 status: "selectTeacher",
                 width: "400",
                 gateWay: {
-                    Id: bind.CourseId
+                    preStatus:sidePageInfo.gateWay.preStatus,
+                    Id: bind.CourseId,
+                    classesId:sidePageInfo.gateWay.classesId
                 }
             })
         })
@@ -103,10 +105,12 @@ class EditClasses extends React.Component {
         }
 
         if (sidePageInfo.gateWay.preStatus == "addClasses") {
+            jsonParam["Id"] = sidePageInfo.gateWay.classesId
+            console.info(jsonParam)
             TUI.platform.post("/Classes", jsonParam, function (result) {
                 if (result.code == 0) {
                     successMsg("新增成功")
-                    jsonParam["Id"] = result.datas
+                    //jsonParam["Id"] = result.datas
                     jsonParam["Grade"] = editInfo.classesInfo.GradeIdName,
                         addClassesList(jsonParam)
                 }

@@ -276,7 +276,9 @@ class VoteList extends React.Component {
         const {addEditInfo, pushBreadNav} = this.props
         openSidePage(this, {
             status: "addVote",
-            width: ""
+            gateWay:{
+                prevStatus:"addVote"
+            }
         })
         addEditInfo({
             infoName: "voteInfo",

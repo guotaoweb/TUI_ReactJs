@@ -83,6 +83,14 @@ export default function manageReducers(state = initState, action) {
             return Object.assign({}, state, { userMainTainLoginStatus: action.data })
         case "UPDATE_USERMAINTAIN_PRIVILEGE_BY_EMAIL":
             return Object.assign({}, state, { userMainTainEmailStatus: action.data })
+        case "SET_USERMAINTAIN_SORT":
+            for (let i = 0; i < state.data.length; i++) {
+                let $d = state.data[i]
+                if ($d.poid == action.data.poid) {
+                    $d.sort = action.data.sort
+                }
+            }
+            return Object.assign({}, state, { data: eval(JSON.stringify(state.data)) })
         default: return state
     }
 }

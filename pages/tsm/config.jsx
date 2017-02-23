@@ -39,3 +39,33 @@ export const SCROLL = {
     minScrollSize:40,
     scrollRadius:5
 }
+export const THEME = {
+    default:{
+        bg:"rgb(36, 46, 63)",
+        unBg:"",
+        color:"white",
+        unColor:"#999",
+        border:"rgb(76, 134, 220)"
+    },
+    blue:{
+        bg:"#6493BB",
+        unBg:"",
+        color:"#454545",
+        unColor:"white",
+        border:"#1D6FD7"
+    },
+    green:{
+        bg:"rgba(134, 220, 72,.5)",
+        unBg:"",
+        color:"#454545",
+        unColor:"white",
+        border:"rgba(134, 220, 72,.5)"
+    },
+    red:{
+        bg:"#FDBF62",
+        unBg:"",
+        color:"#454545",
+        unColor:"white",
+        border:"#DB543E"
+    }
+}

@@ -38,7 +38,8 @@ class Search extends React.Component {
     let keypressFn = function (e) {
       if (e.keyCode == 13) {
         searchLoading()
-        if(fn){fn($search.value,searchLoadComplete)}
+
+        if(fn){fn($search.value.replace(/(^\s*)|(\s*$)/g, ""),searchLoadComplete)}
       }
     }
     

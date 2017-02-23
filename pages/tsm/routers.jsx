@@ -30,13 +30,13 @@ class Routers extends React.Component {
         const {history} = this.props
         return (
             <Router history={history}>
-                <Route path={Config.ROOTPATH + "s"} component={Index}></Route>
+                <Route path={Config.ROOTPATH} component={Index}></Route>
                 <Route path={Config.ROOTPATH + "vote"} component={Vote}></Route>
                 <Route path={Config.ROOTPATH + "end"} component={End}></Route>
                 <Route path={Config.ROOTPATH + "login"} component={Login}></Route>
 
-                <Route path={Config.ROOTPATH} component={Manage}>
-                    <IndexRoute component={Output} />
+                <Route path={Config.ROOTPATH + "s"} component={Manage}>
+                    <IndexRoute component={VoteList} />
                     <Route path={Config.ROOTPATH + m + "teachers"} component={TeacherList} />
                     <Route path={Config.ROOTPATH + m + "courses"} component={CourseList} />
                     <Route path={Config.ROOTPATH + m + "admins"} component={AdminList} />
@@ -47,7 +47,7 @@ class Routers extends React.Component {
                     <Route path={Config.ROOTPATH + m + "statistic"} component={Statistic} />
                     <Route path={Config.ROOTPATH + m + "teacherStatistic"} component={TeacherStatistic} />
                     <Route path={Config.ROOTPATH + m + "courseStatistic"} component={CourseStatistic} />
-                    <Route path={Config.ROOTPATH + m + "cassesStatistic"} component={ClassesStatistic} />
+                    <Route path={Config.ROOTPATH + m + "classesStatistic"} component={ClassesStatistic} />
                     <Route path={Config.ROOTPATH + m + "output"} component={Output} />
                     <Route path={Config.ROOTPATH + m + "input"} component={Input} />
                     <Route path={Config.ROOTPATH + m + "reports"} component={ReportList} />
@@ -59,8 +59,3 @@ class Routers extends React.Component {
 }
 
 export default Routers
-    //<IndexRoute component={Statistic} />
-
-
-    // < Route path= { Config.ROOTPATH + "login" } component= { Login } />
-    //     <Route path={Config.ROOTPATH + "manage"} component={Manage}>

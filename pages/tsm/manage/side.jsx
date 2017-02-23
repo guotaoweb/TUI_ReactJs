@@ -37,7 +37,7 @@ class _Side extends React.Component {
       list.push({
         id: $d.Id,
         name: $d.Name,
-        url: $d.Url,
+        url: Config.ROOTPATH + $d.Url,
         icon: this.getImg($d.Name),
         sicon: this.getImg($d.Name + "s"),
         sub: $s
@@ -51,9 +51,9 @@ class _Side extends React.Component {
 
   componentDidUpdate(nextProps) {
 
-    if (this.props.userInfo.role != nextProps.userInfo.role) {
-      this.loadColumn()
-    }
+    // if (this.props.userInfo.role != nextProps.userInfo.role) {
+    //   this.loadColumn()
+    // }
   }
 
   componentDidMount() {

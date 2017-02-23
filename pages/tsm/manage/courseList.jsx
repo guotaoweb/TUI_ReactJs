@@ -91,7 +91,7 @@ class CourseList extends React.Component {
     return (
       <div>
         <Content txt="科目列表" addHref={this.addCourseList.bind(this)}>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,200,100,100" />
+          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,200,200,100" />
           <Pager fn={this.pageFn.bind(this)} />
         </Content>
         <SidePage>
@@ -103,21 +103,22 @@ class CourseList extends React.Component {
     )
   }
 
-  pageFn(index) {
-    const {pageInfo, updateCourseData, updatePageInfo} = this.props
+  pageFn(index,loadComplete) {
+    const {pageInfo, loadCourseList, updatePageInfo} = this.props
     TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
       if (result.code == 0) {
-        updateCourseData(result.datas)
+        loadCourseList(result.datas)
         updatePageInfo({
           index: index,
-          size: 7,
+          size: 10,
           sum: result.total,
           url: pageInfo.index.url
         })
       }
       else {
-        updateCourseData([])
+        loadCourseList([])
       }
+      loadComplete()
     })
   }
 

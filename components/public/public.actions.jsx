@@ -258,6 +258,13 @@ export function addCommonList(data) {
     }
 }
 
+export function setTheme(data) {
+    return {
+        type: "SET_THEME",
+        data
+    }
+}
+
 
 
 

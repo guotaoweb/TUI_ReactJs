@@ -1,6 +1,3 @@
-//图片
-import singleLeft from "!url!./img/singleLeft.png"
-
 //组件
 import Content from "Content"
 import Btn from "Btn"
@@ -116,7 +113,7 @@ class TeacherList extends React.Component {
     return (
       <div>
         <Content txt="教师列表" addHref={this.addTeacherList.bind(this)}>
-          <Table num="10" pageIndex="1" pageSize="2" tblContent={tblContent} width="50,0,250,250,180" />
+          <Table num="10" tblContent={tblContent} width="50,0,250,250,180" />
           <Pager fn={this.pageFn.bind(this)} />
         </Content>
         <SidePage id="editTeacher">
@@ -133,21 +130,22 @@ class TeacherList extends React.Component {
     )
   }
 
-  pageFn(index) {
-    const {pageInfo, updateVTeamData, updatePageInfo} = this.props
+  pageFn(index,loadComplete) {
+    const {pageInfo, loadTeacherList, updatePageInfo} = this.props
     TUI.platform.get(pageInfo.index.url.replace("{0}", index), function (result) {
       if (result.code == 0) {
-        updateVTeamData(result.datas)
+        loadTeacherList(result.datas)
         updatePageInfo({
           index: index,
-          size: 7,
+          size: 10,
           sum: result.total,
           url: pageInfo.index.url
         })
       }
       else {
-        updateVTeamData([])
+        loadTeacherList([])
       }
+      loadComplete()
     })
   }
 
@@ -163,7 +161,7 @@ class TeacherList extends React.Component {
         updatePageInfo({
           index: 1,
           size: 10,
-          sum: result.ttotal,
+          sum: result.total,
           url: _url
         })
       }

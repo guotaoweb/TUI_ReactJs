@@ -18,15 +18,14 @@ class EditAdmin extends React.Component {
     let _slideOptions = [{ id: 0, name: "否" }, { id: 1, name: "是" }]
     return (
       <div>
-        <Content2 tabs={tabs}>
+        <Content2 tabs={tabs} goBackHref={this.goBack.bind(this)}>
           <div>
             <FormControls label="用户名" ctrl="input" value="userInfo.UserName" required="required" />
             <FormControls label="账号密码" ctrl="input" type="Password" placeholder="密码至少6位" value="userInfo.Password" />
             <FormControls label="重复密码" ctrl="input" type="Password" placeholder="密码至少6位" value="userInfo.ConfirmPassword" />
-            <FormControls label="角色" ctrl="select" options={role} value="userInfo.UserRole" />
+            <FormControls label="角色" ctrl="select" options={role} value="userInfo.UserRole"  required="required"/>
             <FormControls label="是否锁定" ctrl="slide" options={_slideOptions} value="userInfo.LockoutEnabled" />
             <div className="formControl-btn">
-              <Btn type="cancel" txt="取消" href={this._goBack.bind(this)} />
               <Btn type="submit" txt="确定" href={this.editAdminInfo.bind(this)} />
             </div>
           </div>
@@ -35,7 +34,7 @@ class EditAdmin extends React.Component {
     )
   }
 
-  _goBack() {
+  goBack() {
     const {clearEditInfo} = this.props
     closeSidePage()
     clearEditInfo({
@@ -65,7 +64,9 @@ class EditAdmin extends React.Component {
 
 
     if (sidePageInfo.status == "addAdmin") {
-      if(jsonParam.Password && jsonParam.ConfirmPassword){
+      // console.info(jsonParam.Password)
+      // console.info(jsonParam.ConfirmPassword)
+      if(jsonParam.Password && editInfo.userInfo.ConfirmPassword){
         if (jsonParam.Password.length < 6 || editInfo.userInfo.ConfirmPassword.length < 6) {
           setTimeout(function () { errorMsg("密码至少6位") }, 1000)
           return false
@@ -86,7 +87,7 @@ class EditAdmin extends React.Component {
         else {
           setTimeout(function () { errorMsg(Config.ERROR_INFO[result.code]); }, 1000)
         }
-        _this._goBack()
+        _this.goBack()
       })
     }
     else {
@@ -101,7 +102,7 @@ class EditAdmin extends React.Component {
         else {
           setTimeout(function () { errorMsg(Config.ERROR_INFO[result.code]); }, 1000)
         }
-        _this._goBack()
+        _this.goBack()
       })
     }
   }

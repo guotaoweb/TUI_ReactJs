@@ -224,8 +224,16 @@ export function openSidePage(_this, params) {
                         .querySelector(".t-sidecontent")
                         .offsetWidth
                     : 0
+
+                //content3布局中的side宽度
+                let contentSideWidth = document.querySelector(".t-content3_side")
+                    ? document
+                        .querySelector(".t-content3_side")
+                        .offsetWidth
+                    : 0
+
                 if(!params.width){
-                    $sidepage.style.width = allWidth-sideContentWidth-sideWidth+"px";
+                    $sidepage.style.width = allWidth-sideContentWidth-contentSideWidth-sideWidth+"px";
                 }
                 $sidepage.style.right = (0)+"px"
             }
